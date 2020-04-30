@@ -1,0 +1,168 @@
+#VRML_OBJ R2020a utf8
+DEF Cristo Robot {
+  translation 2.7564309505817826 0.03956235532085905 -2.695945441126611
+  rotation -0.0011620910356194148 0.9999972788023701 0.002022852510641417 2.040255102294615
+  children [
+    Camera {
+      translation 0 0.038 0.075
+      rotation 0 1 0 3.14159
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+            metalness 0
+          }
+          geometry Box {
+            size 0.025 0.025 0.05
+          }
+        }
+      ]
+      width 800
+      height 600
+    }
+    DEF WHEEL3 HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0.0011182143343676546
+        anchor 0 0 0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel3"
+        }
+      ]
+      endPoint Solid {
+        translation -1.103896341458874e-05 0.000177891407579681 -0.10000016011171463
+        rotation 0.0005599236167505286 -0.0005582898758087869 0.9999996873989302 1.5708001925439257
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0 0.4 0
+              metalness 0
+            }
+            geometry DEF rearWheel_geometry Cylinder {
+              height 0.05
+              radius 0.04
+            }
+          }
+        ]
+        name "solid(2)"
+        boundingObject USE rearWheel_geometry
+        physics Physics {
+        }
+      }
+    }
+    DEF BODY Shape {
+      appearance PBRAppearance {
+        baseColor 0.917647 0.145098 0.145098
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.05 0.2
+      }
+    }
+    DEF WHEEL1 HingeJoint {
+      jointParameters HingeJointParameters {
+        position 833.3289519336082
+        anchor 0.06 0 0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel1"
+        }
+      ]
+      endPoint Solid {
+        translation 0.11000111835861384 8.157096417122016e-06 0.050006667284753226
+        rotation 0.6886410201438273 -0.6886441659397087 -0.22703030214592948 3.5880813310074195
+        children [
+          DEF WHEEL Shape {
+            appearance PBRAppearance {
+              baseColor 0.305882 0.898039 0.25098
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.02
+              radius 0.04
+              subdivision 24
+            }
+          }
+        ]
+        boundingObject USE WHEEL
+        physics Physics {
+        }
+      }
+    }
+    DEF WHEEL2 HingeJoint {
+      jointParameters HingeJointParameters {
+        position 723.6331814542078
+        anchor -0.06 0 0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel2"
+        }
+      ]
+      endPoint Solid {
+        translation -0.10999544794656753 6.517034217833518e-06 0.05000820414250385
+        rotation -0.3977840423789284 0.3977837913842228 -0.8267623061924582 4.523285836448139
+        children [
+          USE WHEEL
+        ]
+        name "solid(1)"
+        boundingObject USE WHEEL
+        physics Physics {
+        }
+      }
+    }
+    DEF DS_RIGHT DistanceSensor {
+      translation -0.08 0 0.1
+      rotation 0 1 0 -1.87079
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.184314 0.596078 0.847059
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "ds_right"
+      lookupTable [
+        0 0 0
+        0.5 1000 0
+      ]
+    }
+    DEF DS_LEFT DistanceSensor {
+      translation 0.08 0 0.1
+      rotation 0 1 0 -1.27079
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.184314 0.596078 0.847059
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "ds_left"
+      lookupTable [
+        0 0 0
+        0.5 1000 0
+      ]
+    }
+  ]
+  name "Cristo"
+  boundingObject USE BODY
+  physics Physics {
+    density -1
+    mass 1
+  }
+  controller "robotController"
+}
