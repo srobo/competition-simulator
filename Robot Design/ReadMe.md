@@ -48,7 +48,7 @@ Four instances of the robot Arthur are placed within the arena, each running a d
 ## Meet The Robots
 
 #### Arthur
-![alt text](Robot - Arthur/Arthur.JPG "Arthur")
+![alt text]('Robot_Arthur/Arthur.JPG' "Arthur")
 
 Arthur is a 4 wheel, differential steering robot with a 'box capture zone'.
 
