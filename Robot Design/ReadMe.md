@@ -23,13 +23,13 @@ robots main body solids).
 #### 29/04/2020 - Sensor Demo: Collision Avoid
 Robot uses two front mounted distance sensors and differential steering to avoid collisions.
 
-![alt text](demos\distanceSensor1.gif "Distance Sensor")
+![alt text](demos/distanceSensor1.gif "Distance Sensor")
 
 
 #### 29/04/2020 - Physics Demo: Box Push
 Robot blindly pushes a token into the arena wall
 
-![alt text](demos\boxPush1.gif "Box Push")
+![alt text](demos/boxPush1.gif "Box Push")
  
 
 
