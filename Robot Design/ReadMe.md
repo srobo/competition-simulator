@@ -47,5 +47,24 @@ Four instances of the robot Arthur are placed within the arena, each running a d
 
 ## Meet The Robots
 
+#### Arthur
+![alt text](Robot - Arthur/Arthur.JPG "Arthur")
 
+Arthur is a 4 wheel, differential steering robot with a 'box capture zone'.
+
+Drive (Orange) :
+- 3x Motors:
+	- M1 Front Left
+	- M2 Back Left
+	- M3 Back Right
+	- M4 Back Right
+
+Sensors (Green):
+- 3x Distance Sensor 
+	- DS_1  Front left
+	- DS_2  Centre, within capture zone
+	- DS_3  Front Right
+
+Camera (Purple):
+- 1x Camera mounted alone the centre line, slightly angled down.
 
