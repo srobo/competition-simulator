@@ -1,21 +1,43 @@
 #VRML_OBJ R2020a utf8
 DEF Bertha Robot {
-  translation 0.0008615912734551982 0.022864737190653794 -1.68469566663077
+  translation 0.00100417 0.282857 -1.68668
   rotation 0.07118128872983183 -0.9974233973722455 0.008932553339792431 -0.10734103846034271
   children [
+    DEF DS_Box DistanceSensor {
+      translation 0 0.019 -0.15
+      rotation 0 1 0 -1.5708003061004252
+      children [
+        Shape {
+          appearance DEF AP_DS PBRAppearance {
+            baseColor 0.42 0.56 0.14
+            metalness 0
+          }
+          geometry DEF GEO_DS Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "DS_2"
+      lookupTable [
+        0 0 0
+        0.5 1000 0
+      ]
+    }
     Transform {
       children [
         Solid {
-          translation -0.185 0.02 -0.155
+          translation -0.18499997237653032 0.01997977279852592 -0.1550001532201306
           name "solid(6)"
           boundingObject Shape {
             geometry DEF armCollisionGeometry Box {
               size 0.06 0.05 0.43
             }
           }
+          physics Physics {
+          }
         }
         Solid {
-          translation 0.185 0.02 -0.155
+          translation 0.18500011049409423 0.019919091036557757 -0.15500061288171607
           name "solid(5)"
           boundingObject Shape {
             geometry DEF armCollisionGeometry Box {
@@ -26,7 +48,7 @@ DEF Bertha Robot {
           }
         }
         Solid {
-          translation 0 0.12 -0.21
+          translation 7.195066963339158e-07 0.11947314341617749 -0.21000399091464783
           name "solid(4)"
           boundingObject Shape {
             geometry Box {
@@ -71,34 +93,34 @@ DEF Bertha Robot {
       children [
         Shape {
           appearance PBRAppearance {
-            baseColor 0 0 0
+            baseColor 0.46 0.1 1
             metalness 0
           }
           geometry Box {
-            size 0.025 0.025 0.05
+            size 0.05 0.025 0.054
           }
         }
       ]
       width 800
       height 600
     }
-    DEF WHEEL3 HingeJoint {
+    DEF BACKWHEEL HingeJoint {
       jointParameters HingeJointParameters {
-        position 1.1467384582229749e-05
+        position 1.1466750168819055e-05
         anchor 0 0.015 -0.35
       }
       device [
         RotationalMotor {
-          name "wheel3"
+          name "M2"
         }
       ]
       endPoint Solid {
-        translation -4.8299973656183756e-06 0.015083570397672727 -0.35006369638789187
-        rotation 6.173541772409076e-06 -5.297058481050353e-06 0.9999999999669144 1.570799649919287
+        translation -4.797746723322903e-06 0.015059954956878785 -0.3500638752738301
+        rotation 6.17322637880581e-06 -5.296746004058106e-06 0.9999999999669179 1.5707996500306487
         children [
           Shape {
-            appearance PBRAppearance {
-              baseColor 0 0.4 0
+            appearance DEF AP_Wheel PBRAppearance {
+              baseColor 0.82 0.41 0.12
               metalness 0
             }
             geometry DEF rearWheel_geometry Cylinder {
@@ -122,22 +144,21 @@ DEF Bertha Robot {
     }
     DEF WHEEL1 HingeJoint {
       jointParameters HingeJointParameters {
-        position 25.624410263995053
+        position 25.624411717000164
         anchor 0 0.015 0
       }
       device [
         RotationalMotor {
-          name "wheel1"
+          name "M1"
         }
       ]
       endPoint Solid {
-        translation 0.22753003136256708 0.014918275239274978 0.00015552111536098418
-        rotation 0.15051866958805515 -0.15096627402709747 0.9770124432226117 1.5947012091014916
+        translation 0.2275300440846729 0.014908339909122326 0.0001554457847463548
+        rotation 0.15051906865258013 -0.15096698187544458 0.9770122723668209 1.5946992325919631
         children [
           DEF WHEEL Shape {
-            appearance PBRAppearance {
-              baseColor 0.305882 0.898039 0.25098
-              roughness 1
+            appearance DEF AP_Wheel PBRAppearance {
+              baseColor 0.82 0.41 0.12
               metalness 0
             }
             geometry Cylinder {
@@ -154,17 +175,17 @@ DEF Bertha Robot {
     }
     DEF WHEEL2 HingeJoint {
       jointParameters HingeJointParameters {
-        position 5.62441101420883
+        position 5.62440956145779
         anchor 0 0.015 0
       }
       device [
         RotationalMotor {
-          name "wheel2"
+          name "M3"
         }
       ]
       endPoint Solid {
-        translation -0.227525103348684 0.015140512221609094 -8.426703934581348e-05
-        rotation -0.3793752581084391 0.3787177191305713 0.8441844009170586 1.7396980453778832
+        translation -0.2275250907440189 0.015130576972500087 -8.43424121570453e-05
+        rotation -0.37937568377078534 0.3787173170936959 0.8441843899864543 1.7397001699704902
         children [
           USE WHEEL
         ]
@@ -179,17 +200,16 @@ DEF Bertha Robot {
       rotation 0 1 0 -1.87079
       children [
         Shape {
-          appearance PBRAppearance {
-            baseColor 0.184314 0.596078 0.847059
-            roughness 1
+          appearance DEF AP_DS PBRAppearance {
+            baseColor 0.42 0.56 0.14
             metalness 0
           }
-          geometry Box {
+          geometry DEF GEO_DS Box {
             size 0.01 0.01 0.01
           }
         }
       ]
-      name "ds_right"
+      name "DS_3"
       lookupTable [
         0 0 0
         0.5 1000 0
@@ -200,17 +220,13 @@ DEF Bertha Robot {
       rotation 0 1 0 -1.27079
       children [
         Shape {
-          appearance PBRAppearance {
-            baseColor 0.184314 0.596078 0.847059
-            roughness 1
-            metalness 0
-          }
-          geometry Box {
+          appearance USE AP_DS
+          geometry DEF GEO_DS Box {
             size 0.01 0.01 0.01
           }
         }
       ]
-      name "ds_left"
+      name "DS_1"
       lookupTable [
         0 0 0
         0.5 1000 0
@@ -219,5 +235,13 @@ DEF Bertha Robot {
   ]
   name "Bertha"
   physics Physics {
+    mass 0.5
+    centerOfMass [
+      0 0 0
+    ]
+    inertiaMatrix [
+      1 1 1
+      0 0 0
+    ]
   }
 }
