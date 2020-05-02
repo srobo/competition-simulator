@@ -1,0 +1,152 @@
+#VRML_OBJ R2020a utf8
+Robot {
+  children [
+    DEF TRUNK Solid {
+      translation 0.71 0.2 0.9
+      rotation 0 1 0 1.5708
+      children [
+        DEF TRUNK_SLIDER SliderJoint {
+          jointParameters JointParameters {
+            axis 0 1 0
+            maxStop 0.3
+          }
+          device [
+            PositionSensor {
+              name "PS1"
+            }
+            LinearMotor {
+              name "LM1"
+              maxPosition 0.3
+            }
+          ]
+          endPoint Solid {
+            translation 0 -0.15 0
+            children [
+              DEF KNUCKLE_RIGHT SliderJoint {
+                jointParameters JointParameters {
+                  position 0.15
+                  axis -1 0 0
+                  minStop 0.1
+                  maxStop 0.15
+                }
+                device [
+                  PositionSensor {
+                    name "PS_KR"
+                  }
+                  LinearMotor {
+                    name "LM_KR"
+                    minPosition 0.1
+                    maxPosition 0.15
+                  }
+                ]
+                endPoint DEF RIGHT_ARM Solid {
+                  translation -0.12 0 0
+                  children [
+                    DEF RIGHT_FINGER Solid {
+                      translation -0.085 0 0.115
+                      children [
+                        DEF FINGER Shape {
+                          appearance DEF AP_GRIPPER PBRAppearance {
+                            baseColor 1 0.5 0
+                            metalness 0
+                          }
+                          geometry Box {
+                            size 0.03 0.03 0.2
+                          }
+                        }
+                      ]
+                      boundingObject USE FINGER
+                      physics Physics {
+                      }
+                    }
+                    DEF ARM Shape {
+                      appearance DEF AP_GRIPPER PBRAppearance {
+                        baseColor 1 0.5 0
+                        metalness 0
+                      }
+                      geometry Box {
+                        size 0.2 0.03 0.03
+                      }
+                    }
+                  ]
+                  name "solid(1)"
+                  boundingObject USE ARM
+                  physics Physics {
+                  }
+                }
+              }
+              DEF KNUCKLE Shape {
+                appearance DEF AP_BODY PBRAppearance {
+                  baseColor 0.3 0.3 0.3
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.05
+                  radius 0.03
+                }
+              }
+              DEF KNUCKLE_LEFT SliderJoint {
+                jointParameters JointParameters {
+                  position 0.15
+                  axis 1 0 0
+                  minStop 0.1
+                  maxStop 0.15
+                }
+                device [
+                  PositionSensor {
+                    name "PS_KL"
+                  }
+                  LinearMotor {
+                    name "LM_KL"
+                    minPosition 0.1
+                    maxPosition 0.15
+                  }
+                ]
+                endPoint Solid {
+                  translation 0.12 0 0
+                  children [
+                    DEF LEFT_FINGER Solid {
+                      translation 0.085 0 0.115
+                      children [
+                        Connector {
+                          translation -0.01 0 0
+                          rotation 0 1 0 -1.5708003061004252
+                          boundingObject Box {
+                            size 0.19 0.03 0.01
+                          }
+                          physics Physics {
+                          }
+                        }
+                        USE FINGER
+                      ]
+                      boundingObject USE FINGER
+                      physics Physics {
+                      }
+                    }
+                    USE ARM
+                  ]
+                  name "solid(17)"
+                  boundingObject USE ARM
+                  physics Physics {
+                  }
+                }
+              }
+            ]
+          }
+        }
+        DEF TRUNK Shape {
+          appearance DEF AP_GRIPPER PBRAppearance {
+            baseColor 1 0.5 0
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.35
+            radius 0.015
+          }
+        }
+      ]
+      name "solid(18)"
+    }
+  ]
+  controller "GRIPPER_CONTROL"
+}

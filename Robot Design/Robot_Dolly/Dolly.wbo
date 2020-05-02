@@ -1,0 +1,306 @@
+#VRML_OBJ R2020a utf8
+DEF Dolly Robot {
+  translation 1.96673 0.0976997 1.6911
+  rotation 0.003560490595496719 0.9999871672491645 -0.003603920602760445 -1.725545307179586
+  children [
+    DEF ARM_SYSTEM Group {
+      children [
+        DEF TRUNK Solid {
+          translation 0 0.12 0.05
+          rotation 0 1 0 1.5708
+          children [
+            DEF TRUNK_SLIDER SliderJoint {
+              jointParameters JointParameters {
+                axis 0 1 0
+                maxStop 0.3
+              }
+              device [
+                PositionSensor {
+                  name "PS1"
+                }
+                LinearMotor {
+                  name "LM1"
+                  maxPosition 0.3
+                }
+              ]
+              endPoint Solid {
+                translation 0 -0.07 0
+                children [
+                  DEF SUCTION Solid {
+                    translation -0.05 0 0
+                    rotation 0 0 1 1.5707996938995747
+                    children [
+                      Connector {
+                        translation 0 0.02 0
+                        rotation 1 0 0 -1.5707996938995747
+                        model "TOKEN"
+                        recognitionColors [
+                          1 1 1
+                        ]
+                        type "active"
+                        distanceTolerance 0.1
+                      }
+                      Shape {
+                        appearance DEF AP_BODY PBRAppearance {
+                          baseColor 0.3 0.3 0.3
+                          metalness 0
+                        }
+                        geometry Cylinder {
+                          height 0.04
+                          radius 0.02
+                        }
+                      }
+                    ]
+                    boundingObject Cylinder {
+                      height 0.04
+                      radius 0.02
+                    }
+                  }
+                  DEF KNUCKLE Shape {
+                    appearance DEF AP_BODY PBRAppearance {
+                      baseColor 0.3 0.3 0.3
+                      metalness 0
+                    }
+                    geometry Cylinder {
+                      height 0.05
+                      radius 0.03
+                    }
+                  }
+                ]
+                boundingObject USE KNUCKLE
+                physics Physics {
+                }
+              }
+            }
+            DEF TRUNK Shape {
+              appearance DEF AP_GRIPPER PBRAppearance {
+                baseColor 1 0.5 0
+                metalness 0
+              }
+              geometry DEF TRUNK Cylinder {
+                height 0.2
+                radius 0.015
+              }
+            }
+          ]
+          name "solid(18)"
+          boundingObject USE TRUNK
+          physics Physics {
+          }
+        }
+      ]
+    }
+    DEF SENSORS Group {
+      children [
+        Camera {
+          translation 0 0.23 0.04
+          rotation 0 1 0 3.14159
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.46 0.1 1
+                metalness 0
+              }
+              geometry Box {
+                size 0.05 0.025 0.054
+              }
+            }
+          ]
+          width 800
+          height 600
+        }
+        DEF DS_RIGHT DistanceSensor {
+          translation -0.09 0 0.075
+          rotation 0 1 0 -1.6999996938995747
+          children [
+            Shape {
+              appearance DEF AP_DS PBRAppearance {
+                baseColor 0.42 0.56 0.14
+                metalness 0
+              }
+              geometry DEF GEO_DS Box {
+                size 0.01 0.01 0.01
+              }
+            }
+          ]
+          name "DS_3"
+          lookupTable [
+            0 0 0
+            0.5 1000 0
+          ]
+        }
+        DEF DS_LEFT DistanceSensor {
+          translation 0.09 0 0.075
+          rotation 0 1 0 -1.4382003061004252
+          children [
+            Shape {
+              appearance USE AP_DS
+              geometry DEF GEO_DS Box {
+                size 0.01 0.01 0.01
+              }
+            }
+          ]
+          name "DS_1"
+          lookupTable [
+            0 0 0
+            0.5 1000 0
+          ]
+        }
+      ]
+    }
+    DEF BODY Group {
+      children [
+        Solid {
+          translation 0 -0.015 -0.05
+          children [
+            DEF BASE_PLATE Shape {
+              appearance PBRAppearance {
+                baseColor 0.5 0.5 1
+                metalness 0
+              }
+              geometry Box {
+                size 0.2 0.075 0.25
+              }
+            }
+          ]
+          name "solid(3)"
+          boundingObject USE BASE_PLATE
+          physics Physics {
+            density 1500
+          }
+        }
+      ]
+    }
+    DEF DRIVE_SYSTEM Group {
+      children [
+        DEF BACK_WHEEL HingeJoint {
+          jointParameters HingeJointParameters {
+            anchor 0 -0.04 -0.15
+          }
+          endPoint Solid {
+            translation 0 -0.04 -0.15
+            rotation 0.09255728182955342 -0.0917903832016511 -0.9914674352352774 4.703766390568596
+            children [
+              DEF WHEEL Shape {
+                appearance DEF AP_Wheel PBRAppearance {
+                  baseColor 0.82 0.41 0.12
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.02
+                  radius 0.04
+                  subdivision 24
+                }
+              }
+            ]
+            name "solid(2)"
+            boundingObject DEF WHEEL Shape {
+              appearance DEF AP_Wheel PBRAppearance {
+                baseColor 0.82 0.41 0.12
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.02
+                radius 0.04
+                subdivision 24
+              }
+            }
+            physics Physics {
+            }
+          }
+        }
+        DEF WHEEL_RIGHT HingeJoint {
+          jointParameters HingeJointParameters {
+            anchor 0 -0.04 0
+          }
+          device [
+            RotationalMotor {
+              name "M2"
+            }
+          ]
+          endPoint Solid {
+            translation -0.10999999999999867 -0.04 0
+            rotation 0.09255728182955407 -0.0917903832016505 -0.9914674352352774 4.703766390568598
+            children [
+              DEF WHEEL Shape {
+                appearance DEF AP_Wheel PBRAppearance {
+                  baseColor 0.82 0.41 0.12
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.02
+                  radius 0.04
+                  subdivision 24
+                }
+              }
+            ]
+            name "solid(1)"
+            boundingObject DEF WHEEL Shape {
+              appearance DEF AP_Wheel PBRAppearance {
+                baseColor 0.82 0.41 0.12
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.02
+                radius 0.04
+                subdivision 24
+              }
+            }
+            physics Physics {
+            }
+          }
+        }
+        DEF WHEEL_LEFT HingeJoint {
+          jointParameters HingeJointParameters {
+            position 91
+            anchor 0 -0.04 0
+          }
+          device [
+            RotationalMotor {
+              name "M1"
+            }
+          ]
+          endPoint Solid {
+            translation 0.11000000000000043 -0.04 0
+            rotation 0.28250088635360177 0.2825008863536028 0.916725966916427 4.6255516347619
+            children [
+              DEF WHEEL Shape {
+                appearance DEF AP_Wheel PBRAppearance {
+                  baseColor 0.82 0.41 0.12
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.02
+                  radius 0.04
+                  subdivision 24
+                }
+              }
+            ]
+            boundingObject USE WHEEL
+            physics Physics {
+            }
+          }
+        }
+      ]
+    }
+    DEF BODY Shape {
+      appearance PBRAppearance {
+        baseColor 0.917647 0.145098 0.145098
+        roughness 1
+        metalness 0
+      }
+    }
+  ]
+  name "Bertha"
+  physics Physics {
+    mass 0.5
+    centerOfMass [
+      0 0 0
+    ]
+    inertiaMatrix [
+      1 1 1
+      0 0 0
+    ]
+  }
+  controller "GRIPPER_CONTROL"
+}

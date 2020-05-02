@@ -1,0 +1,34 @@
+#VRML_OBJ R2020a utf8
+DEF TOKEN_GOLD Solid {
+  translation 1.59946 0.144996 1.61812
+  rotation 0 1 0 -1.8325953071795862
+  children [
+    Connector {
+      translation 0 0 -0.13
+      rotation 0 1 0 3.14159
+      model "TOKEN"
+      recognitionColors [
+        1 1 1
+      ]
+      type "passive"
+    }
+    Shape {
+      appearance DEF TOKEN_APPEARANCE PBRAppearance {
+        baseColor 1 1 0
+        metalness 0
+      }
+      geometry DEF TOKEN_GEOMETRY Box {
+        size 0.26 0.26 0.26
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject USE TOKEN_GEOMETRY
+  physics Physics {
+    density -1
+    mass 0.001
+  }
+  recognitionColors [
+    1 1 0
+  ]
+}
