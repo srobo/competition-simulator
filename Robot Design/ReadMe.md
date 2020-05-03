@@ -16,9 +16,9 @@ The collision and visual geometries do not have to be identical, simplified outl
  Visual geometries can be made from simple shapes or imported as meshes from CAD applications.
  
 When placing a child, its position is relative to the origin of the parent. A transform 
-joint can be used to create a new relative origin. A transform joint can be used to group c
-hildren for better organisation (in the above diagram it is proposed to group all of the 
-robots main body solids).
+joint can be used to create a new relative origin. A transform joint can be used to group 
+children for better organisation (in the above diagram it is proposed to group all of the 
+robots main body solids). If a transform of origin is not required, a group child can be used.
 
 
 ## Demos
@@ -44,6 +44,11 @@ Four instances of the robot Arthur are placed within the arena, each running a d
 
 ![alt text](demos/4Robots.gif "Box Push")
  
+#### 03/05/2020 - Physics Demo: Manipulation Test
+A quick google shows how a number of competition robots have suction cups to manipulate tokens. The dolly robot is a test platform to demo manipulation using connectors. The 'Snap' distance and tolerances are to be discussed.
+
+![alt text](demos/DollyManipulation1.gif "Box Push")
+
 
 ## Meet The Robots
 
