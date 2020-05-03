@@ -1,0 +1,138 @@
+#VRML_OBJ R2020a utf8
+Robot {
+  children [
+    DEF TRUNK Solid {
+      translation 0 1 0
+      children [
+        DEF TRUNK_SLIDER SliderJoint {
+          jointParameters JointParameters {
+            axis 0 1 0
+            maxStop 0.3
+          }
+          device [
+            PositionSensor {
+              name "PS1"
+            }
+            LinearMotor {
+              name "LM1"
+              maxPosition 0.3
+            }
+          ]
+          endPoint Solid {
+            translation 0 -0.15 0
+            children [
+              DEF KNUCKLE_RIGHT SliderJoint {
+                jointParameters JointParameters {
+                  axis -1 0 0
+                  maxStop 0.15
+                }
+                device [
+                  PositionSensor {
+                    name "PS_KR"
+                  }
+                  LinearMotor {
+                    name "LM_KR"
+                  }
+                ]
+                endPoint Solid {
+                  translation 0.03 0 0
+                  children [
+                    Solid {
+                      translation -0.085 0 0.115
+                      children [
+                        Shape {
+                          appearance DEF AP_GRIPPER PBRAppearance {
+                            baseColor 1 0.5 0
+                            metalness 0
+                          }
+                          geometry Box {
+                            size 0.03 0.03 0.2
+                          }
+                        }
+                      ]
+                    }
+                    Shape {
+                      appearance DEF AP_GRIPPER PBRAppearance {
+                        baseColor 1 0.5 0
+                        metalness 0
+                      }
+                      geometry Box {
+                        size 0.2 0.03 0.03
+                      }
+                    }
+                  ]
+                  name "solid(1)"
+                }
+              }
+              DEF KNUCKLE Shape {
+                appearance DEF AP_BODY PBRAppearance {
+                  baseColor 0.3 0.3 0.3
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.05
+                  radius 0.03
+                }
+              }
+              DEF KNUCKLE_LEFT SliderJoint {
+                jointParameters JointParameters {
+                  axis 1 0 0
+                  maxStop 0.15
+                }
+                device [
+                  PositionSensor {
+                    name "PS_KL"
+                  }
+                  LinearMotor {
+                    name "LM_KL"
+                  }
+                ]
+                endPoint Solid {
+                  translation -0.03 0 0
+                  children [
+                    Solid {
+                      translation 0.085 0 0.115
+                      children [
+                        Shape {
+                          appearance DEF AP_GRIPPER PBRAppearance {
+                            baseColor 1 0.5 0
+                            metalness 0
+                          }
+                          geometry Box {
+                            size 0.03 0.03 0.2
+                          }
+                        }
+                      ]
+                    }
+                    Shape {
+                      appearance DEF AP_GRIPPER PBRAppearance {
+                        baseColor 1 0.5 0
+                        metalness 0
+                      }
+                      geometry Box {
+                        size 0.2 0.03 0.03
+                      }
+                    }
+                  ]
+                  name "solid(17)"
+                }
+              }
+            ]
+          }
+        }
+        DEF TRUNK Shape {
+          appearance DEF AP_GRIPPER PBRAppearance {
+            baseColor 1 0.5 0
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.35
+            radius 0.015
+          }
+        }
+      ]
+      name "solid(18)"
+    }
+  ]
+  controller "GRIPPER_CONTROL"
+}

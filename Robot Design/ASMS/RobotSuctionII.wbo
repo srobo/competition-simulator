@@ -1,0 +1,84 @@
+#VRML_OBJ R2020a utf8
+Robot {
+  translation 1.96 0 1.07
+  rotation 0 1 0 -1.5707953071795862
+  children [
+    DEF TRUNK Solid {
+      translation 0 0.2 0
+      rotation 0 1 0 1.5708
+      children [
+        DEF TRUNK_SLIDER SliderJoint {
+          jointParameters JointParameters {
+            axis 0 1 0
+            maxStop 0.3
+          }
+          device [
+            PositionSensor {
+              name "PS1"
+            }
+            LinearMotor {
+              name "LM1"
+              maxPosition 0.3
+            }
+          ]
+          endPoint Solid {
+            translation 0 -0.15 0
+            children [
+              DEF SUCTION Solid {
+                translation -0.04 0 0
+                rotation 0 0 1 1.5707996938995747
+                children [
+                  Connector {
+                    translation 0 0.02 0
+                    rotation 1 0 0 -1.5707996938995747
+                    model "TOKEN"
+                    recognitionColors [
+                      1 1 1
+                    ]
+                    type "active"
+                    distanceTolerance 0.13
+                  }
+                  Shape {
+                    appearance DEF AP_BODY PBRAppearance {
+                      baseColor 0.3 0.3 0.3
+                      metalness 0
+                    }
+                    geometry Cylinder {
+                      height 0.04
+                      radius 0.02
+                    }
+                  }
+                ]
+                boundingObject Cylinder {
+                  height 0.04
+                  radius 0.02
+                }
+                physics Physics {
+                }
+              }
+              DEF KNUCKLE Shape {
+                appearance USE AP_BODY
+                geometry Cylinder {
+                  height 0.05
+                  radius 0.03
+                }
+              }
+            ]
+          }
+        }
+        DEF TRUNK Shape {
+          appearance DEF AP_GRIPPER PBRAppearance {
+            baseColor 1 0.5 0
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.35
+            radius 0.015
+          }
+        }
+      ]
+      name "solid(18)"
+    }
+  ]
+  controller "dummyVacAct"
+}
