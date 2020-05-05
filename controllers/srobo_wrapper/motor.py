@@ -1,43 +1,10 @@
 import logging
-'''import threading
-import serial
-
-SERIAL_BAUD = 1000000
-
-CMD_RESET = chr(0)
-CMD_VERSION = chr(1)
-CMD_SPEED0 = chr(2)
-CMD_SPEED1 = chr(3)
-CMD_BOOTLOADER = chr(4)
-
-SPEED_BRAKE = chr(2)
 
 # The maximum value that the motor board will accept
-PWM_MAX = 100
-
-# The USB model string:
-USB_MODEL = "MCV4B"
-
-# The expected firmware version string
-EXPECTED_FW_VER = "MCV4B:3\n"'''
+SPEED_MAX = 100
 
 logger = logging.getLogger( "sr.motor" )
-'''
-class IncorrectFirmware(Exception):
-    def __init__(self, serialnum, actual_fw):
-        self.serialnum = serialnum
-        self.actual_fw = actual_fw
-        msg = "Found wrong firmware version in motor controller '{0}'.".format(serialnum) \
-            + " Expecting '{0}', got '{1}'.".format(repr(EXPECTED_FW_VER), repr(actual_fw))
-        super(IncorrectFirmware, self).__init__(msg)
 
-class FirmwareReadFail(Exception):
-    def __init__(self, serialnum):
-        self.serialnum = serialnum
-        msg = "Failed to read firmware version from motor controller '{0}'.".format(serialnum) \
-            + " Please ensure that it is powered properly."
-        super(FirmwareReadFail, self).__init__(msg)
-'''
 class Motor(object):
     """A motor"""
     def __init__(self, path, busnum, devnum,
@@ -117,9 +84,6 @@ class MotorChannel(object):
         # There is currently no method for reading the power from a motor board
         self._power = 0
 
-    def _encode_speed(self, speed):
-        return chr(speed + 128)
-
     @property
     def power(self):
         return self._power
@@ -131,12 +95,13 @@ class MotorChannel(object):
         self._power = value
 
         # Limit the value to within the valid range
-        if value > PWM_MAX:
-            value = PWM_MAX
-        elif value < -PWM_MAX:
-            value = -PWM_MAX
+        if value > SPEED_MAX:
+            value = SPEED_MAX
+        elif value < -SPEED_MAX:
+            value = -SPEED_MAX
 
         with self.lock:
+            # TODO: set motor speed here
             if self.channel == 0:
                 self.serial.write(CMD_SPEED0)
             else:
