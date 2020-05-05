@@ -1,25 +1,6 @@
-# Copyright Robert Spanton 2014
 import sys, os, glob
-import logging
 
 from controllers.srobo_wrapper import motor, vision
-
-logger = logging.getLogger( "sr.robot" )
-
-def setup_logging():
-    "Apply default settings for logging"
-    # (We do this by default so that our users
-    # don't have to worry about logging normally)
-
-    logger.setLevel( logging.INFO )
-
-    h = logging.StreamHandler( sys.stdout )
-    h.setLevel( logging.INFO )
-
-    fmt = logging.Formatter( "%(message)s" )
-    h.setFormatter(fmt)
-
-    logger.addHandler(h)
 
 class AlreadyInitialised(Exception):
     "The robot has been initialised twice"
