@@ -1,21 +1,28 @@
-import logging
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
+MOTOR_NAMES = ["wheel1","wheel2","M3","M4"]
+
+def get_motor_id(board, channel):
+    return MOTOR_NAMES[(board*2)+channel]
+
+def init_motor_array(webot):
+    return [Motor(0, webot), Motor(1, webot)]
 
 class Motor(object):
     """A motor"""
-    def __init__(self):
-
-        self.m0 = MotorChannel(0)
-        self.m1 = MotorChannel(1)
+    def __init__(self, board_id, webot):
+        self.board_id = board_id
+        self.m0 = MotorChannel(0, webot, board_id)
+        self.m1 = MotorChannel(1, webot, board_id)
 
 class MotorChannel(object):
-    def __init__(self, channel):
+    def __init__(self, channel, webot, board_id):
         self.channel = channel
-
+        self.webot = webot
+        self.board_id = board_id
         # Private shadow of use_brake
-        self._use_brake = True
+        #self._use_brake = True # TODO create new thread for non-braking slowdown
 
         # There is currently no method for reading the power from a motor board
         self._power = 0
@@ -36,19 +43,9 @@ class MotorChannel(object):
         elif value < -SPEED_MAX:
             value = -SPEED_MAX
 
-        with self.lock:
-            # TODO: set motor speed here
-            if self.channel == 0:
-                self.serial.write(CMD_SPEED0)
-            else:
-                self.serial.write(CMD_SPEED1)
+        self.webot.getMotor(get_motor_id(self.board_id, self.channel)).setVelocity(value)
 
-            if value == 0 and self.use_brake:
-                self.serial.write(SPEED_BRAKE)
-            else:
-                self.serial.write(self._encode_speed(value))
-
-    @property
+    ''''@property
     def use_brake(self):
         "Whether to use the brake when at 0 speed"
         return self._use_brake
@@ -59,4 +56,4 @@ class MotorChannel(object):
 
         if self.power == 0:
             "Implement the new braking setting"
-            self.power = 0
+            self.power = 0'''

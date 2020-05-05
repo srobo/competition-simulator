@@ -1,6 +1,5 @@
-import sys, os, glob
+from sr import motor
 
-from controllers.srobo_wrapper import motor, vision
 
 class AlreadyInitialised(Exception):
     "The robot has been initialised twice"
@@ -27,12 +26,19 @@ class Robot(object):
     """Class for initialising and accessing robot hardware"""
     SYSLOCK_PATH = "/tmp/robot-object-lock"
 
-    def __init__( self,
+    def __init__( self, webot,
                   quiet = False,
                   init = True):
 
         self._initialised = False
         self._quiet = quiet
+
+        # TODO set these values dynamically
+        self.mode = "comp"
+        self.zone = 0
+        self.arena = "A"
+
+        self.webot = webot
 
         if init:
             self.init()
@@ -44,7 +50,7 @@ class Robot(object):
 
     def init(self):
         self._init_devs()
-        self._init_vision()
+        #self._init_vision()
         self._initialised = True
 
     def wait_start(self):
@@ -64,10 +70,10 @@ class Robot(object):
         self._init_motors()
 
     def _init_motors(self):
-        self.motors = self._init_usb_devices("MCV4B", motor.Motor, subsystem="tty")
+        self.motors = motor.init_motor_array(self.webot)
 
 
-    def _init_vision(self):
+    '''def _init_vision(self):
         udev = pyudev.Context()
         cams = list(udev.list_devices( subsystem="video4linux",
                                        # For now, find devices that use this driver
@@ -103,4 +109,4 @@ class Robot(object):
         return self.vision.see( res = res,
                                 mode = self.mode,
                                 arena = self.arena,
-                                stats = stats )
+                                stats = stats )'''

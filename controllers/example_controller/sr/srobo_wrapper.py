@@ -1,4 +1,4 @@
-from controller import  Motor, Camera, Robot as WebotsRobot
+from sr import  Motor, Camera, Robot as WebotsRobot
 import time
 from threading import Thread
 
@@ -22,8 +22,6 @@ t = Thread(target=run_robot)
 t.start()
 
 time.sleep(TIME_STEP / 1000)
-
-# print(dir(robot))
 
 # set up the motor speeds at 10% of the MAX_SPEED.
 while True:
