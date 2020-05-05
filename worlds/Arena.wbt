@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.39659607717689693 0.9108331303223832 0.11443146540626609 5.5321775140095095
-  position -7.540455791517064 4.226136221453764 8.411097068441851
+  orientation 0.03852089197998513 -0.9536757725383965 -0.29835995333549536 3.450882755330571
+  position 3.049519814840676 3.7821899170413933 -6.466006674826357
 }
 TexturedBackgroundLight {
   texture "noon_park_empty"
@@ -477,271 +477,170 @@ DEF TOKEN_SILVER Solid {
     1 1 1
   ]
 }
-DEF Arthur Robot {
-  translation 2.42027 0.185036 2.37721
-  rotation -0.0060339523781327824 0.9999713941139414 -0.004560961797590053 2.38511
+DEF Cristo Robot {
+  translation 0.785539 0.0307792 -1.69614
+  rotation -0.0011620910356194148 0.9999972788023701 0.002022852510641417 2.040255102294615
   children [
     Camera {
-      translation 0.11 0.15 0
-      rotation 0.1294279597735375 0.9831056944488314 0.1294279597735375 -1.5878253071795863
+      translation 0 0.038 0.075
+      rotation 0 1 0 3.14159
       children [
         Shape {
           appearance PBRAppearance {
-            baseColor 0.46 0.1 1
+            baseColor 0 0 0
             metalness 0
           }
           geometry Box {
-            size 0.05 0.025 0.054
+            size 0.025 0.025 0.05
           }
         }
       ]
-      fieldOfView 1
       width 800
       height 600
-      recognition Recognition {
-        frameThickness 3
-      }
     }
-    DistanceSensor {
-      translation 0.125 -0.1 -0.2
-      children [
-        Shape {
-          appearance DEF AP_DS PBRAppearance {
-            baseColor 0.42 0.56 0.14
-            metalness 0
-          }
-          geometry DEF GEO_DS Box {
-            size 0.01 0.01 0.01
-          }
-        }
-      ]
-      name "DS_1"
-    }
-    DistanceSensor {
-      translation -0.125 -0.1 0
-      children [
-        Shape {
-          appearance DEF AP_DS PBRAppearance {
-            baseColor 0.42 0.56 0.14
-            metalness 0
-          }
-          geometry DEF GEO_DS Box {
-            size 0.01 0.01 0.01
-          }
-        }
-      ]
-      name "DS_2"
-    }
-    DistanceSensor {
-      translation 0.125 -0.1 0.2
-      children [
-        Shape {
-          appearance DEF AP_DS PBRAppearance {
-            baseColor 0.42 0.56 0.14
-            metalness 0
-          }
-          geometry DEF GEO_DS Box {
-            size 0.01 0.01 0.01
-          }
-        }
-      ]
-      name "DS_3"
-    }
-    DEF Wheel1 HingeJoint {
+    DEF WHEEL3 HingeJoint {
       jointParameters HingeJointParameters {
-        position -57.80485289721251
-        axis 0 0 1
-        anchor 0.045 -0.07 0
+        position 0.0011182143343676546
+        anchor 0 0 0.05
       }
       device [
         RotationalMotor {
-          name "M1"
+          name "wheel3"
         }
       ]
       endPoint Solid {
-        translation 0.045 -0.07 -0.23999999999999438
-        rotation -0.6976274717864649 0.5066152155480854 0.5066131995753682 4.359852695307466
+        translation -1.103896341458872e-05 0.00017789140757968054 -0.10000016011171416
+        rotation 0.0005599236167505286 -0.0005582898758087872 0.9999996873989302 1.5708001925439257
         children [
           Shape {
-            appearance DEF AP_Wheel PBRAppearance {
-              baseColor 0.82 0.41 0.12
+            appearance PBRAppearance {
+              baseColor 0 0.4 0
               metalness 0
             }
-            geometry DEF RA_Wheel Cylinder {
+            geometry DEF rearWheel_geometry Cylinder {
+              height 0.05
+              radius 0.04
+            }
+          }
+        ]
+        name "solid(2)"
+        boundingObject USE rearWheel_geometry
+        physics Physics {
+        }
+      }
+    }
+    DEF BODY Shape {
+      appearance PBRAppearance {
+        baseColor 0.917647 0.145098 0.145098
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.05 0.2
+      }
+    }
+    DEF WHEEL1 HingeJoint {
+      jointParameters HingeJointParameters {
+        position 833.3289519336082
+        anchor 0.06 0 0.05
+      }
+      device [
+        RotationalMotor {
+          name "wheel1"
+        }
+      ]
+      endPoint Solid {
+        translation 0.11000111835861384 8.157096417122021e-06 0.050006667284753226
+        rotation 0.6886410201438272 -0.6886441659397087 -0.22703030214592948 3.5880813310074195
+        children [
+          DEF WHEEL Shape {
+            appearance PBRAppearance {
+              baseColor 0.305882 0.898039 0.25098
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
               height 0.02
-              radius 0.075
+              radius 0.04
+              subdivision 24
             }
           }
         ]
-        name "solid(7)"
-        boundingObject USE RA_Wheel
+        boundingObject USE WHEEL
         physics Physics {
         }
       }
     }
-    DEF Wheel2 HingeJoint {
+    DEF WHEEL2 HingeJoint {
       jointParameters HingeJointParameters {
-        position -50.55048473249821
-        axis 0 0 1
-        anchor -0.11 -0.07 0
+        position 723.6331814542078
+        anchor -0.06 0 0.05
       }
       device [
         RotationalMotor {
-          name "M3"
+          name "wheel2"
         }
       ]
       endPoint Solid {
-        translation -0.11 -0.07 0.24000000000000737
-        rotation 0.9800299461069852 -0.1406084316114652 -0.14060787208866943 1.5909710879016443
+        translation -0.10999544794656736 6.517034217833518e-06 0.05000820414250385
+        rotation -0.3977840423789284 0.3977837913842228 -0.8267623061924582 4.523285836448139
         children [
-          Shape {
-            appearance DEF AP_Wheel PBRAppearance {
-              baseColor 0.82 0.41 0.12
-              metalness 0
-            }
-            geometry USE RA_Wheel
-          }
+          USE WHEEL
         ]
-        name "solid(6)"
-        boundingObject USE RA_Wheel
+        name "solid(1)"
+        boundingObject USE WHEEL
         physics Physics {
         }
       }
     }
-    DEF Wheel3 HingeJoint {
-      jointParameters HingeJointParameters {
-        position -57.78791950583124
-        axis 0 0 1
-        anchor -0.11 -0.07 0
-      }
-      device [
-        RotationalMotor {
-          name "M2"
-        }
-      ]
-      endPoint Solid {
-        translation -0.11 -0.07 -0.2399999999999975
-        rotation -0.7039956125756822 0.5021912905441561 0.5021892921755549 4.368394013109925
-        children [
-          Shape {
-            appearance DEF AP_Wheel PBRAppearance {
-              baseColor 0.82 0.41 0.12
-              metalness 0
-            }
-            geometry USE RA_Wheel
-          }
-        ]
-        name "solid(5)"
-        boundingObject USE RA_Wheel
-        physics Physics {
-        }
-      }
-    }
-    DEF Wheel4 HingeJoint {
-      jointParameters HingeJointParameters {
-        position -50.567367911856174
-        axis 0 0 1
-        anchor 0.045 -0.07 0
-      }
-      device [
-        RotationalMotor {
-          name "M4"
-        }
-      ]
-      endPoint Solid {
-        translation 0.045 -0.07 0.23999999999999766
-        rotation 0.9776388356074884 -0.1486984920671774 -0.14869790035162395 1.593413343538228
-        children [
-          Shape {
-            appearance DEF AP_Wheel PBRAppearance {
-              baseColor 0.82 0.41 0.12
-              metalness 0
-            }
-            geometry USE RA_Wheel
-          }
-        ]
-        name "solid(4)"
-        boundingObject USE RA_Wheel
-        physics Physics {
-        }
-      }
-    }
-    DEF ROBOT_BODY Transform {
+    DEF DS_RIGHT DistanceSensor {
+      translation -0.08 0 0.1
+      rotation 0 1 0 -1.87079
       children [
-        DEF TOP Solid {
-          translation -0.025 0.1675 0
-          children [
-            Shape {
-              appearance DEF AP_BODY PBRAppearance {
-                baseColor 0.3 0.3 0.3
-                metalness 0
-              }
-              geometry DEF RA_TOP Box {
-                size 0.3 0.015 0.45
-              }
-            }
-          ]
-          name "solid(3)"
-          boundingObject USE RA_TOP
-          physics Physics {
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.184314 0.596078 0.847059
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
           }
         }
-        DEF WALL_BACK Solid {
-          translation -0.15 0.01 0
-          children [
-            Shape {
-              appearance DEF AP_BODY PBRAppearance {
-                baseColor 0.3 0.3 0.3
-                metalness 0
-              }
-              geometry DEF AR_BodyBack Box {
-                size 0.05 0.3 0.45
-              }
-            }
-          ]
-          name "solid(2)"
-          boundingObject USE AR_BodyBack
-          physics Physics {
+      ]
+      name "ds_right"
+      lookupTable [
+        0 0 0
+        0.5 1000 0
+      ]
+    }
+    DEF DS_LEFT DistanceSensor {
+      translation 0.08 0 0.1
+      rotation 0 1 0 -1.27079
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.184314 0.596078 0.847059
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
           }
         }
-        DEF WALL_LEFT Solid {
-          translation 0 0.01 -0.2
-          children [
-            Shape {
-              appearance DEF AP_BODY PBRAppearance {
-                baseColor 0.3 0.3 0.3
-                metalness 0
-              }
-              geometry DEF AR_BodyWall Box {
-                size 0.25 0.3 0.05
-              }
-            }
-          ]
-          name "solid(1)"
-          boundingObject USE AR_BodyWall
-          physics Physics {
-          }
-        }
-        DEF WALL_RIGHT Solid {
-          translation 0 0.01 0.2
-          children [
-            Shape {
-              appearance DEF AP_BODY PBRAppearance {
-                baseColor 0.3 0.3 0.3
-                metalness 0
-              }
-              geometry USE AR_BodyWall
-            }
-          ]
-          boundingObject USE AR_BodyWall
-          physics Physics {
-          }
-        }
+      ]
+      name "ds_left"
+      lookupTable [
+        0 0 0
+        0.5 1000 0
       ]
     }
   ]
-  name "Robot_Arthur"
+  name "Cristo"
+  boundingObject USE BODY
   physics Physics {
+    density -1
+    mass 1
   }
-  controller "Arthur_AdvancedBoxPush"
+  controller "example_controller"
 }
