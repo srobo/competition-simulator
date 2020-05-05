@@ -4,6 +4,7 @@ WorldInfo {
 Viewpoint {
   orientation 0.03852089197998513 -0.9536757725383965 -0.29835995333549536 3.450882755330571
   position 3.049519814840676 3.7821899170413933 -6.466006674826357
+
 }
 TexturedBackgroundLight {
   texture "noon_park_empty"
@@ -17,7 +18,7 @@ DEF FLOOR Solid {
         baseColor 0.5 0.5 0.5
         baseColorMap ImageTexture {
           url [
-            "C:/Users/philr/Documents/Auxiliary Activities/11. Student Robotics/1. Webots/testProject/textures/arena.JPG"
+            "A:/antoi/Documents/GitHub/competition-simulator/textures/empty-arena.png"
           ]
         }
         roughness 1
@@ -85,7 +86,7 @@ DEF STAGE Solid {
         baseColor 0.5 0.5 0.5
         baseColorMap ImageTexture {
           url [
-            "C:/Users/philr/Documents/Auxiliary Activities/11. Student Robotics/1. Webots/testProject/textures/stage.JPG"
+            "A:/antoi/Documents/GitHub/competition-simulator/textures/stage.png"
           ]
           repeatS FALSE
           repeatT FALSE
