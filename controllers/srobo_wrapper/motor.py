@@ -3,79 +3,15 @@ import logging
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
 
-logger = logging.getLogger( "sr.motor" )
-
 class Motor(object):
     """A motor"""
-    def __init__(self, path, busnum, devnum,
-                 serialnum = None, check_fwver = True):
-        self.serialnum = serialnum
-        self.serial = serial.Serial(path, SERIAL_BAUD, timeout=0.1)
-        self.lock = threading.Lock()
+    def __init__(self):
 
-        with self.lock:
-            self.serial.write(CMD_RESET)
-
-        fw = self._get_fwver()
-        if check_fwver and fw != EXPECTED_FW_VER:
-            self.close()
-            raise IncorrectFirmware(self.serialnum, fw)
-
-        self.m0 = MotorChannel(self.serial, self.lock, 0)
-        self.m1 = MotorChannel(self.serial, self.lock, 1)
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceba):
-        self.close()
-
-    def close(self):
-        self.serial.close()
-
-    def _get_fwver(self):
-        for x in range(10):
-            # We make repeat attempts at reading the firmware version
-            # because the motor controller may have only just been powered-up.
-
-            with self.lock:
-                self.serial.write(CMD_VERSION)
-                r = self.serial.readline()
-
-            if len(r) > 0 and r[-1] == "\n":
-                "Successfully read the firmware version"
-                return r
-
-        raise FirmwareReadFail(self.serialnum)
-
-    def __repr__(self):
-        return "Motor( serialnum = \"{0}\" )".format( self.serialnum )
-
-    def _jump_to_bootloader(self):
-        "Jump to the bootloader"
-        MAGIC = "Entering bootloader\n"
-
-        # Up the timeout to ensure bootloader response is received
-        self.serial.timeout = 0.5
-
-        with self.lock:
-            self.serial.write(CMD_BOOTLOADER)
-
-        # Check the command has been received
-        r = self.serial.read( len(MAGIC) )
-
-        if r != MAGIC:
-            # There's not much we can do about this at the moment
-            logger.warning("Incorrect bootloader entry string received")
-
-        # Get rid of any junk that comes from the motor board
-        # (we seem to get a null character coming through)
-        self.serial.read()
+        self.m0 = MotorChannel(0)
+        self.m1 = MotorChannel(1)
 
 class MotorChannel(object):
-    def __init__(self, serial, lock, channel):
-        self.serial = serial
-        self.lock = lock
+    def __init__(self, channel):
         self.channel = channel
 
         # Private shadow of use_brake
