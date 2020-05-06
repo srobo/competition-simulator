@@ -21,6 +21,9 @@ robot.getMotor("wheel2").setPosition(float('inf'))
 #robot.getMotor("M3").setPosition(float('inf'))
 #robot.getMotor("M4").setPosition(float('inf'))
 
+robot.getMotor("wheel1").setVelocity(0.0)
+robot.getMotor("wheel2").setVelocity(0.0)
+
 def run_robot():
   while not robot.step(TIME_STEP):
     pass
@@ -31,9 +34,12 @@ time.sleep(TIME_STEP / 1000)
 
 R = Robot(robot)
 
-R.motors[0].m0.power = 5
-R.motors[0].m1.power = 2
+while True:
 
-
-
-  
+    R.motors[0].m0.power = float(1.0)
+    R.motors[0].m1.power = float(0.0)
+    #robot.getMotor("wheel1").setVelocity(1.0)
+    time.sleep(0.5)
+    R.motors[0].m0.power = float(0.0)
+    R.motors[0].m1.power = float(1.0)
+    time.sleep(0.5)

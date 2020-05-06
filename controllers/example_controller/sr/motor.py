@@ -43,7 +43,10 @@ class MotorChannel(object):
         elif value < -SPEED_MAX:
             value = -SPEED_MAX
 
-        self.webot.getMotor(get_motor_id(self.board_id, self.channel)).setVelocity(value)
+        motor_id = get_motor_id(self.board_id, self.channel)
+        print("motor: "+motor_id+ ". speed: "+str(value))
+        motor = self.webot.getMotor(motor_id)
+        motor.setVelocity(value)
 
     ''''@property
     def use_brake(self):
