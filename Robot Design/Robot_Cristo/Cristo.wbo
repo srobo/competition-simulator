@@ -27,7 +27,7 @@ DEF Cristo Robot {
       }
       device [
         RotationalMotor {
-          name "wheel3"
+          name "M3"
         }
       ]
       endPoint Solid {
@@ -68,7 +68,7 @@ DEF Cristo Robot {
       }
       device [
         RotationalMotor {
-          name "wheel1"
+          name "M1"
         }
       ]
       endPoint Solid {
@@ -100,7 +100,7 @@ DEF Cristo Robot {
       }
       device [
         RotationalMotor {
-          name "wheel2"
+          name "M2"
         }
       ]
       endPoint Solid {
