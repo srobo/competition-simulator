@@ -1,4 +1,4 @@
-from sr import motor
+from sr.robot import motor
 from controller import Robot as WebotsRobot # Webots specific library
 from threading import Thread
 import time
