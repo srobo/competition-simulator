@@ -1,4 +1,3 @@
-print "test"
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
 MOTOR_NAMES = ["M1","M2","M3","M4"]
@@ -53,7 +52,6 @@ class MotorChannel(object):
             value = -SPEED_MAX
 
         motor_id = get_motor_id(self.board_id, self.channel)
-        print("motor: "+motor_id+ ". speed: "+str(value))
         motor = self.webot.getMotor(motor_id)
         motor.setVelocity(value)
 
