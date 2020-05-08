@@ -1,7 +1,7 @@
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
-MOTOR_NAMES = ["wheel1","wheel2","M3","M4"]
+MOTOR_NAMES = ["M1","M2","M3"]#,"M4"]
 
 def get_motor_id(board, channel):
     return MOTOR_NAMES[(board*2)+channel]
@@ -15,6 +15,13 @@ class Motor(object):
         self.board_id = board_id
         self.m0 = MotorChannel(0, webot, board_id)
         self.m1 = MotorChannel(1, webot, board_id)
+        self.webot = webot
+        self.initialise_webot_motors()
+
+    def initialise_webot_motors(self):
+        for m in MOTOR_NAMES:
+            self.webot.getMotor(m).setPosition(float('inf'))
+            self.webot.getMotor(m).setVelocity(float(0))
 
 class MotorChannel(object):
     def __init__(self, channel, webot, board_id):

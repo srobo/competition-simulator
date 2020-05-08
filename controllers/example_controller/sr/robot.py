@@ -1,5 +1,11 @@
 from sr import motor
+from controller import Robot as WebotsRobot # Webots specific library
+from threading import Thread
+import time
 
+# Webots constants
+TIME_STEP = 64
+MAX_SPEED = 12.3
 
 class AlreadyInitialised(Exception):
     "The robot has been initialised twice"
@@ -26,7 +32,7 @@ class Robot(object):
     """Class for initialising and accessing robot hardware"""
     SYSLOCK_PATH = "/tmp/robot-object-lock"
 
-    def __init__( self, webot,
+    def __init__( self,
                   quiet = False,
                   init = True):
 
@@ -38,7 +44,7 @@ class Robot(object):
         self.zone = 0
         self.arena = "A"
 
-        self.webot = webot
+        self.webot = WebotsRobot()
 
         if init:
             self.init()
@@ -49,9 +55,19 @@ class Robot(object):
         return cls()
 
     def init(self):
+        self.webots_init()
         self._init_devs()
         #self._init_vision()
         self._initialised = True
+
+    def webots_init(self):
+        t = Thread(target=self.webot_run_robot)
+        t.start()
+        time.sleep(TIME_STEP / 1000)
+
+    def webot_run_robot(self):
+        while not self.webot.step(TIME_STEP):
+            pass
 
     def wait_start(self):
         "Wait for the start signal to happen"
