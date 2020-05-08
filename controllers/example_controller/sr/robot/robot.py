@@ -57,7 +57,6 @@ class Robot(object):
     def init(self):
         self.webots_init()
         self._init_devs()
-        #self._init_vision()
         self._initialised = True
 
     def webots_init(self):
