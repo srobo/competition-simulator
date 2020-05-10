@@ -7,30 +7,8 @@ import time
 TIME_STEP = 64
 MAX_SPEED = 12.3
 
-class AlreadyInitialised(Exception):
-    "The robot has been initialised twice"
-    def __str__(self):
-        return "Robot object can only be initialised once."
-
-class UnavailableAfterInit(Exception):
-    "The called function is unavailable after init()"
-    def __str__(self):
-        return "The called function is unavailable after init()"
-
-def pre_init(f):
-    "Decorator for functions that may only be called before init()"
-
-    def g(self, *args, **kw):
-        if self._initialised:
-            raise UnavailableAfterInit()
-
-        return f(self, *args, **kw)
-
-    return g
-
 class Robot(object):
     """Class for initialising and accessing robot hardware"""
-    SYSLOCK_PATH = "/tmp/robot-object-lock"
 
     def __init__( self,
                   quiet = False,
