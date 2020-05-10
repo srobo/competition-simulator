@@ -8,7 +8,7 @@ def get_motor_id(board, channel):
 def init_motor_array(webot):
     return [Motor(0, webot), Motor(1, webot)]
 
-def translate(sensor_val, motor):
+def translate(sr_speed_val, motor):
     # Translate from -100 to 100 range to the actual motor control range
     in_from = -SPEED_MAX
     in_to = SPEED_MAX
@@ -17,7 +17,7 @@ def translate(sensor_val, motor):
 
     out_range = out_to - out_from
     in_range = in_to - in_from
-    in_val = sensor_val - in_from
+    in_val = sr_speed_val - in_from
     val=(float(in_val)/in_range)*out_range
     out_val = out_from+val
     return out_val
