@@ -2,6 +2,7 @@ from sr.robot import motor
 from controller import Robot as WebotsRobot # Webots specific library
 from threading import Thread
 import time
+import sys
 
 # Webots constants
 TIME_STEP = 64
@@ -13,6 +14,9 @@ class Robot(object):
     def __init__( self,
                   quiet = False,
                   init = True):
+
+        # Check this is the right version of Python before continuing
+        assert sys.version_info >= (2, 7) and sys.version_info < (3, 0)
 
         self._initialised = False
         self._quiet = quiet
