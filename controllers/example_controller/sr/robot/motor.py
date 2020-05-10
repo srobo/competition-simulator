@@ -1,6 +1,9 @@
+import random
+
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
 MOTOR_NAMES = ["M1","M2","M3","M4"]
+RANDOM_RANGE = 5 # The maximum randomness which can be added in either direction 
 
 def get_motor_id(board, channel):
     return MOTOR_NAMES[(board*2)+channel]
@@ -10,10 +13,17 @@ def init_motor_array(webot):
 
 def translate(sr_speed_val, motor):
     # Translate from -100 to 100 range to the actual motor control range
+
+    # Set the speed ranges
     in_from = -SPEED_MAX
     in_to = SPEED_MAX
     out_from = -motor.getMaxVelocity()
     out_to = motor.getMaxVelocity()
+
+    if sr_speed_val != 0:
+        print "Requested: " + str(sr_speed_val)
+        sr_speed_val = add_jitter(sr_speed_val)
+        print "Actual: " + str(sr_speed_val)
 
     out_range = out_to - out_from
     in_range = in_to - in_from
@@ -21,6 +31,19 @@ def translate(sr_speed_val, motor):
     val=(float(in_val)/in_range)*out_range
     out_val = out_from+val
     return out_val
+
+def add_jitter(sr_speed_val):
+    # Add a bit of randomness to the requested speed
+    random.seed(random.randint(0,100))
+
+    sr_speed_val = sr_speed_val + random.uniform(-RANDOM_RANGE, RANDOM_RANGE)
+
+    if sr_speed_val > SPEED_MAX:
+        sr_speed_val = SPEED_MAX
+    elif sr_speed_val < -SPEED_MAX:
+        sr_speed_val = -SPEED_MAX
+
+    return sr_speed_val
 
 class Motor(object):
     """A motor"""
