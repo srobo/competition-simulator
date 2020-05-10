@@ -8,6 +8,20 @@ def get_motor_id(board, channel):
 def init_motor_array(webot):
     return [Motor(0, webot), Motor(1, webot)]
 
+def translate(sensor_val, motor):
+    # Translate from -100 to 100 range to the actual motor control range
+    in_from = -SPEED_MAX
+    in_to = SPEED_MAX
+    out_from = -motor.getMaxVelocity()
+    out_to = motor.getMaxVelocity()
+
+    out_range = out_to - out_from
+    in_range = in_to - in_from
+    in_val = sensor_val - in_from
+    val=(float(in_val)/in_range)*out_range
+    out_val = out_from+val
+    return out_val
+
 class Motor(object):
     """A motor"""
     def __init__(self, board_id, webot):
@@ -45,15 +59,16 @@ class MotorChannel(object):
         value = int(value)
         self._power = value
 
+        motor_id = get_motor_id(self.board_id, self.channel)
+        motor = self.webot.getMotor(motor_id)
+
         # Limit the value to within the valid range
         if value > SPEED_MAX:
             value = SPEED_MAX
         elif value < -SPEED_MAX:
             value = -SPEED_MAX
 
-        motor_id = get_motor_id(self.board_id, self.channel)
-        motor = self.webot.getMotor(motor_id)
-        motor.setVelocity(value)
+        motor.setVelocity(translate(value, motor))
 
     ''''@property
     def use_brake(self):
