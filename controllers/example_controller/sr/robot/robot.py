@@ -16,7 +16,7 @@ class Robot(object):
                   init = True):
 
         # Check this is the right version of Python before continuing
-        assert sys.version_info >= (2, 7) and sys.version_info < (3, 0)
+        assert sys.version_info >= (2, 7) and sys.version_info < (3, 0), "Sorry, you must be using Python 2.7. Please see the SR docs for how to switch your Python version."
 
         self._initialised = False
         self._quiet = quiet
