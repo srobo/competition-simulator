@@ -5,12 +5,14 @@ from sr.robot import *
 R = Robot()
 
 while True:
+    print "Dist L: " + str(R.ruggeduinos[0].analogue_read(0))
+    print "Dist R: " + str(R.ruggeduinos[0].analogue_read(1))
     R.motors[0].m0.power = 90
     R.motors[0].m1.power = 90
     time.sleep(5)
-    R.motors[0].m0.power = 70
-    R.motors[0].m1.power = -70
-    time.sleep(0.8)
+    R.motors[0].m0.power = 40
+    R.motors[0].m1.power = -40
+    time.sleep(0.5)
     R.motors[0].m0.power = -80
     R.motors[0].m1.power = -80
     time.sleep(0.3)

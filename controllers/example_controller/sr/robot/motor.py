@@ -21,9 +21,9 @@ def translate(sr_speed_val, motor):
     out_to = motor.getMaxVelocity()
 
     if sr_speed_val != 0:
-        print "Requested: " + str(sr_speed_val)
+        #print "Requested: " + str(sr_speed_val)
         sr_speed_val = add_jitter(sr_speed_val)
-        print "Actual: " + str(sr_speed_val)
+        #print "Actual: " + str(sr_speed_val)
 
     out_range = out_to - out_from
     in_range = in_to - in_from

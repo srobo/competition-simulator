@@ -1,4 +1,5 @@
 from sr.robot import motor
+from sr.robot import ruggeduino
 from controller import Robot as WebotsRobot # Webots specific library
 from threading import Thread
 import time
@@ -66,6 +67,11 @@ class Robot(object):
         # Motor boards
         self._init_motors()
 
+        # Ruggeduinos
+        self._init_ruggeduinos()
+
     def _init_motors(self):
         self.motors = motor.init_motor_array(self.webot)
 
+    def _init_ruggeduinos(self):
+        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
