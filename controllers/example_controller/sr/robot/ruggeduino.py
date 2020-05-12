@@ -23,9 +23,11 @@ class Ruggeduino(object):
 
     def digital_read(self, pin):
         "Read a digital input"
+        raise NotImplementedError("This robot does not support digital_read")
 
     def digital_write(self, pin, level):
         "Write to an output"
+        raise NotImplementedError("This robot does not support digital_write")
 
     def analogue_read(self, pin):
         "Read an analogue input"
