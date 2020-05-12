@@ -2,7 +2,7 @@ import random
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
-MOTOR_NAMES = ["M1","M2","M3","M4"]
+MOTOR_NAMES = ['M1','M2','lift motor', 'left finger motor','right finger motor']
 RANDOM_RANGE = 5 # The maximum randomness which can be added in either direction 
 
 def get_motor_id(board, channel):

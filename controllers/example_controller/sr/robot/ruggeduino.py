@@ -1,4 +1,4 @@
-DIST_SENSOR_NAMES = ["ds_left","ds_right"]
+DIST_SENSOR_NAMES = ["ds_front_left", "ds_front_right", "ds_left","ds_right", "ds_back_left", "ds_back_right"]
 DS_TIME_STEP = 64
 
 def init_ruggeduino_array(webot):
@@ -13,8 +13,8 @@ def init_dist_sensors(webot):
         else:
             print "Not a valid sensor to init"
 
-def dsScaleReadingtoMm(val):
-    return val * (0.5/10)
+def dsScaleReadingToVoltage(val):
+    return val * (0.5/100)
 
 class Ruggeduino(object):
     """Class for talking to a Ruggeduino flashed with the SR firmware"""
@@ -31,6 +31,6 @@ class Ruggeduino(object):
         "Read an analogue input"
         sensor = self.webot.getDistanceSensor(DIST_SENSOR_NAMES[pin])
         if sensor != None:
-            return dsScaleReadingtoMm(sensor.getValue())
+            return dsScaleReadingToVoltage(sensor.getValue())
         #else:
             #return "Not a valid sensor"
