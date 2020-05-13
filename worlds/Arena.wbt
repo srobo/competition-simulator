@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.3742802567244309 0.9177183517350563 0.13306884051116366 5.420030564833422
-  position -6.932999068373281 3.548325124747022 6.516683206666253
+  orientation 0.6161619426960706 0.7515811386682911 0.23552123549921966 5.26670324903046
+  position -5.825220099599328 6.032333472259985 5.463945570581427
 }
 TexturedBackgroundLight {
   texture "noon_park_empty"
@@ -17,7 +17,7 @@ DEF FLOOR Solid {
         baseColor 0.5 0.5 0.5
         baseColorMap ImageTexture {
           url [
-            "A:/antoi/Documents/GitHub/competition-simulator/textures/empty-arena.png"
+            "../textures/empty-arena.png"
           ]
         }
         roughness 1
@@ -85,7 +85,7 @@ DEF STAGE Solid {
         baseColor 0.5 0.5 0.5
         baseColorMap ImageTexture {
           url [
-            "A:/antoi/Documents/GitHub/competition-simulator/textures/stage.png"
+            "../textures/stage.png"
           ]
           repeatS FALSE
           repeatT FALSE
@@ -620,7 +620,7 @@ DEF Arthur Robot {
         }
       ]
       endPoint Solid {
-        translation -0.11 -0.07 -0.2399999999999975
+        translation -0.11 -0.07 -0.23999999999999738
         rotation -0.7039956125756822 0.5021912905441561 0.5021892921755549 4.368394013109925
         children [
           Shape {
