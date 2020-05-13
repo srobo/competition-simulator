@@ -1,1 +1,1 @@
-from sr.robot.robot import ( Robot )
+from sr.robot.robot import Robot
