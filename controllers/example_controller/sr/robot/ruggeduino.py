@@ -11,7 +11,7 @@ def init_dist_sensors(webot):
         if sensor != None:
             sensor.enable(DS_TIME_STEP)
         else:
-            print "Not a valid sensor to init"
+            print("Not a valid sensor to init")
 
 def dsScaleReadingToVoltage(val):
     return val * (0.5/100)

@@ -1,5 +1,5 @@
 import random
-from collections import OrderedDict 
+from collections import OrderedDict
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
@@ -13,10 +13,10 @@ MOTOR_NAMES['left finger motor'] = LINEAR
 MOTOR_NAMES['right finger motor'] = LINEAR
 
 
-RANDOM_RANGE = 5 # The maximum randomness which can be added in either direction 
+RANDOM_RANGE = 5 # The maximum randomness which can be added in either direction
 
 def get_motor_id(board, channel):
-    return MOTOR_NAMES.keys()[(board*2)+channel]
+    return list(MOTOR_NAMES.keys())[(board*2)+channel]
 
 def init_motor_array(webot):
     return [Motor(0, webot), Motor(1, webot)]
@@ -105,7 +105,7 @@ class MotorChannel(object):
         elif value < -SPEED_MAX:
             value = -SPEED_MAX
 
-        print "Setting speed of " + str(motor_id) + " to " + str(value)
+        print("Setting speed of " + str(motor_id) + " to " + str(value))
 
         if MOTOR_NAMES.get(motor.getName()) == ROTATIONAL:
             motor.setVelocity(translate(value, motor))
