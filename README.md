@@ -16,4 +16,4 @@ Within the IDE, there are a few different panels:
 - On the left is a tree heirarchy of all elements in this "world"
 - On the right is your text editor for modifying the `example_controller` code for example
 - At the bottom is your console
-- At the top are your general controls
+- At the top are your general controls which include the time controls. Press the centre play button to run the simulation at normal speed.
