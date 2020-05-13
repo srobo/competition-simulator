@@ -1,4 +1,4 @@
-DIST_SENSOR_NAMES = ["ds_front_left", "ds_front_right", "ds_left","ds_right", "ds_back_left", "ds_back_right"]
+DIST_SENSOR_NAMES = ["Front Left DS", "Front Right DS", "Left DS","Right DS", "Back Left DS", "Back Right DS"]
 DS_TIME_STEP = 64
 
 def init_ruggeduino_array(webot):
