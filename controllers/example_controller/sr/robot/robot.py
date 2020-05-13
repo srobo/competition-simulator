@@ -1,13 +1,10 @@
-from sr.robot import motor
-from sr.robot import ruggeduino
+from sr.robot import motor, ruggeduino, camera
+from sr.robot.settings import TIME_STEP
 from controller import Robot as WebotsRobot # Webots specific library
 from threading import Thread
 import time
 import sys
 
-# Webots constants
-TIME_STEP = 64
-MAX_SPEED = 12.3
 
 class Robot(object):
     """Class for initialising and accessing robot hardware"""
@@ -70,8 +67,15 @@ class Robot(object):
         # Ruggeduinos
         self._init_ruggeduinos()
 
+        # Camera
+        self._init_camera()
+
     def _init_motors(self):
         self.motors = motor.init_motor_array(self.webot)
 
     def _init_ruggeduinos(self):
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
+
+    def _init_camera(self):
+        self.camera = camera.Camera(self.webot)
+        self.see = self.camera.see

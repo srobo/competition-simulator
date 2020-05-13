@@ -1,0 +1,2 @@
+TIME_STEP = 64
+MAX_SPEED = 12.3

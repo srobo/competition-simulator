@@ -7,6 +7,7 @@ R = Robot()
 while True:
     print("Dist L:", R.ruggeduinos[0].analogue_read(0))
     print("Dist R:", R.ruggeduinos[0].analogue_read(1))
+    print("I see {} things".format(len(R.see())))
     #R.motors[0].m0.power = 90
     #R.motors[0].m1.power = 90
     R.motors[1].m0.power = 1
