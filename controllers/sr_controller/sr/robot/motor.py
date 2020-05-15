@@ -12,7 +12,6 @@ MOTOR_NAMES['lift motor'] = LINEAR
 MOTOR_NAMES['left finger motor'] = LINEAR
 MOTOR_NAMES['right finger motor'] = LINEAR
 
-
 RANDOM_RANGE = 5 # The maximum randomness which can be added in either direction
 
 def get_motor_id(board, channel):
