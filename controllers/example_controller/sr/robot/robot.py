@@ -4,6 +4,8 @@ from controller import Robot as WebotsRobot # Webots specific library
 from threading import Thread
 import time
 import sys
+from sr.robot.game import stop_after_delay
+
 
 # Webots constants
 TIME_STEP = 64
@@ -23,7 +25,7 @@ class Robot(object):
         self._quiet = quiet
 
         # TODO set these values dynamically
-        self.mode = "comp"
+        self.mode = "dev"
         self.zone = 0
         self.arena = "A"
 
@@ -32,6 +34,9 @@ class Robot(object):
         if init:
             self.init()
             self.wait_start()
+            if self.mode == "comp":
+                stop_after_delay()
+
 
     @classmethod
     def setup(cls):
