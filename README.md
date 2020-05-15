@@ -4,7 +4,7 @@ A simulator to be used for the Student Robotics Virtual Competition 2020
 ## Installation instructions
 
 1. Download and install the [Webots IDE](https://cyberbotics.com/#download)
-2. Install Python 2.7
+2. Install Python >=3.4
 3. Clone this `competition-simulator` repo
 4. In the Webots IDE, open `/worlds/Arena.wbt`
 
