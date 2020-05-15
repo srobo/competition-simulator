@@ -1,5 +1,6 @@
 import random
 from collections import OrderedDict
+from randomizer import add_jitter
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
@@ -29,7 +30,7 @@ def translate(sr_speed_val, motor):
 
     if sr_speed_val != 0:
         #print "Requested: " + str(sr_speed_val)
-        sr_speed_val = add_jitter(sr_speed_val)
+        sr_speed_val = add_jitter(sr_speed_val, -SPEED_MAX, SPEED_MAX)
         #print "Actual: " + str(sr_speed_val)
 
     out_range = out_to - out_from
@@ -38,19 +39,6 @@ def translate(sr_speed_val, motor):
     val=(float(in_val)/in_range)*out_range
     out_val = out_from+val
     return out_val
-
-def add_jitter(sr_speed_val):
-    # Add a bit of randomness to the requested speed
-    random.seed(random.randint(0,100))
-
-    sr_speed_val = sr_speed_val + random.uniform(-RANDOM_RANGE, RANDOM_RANGE)
-
-    if sr_speed_val > SPEED_MAX:
-        sr_speed_val = SPEED_MAX
-    elif sr_speed_val < -SPEED_MAX:
-        sr_speed_val = -SPEED_MAX
-
-    return sr_speed_val
 
 class Motor(object):
     """A motor"""
