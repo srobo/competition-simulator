@@ -1,5 +1,9 @@
+from sr.robot.randomizer import add_jitter
+
 DIST_SENSOR_NAMES = ["Front Left DS", "Front Right DS", "Left DS","Right DS", "Back Left DS", "Back Right DS"]
 DS_TIME_STEP = 64
+MIN_VOLTS = 0
+MAX_VOLTS = 5
 
 def init_ruggeduino_array(webot):
     init_dist_sensors(webot)
@@ -33,6 +37,6 @@ class Ruggeduino(object):
         "Read an analogue input"
         sensor = self.webot.getDistanceSensor(DIST_SENSOR_NAMES[pin])
         if sensor != None:
-            return dsScaleReadingToVoltage(sensor.getValue())
+            return add_jitter(float(dsScaleReadingToVoltage(sensor.getValue())), MIN_VOLTS, MAX_VOLTS)
         #else:
             #return "Not a valid sensor"
