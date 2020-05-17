@@ -1,8 +1,62 @@
 #VRML_OBJ R2020a utf8
 Robot {
-  translation 0.31000001439351393 -0.012067401105916947 0.9176328574125568
-  rotation -0.9999999999929724 3.2633510869944524e-06 1.8455262505201374e-06 0.03082217212122853
+  translation -1.6590780180052407 -0.006083737238731651 2.0718484336686815
+  rotation -0.999303507161958 0.03730441773010806 0.0009386115427178118 -0.051927135893856904
   children [
+    DEF bump_sensors Group {
+      children [
+        TouchSensor {
+          translation 1.6243382638947423e-08 0.08496855051152495 -0.06104634776219342
+          rotation 6.45508799678677e-14 1 1.6891649868235546e-13 -3.1415926535897705
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.5 0 0
+                roughness 0.6980390000000001
+              }
+              geometry DEF BUMPER Box {
+                size 0.14 0.01 0.01
+              }
+            }
+          ]
+          name "front bump sensor"
+          boundingObject USE BUMPER
+          physics Physics {
+            density -1
+            mass 0.01
+          }
+          lookupTable [
+            0 0 0
+            0.01 1 0
+          ]
+        }
+        TouchSensor {
+          translation -6.155785592376617e-08 0.11197716612685456 0.2420422365365993
+          rotation 0.3296954458060428 -0.24645966725744786 -0.9113498479892904 9.131775218207244e-13
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.5 0 0
+                roughness 0.6980390000000001
+              }
+              geometry DEF BUMPER Box {
+                size 0.375 0.01 0.01
+              }
+            }
+          ]
+          name "back bump sensor"
+          boundingObject USE BUMPER
+          physics Physics {
+            density -1
+            mass 0.01
+          }
+          lookupTable [
+            0 0 0
+            0.01 1 0
+          ]
+        }
+      ]
+    }
     DEF LEDS_left Transform {
       translation -0.15 0.25 0.11
       rotation 0 1 0 1.5708003061004252
@@ -243,7 +297,7 @@ Robot {
       children [
         DEF RIGHT_WHEEL HingeJoint {
           jointParameters HingeJointParameters {
-            position 0.9344151498576976
+            position 0.8927782142630201
             axis -1 0 0
           }
           device [
@@ -256,8 +310,8 @@ Robot {
             }
           ]
           endPoint Solid {
-            translation 0.19999998777297887 0.00026863610916181733 -0.00036030151878293327
-            rotation -0.9999999953968218 4.2849469898993627e-05 8.58503307442319e-05 0.9344151591877781
+            translation 0.1999999877729764 0.00028340080128715333 -0.0003488072955267489
+            rotation -0.9999999949897681 4.2829731952041837e-05 9.047694632861584e-05 0.8927782237930447
             children [
               DEF RIGHT_BLACK_CYLINDER_SHAPE Shape {
                 appearance PBRAppearance {
@@ -425,7 +479,7 @@ Robot {
         }
         DEF LEFT_WHEEL HingeJoint {
           jointParameters HingeJointParameters {
-            position 0.9344151427854978
+            position 0.9012614925631643
             axis -1 0 0
           }
           device [
@@ -438,8 +492,8 @@ Robot {
             }
           ]
           endPoint Solid {
-            translation -0.19999998767113233 0.00026863721059561805 -0.0003603029920766026
-            rotation -0.9999999953968316 -4.284942426102642e-05 -8.585023951531921e-05 0.9344151521635381
+            translation -0.19999998767113145 0.00028043275704704387 -0.0003512003214562053
+            rotation -0.9999999950773306 -4.283383971443219e-05 -8.95019603744349e-05 0.9012615020990147
             children [
               DEF BLACK_CYLINDER_SHAPE Shape {
                 appearance PBRAppearance {
@@ -608,25 +662,25 @@ Robot {
       ]
     }
     DEF CASTER Transform {
-      translation 0 0.099 0.215
+      translation 0 0.099 0.18
       children [
         DEF CASTER_WHEEL HingeJoint {
           jointParameters HingeJointParameters {
-            position -8.095448480006063e-07
+            position 0.005136619015991429
             axis 0 1 0
           }
           endPoint Solid {
-            translation 3.5675586094115335e-11 0.00029152609756950696 4.812113430210369e-07
-            rotation -0.9826063633787606 -0.18570065864944282 4.972971909484823e-06 3.864201805289567e-06
+            translation 2.507853137931738e-09 0.00029152609756950083 4.81204809408106e-07
+            rotation -0.0007391900775400748 0.9999997267971675 1.9025133508887533e-06 0.005136712446021824
             children [
               DEF casterWheelRim HingeJoint {
                 jointParameters HingeJointParameters {
-                  position -1.6144669991379341
+                  position -1.0995070143751524
                   anchor 0 -0.0521014 0.012843
                 }
                 endPoint Solid {
-                  translation -2.9685469262214355e-09 -0.052112315544752326 0.011863874977601782
-                  rotation -1 -1.187454772454413e-10 9.781663177486778e-11 1.6144670885446248
+                  translation 1.5504807482358287e-07 -0.05196480974180512 0.012065301559641849
+                  rotation 0.9999999999999999 1.703158627564908e-08 -1.4723228283095786e-08 5.183724443251146
                   children [
                     DEF CASTER_WHEEL_RIM_SHAPE Shape {
                       appearance PBRAppearance {
@@ -693,11 +747,11 @@ Robot {
                     }
                   ]
                   boundingObject Transform {
-                    rotation 0 0 1 1.5708
+                    rotation 0 0 1 1.5707996938995747
                     children [
                       Cylinder {
                         height 0.025
-                        radius 0.05
+                        radius 0.041
                         subdivision 24
                       }
                     ]
@@ -997,7 +1051,7 @@ Robot {
       children [
         DEF LIFT_SLIDER SliderJoint {
           jointParameters JointParameters {
-            position -0.09998984227811944
+            position 0.07300454576238873
             axis 0 -1 0
           }
           device [
@@ -1008,9 +1062,34 @@ Robot {
             }
           ]
           endPoint DEF LIFT Solid {
-            translation -3.486842741500655e-12 0.09998974642190156 -0.03733189276713589
+            translation -3.486842741500655e-12 -0.0730046416186066 -0.03733189276713589
             rotation -0.9999999999999998 -1.9702012879199335e-08 -1.3442211613676216e-08 -1.6930314121711754e-05
             children [
+              TouchSensor {
+                translation 6.328416457535013e-09 -5.612134721943995e-07 -0.04000612070536569
+                rotation 6.583167171114734e-15 1 1.3999738868936632e-12 -3.14159265358978
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.5 0 0
+                      roughness 0.6980390000000001
+                    }
+                    geometry DEF BUMPER Box {
+                      size 0.01 0.04 0.01
+                    }
+                  }
+                ]
+                name "token bump sensor"
+                boundingObject USE BUMPER
+                physics Physics {
+                  density -1
+                  mass 0.01
+                }
+                lookupTable [
+                  0 0 0
+                  0.01 1 0
+                ]
+              }
               Camera {
                 translation 0 0.05 -0.02
                 children [
@@ -1047,7 +1126,7 @@ Robot {
               }
               DEF LEFT_FINGER_SLIDER SliderJoint {
                 jointParameters JointParameters {
-                  position 0.15000000000131355
+                  position 0.14999997248782274
                   axis -1 0 0
                 }
                 device [
@@ -1058,10 +1137,35 @@ Robot {
                   }
                 ]
                 endPoint DEF LEFT_FINGER Solid {
-                  translation -0.17200000000131363 0 -0.02
+                  translation -0.1719999724878228 0 -0.02
                   children [
                     Group {
                       children [
+                        TouchSensor {
+                          translation 0.012000002847967206 -3.9125627204761315e-07 -0.11000291635923398
+                          rotation 7.60449726234437e-12 1 7.599815813974467e-12 1.5707996938995543
+                          children [
+                            Shape {
+                              appearance PBRAppearance {
+                                baseColor 0.5 0 0
+                                roughness 0.6980390000000001
+                              }
+                              geometry DEF BUMPER Box {
+                                size 0.1 0.01 0.005
+                              }
+                            }
+                          ]
+                          name "left finger sensor"
+                          boundingObject USE BUMPER
+                          physics Physics {
+                            density -1
+                            mass 0.01
+                          }
+                          lookupTable [
+                            0 0 0
+                            0.01 1 0
+                          ]
+                        }
                         Transform {
                           translation 0 0.0015 -0.003
                           children [
@@ -1107,21 +1211,46 @@ Robot {
               }
               DEF RIGHT_FINGER_SLIDER SliderJoint {
                 jointParameters JointParameters {
-                  position 0.150000000001241
+                  position 0.15000002757757508
                   axis 1 0 0
                 }
                 device [
                   LinearMotor {
                     name "right finger motor"
                     maxPosition 0.15
-					maxVelocity 0.1
+					          maxVelocity 0.1
                   }
                 ]
                 endPoint DEF RIGHT_FINGER Solid {
-                  translation 0.17200000000124094 0 -0.02
+                  translation 0.17200002757757502 0 -0.02
                   children [
                     Group {
                       children [
+                        TouchSensor {
+                          translation -0.011999997453825628 -3.978283871219901e-07 -0.1100029108620646
+                          rotation 7.607541443594192e-12 1 7.596793678571934e-12 1.5707996938995548
+                          children [
+                            Shape {
+                              appearance PBRAppearance {
+                                baseColor 0.5 0 0
+                                roughness 0.6980390000000001
+                              }
+                              geometry DEF BUMPER Box {
+                                size 0.1 0.01 0.005
+                              }
+                            }
+                          ]
+                          name "right finger sensor"
+                          boundingObject USE BUMPER
+                          physics Physics {
+                            density -1
+                            mass 0.01
+                          }
+                          lookupTable [
+                            0 0 0
+                            0.01 1 0
+                          ]
+                        }
                         Transform {
                           translation 0 0.0015 -0.003
                           children [
@@ -1289,6 +1418,7 @@ Robot {
               ]
             }
             physics DEF LIFT_PHYSICS Physics {
+              density 50
             }
           }
         }
@@ -1379,8 +1509,9 @@ Robot {
       }
     }
   ]
+  name "Echo"
   boundingObject Transform {
-    translation 0 0.16 0.16
+    translation 0 0.185 0.115
     children [
       Shape {
         geometry USE body_geo
