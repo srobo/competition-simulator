@@ -1,22 +1,31 @@
 from collections import OrderedDict
 from sr.robot.randomizer import add_jitter
+from sr.robot.motor_devices import *
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
-ROTATIONAL = "R"
-LINEAR = "L"
-MOTOR_NAMES = OrderedDict()#{:ROTATIONAL,'M2':ROTATIONAL,:LINEAR, :LINEAR,:LINEAR}
-MOTOR_NAMES['left wheel'] = ROTATIONAL
-MOTOR_NAMES['right wheel'] = ROTATIONAL
-MOTOR_NAMES['lift motor'] = LINEAR
-MOTOR_NAMES['left finger motor'] = LINEAR
-MOTOR_NAMES['right finger motor'] = LINEAR
+
+MOTOR_NAMES = OrderedDict()
+
 
 def get_motor_id(board, channel):
     return list(MOTOR_NAMES.keys())[(board*2)+channel]
 
 def init_motor_array(webot):
+    build_webot_motor_dict(webot)
+    initialise_webot_motors(webot)
     return [Motor(0, webot), Motor(1, webot)]
+
+def build_webot_motor_dict(webot):
+    MOTOR_NAMES['left wheel'] = Wheel(webot)
+    MOTOR_NAMES['right wheel'] = Wheel(webot)
+    MOTOR_NAMES['lift motor'] = LinearMotor(webot)
+    MOTOR_NAMES['left finger motor'] = LinearMotor(webot)
+    MOTOR_NAMES['right finger motor'] = LinearMotor(webot)
+
+def initialise_webot_motors(webot):
+    for motor_name in MOTOR_NAMES.keys():
+        MOTOR_NAMES.get(motor_name).initialise_motor(motor_name)
 
 def translate(sr_speed_val, motor):
     # Translate from -100 to 100 range to the actual motor control range
@@ -45,19 +54,7 @@ class Motor(object):
         self.board_id = board_id
         self.m0 = MotorChannel(0, webot, board_id)
         self.m1 = MotorChannel(1, webot, board_id)
-        self.webot = webot
-        self.initialise_webot_motors()
-
-    def initialise_webot_motors(self):
-        for m in MOTOR_NAMES.keys():
-            current_motor = self.webot.getMotor(m)
-            if current_motor != None:
-                if MOTOR_NAMES.get(m) == ROTATIONAL:
-                    current_motor.setPosition(float('inf'))
-                    current_motor.setVelocity(float(0))
-                elif MOTOR_NAMES.get(m) == LINEAR:
-                    current_motor.setPosition(float(0))
-                    current_motor.setVelocity(float(0))
+        self.webot = webot                    
 
 class MotorChannel(object):
     def __init__(self, channel, webot, board_id):
@@ -91,15 +88,9 @@ class MotorChannel(object):
 
         print("Setting speed of " + str(motor_id) + " to " + str(value))
 
-        if MOTOR_NAMES.get(motor.getName()) == ROTATIONAL:
-            motor.setVelocity(translate(value, motor))
-        elif MOTOR_NAMES.get(motor.getName()) == LINEAR:
-            motor.setVelocity(0)
-            if value < 0:
-                motor.setPosition(motor.getMinPosition())
-            else:
-                motor.setPosition(motor.getMaxPosition())
-            motor.setVelocity(abs(translate(value, motor)))
+        MOTOR_NAMES.get(motor.getName()).set_speed(translate(value, motor))
+
+            
         #motor.setVelocity(translate(value, motor))
 
     ''''@property
