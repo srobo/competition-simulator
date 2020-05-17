@@ -5,11 +5,11 @@ from sr.robot.motor_devices import *
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
 
-MOTOR_NAMES = OrderedDict()
+WEBOT_MOTORS = OrderedDict()
 
 
 def get_motor_id(board, channel):
-    return list(MOTOR_NAMES.keys())[(board*2)+channel]
+    return list(WEBOT_MOTORS.keys())[(board*2)+channel]
 
 def init_motor_array(webot):
     build_webot_motor_dict(webot)
@@ -17,15 +17,15 @@ def init_motor_array(webot):
     return [Motor(0, webot), Motor(1, webot)]
 
 def build_webot_motor_dict(webot):
-    MOTOR_NAMES['left wheel'] = Wheel(webot)
-    MOTOR_NAMES['right wheel'] = Wheel(webot)
-    MOTOR_NAMES['lift motor'] = LinearMotor(webot)
-    MOTOR_NAMES['left finger motor'] = LinearMotor(webot)
-    MOTOR_NAMES['right finger motor'] = LinearMotor(webot)
+    WEBOT_MOTORS['left wheel'] = Wheel(webot)
+    WEBOT_MOTORS['right wheel'] = Wheel(webot)
+    WEBOT_MOTORS['lift motor'] = LinearMotor(webot)
+    WEBOT_MOTORS['left finger motor'] = LinearMotor(webot)
+    WEBOT_MOTORS['right finger motor'] = LinearMotor(webot)
 
 def initialise_webot_motors(webot):
-    for motor_name in MOTOR_NAMES.keys():
-        MOTOR_NAMES.get(motor_name).initialise_motor(motor_name)
+    for motor_name in WEBOT_MOTORS.keys():
+        WEBOT_MOTORS.get(motor_name).initialise_motor(motor_name)
 
 def translate(sr_speed_val, motor):
     # Translate from -100 to 100 range to the actual motor control range
@@ -88,7 +88,7 @@ class MotorChannel(object):
 
         print("Setting speed of " + str(motor_id) + " to " + str(value))
 
-        MOTOR_NAMES.get(motor.getName()).set_speed(translate(value, motor))
+        WEBOT_MOTORS.get(motor.getName()).set_speed(translate(value, motor))
 
             
         #motor.setVelocity(translate(value, motor))
