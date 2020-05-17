@@ -1,18 +1,17 @@
 class MotorBase(object):
     def __init__(self, webot):
         self.webot = webot
-        print("constructed")
         
     def initialise_motor(self, motor_name):
-        print("init "+motor_name)
+        self.motor_name = motor_name
         self.webot_motor = self.webot.getMotor(motor_name)
         if self.webot_motor == None:
-            print("Null motor in init")
             return
+        self.max_speed = self.webot_motor.getMaxVelocity()
+        self.min_speed = - self.max_speed
 
     def set_speed(self, speed):
         if self.webot_motor == None:
-            print("Null motor in set_speed")
             return
 
 class Wheel(MotorBase):      
@@ -47,8 +46,13 @@ class Gripper(MotorBase):
 
     def initialise_motor(self, motor_name):
         names = motor_name.split("|")
-        self.gripper_motors = {LinearMotor(names[0]), LinearMotor(names[1])}
+        self.gripper_motors = [LinearMotor(self.webot), LinearMotor(self.webot)]
+        for i in range(0, len(self.gripper_motors)):
+            self.gripper_motors[i].initialise_motor(names[i])
+        self.max_speed = self.gripper_motors[0].max_speed
+        self.min_speed = - self.max_speed
 
+        
     def set_speed(self, speed):
         for motor in self.gripper_motors:
             motor.set_speed(speed)

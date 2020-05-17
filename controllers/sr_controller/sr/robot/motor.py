@@ -26,19 +26,17 @@ def initialise_webot_motors(webot):
     for motor_name in WEBOT_MOTORS.keys():
         WEBOT_MOTORS.get(motor_name).initialise_motor(motor_name)
 
-def translate(sr_speed_val, motor):
+def translate(sr_speed_val, sr_motor):
     # Translate from -100 to 100 range to the actual motor control range
 
     # Set the speed ranges
     in_from = -SPEED_MAX
     in_to = SPEED_MAX
-    out_from = -motor.getMaxVelocity()
-    out_to = motor.getMaxVelocity()
+    out_from = sr_motor.min_speed
+    out_to = sr_motor.max_speed
 
     if sr_speed_val != 0:
-        #print "Requested: " + str(sr_speed_val)
         sr_speed_val = add_jitter(sr_speed_val, -SPEED_MAX, SPEED_MAX)
-        #print "Actual: " + str(sr_speed_val)
 
     out_range = out_to - out_from
     in_range = in_to - in_from
@@ -77,7 +75,6 @@ class MotorChannel(object):
         self._power = value
 
         motor_id = get_motor_id(self.board_id, self.channel)
-        motor = self.webot.getMotor(motor_id)
 
         # Limit the value to within the valid range
         if value > SPEED_MAX:
@@ -85,12 +82,9 @@ class MotorChannel(object):
         elif value < -SPEED_MAX:
             value = -SPEED_MAX
 
-        print("Setting speed of " + str(motor_id) + " to " + str(value))
+        motor = WEBOT_MOTORS.get(motor_id)
+        motor.set_speed(translate(value, motor))
 
-        WEBOT_MOTORS.get(motor.getName()).set_speed(translate(value, motor))
-
-            
-        #motor.setVelocity(translate(value, motor))
 
     ''''@property
     def use_brake(self):

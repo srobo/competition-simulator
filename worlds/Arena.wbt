@@ -1095,7 +1095,7 @@ Robot {
           }
           endPoint Solid {
             translation 3.5675586094115335e-11 0.00029152609756950663 4.812113430210366e-07
-            rotation -0.9826074033851143 -0.1856951555319439 4.972977172958153e-06 3.864201805289567e-06
+            rotation -0.9826071606095138 -0.18569644017637707 4.972975944270565e-06 3.864201805289567e-06
             children [
               DEF casterWheelRim HingeJoint {
                 jointParameters HingeJointParameters {
@@ -1531,6 +1531,7 @@ Robot {
                 device [
                   LinearMotor {
                     name "left finger motor"
+                    maxVelocity 0.1
                     maxPosition 0.15000000000131355
                   }
                 ]
@@ -1590,6 +1591,7 @@ Robot {
                 device [
                   LinearMotor {
                     name "right finger motor"
+                    maxVelocity 0.1
                     maxPosition 0.150000000001241
                   }
                 ]
