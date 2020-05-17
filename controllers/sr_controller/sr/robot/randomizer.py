@@ -1,19 +1,22 @@
 import random
 
-DEFAULT_RANDOM_RANGE_PERCENT = 5 # The maximum randomness which can be added in either direction
+DEFAULT_RANDOM_RANGE_PERCENT = 10 # The maximum randomness which can be added in either direction
 
-def add_jitter(actual_value, min, max, random_range_percent = DEFAULT_RANDOM_RANGE_PERCENT):
-    full_range = float(max) - float(min)
+def add_jitter(actual_value, min_possible, max_possible, random_range_percent = DEFAULT_RANDOM_RANGE_PERCENT):
+    random_range = actual_value * (random_range_percent / float(100))
 
-    random_range = full_range * (random_range_percent / float(100))
-    
-    random.seed(random.randint(min, max))
+    new_value = actual_value + random_in_range(-random_range, random_range)
 
-    actual_value = actual_value + random.uniform(-random_range, random_range)
+    if new_value > max_possible:
+        new_value = max_possible
+    elif new_value < min_possible:
+        new_value = min_possible
 
-    if actual_value > max:
-        actual_value = max
-    elif actual_value < min:
-        actual_value = min
+    return new_value
 
-    return actual_value
+def random_in_range(min_possible, max_possible):
+    rng = random.SystemRandom()
+    return scale_to_range(rng.random(), 0, 1, min_possible, max_possible)
+
+def scale_to_range(old_value, old_min, old_max, new_min, new_max):
+    return ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
