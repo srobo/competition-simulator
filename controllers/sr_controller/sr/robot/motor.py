@@ -20,8 +20,7 @@ def build_webot_motor_dict(webot):
     WEBOT_MOTORS['left wheel'] = Wheel(webot)
     WEBOT_MOTORS['right wheel'] = Wheel(webot)
     WEBOT_MOTORS['lift motor'] = LinearMotor(webot)
-    WEBOT_MOTORS['left finger motor'] = LinearMotor(webot)
-    WEBOT_MOTORS['right finger motor'] = LinearMotor(webot)
+    WEBOT_MOTORS['left finger motor|right finger motor'] = Gripper(webot)
 
 def initialise_webot_motors(webot):
     for motor_name in WEBOT_MOTORS.keys():
