@@ -18,7 +18,7 @@ class Wheel(MotorBase):
     def initialise_motor(self, motor_name):
         super().initialise_motor(motor_name)
         self.webot_motor.setPosition(float('inf'))
-        self.webot_motor.setVelocity(float(0))
+        self.webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
         super().set_speed(speed)
