@@ -8,7 +8,6 @@ class MotorBase(object):
         if self.webot_motor == None:
             return
         self.max_speed = self.webot_motor.getMaxVelocity()
-        self.min_speed = - self.max_speed
 
     def set_speed(self, speed):
         if self.webot_motor == None:
@@ -49,7 +48,6 @@ class Gripper(MotorBase):
         for i in range(0, len(self.gripper_motors)):
             self.gripper_motors[i].initialise_motor(names[i])
         self.max_speed = self.gripper_motors[0].max_speed
-        self.min_speed = - self.max_speed
 
         
     def set_speed(self, speed):
