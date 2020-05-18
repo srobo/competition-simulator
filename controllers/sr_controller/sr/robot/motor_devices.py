@@ -35,7 +35,6 @@ class LinearMotor(MotorBase):
     def set_speed(self, speed):
         super().set_speed(speed)
         motor = self.webot_motor
-        motor.setVelocity(0)
         if speed < 0:
             motor.setPosition(motor.getMinPosition())
         else:
