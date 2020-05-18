@@ -23,8 +23,8 @@ def build_webot_motor_dict(webot):
     WEBOT_MOTORS['left finger motor|right finger motor'] = Gripper(webot)
 
 def initialise_webot_motors(webot):
-    for motor_name in WEBOT_MOTORS.keys():
-        WEBOT_MOTORS.get(motor_name).initialise_motor(motor_name)
+    for motor_name, motor in WEBOT_MOTORS.items():
+        motor.initialise_motor(motor_name)
 
 def translate(sr_speed_val, sr_motor):
     # Translate from -100 to 100 range to the actual motor control range
