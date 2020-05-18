@@ -1,24 +1,23 @@
 class MotorBase(object):
-    def __init__(self, webot):
+    def __init__(self, webot, motor_name):
         self.webot = webot
-        
-    def initialise_motor(self, motor_name):
         self.motor_name = motor_name
         self.webot_motor = self.webot.getMotor(motor_name)
         if self.webot_motor == None:
             return
         self.max_speed = self.webot_motor.getMaxVelocity()
+        
 
     def set_speed(self, speed):
         if self.webot_motor == None:
             return
 
-class Wheel(MotorBase):      
+class Wheel(MotorBase):  
 
-    def initialise_motor(self, motor_name):
-        super().initialise_motor(motor_name)
+    def __init__(self, webot, motor_name):
+        super().__init__(webot, motor_name)
         self.webot_motor.setPosition(float('inf'))
-        self.webot_motor.setVelocity(0)
+        self.webot_motor.setVelocity(0)        
 
     def set_speed(self, speed):
         super().set_speed(speed)
@@ -26,11 +25,11 @@ class Wheel(MotorBase):
 
 class LinearMotor(MotorBase):
 
-    def initialise_motor(self, motor_name):
-        super().initialise_motor(motor_name)
+    def __init__(self, webot, motor_name):
+        super().__init__(webot, motor_name)
         self.webot_motor.setPosition(0)
         self.webot_motor.setVelocity(0)
-
+        
     def set_speed(self, speed):
         super().set_speed(speed)
         motor = self.webot_motor
@@ -42,13 +41,11 @@ class LinearMotor(MotorBase):
 
 class Gripper(MotorBase):
 
-    def initialise_motor(self, motor_name):
+    def __init__(self, webot, motor_name):
+        self.webot = webot
         names = motor_name.split("|")
-        self.gripper_motors = [LinearMotor(self.webot), LinearMotor(self.webot)]
-        for i in range(0, len(self.gripper_motors)):
-            self.gripper_motors[i].initialise_motor(names[i])
+        self.gripper_motors = [LinearMotor(self.webot, names[0]), LinearMotor(self.webot, names[1])]
         self.max_speed = self.gripper_motors[0].max_speed
-
         
     def set_speed(self, speed):
         for motor in self.gripper_motors:
