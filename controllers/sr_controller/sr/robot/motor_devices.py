@@ -8,7 +8,7 @@ class MotorBase(object):
         self.max_speed = self.webot_motor.getMaxVelocity()
         
 
-    def set_speed(self, speed):
+    def _set_speed(self, speed):
         if self.webot_motor is None:
             return
 
@@ -20,7 +20,7 @@ class Wheel(MotorBase):
         self.webot_motor.setVelocity(0)        
 
     def set_speed(self, speed):
-        super().set_speed(speed)
+        self._set_speed(speed)
         self.webot_motor.setVelocity(speed)
 
 class LinearMotor(MotorBase):
@@ -31,7 +31,7 @@ class LinearMotor(MotorBase):
         self.webot_motor.setVelocity(0)
         
     def set_speed(self, speed):
-        super().set_speed(speed)
+        self._set_speed(speed)
         motor = self.webot_motor
         if speed < 0:
             motor.setPosition(motor.getMinPosition())
