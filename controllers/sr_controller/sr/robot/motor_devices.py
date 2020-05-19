@@ -10,7 +10,7 @@ class MotorBase(object):
         self.max_speed = self.webot_motor.getMaxVelocity()
 
     def set_speed(self, speed):
-        if self.webot_motor == None:
+        if self.webot_motor is None:
             return
 
 class Wheel(MotorBase):      
