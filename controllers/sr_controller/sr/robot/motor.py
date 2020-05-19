@@ -5,26 +5,13 @@ from sr.robot.motor_devices import Wheel, LinearMotor, Gripper
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
 
-WEBOT_MOTORS = OrderedDict()
-
-
-def get_motor_id(board, channel):
-    return list(WEBOT_MOTORS.keys())[(board*2)+channel]
-
 def init_motor_array(webot):
-    build_webot_motor_dict(webot)
-    initialise_webot_motors(webot)
-    return [Motor(0, webot), Motor(1, webot)]
-
-def build_webot_motor_dict(webot):
-    WEBOT_MOTORS['left wheel'] = Wheel(webot)
-    WEBOT_MOTORS['right wheel'] = Wheel(webot)
-    WEBOT_MOTORS['lift motor'] = LinearMotor(webot)
-    WEBOT_MOTORS['left finger motor|right finger motor'] = Gripper(webot)
-
-def initialise_webot_motors(webot):
-    for motor_name, motor in WEBOT_MOTORS.items():
-        motor.initialise_motor(motor_name)
+    motor_array = []
+    motor_array.append(Wheel(webot, 'left wheel'))
+    motor_array.append(Wheel(webot, 'right wheel'))
+    motor_array.append(LinearMotor(webot, 'lift motor'))
+    motor_array.append(Gripper(webot, 'left finger motor|right finger motor'))
+    return [Motor(0, webot, [motor_array[0], motor_array[1]]), Motor(1, webot, [motor_array[2], motor_array[3]])]    
 
 def translate(sr_speed_val, sr_motor):
     # Translate from -100 to 100 range to the actual motor control range
@@ -47,14 +34,14 @@ def translate(sr_speed_val, sr_motor):
 
 class Motor(object):
     """A motor"""
-    def __init__(self, board_id, webot):
+    def __init__(self, board_id, webot, sr_motors):
         self.board_id = board_id
-        self.m0 = MotorChannel(0, webot, board_id)
-        self.m1 = MotorChannel(1, webot, board_id)
+        self.m0 = MotorChannel(0, webot, board_id, sr_motors[0])
+        self.m1 = MotorChannel(1, webot, board_id, sr_motors[1])
         self.webot = webot                    
 
 class MotorChannel(object):
-    def __init__(self, channel, webot, board_id):
+    def __init__(self, channel, webot, board_id, sr_motor):
         self.channel = channel
         self.webot = webot
         self.board_id = board_id
@@ -63,6 +50,7 @@ class MotorChannel(object):
 
         # There is currently no method for reading the power from a motor board
         self._power = 0
+        self.sr_motor = sr_motor
 
     @property
     def power(self):
@@ -74,16 +62,13 @@ class MotorChannel(object):
         value = int(value)
         self._power = value
 
-        motor_id = get_motor_id(self.board_id, self.channel)
-
         # Limit the value to within the valid range
         if value > SPEED_MAX:
             value = SPEED_MAX
         elif value < -SPEED_MAX:
             value = -SPEED_MAX
 
-        motor = WEBOT_MOTORS.get(motor_id)
-        motor.set_speed(translate(value, motor))
+        self.sr_motor.set_speed(translate(value, self.sr_motor))
 
 
     ''''@property
