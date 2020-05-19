@@ -26,5 +26,4 @@ class Microswitch(SensorBase):
         self.webot_sensor.enable(self.SENSOR_TIME_STEP)
 
     def read_value(self):
-        print("READ SWITCH: " + str(self.webot_sensor.getValue() > 0))
         return self.webot_sensor.getValue() > 0
