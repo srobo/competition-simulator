@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from sr.robot.randomizer import add_jitter
-from sr.robot.motor_devices import *
+from sr.robot.motor_devices import Wheel, LinearMotor, Gripper
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
