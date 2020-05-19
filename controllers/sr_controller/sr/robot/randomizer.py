@@ -12,7 +12,7 @@ def add_jitter(actual_value, min_possible, max_possible, random_range_percent = 
     elif new_value < min_possible:
         new_value = min_possible
 
-    return new_value
+    return float(new_value)
 
 def random_in_range(min_possible, max_possible):
     rng = random.SystemRandom()
