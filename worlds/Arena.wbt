@@ -1865,5 +1865,5 @@ Robot {
   }
   physics Physics {
   }
-  controller "example_controller"
+  controller "sr_controller"
 }
