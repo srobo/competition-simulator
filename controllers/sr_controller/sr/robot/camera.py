@@ -1,4 +1,9 @@
 from sr.robot.settings import TIME_STEP
+from collections import namedtuple
+from math import degrees
+
+
+Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
 
 
 class Token:
@@ -15,10 +20,11 @@ class Token:
 
     @property
     def orientation(self):
-        """
-        Returns 4 weird values
-        """
-        return self._recognition_object.get_position()
+        x, y, z, t = self._recognition_object.get_orientation()
+        x *= t
+        y *= t
+        z *= t
+        return Orientation(degrees(x), degrees(y), degrees(z))
 
 
 class Camera:
