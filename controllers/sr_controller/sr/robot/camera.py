@@ -2,10 +2,13 @@ from sr.robot.settings import TIME_STEP
 from collections import namedtuple
 from math import degrees
 from enum import Enum
+import re
 
 
 Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
 Position = namedtuple("Position", ["x", "y", "z"])
+
+TOKEN_MODEL_RE = re.compile(r"^[SG]\d{2}$")
 
 
 class TokenType(Enum):
@@ -14,11 +17,12 @@ class TokenType(Enum):
 
 
 class Token:
-    def __init__(self, recognition_object):
+    def __init__(self, recognition_object, model):
         self._recognition_object = recognition_object
+        self._model = model
 
     def _get_colour_id(self):
-        model = self._recognition_object.get_model()
+        model = self._model
         return model[0], model[1:]
 
     @property
@@ -61,7 +65,9 @@ class Camera:
         self.camera.recognitionEnable(TIME_STEP)
 
     def see(self):
-        return [
-            Token(recognition_object)
-            for recognition_object in self.camera.getRecognitionObjects()
-        ]
+        tokens = []
+        for recognition_object in self.camera.getRecognitionObjects():
+            model = recognition_object.get_model().decode()
+            if TOKEN_MODEL_RE.match(model):
+                tokens.append(Token(recognition_object, model))
+        return tokens
