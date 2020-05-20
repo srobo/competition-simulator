@@ -6,14 +6,28 @@ from math import degrees
 Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
 Position = namedtuple("Position", ["x", "y", "z"])
 
+TOKEN_GOLD = "TOKEN_GOLD"
+TOKEN_SILVER = "TOKEN_SILVER"
+
 
 class Token:
     def __init__(self, recognition_object):
         self._recognition_object = recognition_object
 
+    def _get_color_id(self):
+        model = self._recognition_object.get_model
+        return model[0], model[1:]
+
     @property
     def id(self):
-        return self._recognition_object.get_id()
+        return int(self._get_color_id()[1])
+
+    @property
+    def type(self):
+        return {
+            'S': TOKEN_SILVER,
+            'G': TOKEN_GOLD
+        }[self._get_color_id()[0]]
 
     @property
     def position(self):
