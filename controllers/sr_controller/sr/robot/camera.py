@@ -1,4 +1,5 @@
 from sr.robot.settings import TIME_STEP
+from sr.robot.randomizer import random_in_range, add_jitter
 from collections import namedtuple
 from math import degrees
 from enum import Enum
@@ -14,6 +15,14 @@ TOKEN_MODEL_RE = re.compile(r"^[SG]\d{2}$")
 class TokenType(Enum):
     GOLD = "TOKEN_GOLD"
     SILVER = "TOKEN_SILVER"
+
+
+def degrees_jitter(radians):
+    return add_jitter(degrees(radians), -180, 180)
+
+
+def position_jitter(pos):
+    return add_jitter(pos, 0, 5.75)
 
 
 class Token:
@@ -40,7 +49,7 @@ class Token:
 
     @property
     def position(self):
-        return Position(*self._recognition_object.get_position())
+        return Position([position_jitter(pos) for pos in self._recognition_object.get_position()])
 
     @property
     def orientation(self):
@@ -48,7 +57,7 @@ class Token:
         x *= t
         y *= t
         z *= t
-        return Orientation(degrees(x), degrees(y), degrees(z))
+        return Orientation(degrees_jitter(x), degrees_jitter(y), degrees_jitter(z))
 
     @property
     def size(self):
@@ -65,6 +74,7 @@ class Camera:
         self.camera.recognitionEnable(TIME_STEP)
 
     def see(self):
+        time.sleep(random_in_range(0.1, 0.9))
         tokens = []
         for recognition_object in self.camera.getRecognitionObjects():
             model = recognition_object.get_model().decode()
