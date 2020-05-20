@@ -33,6 +33,8 @@ class Camera:
         self.webot = webot
         self.camera = self.webot.getCamera("camera")
         self.camera.enable(TIME_STEP)
+        self.camera.width = 800
+        self.camera.height = 600
         self.camera.recognitionEnable(TIME_STEP)
 
     def see(self):
