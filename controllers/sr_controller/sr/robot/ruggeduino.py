@@ -5,20 +5,12 @@ MIN_VOLTS = 0
 MAX_VOLTS = 5
 
 def init_ruggeduino_array(webot):
-    analogue_array = []
-    analogue_array.append(DistanceSensor(webot, "Front Left DS"))
-    analogue_array.append(DistanceSensor(webot, "Front Right DS"))
-    analogue_array.append(DistanceSensor(webot, "Left DS"))
-    analogue_array.append(DistanceSensor(webot, "Right DS"))
-    analogue_array.append(DistanceSensor(webot, "Back Left DS"))
-    analogue_array.append(DistanceSensor(webot, "Back Right DS"))
+    DIST_SENSOR_NAMES = ["Front Left DS", "Front Right DS", "Left DS", "Right DS", "Back Left DS", "Back Right DS"]
+    MICROSWITCH_NAMES = ["front bump sensor", "back bump sensor", "token bump sensor", "left finger sensor", "right finger sensor"]
 
-    digital_array = []
-    digital_array.append(Microswitch(webot, "front bump sensor"))
-    digital_array.append(Microswitch(webot, "back bump sensor"))
-    digital_array.append(Microswitch(webot, "token bump sensor"))
-    digital_array.append(Microswitch(webot, "left finger sensor"))
-    digital_array.append(Microswitch(webot, "right finger sensor"))
+    analogue_array = [DistanceSensor(webot, name) for name in DIST_SENSOR_NAMES]
+
+    digital_array = [Microswitch(webot, name) for name in MICROSWITCH_NAMES]
 
     return [Ruggeduino(webot, analogue_array, digital_array)]
 
