@@ -27,7 +27,7 @@ class Ruggeduino(object):
         self.webot = webot
         self.analogue_array = analogue_array
         self.digital_array = digital_array
-        self.DIGITAL_PIN_OFFSET = 2 # not to use pins 0 or 1 because they're tx and rx
+        self.DIGITAL_PIN_OFFSET = 2 # Exclude pins 0 and 1 as they are used for USB serial comms
 
     def digital_read(self, pin):
         "Read an digital input"
