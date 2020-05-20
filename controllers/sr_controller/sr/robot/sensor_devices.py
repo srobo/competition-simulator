@@ -13,7 +13,7 @@ class DistanceSensor(SensorBase):
         self.webot_sensor.enable(self.SENSOR_TIME_STEP)
 
     def __scale_to_voltage(self, val):
-        return val * (0.5/100)
+        return val * 0.5 / 100
 
     def read_value(self):
         return self.__scale_to_voltage(self.webot_sensor.getValue())
