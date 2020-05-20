@@ -27,3 +27,4 @@ class Microswitch(SensorBase):
 
     def read_value(self):
         return self.webot_sensor.getValue() > 0
+
