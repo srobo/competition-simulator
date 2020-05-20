@@ -148,7 +148,7 @@ DEF TOKEN_GOLD Solid {
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -173,7 +173,7 @@ DEF TOKEN_GOLD Solid {
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -198,7 +198,7 @@ DEF TOKEN_GOLD Solid {
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -223,7 +223,7 @@ DEF TOKEN_GOLD Solid {
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -248,7 +248,7 @@ DEF TOKEN_GOLD Solid {
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -273,7 +273,7 @@ DEF TOKEN_GOLD Solid {
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -298,7 +298,7 @@ DEF TOKEN_GOLD Solid {
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_SILVER Solid {
