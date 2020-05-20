@@ -23,6 +23,8 @@ class Ruggeduino(object):
 
     def digital_read(self, pin):
         "Read an digital input"
+        if pin < 2 or pin > 13:
+            raise ValueError("Only pins 2 - 13 are available on the Ruggeduino")
         return self.digital_array[pin - self.DIGITAL_PIN_OFFSET].read_value()
 
     def digital_write(self, pin, level):
