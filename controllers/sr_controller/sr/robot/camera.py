@@ -41,6 +41,10 @@ class Token:
         z *= t
         return Orientation(degrees(x), degrees(y), degrees(z))
 
+    @property
+    def size(self):
+        return 0.2
+
 
 class Camera:
     def __init__(self, webot):
