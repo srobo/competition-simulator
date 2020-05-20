@@ -4,6 +4,7 @@ from math import degrees
 
 
 Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
+Position = namedtuple("Position", ["x", "y", "z"])
 
 
 class Token:
@@ -16,7 +17,7 @@ class Token:
 
     @property
     def position(self):
-        return self._recognition_object.get_position()
+        return Position(*self._recognition_object.get_position())
 
     @property
     def orientation(self):
