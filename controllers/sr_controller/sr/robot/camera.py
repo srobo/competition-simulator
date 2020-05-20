@@ -1,33 +1,38 @@
 from sr.robot.settings import TIME_STEP
 from collections import namedtuple
 from math import degrees
+from enum import Enum
 
 
 Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
 Position = namedtuple("Position", ["x", "y", "z"])
 
-TOKEN_GOLD = "TOKEN_GOLD"
-TOKEN_SILVER = "TOKEN_SILVER"
+
+class TokenType(Enum):
+    GOLD = "TOKEN_GOLD"
+    SILVER = "TOKEN_SILVER"
 
 
 class Token:
     def __init__(self, recognition_object):
         self._recognition_object = recognition_object
 
-    def _get_color_id(self):
+    def _get_colour_id(self):
         model = self._recognition_object.get_model()
         return model[0], model[1:]
 
     @property
     def id(self):
-        return int(self._get_color_id()[1])
+        return int(self._get_colour_id()[1])
 
     @property
     def type(self):
-        return {
-            'S': TOKEN_SILVER,
-            'G': TOKEN_GOLD
-        }[self._get_color_id()[0]]
+        colour = self._get_colour_id()[0]
+        if colour == "S":
+            return TokenType.SILVER
+        elif colour == "G":
+            return TokenType.GOLD
+        raise ValueError("Unknown colour {}.".format(colour))
 
     @property
     def position(self):
