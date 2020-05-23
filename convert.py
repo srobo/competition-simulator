@@ -87,6 +87,20 @@ class Matrix:
             ',\n    '.join(repr(x) for x in self.data),
         )
 
+    def __mul__(self, vector: Tuple[float, ...]) -> Tuple[float, ...]:
+        if len(vector) != self.dimensions[1]:
+            raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
+                self.dimensions,
+                len(vector),
+            ))
+
+        return tuple(
+            sum(x * y for x, y in zip(row_self, vector))
+            for row_self in self.data
+        )
+
+    __rmul__ = __mul__
+
     def __matmul__(self, other: 'Matrix') -> 'Matrix':
         if self.dimensions != tuple(reversed(other.dimensions)):
             raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
