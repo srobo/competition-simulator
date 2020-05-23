@@ -174,6 +174,7 @@ class TransformationTests(unittest.TestCase):
         # rotating the token 90° clockwise (from the perspective of the camera)
         # on its side.
 
+        one_over_root_two = 2 ** -0.5
         one_over_root_three = 3 ** -0.5
 
         self.assertPositions([
@@ -205,7 +206,12 @@ class TransformationTests(unittest.TestCase):
             (
                 'D',
                 (-1, -1, -1),
-                WebotsOrientation(2 ** -0.5, 2 ** -0.5, 0, 3.118),
+                WebotsOrientation(
+                    one_over_root_two,
+                    one_over_root_two,
+                    0,
+                    3.118,
+                ),
             ),
         ])
 
