@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 
+import math
 import unittest
+from typing import Tuple, Sequence
 
-from convert import Matrix
+from convert import (
+    Matrix,
+    WebotsOrientation,
+    rotation_matrix_from_axis_and_angle,
+)
+
+Vector = Tuple[float, float, float]
 
 
 class MatrixTests(unittest.TestCase):
@@ -119,7 +127,87 @@ class MatrixTests(unittest.TestCase):
 
 
 class TransformationTests(unittest.TestCase):
-    pass
+    # All tests operate by validating the relative position of what is initially
+    # the top-right-back corner (with co-ordinates (1, 1, 1)) on the token after
+    # some movement of the token, the observer or both.
+    #
+    # Positions:
+    #  - A is with the observer in front of the token
+    #  - B is with the observer to the right of the token
+    #  - C is with the observer to the left of the token
+    #  - D is with the observer behind the token
+
+    def assertPosition(
+        self,
+        expected_vector: Vector,
+        input_orientation: WebotsOrientation,
+    ) -> None:
+        original = (1, 1, 1)
+
+        R = rotation_matrix_from_axis_and_angle(input_orientation)
+
+        result = R * original
+
+        self.assertEqual(expected_vector, result)
+
+    def assertPositions(
+        self,
+        vectors: Sequence[Tuple[str, Vector, WebotsOrientation]],
+    ) -> None:
+        for position, expected_vector, input_orientation in vectors:
+            with self.subTest(position):
+                self.assertPosition(expected_vector, input_orientation)
+
+    def test_initial_token_position(self) -> None:
+        # The first row of data in angles.png, which are equivalent to 90°
+        # rotations about the y axis.
+
+        self.assertPositions([
+            ('A', (1, 1, 1), WebotsOrientation(1, 0, 0, 0)),
+            ('B', (1, 1, -1), WebotsOrientation(0, -1, 0, math.pi / 2)),
+            ('C', (-1, 1, 1), WebotsOrientation(0, 1, 0, math.pi / 2)),
+            ('D', (-1, 1, -1), WebotsOrientation(0, 1, 0, math.pi)),
+        ])
+
+    def test_token_on_side_90_degrees_clockwise_from_observer_perspective(self) -> None:
+        # The second row of data in angles.png, which are based on first
+        # rotating the token 90° clockwise (from the perspective of the camera)
+        # on its side.
+
+        one_over_root_three = 3 ** -0.5
+
+        self.assertPositions([
+            (
+                'A',
+                (1, -1, 1),
+                WebotsOrientation(0, 0, -1, math.pi / 2),
+            ),
+            (
+                'B',
+                (1, -1, -1),
+                WebotsOrientation(
+                    -one_over_root_three,
+                    -one_over_root_three,
+                    -one_over_root_three,
+                    2.114,
+                ),
+            ),
+            (
+                'C',
+                (-1, -1, 1),
+                WebotsOrientation(
+                    one_over_root_three,
+                    one_over_root_three,
+                    -one_over_root_three,
+                    2.075,
+                ),
+            ),
+            (
+                'D',
+                (-1, -1, -1),
+                WebotsOrientation(2 ** -0.5, 2 ** -0.5, 0, 3.118),
+            ),
+        ])
 
 
 if __name__ == '__main__':
