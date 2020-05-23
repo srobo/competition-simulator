@@ -1,36 +1,29 @@
 from collections import OrderedDict
 from sr.robot.randomizer import add_jitter
+from sr.robot.motor_devices import Wheel, LinearMotor, Gripper
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
-ROTATIONAL = "R"
-LINEAR = "L"
-MOTOR_NAMES = OrderedDict()#{:ROTATIONAL,'M2':ROTATIONAL,:LINEAR, :LINEAR,:LINEAR}
-MOTOR_NAMES['left wheel'] = ROTATIONAL
-MOTOR_NAMES['right wheel'] = ROTATIONAL
-MOTOR_NAMES['lift motor'] = LINEAR
-MOTOR_NAMES['left finger motor'] = LINEAR
-MOTOR_NAMES['right finger motor'] = LINEAR
-
-def get_motor_id(board, channel):
-    return list(MOTOR_NAMES.keys())[(board*2)+channel]
 
 def init_motor_array(webot):
-    return [Motor(0, webot), Motor(1, webot)]
+    motor_array = []
+    motor_array.append(Wheel(webot, 'left wheel'))
+    motor_array.append(Wheel(webot, 'right wheel'))
+    motor_array.append(LinearMotor(webot, 'lift motor'))
+    motor_array.append(Gripper(webot, 'left finger motor|right finger motor'))
+    return [Motor(0, webot, [motor_array[0], motor_array[1]]), Motor(1, webot, [motor_array[2], motor_array[3]])]    
 
-def translate(sr_speed_val, motor):
+def translate(sr_speed_val, sr_motor):
     # Translate from -100 to 100 range to the actual motor control range
 
     # Set the speed ranges
     in_from = -SPEED_MAX
     in_to = SPEED_MAX
-    out_from = -motor.getMaxVelocity()
-    out_to = motor.getMaxVelocity()
+    out_from = - sr_motor.max_speed
+    out_to = sr_motor.max_speed
 
     if sr_speed_val != 0:
-        #print "Requested: " + str(sr_speed_val)
         sr_speed_val = add_jitter(sr_speed_val, -SPEED_MAX, SPEED_MAX)
-        #print "Actual: " + str(sr_speed_val)
 
     out_range = out_to - out_from
     in_range = in_to - in_from
@@ -41,26 +34,14 @@ def translate(sr_speed_val, motor):
 
 class Motor(object):
     """A motor"""
-    def __init__(self, board_id, webot):
+    def __init__(self, board_id, webot, sr_motors):
         self.board_id = board_id
-        self.m0 = MotorChannel(0, webot, board_id)
-        self.m1 = MotorChannel(1, webot, board_id)
-        self.webot = webot
-        self.initialise_webot_motors()
-
-    def initialise_webot_motors(self):
-        for m in MOTOR_NAMES.keys():
-            current_motor = self.webot.getMotor(m)
-            if current_motor != None:
-                if MOTOR_NAMES.get(m) == ROTATIONAL:
-                    current_motor.setPosition(float('inf'))
-                    current_motor.setVelocity(float(0))
-                elif MOTOR_NAMES.get(m) == LINEAR:
-                    current_motor.setPosition(float(0))
-                    current_motor.setVelocity(float(0))
+        self.m0 = MotorChannel(0, webot, board_id, sr_motors[0])
+        self.m1 = MotorChannel(1, webot, board_id, sr_motors[1])
+        self.webot = webot                    
 
 class MotorChannel(object):
-    def __init__(self, channel, webot, board_id):
+    def __init__(self, channel, webot, board_id, sr_motor):
         self.channel = channel
         self.webot = webot
         self.board_id = board_id
@@ -69,6 +50,7 @@ class MotorChannel(object):
 
         # There is currently no method for reading the power from a motor board
         self._power = 0
+        self.sr_motor = sr_motor
 
     @property
     def power(self):
@@ -80,27 +62,14 @@ class MotorChannel(object):
         value = int(value)
         self._power = value
 
-        motor_id = get_motor_id(self.board_id, self.channel)
-        motor = self.webot.getMotor(motor_id)
-
         # Limit the value to within the valid range
         if value > SPEED_MAX:
             value = SPEED_MAX
         elif value < -SPEED_MAX:
             value = -SPEED_MAX
 
-        print("Setting speed of " + str(motor_id) + " to " + str(value))
+        self.sr_motor.set_speed(translate(value, self.sr_motor))
 
-        if MOTOR_NAMES.get(motor.getName()) == ROTATIONAL:
-            motor.setVelocity(translate(value, motor))
-        elif MOTOR_NAMES.get(motor.getName()) == LINEAR:
-            motor.setVelocity(0)
-            if value < 0:
-                motor.setPosition(motor.getMinPosition())
-            else:
-                motor.setPosition(motor.getMaxPosition())
-            motor.setVelocity(abs(translate(value, motor)))
-        #motor.setVelocity(translate(value, motor))
 
     ''''@property
     def use_brake(self):
