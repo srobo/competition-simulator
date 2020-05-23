@@ -74,10 +74,10 @@ class Camera:
         self.camera.recognitionEnable(TIME_STEP)
 
     def see(self):
-        time.sleep(random_in_range(0.1, 0.9))
         tokens = []
         for recognition_object in self.camera.getRecognitionObjects():
             model = recognition_object.get_model().decode()
             if TOKEN_MODEL_RE.match(model):
                 tokens.append(Token(recognition_object, model))
+        time.sleep(0.2 * len(tokens))
         return tokens
