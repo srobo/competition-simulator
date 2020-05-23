@@ -163,10 +163,26 @@ class TransformationTests(unittest.TestCase):
         # rotations about the y axis.
 
         self.assertPositions([
-            ('A', (1, 1, 1), WebotsOrientation(1, 0, 0, 0)),
-            ('B', (1, 1, -1), WebotsOrientation(0, -1, 0, math.pi / 2)),
-            ('C', (-1, 1, 1), WebotsOrientation(0, 1, 0, math.pi / 2)),
-            ('D', (-1, 1, -1), WebotsOrientation(0, 1, 0, math.pi)),
+            (
+                'A',
+                (1, 1, 1),
+                WebotsOrientation(1, 0, 0, 0),
+            ),
+            (
+                'B',
+                (1, 1, -1),
+                WebotsOrientation(0, -1, 0, math.pi / 2),
+            ),
+            (
+                'C',
+                (-1, 1, 1),
+                WebotsOrientation(0, 1, 0, math.pi / 2),
+            ),
+            (
+                'D',
+                (-1, 1, -1),
+                WebotsOrientation(0, 1, 0, math.pi),
+            ),
         ])
 
     def test_token_on_side_90_degrees_clockwise_from_observer_perspective(self) -> None:
