@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+
 """
 Convert from Webots' (x, y, z, θ) axis-angle orientation to a slightly more
 competitor-friendly format.
 """
 
 import math
+import argparse
 from typing import Tuple, Union, Iterable, overload, NamedTuple
 
 from typing_extensions import Literal
@@ -122,3 +125,25 @@ def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> 'Matr
             cos_theta + z ** 2 * one_minus_cos_theta,
         ),
     ))
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('x')
+    parser.add_argument('y')
+    parser.add_argument('z')
+    parser.add_argument('theta')
+    return parser.parse_args()
+
+
+def main(args) -> None:
+    print(rotation_matrix_from_axis_and_angle(WebotsOrientation(
+        args.x,
+        args.y,
+        args.z,
+        args.theta,
+    )))
+
+
+if __name__ == '__main__':
+    main(parse_args())
