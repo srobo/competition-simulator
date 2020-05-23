@@ -133,9 +133,15 @@ class TransformationTests(unittest.TestCase):
     #
     # Positions:
     #  - A is with the observer in front of the token
-    #  - B is with the observer to the right of the token
-    #  - C is with the observer to the left of the token
-    #  - D is with the observer behind the token
+    #
+    #  - B is with the observer to the right of the token, equivalent to an
+    #    additional rotation of the token 90° clockwise from above about y
+    #
+    #  - C is with the observer to the left of the token, equivalent to an
+    #    additional rotation of the token 90° anticlockwise from above about y
+    #
+    #  - D is with the observer behind the token, equivalent to an
+    #    additional rotation of the token 180° about y
 
     def assertPosition(
         self,
