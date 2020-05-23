@@ -15,8 +15,5 @@ def add_jitter(actual_value, min_possible, max_possible, random_range_percent = 
     return new_value
 
 def random_in_range(min_possible, max_possible):
-    rng = random.SystemRandom()
-    return scale_to_range(rng.random(), 0, 1, min_possible, max_possible)
+    return random.SystemRandom().uniform(min_possible,max_possible)
 
-def scale_to_range(old_value, old_min, old_max, new_min, new_max):
-    return ( (old_value - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
