@@ -45,6 +45,12 @@ class Matrix:
     def transpose(self) -> 'Matrix':
         return Matrix(zip(*self.data))
 
+    def round(self, precision: int) -> 'Matrix':
+        return Matrix(
+            (round(x, precision) for x in row)
+            for row in self.data
+        )
+
     # @overload
     # def __getitem__(self, key: Tuple[slice, Literal[0, 1, 2]]) -> ThreeFloats:
     #     ...
@@ -124,7 +130,8 @@ def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> 'Matr
             x_y_one_minus_cos_theta + x_sin_theta,
             cos_theta + z ** 2 * one_minus_cos_theta,
         ),
-    ))
+    # TODO: shouldn't round eventually, though it makes development somewhat easier.
+    )).round(1)
 
 
 def parse_args() -> argparse.Namespace:
