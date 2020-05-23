@@ -256,6 +256,53 @@ class TransformationTests(unittest.TestCase):
             ),
         ])
 
+    def test_token_upside_down_270_degrees_clockwise_from_observer_perspective(self) -> None:
+        # The third row of data in angles.png, which are based on first rotating
+        # the token 270° clockwise (from the perspective of the camera) so it is
+        # upside down, but the face which was initially facing the observer is
+        # still (initially) facing the observer.
+
+        one_over_root_two = 2 ** -0.5
+        one_over_root_three = 3 ** -0.5
+
+        self.assertPositions([
+            (
+                'A',
+                (-1, 1, 1),
+                WebotsOrientation(0, 0, 1, math.pi / 2),
+            ),
+            (
+                'B',
+                (1, 1, 1),
+                WebotsOrientation(
+                    one_over_root_three,
+                    -one_over_root_three,
+                    one_over_root_three,
+                    2.08,
+                ),
+            ),
+            (
+                'C',
+                (-1, 1, -1),
+                WebotsOrientation(
+                    -one_over_root_three,
+                    one_over_root_three,
+                    one_over_root_three,
+                    2.11,
+                ),
+            ),
+            (
+                'D',
+                (1, 1, -1),
+                WebotsOrientation(
+                    one_over_root_two,
+                    -one_over_root_two,
+                    0,
+                    3.12,
+                ),
+            ),
+        ])
+
 
 if __name__ == '__main__':
     unittest.main()
