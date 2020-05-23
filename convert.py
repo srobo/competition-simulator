@@ -134,6 +134,7 @@ def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> 'Matr
     x_y_one_minus_cos_theta = x * y * one_minus_cos_theta
     x_z_one_minus_cos_theta = x * z * one_minus_cos_theta
 
+    # From https://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
     return Matrix((
         (
             cos_theta + x ** 2 * one_minus_cos_theta,
