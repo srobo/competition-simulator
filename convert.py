@@ -87,6 +87,18 @@ class Matrix:
             ',\n    '.join(repr(x) for x in self.data),
         )
 
+    def __add__(self, other: 'Matrix') -> 'Matrix':
+        if self.dimensions != other.dimensions:
+            raise ValueError("Dimension mismatch: cannot add {} to {}".format(
+                self.dimensions,
+                other.dimensions,
+            ))
+
+        return Matrix(
+            (x + y for x, y in zip(row_self, row_other))
+            for row_self, row_other in zip(self.data, other.data)
+        )
+
     def __mul__(self, vector: Tuple[float, ...]) -> Tuple[float, ...]:
         if len(vector) != self.dimensions[1]:
             raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
