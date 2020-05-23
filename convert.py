@@ -88,6 +88,12 @@ class Matrix:
         )
 
     def __matmul__(self, other: 'Matrix') -> 'Matrix':
+        if self.dimensions != tuple(reversed(other.dimensions)):
+            raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
+                self.dimensions,
+                other.dimensions,
+            ))
+
         return Matrix(
             (
                 sum(x * y for x, y in zip(row_self, row_other))
