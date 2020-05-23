@@ -4,7 +4,7 @@ competitor-friendly format.
 """
 
 import math
-from typing import Tuple, Union, overload, NamedTuple
+from typing import Tuple, Union, Iterable, overload, NamedTuple
 
 from typing_extensions import Literal
 
@@ -24,48 +24,23 @@ NormalisedVector = NamedTuple('NormalisedVector', (
 ThreeFloats = Tuple[float, float, float]
 
 
-class RotationMatrix:
-    @classmethod
-    def from_axis_and_angle(cls, orientation: WebotsOrientation) -> 'RotationMatrix':
-        x, y, z, theta = orientation
+class Matrix:
+    def __init__(self, data: Iterable[Iterable[float]]) -> None:
+        tuple_data = tuple(tuple(x) for x in data)
 
-        if round(x ** 2 + y ** 2 + z ** 2, 5) != 1:
-            raise ValueError("Orientation vector is not a unit vector")
+        lengths = set(len(x) for x in tuple_data)
 
-        cos_theta = math.cos(theta)
-        one_minus_cos_theta = 1 - cos_theta
-        sin_theta = math.sin(theta)
+        if len(lengths) != 1:
+            raise ValueError("Malformed input to Matrix: {!r}".format(tuple_data))
 
-        x_sin_theta = x * sin_theta
-        y_sin_theta = y * sin_theta
-        z_sin_theta = z * sin_theta
+        self.data = tuple_data
 
-        x_y_one_minus_cos_theta = x * y * one_minus_cos_theta
-        x_z_one_minus_cos_theta = x * z * one_minus_cos_theta
+    @property
+    def dimensions(self) -> Tuple[int, int]:
+        return len(self.data), len(self.data[0])
 
-        return RotationMatrix((
-            (
-                cos_theta + x ** 2 * one_minus_cos_theta,
-                x_y_one_minus_cos_theta - z_sin_theta,
-                x_z_one_minus_cos_theta - y_sin_theta,
-            ),
-            (
-                x_y_one_minus_cos_theta + z_sin_theta,
-                cos_theta + y ** 2 * one_minus_cos_theta,
-                x_y_one_minus_cos_theta - x_sin_theta,
-            ),
-            (
-                x_z_one_minus_cos_theta - y_sin_theta,
-                x_y_one_minus_cos_theta + x_sin_theta,
-                cos_theta + z ** 2 * one_minus_cos_theta,
-            ),
-        ))
-
-    def __init__(self, data: Tuple[ThreeFloats, ThreeFloats, ThreeFloats]) -> None:
-        if len(data) != 3 or any(len(x) != 3 for x in data):
-            raise ValueError("Malformed input to RotationMatrix: {!r}".format(data))
-
-        self.data = tuple(tuple(round(y, 1) for y in x) for x in data)
+    def transpose(self) -> 'Matrix':
+        return Matrix(zip(*self.data))
 
     # @overload
     # def __getitem__(self, key: Tuple[slice, Literal[0, 1, 2]]) -> ThreeFloats:
@@ -89,7 +64,7 @@ class RotationMatrix:
     #     return self.data[a]
 
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, RotationMatrix):
+        if not isinstance(other, Matrix):
             return NotImplemented
 
         return self.data == other.data
@@ -102,3 +77,48 @@ class RotationMatrix:
             type(self).__name__,
             ',\n    '.join(repr(x) for x in self.data),
         )
+
+    def __matmul__(self, other: 'Matrix') -> 'Matrix':
+        return Matrix(
+            (
+                sum(x * y for x, y in zip(row_self, row_other))
+                for row_other in other.transpose().data
+            )
+            for row_self in self.data
+        )
+
+
+def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> 'Matrix':
+    x, y, z, theta = orientation
+
+    if round(x ** 2 + y ** 2 + z ** 2, 5) != 1:
+        raise ValueError("Orientation vector is not a unit vector")
+
+    cos_theta = math.cos(theta)
+    one_minus_cos_theta = 1 - cos_theta
+    sin_theta = math.sin(theta)
+
+    x_sin_theta = x * sin_theta
+    y_sin_theta = y * sin_theta
+    z_sin_theta = z * sin_theta
+
+    x_y_one_minus_cos_theta = x * y * one_minus_cos_theta
+    x_z_one_minus_cos_theta = x * z * one_minus_cos_theta
+
+    return Matrix((
+        (
+            cos_theta + x ** 2 * one_minus_cos_theta,
+            x_y_one_minus_cos_theta - z_sin_theta,
+            x_z_one_minus_cos_theta - y_sin_theta,
+        ),
+        (
+            x_y_one_minus_cos_theta + z_sin_theta,
+            cos_theta + y ** 2 * one_minus_cos_theta,
+            x_y_one_minus_cos_theta - x_sin_theta,
+        ),
+        (
+            x_z_one_minus_cos_theta - y_sin_theta,
+            x_y_one_minus_cos_theta + x_sin_theta,
+            cos_theta + z ** 2 * one_minus_cos_theta,
+        ),
+    ))
