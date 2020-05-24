@@ -9,6 +9,14 @@ TOKEN_SIZE = 1
 
 
 class FaceName(enum.Enum):
+    """
+    Names of faces on a token in the reference position.
+
+    As a token is rotated, the position of a named face also moves within space.
+    That means that the "top" face of a token is not neccesarily the one called
+    "Top".
+    """
+
     Top = 'top'
     Bottom = 'bottom'
 
@@ -36,12 +44,22 @@ class Token:
         }
 
     def rotate(self, matrix: Matrix) -> None:
+        """
+        Rotate the token by the given rotation matrix.
+        """
         self.corners = {
             name: matrix * position
             for name, position in self.corners.items()
         }
 
     def face(self, name: FaceName) -> 'Face':
+        """
+        Get the named `Face` of the token.
+
+        As a token is rotated, the position of a named face also moves within
+        space. That means that the "top" face of a token is not neccesarily the
+        one called "Top".
+        """
         return Face(self, name)
 
 
