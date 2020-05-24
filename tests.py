@@ -262,12 +262,20 @@ class VectorTests(unittest.TestCase):
                 expected, vec_a, vec_b = case
 
                 cp = vectors.cross_product(vec_a, vec_b)
-                self.assertEqual(expected, cp, "Wrong cross product {0} × {1}.".format(vec_a, vec_b))
+                self.assertEqual(
+                    expected,
+                    cp,
+                    "Wrong cross product {0} × {1}.".format(vec_a, vec_b),
+                )
 
                 # Also check the other way around, which is defined as the reverse
                 expected_rev = -expected
                 cp_rev = vectors.cross_product(vec_b, vec_a)
-                self.assertEqual(expected_rev, cp_rev, "Wrong cross product {0} × {1}.".format(vec_b, vec_a))
+                self.assertEqual(
+                    expected_rev,
+                    cp_rev,
+                    "Wrong cross product {0} × {1}.".format(vec_b, vec_a),
+                )
 
     def test_dot_product_self(self) -> None:
         vec = Vector((1, 0, 0))
