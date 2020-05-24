@@ -1,4 +1,3 @@
-from sr.robot.randomizer import add_jitter
 from sr.robot.sensor_devices import DistanceSensor, Microswitch
 
 def init_ruggeduino_array(webot):
@@ -12,8 +11,7 @@ def init_ruggeduino_array(webot):
     return [Ruggeduino(webot, analogue_array, digital_array)]
 
 class Ruggeduino(object):
-    MIN_VOLTS = 0
-    MAX_VOLTS = 5
+    
     DIGITAL_PIN_OFFSET = 2 # Exclude pins 0 and 1 as they are used for USB serial comms
 
     def __init__(self, webot, analogue_array, digital_array):
@@ -33,4 +31,4 @@ class Ruggeduino(object):
 
     def analogue_read(self, pin):
         "Read an analogue input"
-        return add_jitter(self.analogue_array[pin].read_value(), Ruggeduino.MIN_VOLTS, Ruggeduino.MAX_VOLTS)
+        return self.analogue_array[pin].read_value()

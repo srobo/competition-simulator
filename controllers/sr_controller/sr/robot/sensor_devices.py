@@ -1,9 +1,7 @@
 from sr.robot.settings import TIME_STEP
+from sr.robot.randomizer import add_jitter
 
 class SensorBase(object):
-
-    MIN_VOLTS = 0
-    MAX_VOLTS = 5
 
     def __init__(self, webot, sensor_name):
         self.webot = webot
@@ -11,21 +9,25 @@ class SensorBase(object):
 
 class DistanceSensor(SensorBase):
 
+    LOWER_BOUNDS = 0
+    UPPER_BOUNDS = 30
+
     def __init__(self, webot, sensor_name):
         super().__init__(webot, sensor_name)
         self.webot_sensor = self.webot.getDistanceSensor(self.sensor_name)
         self.webot_sensor.enable(TIME_STEP)
 
-    def __scale_to_voltage(self, val):
+    def __get_scaled_distance(self):
+        val = self.webot_sensor.getValue()
         old_max = self.webot_sensor.getMaxValue()
         old_min = self.webot_sensor.getMinValue()
-        new_max = SensorBase.MAX_VOLTS
-        new_min = SensorBase.MIN_VOLTS
+        new_max = DistanceSensor.UPPER_BOUNDS
+        new_min = DistanceSensor.LOWER_BOUNDS
         return ( (val - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
          
 
     def read_value(self):
-        return self.__scale_to_voltage(self.webot_sensor.getValue())
+        return add_jitter(self.__get_scaled_distance(), DistanceSensor.LOWER_BOUNDS, DistanceSensor.UPPER_BOUNDS)
 
 class Microswitch(SensorBase):
 
