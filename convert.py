@@ -53,8 +53,7 @@ class Matrix:
         return hash(self.data)
 
     def __repr__(self) -> str:
-        return '{}((\n    {},\n))'.format(
-            type(self).__name__,
+        return 'Matrix((\n    {},\n))'.format(
             ',\n    '.join(repr(x) for x in self.data),
         )
 
