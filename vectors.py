@@ -92,7 +92,7 @@ class Vector:
 
 def cross_product(vec_a: Vector, vec_b: Vector) -> Vector:
     """
-    Cross product of two vectors of equal length.
+    Cross product of two 3-vectors.
 
     Given vectors A and B, ``A × B == ||A|| ||B|| sin(theta)`` where
     theta is the angle between them.
@@ -109,7 +109,7 @@ def cross_product(vec_a: Vector, vec_b: Vector) -> Vector:
 
 def dot_product(vec_a: Vector, vec_b: Vector) -> float:
     """
-    Dot product between two vectors of equal length.
+    Dot product between two vectors of equal size.
 
     Given vectors A and B, ``A · B == ||A|| ||B|| cos(theta)`` where
     theta is the angle between them.
