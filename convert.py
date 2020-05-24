@@ -37,7 +37,7 @@ class Matrix:
     def transpose(self) -> 'Matrix':
         return Matrix(zip(*self.data))
 
-    def round(self, precision: int) -> 'Matrix':
+    def __round__(self, precision: int) -> 'Matrix':
         return Matrix(
             (round(x, precision) for x in row)
             for row in self.data
