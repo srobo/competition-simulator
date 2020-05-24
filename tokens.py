@@ -1,7 +1,22 @@
+import enum
+from typing import Dict
+
+import vectors
 from matrix import Matrix
 from vectors import Vector
 
 TOKEN_SIZE = 1
+
+
+class FaceName(enum.Enum):
+    Top = 'top'
+    Bottom = 'bottom'
+
+    Left = 'left'
+    Right = 'right'
+
+    Front = 'front'
+    Rear = 'rear'
 
 
 class Token:
@@ -25,3 +40,25 @@ class Token:
             name: matrix * position
             for name, position in self.corners.items()
         }
+
+    def face(self, name: FaceName) -> 'Face':
+        return Face(self, name)
+
+
+class Face:
+    def __init__(self, token: Token, name: FaceName) -> None:
+        self.token = token
+        self.name = name
+
+    def corners(self) -> Dict[str, Vector]:
+        return {
+            name: position
+            for name, position in self.token.corners.items()
+            if self.name.value in name
+        }
+
+    def normal(self) -> Vector:
+        return vectors.unit_vector(sum(
+            self.corners().values(),
+            vectors.ZERO_3VECTOR,
+        ))

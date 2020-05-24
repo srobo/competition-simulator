@@ -6,6 +6,7 @@ from typing import Tuple, Sequence
 
 import vectors
 from matrix import Matrix
+from tokens import Token, FaceName
 from convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
 from vectors import Vector
 
@@ -305,6 +306,27 @@ class VectorTests(unittest.TestCase):
                 expected, vec_a, vec_b = case
                 actual = vectors.angle_between(vec_a, vec_b)
                 self.assertEqual(expected, actual, "Wrong angle between vectors.")
+
+
+class FaceTests(unittest.TestCase):
+    def test_normals(self) -> None:
+        cases = {
+            FaceName.Top: Vector((0, 1, 0)),
+            FaceName.Bottom: Vector((0, -1, 0)),
+            FaceName.Left: Vector((-1, 0, 0)),
+            FaceName.Right: Vector((1, 0, 0)),
+            FaceName.Front: Vector((0, 0, -1)),
+            FaceName.Rear: Vector((0, 0, 1)),
+        }
+
+        token = Token()
+
+        for face_name, expected_direction in cases.items():
+            with self.subTest(face_name):
+                face = token.face(face_name)
+                actual = face.normal()
+
+                self.assertEqual(expected_direction, actual, "Wrong normal unit vector")
 
 
 class TransformationTests(unittest.TestCase):

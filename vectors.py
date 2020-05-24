@@ -117,7 +117,7 @@ def dot_product(vec_a: Vector, vec_b: Vector) -> float:
     return vec_a * vec_b
 
 
-_ZERO_VECTOR = Vector((0, 0, 0))
+ZERO_3VECTOR = Vector((0, 0, 0))
 
 
 def angle_between(vec_a: Vector, vec_b: Vector) -> float:
@@ -136,7 +136,7 @@ def angle_between(vec_a: Vector, vec_b: Vector) -> float:
             ),
         )
 
-    if _ZERO_VECTOR in (vec_a, vec_b):
+    if ZERO_3VECTOR in (vec_a, vec_b):
         raise ValueError("Cannot find the angle between an empty vector and another")
 
     dp = dot_product(vec_a, vec_b)
@@ -148,7 +148,7 @@ def angle_between(vec_a: Vector, vec_b: Vector) -> float:
 
 
 def are_same_direction(vec_a: Vector, vec_b: Vector) -> bool:
-    if _ZERO_VECTOR in (vec_a, vec_b):
+    if ZERO_3VECTOR in (vec_a, vec_b):
         return False
 
     theta = angle_between(vec_a, vec_b)
