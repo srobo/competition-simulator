@@ -145,6 +145,26 @@ class MatrixTests(unittest.TestCase):
 
         self.assertEqual(E, C)
 
+    def test_sub(self) -> None:
+        A = Matrix((
+            (5, 8, 8),
+            (3, 5, 28),
+        ))
+
+        B = Matrix((
+            (1, 2, 3),
+            (4, 5, 6),
+        ))
+
+        C = A - B
+
+        E = Matrix((
+            (4, 6, 5),
+            (-1, 0, 22),
+        ))
+
+        self.assertEqual(E, C)
+
 
 class TransformationTests(unittest.TestCase):
     # All tests operate by validating the relative position of what is initially

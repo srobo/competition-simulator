@@ -58,6 +58,9 @@ class Matrix:
             ',\n    '.join(repr(x) for x in self.data),
         )
 
+    def __neg__(self) -> 'Matrix':
+        return Matrix((-x for x in row) for row in self.data)
+
     def __add__(self, other: 'Matrix') -> 'Matrix':
         if self.dimensions != other.dimensions:
             raise ValueError("Dimension mismatch: cannot add {} to {}".format(
@@ -69,6 +72,9 @@ class Matrix:
             (x + y for x, y in zip(row_self, row_other))
             for row_self, row_other in zip(self.data, other.data)
         )
+
+    def __sub__(self, other: 'Matrix') -> 'Matrix':
+        return self.__add__(-other)
 
     def __mul__(self, vector: Tuple[float, ...]) -> Tuple[float, ...]:
         if len(vector) != self.dimensions[1]:
