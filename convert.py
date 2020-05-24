@@ -143,8 +143,7 @@ def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> 'Matr
             y_z_one_minus_cos_theta + x_sin_theta,
             cos_theta + z ** 2 * one_minus_cos_theta,
         ),
-    # TODO: shouldn't round eventually, though it makes development somewhat easier.
-    )).round(1)
+    ))
 
 
 def parse_args() -> argparse.Namespace:
