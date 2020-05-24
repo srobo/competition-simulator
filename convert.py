@@ -7,9 +7,8 @@ competitor-friendly format.
 
 import math
 import argparse
-from typing import Tuple, Union, Iterable, overload, NamedTuple
+from typing import Tuple, Iterable, NamedTuple
 
-from typing_extensions import Literal
 
 WebotsOrientation = NamedTuple('WebotsOrientation', (
     ('x', float),
