@@ -71,6 +71,9 @@ class Vector:
     def __mul__(self, other: 'Vector') -> float:
         """
         Dot product between two vectors of equal length.
+
+        Given vectors A and B, ``A · B == ||A|| ||B|| cos(theta)`` where
+        theta is the angle between them.
         """
         ...
 
