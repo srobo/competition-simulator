@@ -21,6 +21,9 @@ class Vector:
     def __init__(self, data: Iterable[float]) -> None:
         self.data = tuple(data)
 
+    def magnitude(self) -> float:
+        return math.sqrt(sum(x ** 2 for x in self.data))
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Vector):
             return NotImplemented
@@ -93,6 +96,63 @@ class Vector:
         return sum(x * y for x, y in zip(self.data, value.data))
 
     __rmul__ = __mul__
+
+
+def cross_product(vec_a: Vector, vec_b: Vector) -> Vector:
+    """
+    Cross product of two vectors of equal length.
+
+    Given vectors A and B, ``A × B == ||A|| ||B|| sin(theta)`` where
+    theta is the angle between them.
+    """
+    a_x, a_y, a_z = vec_a.data
+    b_x, b_y, b_z = vec_b.data
+
+    return Vector((
+        (a_y * b_z) - (a_z * b_y),
+        (a_z * b_x) - (a_x * b_z),
+        (a_x * b_y) - (a_y * b_x),
+    ))
+
+
+def dot_product(vec_a: Vector, vec_b: Vector) -> float:
+    """
+    Dot product between two vectors of equal length.
+
+    Given vectors A and B, ``A · B == ||A|| ||B|| cos(theta)`` where
+    theta is the angle between them.
+    """
+    return vec_a * vec_b
+
+
+_ZERO_VECTOR = Vector((0, 0, 0))
+
+
+def angle_between(vec_a: Vector, vec_b: Vector) -> float:
+    """
+    Determine the angle between two vectors, in degrees.
+
+    This is calculated using the definition of the dot product and
+    knowing the size of the vectors.
+    """
+
+    if len(vec_a) != 3 or len(vec_b) != 3:
+        raise ValueError(
+            "Can only find angle between three-dimensional vectors, not {!r} and {!r}".format(
+                vec_a,
+                vec_b,
+            ),
+        )
+
+    if _ZERO_VECTOR in (vec_a, vec_b):
+        raise ValueError("Cannot find the angle between an empty vector and another")
+
+    dp = dot_product(vec_a, vec_b)
+    mod_ab = vec_a.magnitude() * vec_b.magnitude()
+    cos_theta = dp / mod_ab
+    theta_rads = math.acos(cos_theta)
+    theta_degrees = math.degrees(theta_rads)
+    return theta_degrees
 
 
 class Matrix:
