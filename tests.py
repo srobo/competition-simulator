@@ -4,11 +4,8 @@ import math
 import unittest
 from typing import Tuple, Sequence
 
-from convert import (
-    Matrix,
-    WebotsOrientation,
-    rotation_matrix_from_axis_and_angle,
-)
+from matrix import Matrix
+from convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
 
 Vector = Tuple[float, float, float]
 
