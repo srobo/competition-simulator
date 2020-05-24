@@ -4,10 +4,12 @@ import math
 import unittest
 from typing import Tuple, Sequence
 
+import vectors
 from matrix import Matrix
 from convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
+from vectors import Vector
 
-Vector = Tuple[float, float, float]
+SimpleVector = Tuple[float, float, float]
 
 
 class MatrixTests(unittest.TestCase):
@@ -163,6 +165,123 @@ class MatrixTests(unittest.TestCase):
         self.assertEqual(E, C)
 
 
+class VectorTests(unittest.TestCase):
+    def test_same_direction(self) -> None:
+        cases = (
+            (Vector((0.00001, 0, 1)), Vector((-0.00001, 0, 1))),
+            (Vector((1, 0, 1)), Vector((1, 0, 1))),
+            (Vector((1.1, 0, 1)), Vector((1, 0, 1.1))),
+            (Vector((2, 0, 2)), Vector((1, 0, 1))),
+        )
+
+        for case in cases:
+            with self.subTest(case):
+                a, b = case
+                self.assertTrue(
+                    vectors.are_same_direction(a, b),
+                    "{0} should be the same direction as {1}".format(a, b),
+                )
+
+    def test_not_same_direction(self) -> None:
+        cases = (
+            (Vector((1, 0, 1)), Vector((1, 1, 0))),
+            (Vector((1, 0, 1)), Vector((0, 0, 1))),
+            (Vector((1, 0, 1)), Vector((0, 0, 0))),
+        )
+
+        for case in cases:
+            with self.subTest(case):
+                a, b = case
+                self.assertFalse(
+                    vectors.are_same_direction(a, b),
+                    "{0} should not be the same direction as {1}".format(a, b),
+                )
+
+    def test_unit_vector(self) -> None:
+        cases = (
+            (Vector((1, 0, 0)), Vector((1, 0, 0))),
+            (Vector((2, 0, 0)), Vector((1, 0, 0))),
+        )
+
+        for case in cases:
+            with self.subTest(case):
+                vec, expected = case
+                unit_vec = vectors.unit_vector(vec)
+                self.assertEqual(
+                    expected,
+                    unit_vec,
+                    "Wrong unit vector for {0}.".format(vec),
+                )
+
+    def test_vector_sum(self) -> None:
+        cases = (
+            (Vector((1, 0, 0)), Vector((1, 0, 0)), Vector((0, 0, 0))),
+            (Vector((1, 1, 1)), Vector((1, 0, 0)), Vector((0, 1, 0)), Vector((0, 0, 1))),
+            (Vector((1, 1, 0)), Vector((1, 0, -1)), Vector((0, 1, 1))),
+        )
+
+        for case in cases:
+            with self.subTest(case):
+                expected, *vectors = case
+                actual = sum(vectors, Vector((0, 0, 0)))
+                self.assertEqual(expected, actual, "Wrong vector sum.")
+
+    def test_cross_product(self) -> None:
+        cases = (
+            # Self
+            (Vector((0, 0, 0)), Vector((1, 0, 0)), Vector((1, 0, 0))),
+            (Vector((0, 0, 0)), Vector((0, 1, 0)), Vector((0, 1, 0))),
+
+            # Unit vectors
+            (Vector((1, 0, 0)), Vector((0, 1, 0)), Vector((0, 0, 1))),
+            (Vector((0, -1, 0)), Vector((1, 0, 0)), Vector((0, 0, 1))),
+
+            # Other vectors
+            (Vector((4, 0, 0)), Vector((0, 2, 0)), Vector((0, 0, 2))),
+        )
+
+        for case in cases:
+            with self.subTest(case):
+                expected, vec_a, vec_b = case
+
+                cp = vectors.cross_product(vec_a, vec_b)
+                self.assertEqual(expected, cp, "Wrong cross product {0} × {1}.".format(vec_a, vec_b))
+
+                # Also check the other way around, which is defined as the reverse
+                expected_rev = -expected
+                cp_rev = vectors.cross_product(vec_b, vec_a)
+                self.assertEqual(expected_rev, cp_rev, "Wrong cross product {0} × {1}.".format(vec_b, vec_a))
+
+    def test_dot_product_self(self) -> None:
+        vec = Vector((1, 0, 0))
+        dp = vectors.dot_product(vec, vec)
+        self.assertEqual(1, dp, "Dot product of a vector and itself is 1")
+
+    def test_dot_product_orthogonal(self) -> None:
+        vec_a = Vector((1, 0, 0))
+        vec_b = Vector((0, 1, 0))
+
+        dp = vectors.dot_product(vec_a, vec_b)
+        self.assertEqual(0, dp, "Dot product of two perpendicular unit vectors is 0")
+
+        dp = vectors.dot_product(vec_b, vec_a)
+        self.assertEqual(0, dp, "Dot product of two perpendicular unit vectors is 0")
+
+    def test_angle_between(self) -> None:
+        cases = (
+            (0, Vector((1, 0, 0)), Vector((1, 0, 0))),
+            (180, Vector((1, 0, 0)), Vector((-1, 0, 0))),
+            (90, Vector((1, 0, 0)), Vector((0, 1, 0))),
+            (90, Vector((2, 0, 0)), Vector((0, 0, 2))),
+        )
+
+        for case in cases:
+            with self.subTest(case):
+                expected, vec_a, vec_b = case
+                actual = vectors.angle_between(vec_a, vec_b)
+                self.assertEqual(expected, actual, "Wrong angle between vectors.")
+
+
 class TransformationTests(unittest.TestCase):
     # All tests operate by validating the relative position of what is initially
     # the top-right-back corner (with co-ordinates (1, 1, 1)) on the token after
@@ -182,7 +301,7 @@ class TransformationTests(unittest.TestCase):
 
     def assertPosition(
         self,
-        expected_vector: Vector,
+        expected_vector: SimpleVector,
         input_orientation: WebotsOrientation,
     ) -> None:
         original = (1, 1, 1)
@@ -197,7 +316,7 @@ class TransformationTests(unittest.TestCase):
 
     def assertPositions(
         self,
-        vectors: Sequence[Tuple[str, Vector, WebotsOrientation]],
+        vectors: Sequence[Tuple[str, SimpleVector, WebotsOrientation]],
     ) -> None:
         for position, expected_vector, input_orientation in vectors:
             with self.subTest(position):

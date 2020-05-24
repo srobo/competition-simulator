@@ -5,6 +5,9 @@ Vector utilities.
 import math
 from typing import Union, Iterable, overload
 
+# between vectors considered the same
+DEGREES_TOLERANCE = 10
+
 
 class Vector:
     def __init__(self, data: Iterable[float]) -> None:
@@ -142,3 +145,19 @@ def angle_between(vec_a: Vector, vec_b: Vector) -> float:
     theta_rads = math.acos(cos_theta)
     theta_degrees = math.degrees(theta_rads)
     return theta_degrees
+
+
+def are_same_direction(vec_a: Vector, vec_b: Vector) -> bool:
+    if _ZERO_VECTOR in (vec_a, vec_b):
+        return False
+
+    theta = angle_between(vec_a, vec_b)
+    return theta < DEGREES_TOLERANCE
+
+
+def unit_vector(direction_vector: Vector) -> Vector:
+    magnitude = direction_vector.magnitude()
+    if not magnitude:
+        return direction_vector
+
+    return direction_vector * (1 / magnitude)
