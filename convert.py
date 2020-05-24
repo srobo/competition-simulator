@@ -19,6 +19,66 @@ WebotsOrientation = NamedTuple('WebotsOrientation', (
 ))
 
 
+class Vector:
+    def __init__(self, data: Iterable[float]) -> None:
+        self.data = tuple(data)
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Vector):
+            return NotImplemented
+
+        return self.data == other.data
+
+    def __hash__(self) -> int:
+        return hash(self.data)
+
+    def __repr__(self) -> str:
+        return 'Vector({!r})'.format(self.data)
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __round__(self, precision: int) -> 'Vector':
+        return Vector(round(x, precision) for x in self.data)
+
+    def __neg__(self) -> 'Vector':
+        return Vector(-x for x in self.data)
+
+    def __add__(self, other: 'Vector') -> 'Vector':
+        if not isinstance(other, Vector):
+            return NotImplemented  # type: ignore[unreachable]
+
+        if len(self) != len(other):
+            raise ValueError("Dimension mismatch: cannot add {} to {}".format(
+                len(self),
+                len(other),
+            ))
+
+        return Vector(x + y for x, y in zip(self.data, other.data))
+
+    def __sub__(self, other: 'Vector') -> 'Vector':
+        if not isinstance(other, Vector):
+            return NotImplemented  # type: ignore[unreachable]
+
+        return self.__add__(-other)
+
+    def __mul__(self, other: 'Vector') -> float:
+        """
+        Dot product between two vectors of equal length.
+        """
+
+        if not isinstance(other, Vector):
+            return NotImplemented  # type: ignore[unreachable]
+
+        if len(self) != len(other):
+            raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
+                len(self),
+                len(other),
+            ))
+
+        return sum(x * y for x, y in zip(self.data, other.data))
+
+
 class Matrix:
     def __init__(self, data: Iterable[Iterable[float]]) -> None:
         tuple_data = tuple(tuple(x) for x in data)
