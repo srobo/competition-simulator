@@ -18,14 +18,6 @@ WebotsOrientation = NamedTuple('WebotsOrientation', (
     ('theta', float),
 ))
 
-NormalisedVector = NamedTuple('NormalisedVector', (
-    ('x', float),
-    ('y', float),
-    ('z', float),
-))
-
-ThreeFloats = Tuple[float, float, float]
-
 
 class Matrix:
     def __init__(self, data: Iterable[Iterable[float]]) -> None:
@@ -50,27 +42,6 @@ class Matrix:
             (round(x, precision) for x in row)
             for row in self.data
         )
-
-    # @overload
-    # def __getitem__(self, key: Tuple[slice, Literal[0, 1, 2]]) -> ThreeFloats:
-    #     ...
-
-    # @overload
-    # def __getitem__(self, key: Tuple[Literal[0, 1, 2], slice]) -> ThreeFloats:
-    #     ...
-
-    # def __getitem__(self, key: Union[
-    #     Tuple[slice, Literal[0, 1, 2]],
-    #     Tuple[Literal[0, 1, 2], slice],
-    # ]) -> Union[float, ThreeFloats]:
-    #     a, b = key
-
-    #     if isinstance(a, slice):
-    #         return tuple(
-    #             x[b] for x in self.data[a]
-    #         )
-
-    #     return self.data[a]
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Matrix):
