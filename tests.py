@@ -31,7 +31,7 @@ class MatrixTests(unittest.TestCase):
         self.assertEqual(E, B)
 
     def test_multiply_identity(self) -> None:
-        I = Matrix((
+        I = Matrix((  # noqa:E741 # 'I' is not ambiguous in this context
             (1, 0, 0),
             (0, 1, 0),
             (0, 0, 1),
