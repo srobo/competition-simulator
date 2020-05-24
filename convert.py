@@ -62,6 +62,9 @@ class Matrix:
         return Matrix((-x for x in row) for row in self.data)
 
     def __add__(self, other: 'Matrix') -> 'Matrix':
+        if not isinstance(other, Matrix):
+            return NotImplemented  # type: ignore[unreachable]
+
         if self.dimensions != other.dimensions:
             raise ValueError("Dimension mismatch: cannot add {} to {}".format(
                 self.dimensions,
@@ -74,6 +77,9 @@ class Matrix:
         )
 
     def __sub__(self, other: 'Matrix') -> 'Matrix':
+        if not isinstance(other, Matrix):
+            return NotImplemented  # type: ignore[unreachable]
+
         return self.__add__(-other)
 
     def __mul__(self, vector: Tuple[float, ...]) -> Tuple[float, ...]:
@@ -91,6 +97,9 @@ class Matrix:
     __rmul__ = __mul__
 
     def __matmul__(self, other: 'Matrix') -> 'Matrix':
+        if not isinstance(other, Matrix):
+            return NotImplemented  # type: ignore[unreachable]
+
         if self.dimensions != tuple(reversed(other.dimensions)):
             raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
                 self.dimensions,
