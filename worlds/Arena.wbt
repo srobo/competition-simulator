@@ -36,7 +36,7 @@ DEF WALL Solid {
   children [
     Shape {
       appearance DEF WALL_APPEARANCE PBRAppearance {
-        baseColor 0.2 0.2 0.2
+        #baseColor 0.2 0.2 0.2
         baseColorMap ImageTexture {
           url [
             "../textures/stage.png"
@@ -52,7 +52,7 @@ DEF WALL Solid {
             2.975 0 -2.975
             -2.975 0 -2.975
             -2.975 0 2.975
-            -2.875 0 2.975
+            -2.875 0 2.875
             -2.875 0 -2.875
             2.875 0 -2.875
             2.875 0 2.875
@@ -63,7 +63,7 @@ DEF WALL Solid {
             2.975 0.5 -2.975
             -2.975 0.5 -2.975
             -2.975 0.5 2.975
-            -2.875 0.5 2.975
+            -2.875 0.5 2.875
             -2.875 0.5 -2.875
             2.875 0.5 -2.875
             2.875 0.5 2.875
