@@ -51,6 +51,11 @@ class Face:
         self.name = name
 
     def corners(self) -> Dict[str, Vector]:
+        """
+        A mapping of the corners of the face (named for their apparent position
+        on a reference token) to the current position of that corner relative to
+        the center of the token.
+        """
         return {
             name: position
             for name, position in self.token.corners.items()
@@ -58,6 +63,9 @@ class Face:
         }
 
     def normal(self) -> Vector:
+        """
+        A unit vector expressing the direction normal to the face of the token.
+        """
         return vectors.unit_vector(sum(
             self.corners().values(),
             vectors.ZERO_3VECTOR,
