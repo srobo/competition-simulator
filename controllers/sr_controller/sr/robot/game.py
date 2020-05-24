@@ -1,8 +1,8 @@
 import time
 import _thread
 from threading import Timer
+from sr.robot.settings import GAME_DURATION
 
-GAME_DURATION = 150
 
 def stop_after_delay(delay=GAME_DURATION):
     def game_over():
