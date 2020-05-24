@@ -37,6 +37,11 @@ DEF WALL Solid {
     Shape {
       appearance DEF WALL_APPEARANCE PBRAppearance {
         baseColor 0.2 0.2 0.2
+        baseColorMap ImageTexture {
+          url [
+            "../textures/stage.png"
+          ]
+        }
         roughness 1
         metalness 0
       }
@@ -52,8 +57,8 @@ DEF WALL Solid {
             2.875 0 -2.875
             2.875 0 2.875
             -2.875 0 2.875
-            -2.875 0 2.875
-            2.875 0 2.875
+            -2.975 0 2.975
+            2.975 0 2.975
             2.975 0.5 2.975
             2.975 0.5 -2.975
             -2.975 0.5 -2.975
@@ -63,7 +68,7 @@ DEF WALL Solid {
             2.875 0.5 -2.875
             2.875 0.5 2.875
             -2.875 0.5 2.875
-            -2.875 0.5 2.975
+            -2.975 0.5 2.975
             2.975 0.5 2.975
           ]
         }
