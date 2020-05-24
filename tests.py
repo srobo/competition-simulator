@@ -90,7 +90,7 @@ class MatrixTests(unittest.TestCase):
 
         self.assertEqual(E, C)
 
-    def test_identity_multiply_vector(self) -> None:
+    def test_identity_multiply_simple_vector(self) -> None:
         A = Matrix((
             (1, 0, 0),
             (0, 1, 0),
@@ -107,14 +107,31 @@ class MatrixTests(unittest.TestCase):
 
         self.assertEqual(v, result)
 
+    def test_identity_multiply_vector(self) -> None:
+        A = Matrix((
+            (1, 0, 0),
+            (0, 1, 0),
+            (0, 0, 1),
+        ))
+
+        v = Vector((1, 2, 3))
+
+        result = A * v
+
+        self.assertEqual(v, result)
+
+        result = v * A
+
+        self.assertEqual(v, result)
+
     def test_multiply_vector(self) -> None:
         A = Matrix((
             (1, 2, 3),
             (4, 5, 6),
         ))
 
-        v = (1, 2, 3)
-        expected = (14, 32)
+        v = Vector((1, 2, 3))
+        expected = Vector((14, 32))
 
         result = A * v
 

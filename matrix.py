@@ -1,7 +1,9 @@
 """
 Matrix utilities.
 """
-from typing import Tuple, Iterable
+from typing import Tuple, Union, Iterable, overload
+
+from vectors import Vector
 
 
 class Matrix:
@@ -66,17 +68,38 @@ class Matrix:
 
         return self.__add__(-other)
 
+    @overload
+    def __mul__(self, vector: Vector) -> Vector:
+        ...
+
+    @overload
     def __mul__(self, vector: Tuple[float, ...]) -> Tuple[float, ...]:
+        ...
+
+    def __mul__(
+        self,
+        vector: Union[Vector, Tuple[float, ...]],
+    ) -> Union[Vector, Tuple[float, ...]]:
         if len(vector) != self.dimensions[1]:
             raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
                 self.dimensions,
                 len(vector),
             ))
 
-        return tuple(
-            sum(x * y for x, y in zip(row_self, vector))
+        if isinstance(vector, Vector):
+            data = vector.data
+        else:
+            data = vector
+
+        values = (
+            sum(x * y for x, y in zip(row_self, data))
             for row_self in self.data
         )
+
+        if isinstance(vector, Vector):
+            return Vector(values)
+        else:
+            return tuple(values)
 
     __rmul__ = __mul__
 
