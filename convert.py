@@ -7,8 +7,7 @@ competitor-friendly format.
 
 import math
 import argparse
-from typing import Tuple, Iterable, NamedTuple
-
+from typing import Tuple, Union, Iterable, overload, NamedTuple
 
 WebotsOrientation = NamedTuple('WebotsOrientation', (
     ('x', float),
@@ -41,7 +40,7 @@ class Vector:
         return Vector(round(x, precision) for x in self.data)
 
     def __neg__(self) -> 'Vector':
-        return Vector(-x for x in self.data)
+        return self * -1
 
     def __add__(self, other: 'Vector') -> 'Vector':
         if not isinstance(other, Vector):
@@ -61,21 +60,36 @@ class Vector:
 
         return self.__add__(-other)
 
+    @overload
+    def __mul__(self, other: float) -> 'Vector':
+        """
+        Multiply vector by scalar.
+        """
+        ...
+
+    @overload
     def __mul__(self, other: 'Vector') -> float:
         """
         Dot product between two vectors of equal length.
         """
+        ...
 
-        if not isinstance(other, Vector):
+    def __mul__(self, value: 'Union[Vector, float]') -> 'Union[Vector, float]':
+        if isinstance(value, (float, int)):
+            return Vector(value * x for x in self.data)
+
+        if not isinstance(value, Vector):
             return NotImplemented  # type: ignore[unreachable]
 
-        if len(self) != len(other):
+        if len(self) != len(value):
             raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
                 len(self),
-                len(other),
+                len(value),
             ))
 
-        return sum(x * y for x, y in zip(self.data, other.data))
+        return sum(x * y for x, y in zip(self.data, value.data))
+
+    __rmul__ = __mul__
 
 
 class Matrix:
