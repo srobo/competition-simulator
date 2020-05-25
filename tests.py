@@ -507,6 +507,47 @@ class FaceTests(unittest.TestCase):
                     FaceName.Front,
                 )
 
+    def test_combined_rotations(self) -> None:
+        # Cases B & C from the second row of angles.png. We ignore case D
+        # because in that scenario the marker is behind the token an cannot be
+        # seen. libkoki somewhat deliberately leaves this case undefined, so we
+        # do the same.
+        # The second row of data are based on first rotating the token 90°
+        # clockwise (from the perspective of the camera) on its side.
+
+        one_over_root_three = 3 ** -0.5
+
+        cases = (
+            (
+                'B',
+                Orientation(0, 90, -90),
+                WebotsOrientation(
+                    -one_over_root_three,
+                    -one_over_root_three,
+                    -one_over_root_three,
+                    math.pi * 2 / 3,  # ~2.114
+                ),
+            ),
+            (
+                'C',
+                Orientation(0, -90, -90),
+                WebotsOrientation(
+                    one_over_root_three,
+                    one_over_root_three,
+                    -one_over_root_three,
+                    math.pi * 2 / 3,  # ~2.075
+                ),
+            ),
+        )
+
+        for name, expected_orientation, webots_orientation in cases:
+            with self.subTest(name):
+                self.assertOrientation(
+                    expected_orientation,
+                    webots_orientation,
+                    FaceName.Front,
+                )
+
 
 class TransformationTests(unittest.TestCase):
     # All tests operate by validating the relative position of what is initially
