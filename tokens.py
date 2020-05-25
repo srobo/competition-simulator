@@ -89,6 +89,9 @@ class Face:
         self.token = token
         self.name = name
 
+    def __repr__(self) -> str:
+        return 'Face({!r}, {!r})'.format(self.token, self.name)
+
     def _filter_corners(self, corners: Mapping[str, Vector]) -> Dict[str, Vector]:
         return {
             name: position
