@@ -320,7 +320,10 @@ class FaceTests(unittest.TestCase):
             FaceName.Rear: Vector((0, 0, 1)),
         }
 
-        token = Token()
+        token = Token(
+            # Position doesn't matter for these tests.
+            position=vectors.ZERO_3VECTOR,
+        )
 
         for face_name, expected_direction in cases.items():
             with self.subTest(face_name):
@@ -328,6 +331,27 @@ class FaceTests(unittest.TestCase):
                 actual = face.normal()
 
                 self.assertEqual(expected_direction, actual, "Wrong normal unit vector")
+
+    def test_centre_global(self) -> None:
+        token = Token(
+            position=Vector((6, 0, 10)),
+            size=2,
+        )
+
+        front_face = token.face(FaceName.Front)
+
+        # Token centre 6 to the right (X) and 10 back (Z)
+        # Centre of the front face is 2 towards us (Z) from that
+        # Centre of the front face is therefore 6 to the right (X) and 8 back (Z)
+
+        self.assertEqual(
+            Vector((6, 0, 8)),
+            front_face.centre_global(),
+        )
+
+        # By pythagoras, the center of the front face is therefore 10 away overall
+
+        self.assertEqual(10, front_face.distance())
 
 
 class TransformationTests(unittest.TestCase):

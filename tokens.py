@@ -111,3 +111,26 @@ class Face:
             self.corners().values(),
             vectors.ZERO_3VECTOR,
         ))
+
+    def centre(self) -> Vector:
+        """
+        The position of the centre of the face, relative to the token's centre.
+        """
+        corners = self.corners().values()
+        assert len(corners) == 4
+        normal = sum(corners, vectors.ZERO_3VECTOR)
+        return normal * (1 / 4)
+
+    def centre_global(self) -> Vector:
+        """
+        The position of the centre of the face, relative to the origin used for
+        the token's position.
+        """
+        return self.token.position + self.centre()
+
+    def distance(self) -> float:
+        """
+        The distance to the centre of the face from the origin used for the
+        token's position.
+        """
+        return self.centre_global().magnitude()
