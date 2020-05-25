@@ -31,24 +31,24 @@ class Token:
         self._recognition_object = recognition_object
         self._model = model
 
-    def _get_colour_id(self):
+    def _get_type_and_id(self):
         model = self._model
         return model[0], model[1:]
 
     @property
     def id(self):
-        return int(self._get_colour_id()[1])
+        return int(self._get_type_and_id()[1])
 
     @property
     def type(self):
-        colour = self._get_colour_id()[0]
-        if colour == "S":
+        type = self._get_type_and_id()[0]
+        if type == "S":
             return TokenType.SILVER
-        elif colour == "G":
+        elif type == "G":
             return TokenType.GOLD
-        elif colour == "A":
+        elif type == "A":
             return TokenType.ARENA
-        raise ValueError("Unknown colour {}.".format(colour))
+        raise ValueError("Unknown type {}.".format(type))
 
     @property
     def position(self):
