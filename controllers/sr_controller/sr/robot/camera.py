@@ -4,6 +4,7 @@ from collections import namedtuple
 from math import degrees
 from enum import Enum
 import re
+import time
 
 
 Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
