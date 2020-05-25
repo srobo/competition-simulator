@@ -9,12 +9,13 @@ import re
 Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
 Position = namedtuple("Position", ["x", "y", "z"])
 
-TOKEN_MODEL_RE = re.compile(r"^[SG]\d{2}$")
+TOKEN_MODEL_RE = re.compile(r"^[AGS]\d{2}$")
 
 
 class TokenType(Enum):
     GOLD = "TOKEN_GOLD"
     SILVER = "TOKEN_SILVER"
+    ARENA = "TOKEN_ARENA"
 
 
 def degrees_jitter(radians):
@@ -45,6 +46,8 @@ class Token:
             return TokenType.SILVER
         elif colour == "G":
             return TokenType.GOLD
+        elif colour == "A":
+            return TokenType.ARENA
         raise ValueError("Unknown colour {}.".format(colour))
 
     @property
@@ -61,7 +64,7 @@ class Token:
 
     @property
     def size(self):
-        return 0.2
+        return 0.25 if self.type == TokenType.ARENA else 0.2
 
 
 class Camera:
@@ -79,5 +82,5 @@ class Camera:
             model = recognition_object.get_model().decode()
             if TOKEN_MODEL_RE.match(model):
                 tokens.append(Token(recognition_object, model))
-        time.sleep(0.2 * len(tokens))
+        time.sleep(0.1 * len(tokens))
         return tokens
