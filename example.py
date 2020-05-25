@@ -1,5 +1,4 @@
-import vectors
-from tokens import Token, FaceName
+from tokens import Token
 from webots import CameraRecognitionObject
 from convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
 from vectors import Vector
@@ -20,23 +19,6 @@ token.rotate(rotation_matrix_from_axis_and_angle(WebotsOrientation(
     *webots_camera_recognition_object.get_orientation(),
 )))
 
-for face_name in FaceName:
-    face = token.face(face_name)
-
-    direction_to_face = face.centre_global()
-    direction_face_is_facing = face.normal()
-
-    angle_between = vectors.angle_between(
-        direction_to_face,
-        # Negate so that faces which are facing the camera have small angles,
-        # making our comparisons easier to reason about).
-        -direction_face_is_facing,
-    )
-
-    if abs(angle_between) > 75:
-        # Camreas can't see faces at oblique angles (this also excludes things
-        # facing away from the camera).
-        continue
-
+for face in token.visible_faces():
     orientation = face.orientation()
     print(orientation)

@@ -1,6 +1,6 @@
 import enum
 import math
-from typing import Dict, Mapping, NamedTuple
+from typing import Dict, Mapping, NamedTuple, List
 
 import vectors
 from matrix import Matrix
@@ -83,6 +83,13 @@ class Token:
             for name, position in self.corners.items()
         }
 
+    def visible_faces(self, angle_tolernace: float = 75) -> 'List[Face]':
+        """
+        Returns a list of the faces which are visible to the global origin.
+        """
+        faces = [self.face(x) for x in FaceName]
+        return [f for f in faces if f.is_visible_to_global_origin(angle_tolernace)]
+
 
 class Face:
     def __init__(self, token: Token, name: FaceName) -> None:
@@ -139,6 +146,21 @@ class Face:
         the token's position.
         """
         return self.token.position + self.centre()
+
+    def is_visible_to_global_origin(self, angle_tolernace: float = 75) -> bool:
+        if angle_tolernace > 90:
+            raise ValueError(
+                "Refusing to allow faces with angles > 90 to be visible (asked for {})".format(
+                    angle_tolernace,
+                ),
+            )
+
+        direction_to_origin = -self.centre_global()
+        normal = self.normal()
+
+        angle_to_origin = vectors.angle_between(direction_to_origin, normal)
+
+        return abs(angle_to_origin) < angle_tolernace
 
     def distance(self) -> float:
         """
