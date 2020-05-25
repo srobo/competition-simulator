@@ -27,7 +27,7 @@ R.motors[0].m0.power = -50
 # motor board 0, channel 1 to half power forward
 R.motors[0].m1.power = 50
 
-# sleep for 2 seconds
+# sleep for 0.75 seconds
 time.sleep(0.75)
 
 # motor board 0, channel 0 to half power forward
