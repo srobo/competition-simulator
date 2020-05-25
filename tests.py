@@ -5,6 +5,7 @@ import unittest
 from typing import Tuple, Sequence
 
 import vectors
+from image import Rectangle
 from matrix import Matrix
 from tokens import Token, FaceName
 from convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
@@ -529,6 +530,41 @@ class TransformationTests(unittest.TestCase):
                 ),
             ),
         ])
+
+
+class RectangleTests(unittest.TestCase):
+    def test_no_overlap(self) -> None:
+        a = Rectangle((0, 0), (1, 1))
+        b = Rectangle((2, 2), (1, 1))
+
+        self.assertFalse(a.overlaps(b), "{} should not overlap {}".format(a, b))
+        self.assertFalse(b.overlaps(a), "{} should not overlap {}".format(b, a))
+
+    def test_no_overlap_when_touching(self) -> None:
+        a = Rectangle((0, 0), (1, 1))
+        b = Rectangle((1, 1), (1, 1))
+
+        self.assertFalse(a.overlaps(b), "{} should not overlap {}".format(a, b))
+        self.assertFalse(b.overlaps(a), "{} should not overlap {}".format(b, a))
+
+    def test_has_overlap_self(self) -> None:
+        a = Rectangle((1, 1), (2, 2))
+
+        self.assertTrue(a.overlaps(a), "{} should overlap {}".format(a, a))
+
+    def test_has_partial_overlap(self) -> None:
+        a = Rectangle((1, 1), (2, 2))
+        b = Rectangle((2, 2), (2, 2))
+
+        self.assertTrue(a.overlaps(b), "{} should overlap {}".format(a, b))
+        self.assertTrue(b.overlaps(a), "{} should overlap {}".format(b, a))
+
+    def test_has_overlap_contained(self) -> None:
+        a = Rectangle((1, 1), (5, 5))
+        b = Rectangle((2, 2), (2, 2))
+
+        self.assertTrue(a.overlaps(b), "{} should overlap {}".format(a, b))
+        self.assertTrue(b.overlaps(a), "{} should overlap {}".format(b, a))
 
 
 if __name__ == '__main__':
