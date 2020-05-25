@@ -7,7 +7,7 @@ from typing import Tuple, Sequence
 import vectors
 from image import Rectangle
 from matrix import Matrix
-from tokens import Token, FaceName
+from tokens import Token, FaceName, Orientation
 from convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
 from vectors import Vector
 
@@ -354,6 +354,26 @@ class VectorTests(unittest.TestCase):
 
 
 class FaceTests(unittest.TestCase):
+    def assertOrientation(
+        self,
+        expected_orientation: Orientation,
+        webots_orientation: WebotsOrientation,
+        face_name: FaceName,
+    ) -> None:
+        token = Token(
+            # Position doesn't matter for this test.
+            position=vectors.ZERO_3VECTOR,
+        )
+
+        token.rotate(rotation_matrix_from_axis_and_angle(webots_orientation))
+
+        face = token.face(face_name)
+
+        actual = face.orientation()
+        actual = Orientation(*(round(x, 2) for x in actual))
+
+        self.assertEqual(expected_orientation, actual, "Wrong orientation")
+
     def test_normals(self) -> None:
         cases = {
             FaceName.Top: Vector((0, 1, 0)),
@@ -420,6 +440,64 @@ class FaceTests(unittest.TestCase):
                 actual = face.top_midpoint()
 
                 self.assertEqual(expected_direction, actual, "Wrong top edge midpoint")
+
+    def test_front_face_orientation_rot_x(self) -> None:
+        cases = (
+            # Token has been leaned 45° backwards, about X
+            (WebotsOrientation(1, 0, 0, math.pi / 4), 45),
+            # Token has been leaned 45° forwards, about X
+            (WebotsOrientation(-1, 0, 0, math.pi / 4), -45),
+        )
+
+        for webots_orientation, expected_degrees in cases:
+            with self.subTest(expected_degrees):
+                self.assertOrientation(
+                    Orientation(expected_degrees, 0, 0),
+                    webots_orientation,
+                    FaceName.Front,
+                )
+
+    def test_front_face_orientation_rot_y(self) -> None:
+        cases = (
+            # Straight on.
+            (WebotsOrientation(0, 1, 0, 0), 0),
+            # Half way to position B (see TransformationTests).
+            # Token has been turned 45° to the left (clockwise from above) about Y.
+            (WebotsOrientation(0, -1, 0, math.pi / 4), 45),
+            # Half way to position C (see TransformationTests).
+            # Token has been turned 45° to the right (anticlockwise from above) about Y.
+            (WebotsOrientation(0, 1, 0, math.pi / 4), -45),
+            # A third of the way to position C (see TransformationTests).
+            # Token has been turned 30° to the right (anticlockwise from above) about Y.
+            (WebotsOrientation(0, 1, 0, math.pi / 6), -30),
+        )
+
+        for webots_orientation, expected_degrees in cases:
+            with self.subTest(expected_degrees):
+                self.assertOrientation(
+                    Orientation(0, expected_degrees, 0),
+                    webots_orientation,
+                    FaceName.Front,
+                )
+
+    def test_front_face_orientation_rot_z(self) -> None:
+        cases = (
+            # Half way to position A, row 2 (see TransformationTests).
+            # Token has been turned 45° to the right (clockwise) about Z.
+            (WebotsOrientation(0, 0, -1, math.pi / 4), -45),
+            # Token has been turned 45° to the left (anticlockwise) about Z.
+            (WebotsOrientation(0, 0, 1, math.pi / 4), 45),
+            # Token has been upside down about Z.
+            (WebotsOrientation(0, 0, 1, math.pi), 180),
+        )
+
+        for webots_orientation, expected_degrees in cases:
+            with self.subTest(expected_degrees):
+                self.assertOrientation(
+                    Orientation(0, 0, expected_degrees),
+                    webots_orientation,
+                    FaceName.Front,
+                )
 
 
 class TransformationTests(unittest.TestCase):

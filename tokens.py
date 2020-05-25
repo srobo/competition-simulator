@@ -1,11 +1,20 @@
 import enum
-from typing import Dict, Mapping
+import math
+from typing import Dict, Mapping, NamedTuple
 
 import vectors
 from matrix import Matrix
 from vectors import Vector
 
 TOKEN_SIZE = 1
+
+
+# An orientation object which mimicks how libkoki computes its orientation angles.
+Orientation = NamedTuple('Orientation', (
+    ('rot_x', float),
+    ('rot_y', float),
+    ('rot_z', float),
+))
 
 
 class FaceName(enum.Enum):
@@ -158,3 +167,33 @@ class Face:
         assert len(corners) == 2, "Wrong number of corners for 'top' edge"
         a, b = corners
         return (a + b) / 2
+
+    def orientation(self) -> Orientation:
+        n_x, n_y, n_z = self.normal().data
+
+        rot_y = math.atan(n_x / n_z)
+
+        rot_x = math.asin(n_y)
+
+        # Unrotate the normal in X & Y to leave only the Z rotation
+        sin_x = math.sin(-rot_x)
+        sin_y = math.sin(-rot_y)
+        cos_x = math.cos(-rot_x)
+        cos_y = math.cos(-rot_y)
+
+        R = Matrix((
+            (cos_y, 0, sin_y),
+            (-sin_x * -sin_y, cos_x, -sin_x * cos_y),
+            (-sin_y * cos_x, sin_x, cos_x * cos_y),
+        ))
+
+        unrotated_midpoint = R * self.top_midpoint()
+
+        a_x, a_y, _ = unrotated_midpoint.data
+        rot_z = -math.atan2(a_x, a_y)
+
+        return Orientation(
+            math.degrees(rot_x),
+            math.degrees(rot_y),
+            math.degrees(rot_z),
+        )
