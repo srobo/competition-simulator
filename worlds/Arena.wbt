@@ -241,6 +241,211 @@ DEF WALL Solid {
       model "A6"
     }
 
+    # ======== Wall 2 ========
+
+    DEF WALL_MARKER Solid {
+      translation 2.8749 0.175 -2.154
+      children [
+        Shape {
+          appearance DEF APP_FLOOR PBRAppearance {
+            baseColorMap ImageTexture {
+              url [
+                "../textures/arena-markers/7.png"
+              ]
+              repeatS FALSE
+              repeatT FALSE
+            }
+            roughness 1
+            metalness 0
+          }
+          geometry DEF WALL_MARKER_GEOMETRY Box {
+            size 0.0001 0.25 0.25
+          }
+        }
+      ]
+      boundingObject USE WALL_MARKER_GEOMETRY
+      locked TRUE
+      recognitionColors [
+        1 1 1
+      ] 
+      name "A7"
+      model "A7"
+    }
+
+    DEF WALL_MARKER Solid {
+      translation 2.8749 0.175 -1.436
+      children [
+        Shape {
+          appearance DEF APP_FLOOR PBRAppearance {
+            baseColorMap ImageTexture {
+              url [
+                "../textures/arena-markers/8.png"
+              ]
+              repeatS FALSE
+              repeatT FALSE
+            }
+            roughness 1
+            metalness 0
+          }
+          geometry DEF WALL_MARKER_GEOMETRY Box {
+            size 0.0001 0.25 0.25
+          }
+        }
+      ]
+      boundingObject USE WALL_MARKER_GEOMETRY
+      locked TRUE
+      recognitionColors [
+        1 1 1
+      ] 
+      name "A8"
+      model "A8"
+    }
+
+    DEF WALL_MARKER Solid {
+      translation 2.8749 0.175 -0.718
+      children [
+        Shape {
+          appearance DEF APP_FLOOR PBRAppearance {
+            baseColorMap ImageTexture {
+              url [
+                "../textures/arena-markers/9.png"
+              ]
+              repeatS FALSE
+              repeatT FALSE
+            }
+            roughness 1
+            metalness 0
+          }
+          geometry DEF WALL_MARKER_GEOMETRY Box {
+            size 0.0001 0.25 0.25
+          }
+        }
+      ]
+      boundingObject USE WALL_MARKER_GEOMETRY
+      locked TRUE
+      recognitionColors [
+        1 1 1
+      ] 
+      name "A9"
+      model "A9"
+    }
+
+    DEF WALL_MARKER Solid {
+      translation 2.8749 0.175 0
+      children [
+        Shape {
+          appearance DEF APP_FLOOR PBRAppearance {
+            baseColorMap ImageTexture {
+              url [
+                "../textures/arena-markers/10.png"
+              ]
+              repeatS FALSE
+              repeatT FALSE
+            }
+            roughness 1
+            metalness 0
+          }
+          geometry DEF WALL_MARKER_GEOMETRY Box {
+            size 0.0001 0.25 0.25
+          }
+        }
+      ]
+      boundingObject USE WALL_MARKER_GEOMETRY
+      locked TRUE
+      recognitionColors [
+        1 1 1
+      ] 
+      name "A10"
+      model "A10"
+    }
+
+    DEF WALL_MARKER Solid {
+      translation 2.8749 0.175 0.718
+      children [
+        Shape {
+          appearance DEF APP_FLOOR PBRAppearance {
+            baseColorMap ImageTexture {
+              url [
+                "../textures/arena-markers/11.png"
+              ]
+              repeatS FALSE
+              repeatT FALSE
+            }
+            roughness 1
+            metalness 0
+          }
+          geometry DEF WALL_MARKER_GEOMETRY Box {
+            size 0.0001 0.25 0.25
+          }
+        }
+      ]
+      boundingObject USE WALL_MARKER_GEOMETRY
+      locked TRUE
+      recognitionColors [
+        1 1 1
+      ] 
+      name "A11"
+      model "A11"
+    }
+
+    DEF WALL_MARKER Solid {
+      translation 2.8749 0.175 1.436
+      children [
+        Shape {
+          appearance DEF APP_FLOOR PBRAppearance {
+            baseColorMap ImageTexture {
+              url [
+                "../textures/arena-markers/12.png"
+              ]
+              repeatS FALSE
+              repeatT FALSE
+            }
+            roughness 1
+            metalness 0
+          }
+          geometry DEF WALL_MARKER_GEOMETRY Box {
+            size 0.0001 0.25 0.25
+          }
+        }
+      ]
+      boundingObject USE WALL_MARKER_GEOMETRY
+      locked TRUE
+      recognitionColors [
+        1 1 1
+      ] 
+      name "A12"
+      model "A12"
+    }
+
+    DEF WALL_MARKER Solid {
+      translation 2.8749 0.175 2.154
+      children [
+        Shape {
+          appearance DEF APP_FLOOR PBRAppearance {
+            baseColorMap ImageTexture {
+              url [
+                "../textures/arena-markers/13.png"
+              ]
+              repeatS FALSE
+              repeatT FALSE
+            }
+            roughness 1
+            metalness 0
+          }
+          geometry DEF WALL_MARKER_GEOMETRY Box {
+            size 0.0001 0.25 0.25
+          }
+        }
+      ]
+      boundingObject USE WALL_MARKER_GEOMETRY
+      locked TRUE
+      recognitionColors [
+        1 1 1
+      ] 
+      name "A13"
+      model "A13"
+    }
+
     # ======== /Arena Markers ========
 
     Shape {
