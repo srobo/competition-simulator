@@ -1,25 +1,46 @@
-import time
-
 from sr.robot import *
+import time
 
 R = Robot()
 
-while True:
-    print("Dist L:", R.ruggeduinos[0].analogue_read(0))
-    print("Dist R:", R.ruggeduinos[0].analogue_read(1))
-    R.motors[0].m0.power = 10
-    R.motors[0].m1.power = 10
-    R.motors[1].m1.power = 0
-    time.sleep(2)
-    R.motors[0].m0.power = 0
-    R.motors[0].m1.power = 0
-    R.motors[1].m1.power = -100
-    time.sleep(2)
-    R.motors[0].m0.power = -10
-    R.motors[0].m1.power = -10
-    R.motors[1].m1.power = 0
-    time.sleep(2)
-    R.motors[0].m0.power = 0
-    R.motors[0].m1.power = 0
-    R.motors[1].m1.power = 100
-    time.sleep(2)
+# motor board 0, channel 0 to half power forward
+R.motors[0].m0.power = 50
+
+# motor board 0, channel 1 to half power forward
+R.motors[0].m1.power = 50
+
+# sleep for 1 second
+time.sleep(1)
+
+# motor board 0, channel 0 to stopped
+R.motors[0].m0.power = 0
+
+# motor board 0, channel 1 to stopped
+R.motors[0].m1.power = 0
+
+# sleep for 2 seconds
+time.sleep(2)
+
+# motor board 0, channel 0 to half power backward
+R.motors[0].m0.power = -50
+
+# motor board 0, channel 1 to half power forward
+R.motors[0].m1.power = 50
+
+# sleep for 0.75 seconds
+time.sleep(0.75)
+
+# motor board 0, channel 0 to half power forward
+R.motors[0].m0.power = 50
+
+# motor board 0, channel 1 to half power forward
+R.motors[0].m1.power = 50
+
+# sleep for 1 second
+time.sleep(1)
+
+# motor board 0, channel 0 to stopped
+R.motors[0].m0.power = 0
+
+# motor board 0, channel 1 to stopped
+R.motors[0].m1.power = 0
