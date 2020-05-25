@@ -134,3 +134,27 @@ class Face:
         token's position.
         """
         return self.centre_global().magnitude()
+
+    def top_midpoint(self) -> Vector:
+        """
+        The midpoint of the edge which the apparent marker on this face
+        determines to be the "top" edge. It usually doesn't actually matter
+        which edge this is, though in some games it does.
+
+        For faces which are not usually vertical, we pick the "rear" of the
+        token to equate to be the place to put the "top" edge.
+        This also matches how the markes were laid out in "Sunny Side Up".
+        """
+        if self.name in (FaceName.Top, FaceName.Bottom):
+            corners = [
+                v for n, v in self.corners().items()
+                if FaceName.Rear.value in n
+            ]
+        else:
+            corners = [
+                v for n, v in self.corners().items()
+                if FaceName.Top.value in n
+            ]
+        assert len(corners) == 2, "Wrong number of corners for 'top' edge"
+        a, b = corners
+        return (a + b) / 2

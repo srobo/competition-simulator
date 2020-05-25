@@ -397,6 +397,30 @@ class FaceTests(unittest.TestCase):
 
         self.assertEqual(10, front_face.distance())
 
+    def test_top_midpoint(self) -> None:
+        cases = {
+            # Back, away from the observer is defined as the "top"
+            FaceName.Top: Vector((0, 1, 1)),
+            FaceName.Bottom: Vector((0, -1, 1)),
+            # Top
+            FaceName.Left: Vector((-1, 1, 0)),
+            FaceName.Right: Vector((1, 1, 0)),
+            FaceName.Front: Vector((0, 1, -1)),
+            FaceName.Rear: Vector((0, 1, 1)),
+        }
+
+        token = Token(
+            # Position doesn't matter for these tests.
+            position=vectors.ZERO_3VECTOR,
+        )
+
+        for face_name, expected_direction in cases.items():
+            with self.subTest(face_name):
+                face = token.face(face_name)
+                actual = face.top_midpoint()
+
+                self.assertEqual(expected_direction, actual, "Wrong top edge midpoint")
+
 
 class TransformationTests(unittest.TestCase):
     # All tests operate by validating the relative position of what is initially
