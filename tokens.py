@@ -1,5 +1,5 @@
 import enum
-from typing import Dict
+from typing import Dict, Mapping
 
 import vectors
 from matrix import Matrix
@@ -28,7 +28,8 @@ class FaceName(enum.Enum):
 
 
 class Token:
-    def __init__(self, size: float = TOKEN_SIZE) -> None:
+    def __init__(self, position: Vector, size: float = TOKEN_SIZE) -> None:
+        self.position = position
         self.corners = {
             'left-top-front': Vector((-1, 1, -1)) * size,
             'right-top-front': Vector((1, 1, -1)) * size,
@@ -62,11 +63,29 @@ class Token:
         """
         return Face(self, name)
 
+    def corners_global(self) -> Dict[str, Vector]:
+        """
+        A mapping of the corners of the token (named for their apparent position
+        on a reference token) to the current position of that corner relative to
+        the same origin as used to define the position of the token.
+        """
+        return {
+            name: position + self.position
+            for name, position in self.corners.items()
+        }
+
 
 class Face:
     def __init__(self, token: Token, name: FaceName) -> None:
         self.token = token
         self.name = name
+
+    def _filter_corners(self, corners: Mapping[str, Vector]) -> Dict[str, Vector]:
+        return {
+            name: position
+            for name, position in corners.items()
+            if self.name.value in name
+        }
 
     def corners(self) -> Dict[str, Vector]:
         """
@@ -74,11 +93,15 @@ class Face:
         on a reference token) to the current position of that corner relative to
         the center of the token.
         """
-        return {
-            name: position
-            for name, position in self.token.corners.items()
-            if self.name.value in name
-        }
+        return self._filter_corners(self.token.corners)
+
+    def corners_global(self) -> Dict[str, Vector]:
+        """
+        A mapping of the corners of the token (named for their apparent position
+        on a reference token) to the current position of that corner relative to
+        the same origin as used to define the position of the token.
+        """
+        return self._filter_corners(self.token.corners_global())
 
     def normal(self) -> Vector:
         """
