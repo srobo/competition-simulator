@@ -1538,7 +1538,10 @@ Robot {
                     ]
                   }
                 ]
+                width 800
+                height 600
                 recognition Recognition {
+                  frameThickness 5
                 }
               }
               DEF LEFT_FINGER_SLIDER SliderJoint {
