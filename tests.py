@@ -444,9 +444,17 @@ class FaceTests(unittest.TestCase):
     def test_front_face_orientation_rot_x(self) -> None:
         cases = (
             # Token has been leaned 45° backwards, about X
-            (WebotsOrientation(1, 0, 0, math.pi / 4), 45),
+            (WebotsOrientation(-1, 0, 0, math.pi / 4), 45),
             # Token has been leaned 45° forwards, about X
-            (WebotsOrientation(-1, 0, 0, math.pi / 4), -45),
+            (WebotsOrientation(1, 0, 0, math.pi / 4), -45),
+
+            # Based on data from Webots
+            # Token 90° backwards, about X
+            (WebotsOrientation(-1, 0, 0, math.pi / 2), 90),
+            (WebotsOrientation(-0.999999999999942, -2.849321921363655e-07, -1.870076020351921e-07, 1.5529951171463792), 88.98),  # noqa:E501
+            # Token 90° forwards, about X
+            (WebotsOrientation(1, 0, 0, math.pi / 2), -90),
+            (WebotsOrientation(0.9999999999999977, -3.3035051017161785e-08, -6.047316465407898e-08, 1.587925455878411), -89.02),  # noqa:E501
         )
 
         for webots_orientation, expected_degrees in cases:

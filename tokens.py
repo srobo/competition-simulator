@@ -193,7 +193,7 @@ class Face:
         rot_z = -math.atan2(a_x, a_y)
 
         return Orientation(
-            math.degrees(rot_x),
+            math.degrees(-rot_x),
             math.degrees(rot_y),
             math.degrees(rot_z),
         )
