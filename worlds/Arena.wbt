@@ -34,6 +34,35 @@ DEF FLOOR Solid {
 }
 DEF WALL Solid {
   children [
+    DEF WALL_MARKER Solid {
+      translation 0 0.175 2.87
+      children [
+        Shape {
+          appearance DEF APP_FLOOR PBRAppearance {
+            baseColor 0.5 0.5 0.5
+            baseColorMap ImageTexture {
+              url [
+                "../textures/stage.png"
+              ]
+              repeatS FALSE
+              repeatT FALSE
+            }
+            roughness 1
+            metalness 0
+          }
+          geometry DEF WALL_MARKER_GEOMETRY Box {
+            size 0.25 0.25 0.005
+          }
+        }
+      ]
+      boundingObject USE WALL_MARKER_GEOMETRY
+      locked TRUE
+      recognitionColors [
+        1 1 1
+      ] 
+    }
+
+
     Shape {
       appearance DEF WALL_APPEARANCE PBRAppearance {
         baseColor 0.2 0.2 0.2
