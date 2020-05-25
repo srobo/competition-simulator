@@ -1,12 +1,12 @@
 from sr.robot.sensor_devices import DistanceSensor, Microswitch
 
 def init_ruggeduino_array(webot):
-    distSensorNames = ["Front Left DS", "Front Right DS", "Left DS", "Right DS", "Back Left DS", "Back Right DS"]
-    switchNames = ["front bump sensor", "back bump sensor", "token bump sensor", "left finger sensor", "right finger sensor"]
+    dist_sensor_names = ["Front Left DS", "Front Right DS", "Left DS", "Right DS", "Back Left DS", "Back Right DS"]
+    switch_names = ["front bump sensor", "back bump sensor", "token bump sensor", "left finger sensor", "right finger sensor"]
 
-    analogue_array = [DistanceSensor(webot, name) for name in distSensorNames]
+    analogue_array = [DistanceSensor(webot, name) for name in dist_sensor_names]
 
-    digital_array = [Microswitch(webot, name) for name in switchNames]
+    digital_array = [Microswitch(webot, name) for name in switch_names]
 
     return [Ruggeduino(webot, analogue_array, digital_array)]
 
