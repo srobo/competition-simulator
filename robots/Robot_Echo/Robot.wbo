@@ -971,7 +971,7 @@ Robot {
                   appearance PBRAppearance {
                     baseColorMap ImageTexture {
                       url [
-                        "../robots/Robot_Echo/logo.jpg"
+                        "../robots/Robot_Echo/logo.png"
                       ]
                       repeatS FALSE
                       repeatT FALSE
