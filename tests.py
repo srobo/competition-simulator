@@ -185,6 +185,50 @@ class MatrixTests(unittest.TestCase):
 
 
 class VectorTests(unittest.TestCase):
+    def test_multiply_float(self) -> None:
+        v = Vector((1, 2, 3))
+
+        expected = Vector((2.5, 5, 7.5))
+
+        result = v * 2.5
+
+        self.assertEqual(expected, result)
+
+        result = 2.5 * v
+
+        self.assertEqual(expected, result)
+
+    def test_divide_float(self) -> None:
+        v = Vector((12, 15, 3))
+
+        expected = Vector((2, 2.5, 0.5))
+
+        result = v / 6
+
+        self.assertEqual(expected, result)
+
+    def test_add(self) -> None:
+        a = Vector((1, 2, 3))
+
+        b = Vector((4, 6, 5))
+
+        c = a + b
+
+        expected = Vector((5, 8, 8))
+
+        self.assertEqual(expected, c)
+
+    def test_sub(self) -> None:
+        a = Vector((5, 8, 8))
+
+        b = Vector((1, 2, 3))
+
+        c = a - b
+
+        expected = Vector((4, 6, 5))
+
+        self.assertEqual(expected, c)
+
     def test_same_direction(self) -> None:
         cases = (
             (Vector((0.00001, 0, 1)), Vector((-0.00001, 0, 1))),

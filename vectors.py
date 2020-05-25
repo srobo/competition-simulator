@@ -89,6 +89,12 @@ class Vector:
 
     __rmul__ = __mul__
 
+    def __truediv__(self, other: float) -> 'Vector':
+        if not isinstance(other, (float, int)):
+            return NotImplemented  # type: ignore[unreachable]
+
+        return Vector(x / other for x in self.data)
+
 
 def cross_product(vec_a: Vector, vec_b: Vector) -> Vector:
     """
@@ -160,4 +166,4 @@ def unit_vector(direction_vector: Vector) -> Vector:
     if not magnitude:
         return direction_vector
 
-    return direction_vector * (1 / magnitude)
+    return direction_vector / magnitude

@@ -119,7 +119,7 @@ class Face:
         corners = self.corners().values()
         assert len(corners) == 4
         normal = sum(corners, vectors.ZERO_3VECTOR)
-        return normal * (1 / 4)
+        return normal / 4
 
     def centre_global(self) -> Vector:
         """
