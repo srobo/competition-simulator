@@ -971,7 +971,7 @@ Robot {
                   appearance PBRAppearance {
                     baseColorMap ImageTexture {
                       url [
-                        "../robots/Robot_Echo/logo.jpg"
+                        "../robots/Robot_Echo/logo.png"
                       ]
                       repeatS FALSE
                       repeatT FALSE
@@ -1134,7 +1134,8 @@ Robot {
                 device [
                   LinearMotor {
                     name "left finger motor"
-                    maxPosition 0.15000000000131355
+                    maxPosition 0.15000000000005506
+					maxVelocity 0.1
                   }
                 ]
                 endPoint DEF LEFT_FINGER Solid {
@@ -1218,7 +1219,8 @@ Robot {
                 device [
                   LinearMotor {
                     name "right finger motor"
-                    maxPosition 0.15000002757757508
+                    maxPosition 0.15
+					          maxVelocity 0.1
                   }
                 ]
                 endPoint DEF RIGHT_FINGER Solid {
@@ -1520,5 +1522,5 @@ Robot {
   }
   physics Physics {
   }
-  controller "Robot_Echo"
+  controller "sr_controller"
 }

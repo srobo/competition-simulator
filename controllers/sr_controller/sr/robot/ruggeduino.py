@@ -1,33 +1,29 @@
-from sr.robot.randomizer import add_jitter
-
-DIST_SENSOR_NAMES = ["Front Left DS", "Front Right DS", "Left DS","Right DS", "Back Left DS", "Back Right DS"]
-DS_TIME_STEP = 64
-MIN_VOLTS = 0
-MAX_VOLTS = 5
+from sr.robot.sensor_devices import DistanceSensor, Microswitch
 
 def init_ruggeduino_array(webot):
-    init_dist_sensors(webot)
-    return [Ruggeduino(webot)]
+    dist_sensor_names = ["Front Left DS", "Front Right DS", "Left DS", "Right DS", "Back Left DS", "Back Right DS"]
+    switch_names = ["front bump sensor", "back bump sensor", "token bump sensor", "left finger sensor", "right finger sensor"]
 
-def init_dist_sensors(webot):
-    for i in DIST_SENSOR_NAMES:
-        sensor = webot.getDistanceSensor(i)
-        if sensor != None:
-            sensor.enable(DS_TIME_STEP)
-        else:
-            print("Not a valid sensor to init")
+    analogue_array = [DistanceSensor(webot, name) for name in dist_sensor_names]
 
-def dsScaleReadingToVoltage(val):
-    return val * (0.5/100)
+    digital_array = [Microswitch(webot, name) for name in switch_names]
+
+    return [Ruggeduino(webot, analogue_array, digital_array)]
 
 class Ruggeduino(object):
-    """Class for talking to a Ruggeduino flashed with the SR firmware"""
-    def __init__(self, webot):
+    
+    DIGITAL_PIN_OFFSET = 2 # Exclude pins 0 and 1 as they are used for USB serial comms
+
+    def __init__(self, webot, analogue_array, digital_array):
         self.webot = webot
+        self.analogue_array = analogue_array
+        self.digital_array = digital_array
 
     def digital_read(self, pin):
-        "Read a digital input"
-        raise NotImplementedError("This robot does not support digital_read")
+        "Read an digital input"
+        if pin < 2 or pin > 13:
+            raise ValueError("Only pins 2 - 13 are available on the Ruggeduino")
+        return self.digital_array[pin - Ruggeduino.DIGITAL_PIN_OFFSET].read_value()
 
     def digital_write(self, pin, level):
         "Write to an output"
@@ -35,8 +31,4 @@ class Ruggeduino(object):
 
     def analogue_read(self, pin):
         "Read an analogue input"
-        sensor = self.webot.getDistanceSensor(DIST_SENSOR_NAMES[pin])
-        if sensor != None:
-            return add_jitter(float(dsScaleReadingToVoltage(sensor.getValue())), MIN_VOLTS, MAX_VOLTS)
-        #else:
-            #return "Not a valid sensor"
+        return self.analogue_array[pin].read_value()
