@@ -127,24 +127,24 @@ class Camera:
         self.camera.recognitionEnable(TIME_STEP)
 
     def see(self) -> List[Marker]:
-        objects = {}
+        object_infos = {}
 
         for recognition_object in self.camera.getRecognitionObjects():
             marker_info = parse_marker_info(
                 recognition_object.get_model().decode(),
             )
             if marker_info:
-                objects[recognition_object] = marker_info
+                object_infos[recognition_object] = marker_info
 
         tokens = tokens_from_objects(
-            objects.keys(),
-            lambda o: objects[o].size,
+            object_infos.keys(),
+            lambda o: object_infos[o].size,
         )
 
         when = time.time()
 
         markers = [
-            Marker(face, objects[recognition_object], when)
+            Marker(face, object_infos[recognition_object], when)
             for token, recognition_object in tokens
             for face in token.visible_faces()
         ]
