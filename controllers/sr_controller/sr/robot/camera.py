@@ -10,6 +10,17 @@ from sr.robot.randomizer import add_jitter
 Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
 Position = namedtuple("Position", ["x", "y", "z"])
 
+MarkerInfo = namedtuple('MarkerInfo', (
+    'code',
+    'marker_type',
+    'offset',
+    'size',
+))
+
+# TODO: support `polar` here.
+# Note: we cannot suport `image` coordinates for now.
+Point = namedtuple('Point', ('world',))
+
 MARKER_MODEL_RE = re.compile(r"^[AGS]\d{2}$")
 
 
@@ -23,6 +34,18 @@ MARKER_MODEL_TYPE_MAP = {
     'A': MarkerType.ARENA,
     'G': MarkerType.GOLD,
     'S': MarkerType.SILVER,
+}
+
+MARKER_TYPE_OFFSETS = {
+    MarkerType.ARENA: 0,
+    MarkerType.GOLD: 32,
+    MarkerType.SILVER: 40,
+}
+
+MARKER_TYPE_SIZE = {
+    MarkerType.ARENA: 0.25,
+    MarkerType.GOLD: 0.2,
+    MarkerType.SILVER: 0.2,
 }
 
 
@@ -39,21 +62,19 @@ class Marker:
         self._recognition_object = recognition_object
         self._model = model
 
-    def _get_type_and_id(self):
-        model = self._model
-        return model[0], model[1:]
-
     @property
-    def id(self):
-        return int(self._get_type_and_id()[1])
+    def info(self):
+        kind, number = self._model[0], self._model[1:]
 
-    @property
-    def type(self):
-        type = self._get_type_and_id()[0]
-        try:
-            MARKER_MODEL_TYPE_MAP[type]
-        except KeyError:
-            raise ValueError("Unknown type {}.".format(type))
+        marker_type = MARKER_MODEL_TYPE_MAP[kind]
+        offset = int(number)
+
+        return MarkerInfo(
+            code=MARKER_TYPE_OFFSETS[marker_type] + offset,
+            marker_type=marker_type,
+            offset=offset,
+            size=MARKER_TYPE_SIZE[marker_type],
+        )
 
     @property
     def position(self):
