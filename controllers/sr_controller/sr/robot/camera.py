@@ -14,9 +14,9 @@ MARKER_MODEL_RE = re.compile(r"^[AGS]\d{2}$")
 
 
 class MarkerType(Enum):
+    ARENA = "ARENA"
     GOLD = "TOKEN_GOLD"
     SILVER = "TOKEN_SILVER"
-    ARENA = "ARENA"
 
 
 def degrees_jitter(radians):
