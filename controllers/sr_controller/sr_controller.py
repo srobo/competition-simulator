@@ -4,6 +4,8 @@ from sr.robot import *
 
 R = Robot()
 
+print("I see {} things".format(len(R.see())))
+
 # motor board 0, channel 0 to half power forward
 R.motors[0].m0.power = 50
 

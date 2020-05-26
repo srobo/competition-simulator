@@ -1123,6 +1123,8 @@ Robot {
                     ]
                   }
                 ]
+                recognition Recognition {
+                }
               }
               DEF LEFT_FINGER_SLIDER SliderJoint {
                 jointParameters JointParameters {

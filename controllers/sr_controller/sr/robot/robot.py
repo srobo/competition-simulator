@@ -2,7 +2,7 @@ import sys
 import time
 from threading import Thread
 
-from sr.robot import motor, ruggeduino
+from sr.robot import motor, camera, ruggeduino
 from sr.robot.game import stop_after_delay
 from sr.robot.settings import TIME_STEP
 
@@ -78,8 +78,15 @@ class Robot(object):
         # Ruggeduinos
         self._init_ruggeduinos()
 
+        # Camera
+        self._init_camera()
+
     def _init_motors(self):
         self.motors = motor.init_motor_array(self.webot)
 
     def _init_ruggeduinos(self):
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
+
+    def _init_camera(self):
+        self.camera = camera.Camera(self.webot)
+        self.see = self.camera.see

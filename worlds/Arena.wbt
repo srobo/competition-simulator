@@ -899,14 +899,15 @@ DEF TOKEN_GOLD Solid {
       }
     }
   ]
-  name "solid(1)"
+  name "G42"
+  model "G42"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -923,14 +924,15 @@ DEF TOKEN_GOLD Solid {
       }
     }
   ]
-  name "solid(2)"
+  name "G40"
+  model "G40"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -947,14 +949,15 @@ DEF TOKEN_GOLD Solid {
       }
     }
   ]
-  name "solid(3)"
+  name "G41"
+  model "G41"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -971,14 +974,15 @@ DEF TOKEN_GOLD Solid {
       }
     }
   ]
-  name "solid(4)"
+  name "G43"
+  model "G43"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -995,14 +999,15 @@ DEF TOKEN_GOLD Solid {
       }
     }
   ]
-  name "solid(5)"
+  name "G44"
+  model "G44"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -1019,14 +1024,15 @@ DEF TOKEN_GOLD Solid {
       }
     }
   ]
-  name "solid(6)"
+  name "G45"
+  model "G45"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -1043,14 +1049,15 @@ DEF TOKEN_GOLD Solid {
       }
     }
   ]
-  name "solid(7)"
+  name "G46"
+  model "G46"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_GOLD Solid {
@@ -1067,14 +1074,15 @@ DEF TOKEN_GOLD Solid {
       }
     }
   ]
-  name "solid(8)"
+  name "G47"
+  model "G47"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
     mass 0.01
   }
   recognitionColors [
-    1 1 0
+    1 1 1
   ]
 }
 DEF TOKEN_SILVER Solid {
@@ -1090,7 +1098,8 @@ DEF TOKEN_SILVER Solid {
       }
     }
   ]
-  name "solid(9)"
+  name "S38"
+  model "S38"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
@@ -1113,7 +1122,8 @@ DEF TOKEN_SILVER Solid {
       }
     }
   ]
-  name "solid(10)"
+  name "S36"
+  model "S36"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
@@ -1136,7 +1146,8 @@ DEF TOKEN_SILVER Solid {
       }
     }
   ]
-  name "solid(11)"
+  name "S37"
+  model "S37"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
@@ -1159,7 +1170,8 @@ DEF TOKEN_SILVER Solid {
       }
     }
   ]
-  name "solid(12)"
+  name "S39"
+  model "S39"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
@@ -1182,7 +1194,8 @@ DEF TOKEN_SILVER Solid {
       }
     }
   ]
-  name "solid(13)"
+  name "S35"
+  model "S35"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
@@ -1205,7 +1218,8 @@ DEF TOKEN_SILVER Solid {
       }
     }
   ]
-  name "solid(14)"
+  name "S33"
+  model "S33"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
@@ -1228,7 +1242,8 @@ DEF TOKEN_SILVER Solid {
       }
     }
   ]
-  name "solid(15)"
+  name "S34"
+  model "S34"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
@@ -1251,7 +1266,8 @@ DEF TOKEN_SILVER Solid {
       }
     }
   ]
-  name "solid(16)"
+  name "S32"
+  model "S32"
   boundingObject USE TOKEN_GEOMETRY
   physics Physics {
     density -1
@@ -2385,7 +2401,10 @@ Robot {
                     ]
                   }
                 ]
+                width 800
+                height 600
                 recognition Recognition {
+                  frameThickness 5
                 }
               }
               DEF LEFT_FINGER_SLIDER SliderJoint {
