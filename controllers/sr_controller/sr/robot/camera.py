@@ -60,6 +60,15 @@ def position_jitter(pos):
 
 
 def parse_marker_info(model_id: str) -> Optional[MarkerInfo]:
+    """
+    Parse the model id of a maker model into a `MarkerInfo`.
+
+    Expected input format is a letter and two digits. The letter indicates the
+    type of the marker, the digits its "libkoki" 'code'.
+
+    Examples: 'A00', 'A01', ..., 'G32', 'G33', ..., 'S40', 'S41', ...
+    """
+
     match = MARKER_MODEL_RE.match(model_id)
     if match is None:
         return None
@@ -67,12 +76,14 @@ def parse_marker_info(model_id: str) -> Optional[MarkerInfo]:
     kind, number = model_id[0], model_id[1:]
 
     marker_type = MARKER_MODEL_TYPE_MAP[kind]
-    offset = int(number)
+    code = int(number)
+
+    type_offset = MARKER_TYPE_OFFSETS[marker_type]
 
     return MarkerInfo(
-        code=MARKER_TYPE_OFFSETS[marker_type] + offset,
+        code=code,
         marker_type=marker_type,
-        offset=offset,
+        offset=code - type_offset,
         size=MARKER_TYPE_SIZE[marker_type],
     )
 
