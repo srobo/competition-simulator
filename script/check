@@ -1,0 +1,14 @@
+#!/bin/sh
+
+cd $(dirname $0)/..
+
+./script/testing/test
+result=$?
+
+./script/linting/lint
+result=$((result | $?))
+
+./script/typing/check
+result=$((result | $?))
+
+exit $result

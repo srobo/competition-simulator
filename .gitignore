@@ -1,4 +1,6 @@
-.idea
 *.pyc
 .*.wbproj
-.vscode
+
+/.idea
+/.vscode
+/.mypy_cache

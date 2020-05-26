@@ -1,21 +1,25 @@
-from sr.robot import motor, ruggeduino, camera
-from sr.robot.settings import TIME_STEP, MAX_SPEED
-from controller import Robot as WebotsRobot # Webots specific library
-from threading import Thread
-import time
 import sys
+import time
+from threading import Thread
+
+from sr.robot import motor, camera, ruggeduino
 from sr.robot.game import stop_after_delay
+from sr.robot.settings import TIME_STEP
+
+# Webots specific library
+from controller import Robot as WebotsRobot  # type: ignore[import] # isort:skip
 
 
 class Robot(object):
     """Class for initialising and accessing robot hardware"""
 
-    def __init__( self,
-                  quiet = False,
-                  init = True):
+    def __init__(self, quiet=False, init=True):
 
         # Check this is the right version of Python before continuing
-        assert sys.version_info >= (3, 4), "Sorry, you must be using Python 3. Please see the SR docs for how to switch your Python version."
+        assert sys.version_info >= (3, 5), (
+            "Sorry, you must be using a recent version of Python 3. "
+            "Please see the SR docs for how to switch your Python version."
+        )
 
         self._initialised = False
         self._quiet = quiet
@@ -32,7 +36,6 @@ class Robot(object):
             self.wait_start()
             if self.mode == "comp":
                 stop_after_delay()
-
 
     @classmethod
     def setup(cls):
@@ -56,11 +59,15 @@ class Robot(object):
         "Wait for the start signal to happen"
 
         if self.mode not in ["comp", "dev"]:
-            raise Exception( "mode of '%s' is not supported -- must be 'comp' or 'dev'" % self.mode )
+            raise Exception(
+                "mode of '%s' is not supported -- must be 'comp' or 'dev'" % self.mode,
+            )
         if self.zone < 0 or self.zone > 3:
-            raise Exception( "zone must be in range 0-3 inclusive -- value of %i is invalid" % self.zone )
+            raise Exception(
+                "zone must be in range 0-3 inclusive -- value of %i is invalid" % self.zone,
+            )
         if self.arena not in ["A", "B"]:
-            raise Exception( "arena must be A or B")
+            raise Exception("arena must be A or B")
 
     def _init_devs(self):
         "Initialise the attributes for accessing devices"
