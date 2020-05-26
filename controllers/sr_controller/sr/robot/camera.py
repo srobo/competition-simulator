@@ -1,13 +1,11 @@
 import re
 import time
 from enum import Enum
-from math import degrees
 from typing import Optional, NamedTuple
 from collections import namedtuple
 
 from sr.robot.vision import Face, tokens_from_objects
 from sr.robot.settings import TIME_STEP
-from sr.robot.randomizer import add_jitter
 
 Cartesian = namedtuple("Cartesian", ["x", "y", "z"])
 
@@ -49,14 +47,6 @@ MARKER_TYPE_SIZE = {
     MarkerType.GOLD: 0.2,
     MarkerType.SILVER: 0.2,
 }
-
-
-def degrees_jitter(radians):
-    return add_jitter(degrees(radians), -180, 180)
-
-
-def position_jitter(pos):
-    return add_jitter(pos, 0, 5.75)
 
 
 def parse_marker_info(model_id: str) -> Optional[MarkerInfo]:
