@@ -4,7 +4,7 @@ from enum import Enum
 from typing import List, Optional, NamedTuple
 from collections import namedtuple
 
-from sr.robot.vision import Face, tokens_from_objects
+from sr.robot.vision import Face, Orientation, tokens_from_objects
 from sr.robot.settings import TIME_STEP
 
 Cartesian = namedtuple("Cartesian", ["x", "y", "z"])
@@ -115,7 +115,7 @@ class Marker:
     # TODO: rot_y
 
     @property
-    def orientation(self):
+    def orientation(self) -> Orientation:
         return self._face.orientation()
 
 
