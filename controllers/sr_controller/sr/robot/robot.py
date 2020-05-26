@@ -1,4 +1,3 @@
-import sys
 import time
 from threading import Thread
 
@@ -14,13 +13,6 @@ class Robot(object):
     """Class for initialising and accessing robot hardware"""
 
     def __init__(self, quiet=False, init=True):
-
-        # Check this is the right version of Python before continuing
-        assert sys.version_info >= (3, 5), (
-            "Sorry, you must be using a recent version of Python 3. "
-            "Please see the SR docs for how to switch your Python version."
-        )
-
         self._initialised = False
         self._quiet = quiet
 
