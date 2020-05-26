@@ -24,7 +24,7 @@ def translate(sr_speed_val, sr_motor):
     # Set the speed ranges
     in_from = -SPEED_MAX
     in_to = SPEED_MAX
-    out_from = - sr_motor.max_speed
+    out_from = -sr_motor.max_speed
     out_to = sr_motor.max_speed
 
     if sr_speed_val != 0:
