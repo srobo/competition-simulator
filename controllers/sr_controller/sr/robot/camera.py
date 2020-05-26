@@ -88,10 +88,6 @@ class Marker:
         z *= t
         return Orientation(degrees_jitter(x), degrees_jitter(y), degrees_jitter(z))
 
-    @property
-    def size(self):
-        return 0.25 if self.type == MarkerType.ARENA else 0.2
-
 
 class Camera:
     def __init__(self, webot):
