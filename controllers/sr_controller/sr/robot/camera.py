@@ -25,7 +25,7 @@ Point = NamedTuple('Point', (
     ('polar', PolarCoord),
 ))
 
-MARKER_MODEL_RE = re.compile(r"^[AGS]\d{2}$")
+MARKER_MODEL_RE = re.compile(r"^[AGS]\d{0,2}$")
 
 
 class MarkerType(Enum):
