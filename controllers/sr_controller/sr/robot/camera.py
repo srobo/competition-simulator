@@ -61,9 +61,11 @@ class Marker:
     # Note: properties in the same order as in the docs.
     # Note: we are _not_ supporting image-related properties, so no `res`.
 
-    def __init__(self, face: Face, model: str) -> None:
+    def __init__(self, face: Face, model: str, timestamp: float) -> None:
         self._face = face
         self._model = model
+
+        self.timestamp = timestamp
 
     @property
     def info(self):
@@ -118,8 +120,10 @@ class Camera:
 
         tokens = tokens_from_objects(objects)
 
+        when = time.time()
+
         markers = [
-            Marker(face, recognition_object.get_model().decode())
+            Marker(face, recognition_object.get_model().decode(), when)
             for token, recognition_object in tokens
             for face in token.visible_faces()
         ]
