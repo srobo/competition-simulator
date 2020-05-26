@@ -2,3 +2,5 @@
 *.pyc
 .vscode
 /.mypy_cache
+
+/worlds/.Arena.wbproj
