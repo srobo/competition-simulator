@@ -1,7 +1,7 @@
 import re
 import time
 from enum import Enum
-from typing import Optional, NamedTuple
+from typing import List, Optional, NamedTuple
 from collections import namedtuple
 
 from sr.robot.vision import Face, tokens_from_objects
@@ -126,7 +126,7 @@ class Camera:
         self.camera.enable(TIME_STEP)
         self.camera.recognitionEnable(TIME_STEP)
 
-    def see(self):
+    def see(self) -> List[Marker]:
         objects = {}
 
         for recognition_object in self.camera.getRecognitionObjects():
