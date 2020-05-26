@@ -1,4 +1,4 @@
-from typing import List, Tuple, Sequence, TYPE_CHECKING
+from typing import List, Tuple, Iterable, Sequence, TYPE_CHECKING
 
 from .image import Rectangle
 from .tokens import Token
@@ -28,7 +28,7 @@ def build_token_info(
 
 
 def tokens_from_objects(
-    objects: 'Sequence[CameraRecognitionObject]',
+    objects: 'Iterable[CameraRecognitionObject]',
 ) -> Sequence[Tuple[Token, 'CameraRecognitionObject']]:
     """
     Constructs tokens from the given recognised objects, ignoring any which are
