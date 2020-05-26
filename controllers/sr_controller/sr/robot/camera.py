@@ -102,9 +102,12 @@ class Camera:
 
     def see(self):
         marker = []
+
         for recognition_object in self.camera.getRecognitionObjects():
             model = recognition_object.get_model().decode()
             if MARKER_MODEL_RE.match(model):
                 marker.append(Marker(recognition_object, model))
+
         time.sleep(0.1 * len(marker))
+
         return marker
