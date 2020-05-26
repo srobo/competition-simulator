@@ -19,6 +19,13 @@ class MarkerType(Enum):
     SILVER = "TOKEN_SILVER"
 
 
+MARKER_MODEL_TYPE_MAP = {
+    'A': MarkerType.ARENA,
+    'G': MarkerType.GOLD,
+    'S': MarkerType.SILVER,
+}
+
+
 def degrees_jitter(radians):
     return add_jitter(degrees(radians), -180, 180)
 
@@ -43,13 +50,10 @@ class Marker:
     @property
     def type(self):
         type = self._get_type_and_id()[0]
-        if type == "S":
-            return MarkerType.SILVER
-        elif type == "G":
-            return MarkerType.GOLD
-        elif type == "A":
-            return MarkerType.ARENA
-        raise ValueError("Unknown type {}.".format(type))
+        try:
+            MARKER_MODEL_TYPE_MAP[type]
+        except KeyError:
+            raise ValueError("Unknown type {}.".format(type))
 
     @property
     def position(self):
