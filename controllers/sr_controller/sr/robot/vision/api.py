@@ -1,12 +1,12 @@
 from typing import List, Tuple, Sequence, TYPE_CHECKING
 
-from image import Rectangle
-from tokens import Token
-from convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
-from vectors import Vector
+from .image import Rectangle
+from .tokens import Token
+from .convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
+from .vectors import Vector
 
 if TYPE_CHECKING:
-    from webots import CameraRecognitionObject
+    from .webots import CameraRecognitionObject
 
 
 def build_token_and_rectangle(

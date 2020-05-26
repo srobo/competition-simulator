@@ -4,12 +4,12 @@ import math
 import unittest
 from typing import Tuple, Sequence
 
-import vectors
-from image import Rectangle
-from matrix import Matrix
-from tokens import Token, FaceName, Orientation
-from convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
-from vectors import Vector
+from . import vectors
+from .image import Rectangle
+from .matrix import Matrix
+from .tokens import Token, FaceName, Orientation
+from .convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
+from .vectors import Vector
 
 SimpleVector = Tuple[float, float, float]
 

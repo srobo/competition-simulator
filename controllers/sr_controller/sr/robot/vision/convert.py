@@ -9,7 +9,7 @@ import math
 import argparse
 from typing import NamedTuple
 
-from matrix import Matrix
+from .matrix import Matrix
 
 WebotsOrientation = NamedTuple('WebotsOrientation', (
     ('x', float),

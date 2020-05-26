@@ -3,7 +3,7 @@ Matrix utilities.
 """
 from typing import Tuple, Union, Iterable, overload
 
-from vectors import Vector
+from .vectors import Vector
 
 
 class Matrix:

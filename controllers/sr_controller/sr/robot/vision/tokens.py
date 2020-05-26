@@ -2,9 +2,9 @@ import enum
 import math
 from typing import Dict, Mapping, NamedTuple, List
 
-import vectors
-from matrix import Matrix
-from vectors import Vector
+from . import vectors
+from .matrix import Matrix
+from .vectors import Vector
 
 TOKEN_SIZE = 1
 
