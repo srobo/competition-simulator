@@ -1,5 +1,6 @@
-from sr.robot import *
 import time
+
+from sr.robot import *
 
 R = Robot()
 

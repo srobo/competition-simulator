@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd $(dirname $(dirname  $(dirname $0)))/controllers
+
+python3 -m unittest "$@"
