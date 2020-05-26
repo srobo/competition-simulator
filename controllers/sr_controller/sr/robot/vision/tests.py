@@ -6,6 +6,7 @@ from typing import Tuple, Sequence
 
 from . import vectors
 from .image import Rectangle
+from .polar import PolarCoord, polar_from_cartesian
 from .matrix import Matrix
 from .tokens import Token, FaceName, Orientation
 from .convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
@@ -823,6 +824,20 @@ class RectangleTests(unittest.TestCase):
 
         self.assertTrue(a.overlaps(b), "{} should overlap {}".format(a, b))
         self.assertTrue(b.overlaps(a), "{} should overlap {}".format(b, a))
+
+
+class PolarTests(unittest.TestCase):
+    def test_polar(self) -> None:
+        cases = [
+            (Vector((0, 0, 1)), PolarCoord(1, 0, 0)),
+            (Vector((1, 0, 1)), PolarCoord(2 ** 0.5, 0, 45)),
+            (Vector((0, 1, 1)), PolarCoord(2 ** 0.5, 44.99999999999999, 0)),
+            (Vector((1, 1, 1)), PolarCoord(3 ** 0.5, 35.26438968275466, 45)),
+        ]
+
+        for cartesian, expected in cases:
+            with self.subTest(cartesian):
+                self.assertEqual(expected, polar_from_cartesian(cartesian))
 
 
 if __name__ == '__main__':

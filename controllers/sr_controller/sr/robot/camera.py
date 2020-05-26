@@ -4,14 +4,19 @@ from enum import Enum
 from typing import List, Optional, NamedTuple
 from collections import namedtuple
 
-from sr.robot.vision import Face, Orientation, tokens_from_objects
+from sr.robot.vision import (
+    Face,
+    Vector,
+    Orientation,
+    tokens_from_objects,
+    polar_from_cartesian,
+)
 from sr.robot.settings import TIME_STEP
 
 Cartesian = namedtuple("Cartesian", ["x", "y", "z"])
 
-# TODO: support `polar` here.
 # Note: we cannot suport `image` coordinates for now.
-Point = namedtuple('Point', ('world',))
+Point = namedtuple('Point', ('world', 'polar'))
 
 MARKER_MODEL_RE = re.compile(r"^[AGS]\d{2}$")
 
@@ -96,23 +101,30 @@ class Marker:
             'orientation={}'.format(self.orientation),
         )))
 
-    @property
-    def centre(self):
+    @staticmethod
+    def _build_point(vector: Vector) -> Point:
         return Point(
-            world=Cartesian(*self._face.centre_global().data),
+            world=Cartesian(*vector.data),
+            polar=polar_from_cartesian(vector),
         )
 
     @property
-    def vertices(self):
+    def centre(self) -> Point:
+        return self._build_point(self._face.centre_global())
+
+    @property
+    def vertices(self) -> List[Point]:
         # Note quite the black corners of the marker, though fairly close --
         # actually the corners of the face of the modelled token.
-        return [Cartesian(*x.data) for x in self._face.corners_global().values()]
+        return [self._build_point(x) for x in self._face.corners_global().values()]
 
     @property
     def dist(self) -> float:
         return self._face.centre_global().magnitude()
 
-    # TODO: rot_y
+    @property
+    def rot_y(self) -> float:
+        return self.centre.polar.rot_y
 
     @property
     def orientation(self) -> Orientation:
