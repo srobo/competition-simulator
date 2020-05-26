@@ -1,0 +1,125 @@
+version: 2.1
+
+references:
+  build-checksum-file: &build-checksum-file
+    run:
+      name: Build checksum file
+      command: |
+        declare -a FILES=(
+          "script/linting/requirements.txt"
+          "script/typing/requirements.txt"
+        )
+        for f in ${FILES[@]}
+        do
+          echo "# $f" >> all-requirements.txt
+          cat $f >> all-requirements.txt
+        done
+  restore-dependencies-cache: &restore-dependencies-cache
+    restore_cache:
+      keys:
+        - deps-1-py<< parameters.version >>-{{ checksum "all-requirements.txt" }}
+  install-dependencies: &install-dependencies
+    run:
+      name: Install Dependencies
+      command: |
+        python3 -m venv venv
+        venv/bin/pip install -r all-requirements.txt
+  save-dependencies-cache: &save-dependencies-cache
+    save_cache:
+      key: deps-1-py<< parameters.version >>-{{ checksum "all-requirements.txt" }}
+      paths:
+        - venv
+  parametrised-python-executor: &parametrised-python-executor
+    parameters:
+      version:
+        type: string
+    executor:
+      name: python
+      version: << parameters.version >>
+  python-full-version-matrix: &python-full-version-matrix
+    matrix:
+      parameters:
+        version: ["3.5", "3.6", "3.7", "3.8"]
+  python-top-and-bottom-version-matrix: &python-top-and-bottom-version-matrix
+    matrix:
+      parameters:
+        version: ["3.5", "3.8"]
+  filter-tags: &filter-tags
+    filters:
+      branches:
+        ignore: /.*/
+      tags:
+        only: /^v.*/
+
+
+executors:
+  python:
+    parameters:
+      version:
+        type: string
+    docker:
+      - image: circleci/python:<< parameters.version >>
+
+jobs:
+  test:
+    <<: *parametrised-python-executor
+
+    steps:
+      - checkout
+
+      - *build-checksum-file
+      - *restore-dependencies-cache
+      - *install-dependencies
+      - *save-dependencies-cache
+
+      - run:
+          name: Run Tests
+          command: |
+            source venv/bin/activate
+            ./script/testing/test
+
+  lint:
+    <<: *parametrised-python-executor
+
+    steps:
+      - checkout
+
+      - *build-checksum-file
+      - *restore-dependencies-cache
+      - *install-dependencies
+      - *save-dependencies-cache
+
+      - run:
+          name: Run Flake8
+          command: |
+            source venv/bin/activate
+            ./script/linting/lint
+
+  typecheck:
+    <<: *parametrised-python-executor
+
+    steps:
+      - checkout
+
+      - *build-checksum-file
+      - *restore-dependencies-cache
+      - *install-dependencies
+      - *save-dependencies-cache
+
+      - run:
+          name: Run Flake8
+          command: |
+            source venv/bin/activate
+            ./script/typing/check
+
+workflows:
+  version: 2.1
+
+  validate:
+    jobs:
+      - test:
+          <<: *python-full-version-matrix
+      - lint:
+          <<: *python-top-and-bottom-version-matrix
+      - typecheck:
+          <<: *python-top-and-bottom-version-matrix
