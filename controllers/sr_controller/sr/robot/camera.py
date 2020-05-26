@@ -67,6 +67,14 @@ class Marker:
 
         self.timestamp = timestamp
 
+    def __str__(self) -> str:
+        return '<Marker: {}>'.format(', '.join((
+            'info={}'.format(self.info),
+            'centre={}'.format(self.centre),
+            'dist={}'.format(self.dist),
+            'orientation={}'.format(self.orientation),
+        )))
+
     @property
     def info(self):
         kind, number = self._model[0], self._model[1:]
