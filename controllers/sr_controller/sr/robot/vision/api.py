@@ -13,7 +13,13 @@ def build_token_info(
     recognition_object: 'CameraRecognitionObject',
     size: float,
 ) -> Tuple[Token, Rectangle, 'CameraRecognitionObject']:
-    token = Token(position=Vector(recognition_object.get_position()), size=size)
+    x, y, z = recognition_object.get_position()
+
+    token = Token(
+        size=size,
+        # Webots Z is inverted with regard to the one we want.
+        position=Vector((x, y, -z)),
+    )
     token.rotate(rotation_matrix_from_axis_and_angle(
         WebotsOrientation(*recognition_object.get_orientation()),
     ))
