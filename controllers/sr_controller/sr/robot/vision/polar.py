@@ -1,3 +1,7 @@
+"""
+Polar coordinate utilities.
+"""
+
 import math
 from typing import NamedTuple
 

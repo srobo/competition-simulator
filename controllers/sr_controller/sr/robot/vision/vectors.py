@@ -10,6 +10,14 @@ DEGREES_TOLERANCE = 10
 
 
 class Vector:
+    """
+    An arbitrary length vector of floating point values.
+
+    In addition to the usual Python niceties, this supports scalar
+    multiplication & division, vector addition and vector multiplication (dot
+    product).
+    """
+
     def __init__(self, data: Iterable[float]) -> None:
         self.data = tuple(data)
 

@@ -37,6 +37,16 @@ class FaceName(enum.Enum):
 
 
 class Token:
+    """
+    Represents a cube which knows its position in space and can be rotated.
+
+    Internally this stores its position in space separately from the positions
+    of its corners, which are stored relative to the centre of the cube.
+
+    Tokens have 6 `Face`s, all facing outwards and named for their position on a
+    reference cube.
+    """
+
     def __init__(self, position: Vector, size: float = TOKEN_SIZE) -> None:
         self.position = position
         self.corners = {
@@ -92,6 +102,12 @@ class Token:
 
 
 class Face:
+    """
+    Represents a specific named face on a token.
+
+    This is the primary interface to information about an orientated token.
+    """
+
     def __init__(self, token: Token, name: FaceName) -> None:
         self.token = token
         self.name = name

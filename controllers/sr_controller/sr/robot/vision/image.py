@@ -10,6 +10,13 @@ Size = Tuple[int, int]
 
 
 class Rectangle:
+    """
+    A rectangular axis-aligned bounding-box.
+
+    We use this primarily for its detection of whether or not it overlaps with
+    another instance within the same plane.
+    """
+
     def __init__(self, position: Point, size: Size) -> None:
         p_x, p_y = position
         s_x, s_y = size

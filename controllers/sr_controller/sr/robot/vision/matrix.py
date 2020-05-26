@@ -7,6 +7,13 @@ from .vectors import Vector
 
 
 class Matrix:
+    """
+    An arbitrary size matrix of floating point values.
+
+    In addition to the usual Python niceties, this supports scalar
+    multiplication, matrix addition and vector multiplication (dot product).
+    """
+
     def __init__(self, data: Iterable[Iterable[float]]) -> None:
         tuple_data = tuple(tuple(x) for x in data)
 
