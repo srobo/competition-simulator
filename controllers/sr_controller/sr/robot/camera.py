@@ -2,6 +2,7 @@ import re
 import time
 from enum import Enum
 from math import degrees
+from typing import Optional, NamedTuple
 from collections import namedtuple
 
 from sr.robot.vision import Face, tokens_from_objects
@@ -10,24 +11,25 @@ from sr.robot.randomizer import add_jitter
 
 Cartesian = namedtuple("Cartesian", ["x", "y", "z"])
 
-MarkerInfo = namedtuple('MarkerInfo', (
-    'code',
-    'marker_type',
-    'offset',
-    'size',
-))
-
 # TODO: support `polar` here.
 # Note: we cannot suport `image` coordinates for now.
 Point = namedtuple('Point', ('world',))
 
-MARKER_MODEL_RE = re.compile(rb"^[AGS]\d{2}$")
+MARKER_MODEL_RE = re.compile(r"^[AGS]\d{2}$")
 
 
 class MarkerType(Enum):
     ARENA = "ARENA"
     GOLD = "TOKEN_GOLD"
     SILVER = "TOKEN_SILVER"
+
+
+MarkerInfo = NamedTuple('MarkerInfo', (
+    ('code', int),
+    ('marker_type', MarkerType),
+    ('offset', int),
+    ('size', float),
+))
 
 
 MARKER_MODEL_TYPE_MAP = {
@@ -57,14 +59,32 @@ def position_jitter(pos):
     return add_jitter(pos, 0, 5.75)
 
 
+def parse_marker_info(model_id: str) -> Optional[MarkerInfo]:
+    match = MARKER_MODEL_RE.match(model_id)
+    if match is None:
+        return None
+
+    kind, number = model_id[0], model_id[1:]
+
+    marker_type = MARKER_MODEL_TYPE_MAP[kind]
+    offset = int(number)
+
+    return MarkerInfo(
+        code=MARKER_TYPE_OFFSETS[marker_type] + offset,
+        marker_type=marker_type,
+        offset=offset,
+        size=MARKER_TYPE_SIZE[marker_type],
+    )
+
+
 class Marker:
     # Note: properties in the same order as in the docs.
     # Note: we are _not_ supporting image-related properties, so no `res`.
 
-    def __init__(self, face: Face, model: str, timestamp: float) -> None:
+    def __init__(self, face: Face, marker_info: MarkerInfo, timestamp: float) -> None:
         self._face = face
-        self._model = model
 
+        self.info = marker_info
         self.timestamp = timestamp
 
     def __str__(self) -> str:
@@ -74,20 +94,6 @@ class Marker:
             'dist={}'.format(self.dist),
             'orientation={}'.format(self.orientation),
         )))
-
-    @property
-    def info(self):
-        kind, number = self._model[0], self._model[1:]
-
-        marker_type = MARKER_MODEL_TYPE_MAP[kind]
-        offset = int(number)
-
-        return MarkerInfo(
-            code=MARKER_TYPE_OFFSETS[marker_type] + offset,
-            marker_type=marker_type,
-            offset=offset,
-            size=MARKER_TYPE_SIZE[marker_type],
-        )
 
     @property
     def centre(self):
@@ -120,18 +126,21 @@ class Camera:
         self.camera.recognitionEnable(TIME_STEP)
 
     def see(self):
-        objects = [
-            recognition_object
-            for recognition_object in self.camera.getRecognitionObjects()
-            if MARKER_MODEL_RE.match(recognition_object.get_model())
-        ]
+        objects = {}
 
-        tokens = tokens_from_objects(objects)
+        for recognition_object in self.camera.getRecognitionObjects():
+            marker_info = parse_marker_info(
+                recognition_object.get_model().decode(),
+            )
+            if marker_info:
+                objects[recognition_object] = marker_info
+
+        tokens = tokens_from_objects(objects.keys())
 
         when = time.time()
 
         markers = [
-            Marker(face, recognition_object.get_model().decode(), when)
+            Marker(face, objects[recognition_object], when)
             for token, recognition_object in tokens
             for face in token.visible_faces()
         ]
