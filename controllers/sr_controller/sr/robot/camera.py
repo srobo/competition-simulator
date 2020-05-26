@@ -2,21 +2,28 @@ import re
 import time
 from enum import Enum
 from typing import List, Optional, NamedTuple
-from collections import namedtuple
 
 from sr.robot.vision import (
     Face,
     Vector,
+    PolarCoord,
     Orientation,
     tokens_from_objects,
     polar_from_cartesian,
 )
 from sr.robot.settings import TIME_STEP
 
-Cartesian = namedtuple("Cartesian", ["x", "y", "z"])
+Cartesian = NamedTuple("Cartesian", (
+    ("x", float),
+    ("y", float),
+    ("z", float),
+))
 
 # Note: we cannot suport `image` coordinates for now.
-Point = namedtuple('Point', ('world', 'polar'))
+Point = NamedTuple('Point', (
+    ('world', Cartesian),
+    ('polar', PolarCoord),
+))
 
 MARKER_MODEL_RE = re.compile(r"^[AGS]\d{2}$")
 
