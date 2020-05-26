@@ -1,7 +1,7 @@
 from sr.robot.robot import Robot
-from sr.robot.camera import TokenType
+from sr.robot.camera import MarkerType
 
 __all__ = (
     'Robot',
-    'TokenType',
+    'MarkerType',
 )
