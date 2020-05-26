@@ -1,4 +1,4 @@
-from typing import List, Tuple, Iterable, Sequence, TYPE_CHECKING
+from typing import List, Tuple, Callable, Iterable, Sequence, TYPE_CHECKING
 
 from .image import Rectangle
 from .tokens import Token
@@ -11,8 +11,9 @@ if TYPE_CHECKING:
 
 def build_token_info(
     recognition_object: 'CameraRecognitionObject',
+    size: float,
 ) -> Tuple[Token, Rectangle, 'CameraRecognitionObject']:
-    token = Token(position=Vector(recognition_object.get_position()))
+    token = Token(position=Vector(recognition_object.get_position()), size=size)
     token.rotate(rotation_matrix_from_axis_and_angle(
         WebotsOrientation(*recognition_object.get_orientation()),
     ))
@@ -29,6 +30,7 @@ def build_token_info(
 
 def tokens_from_objects(
     objects: 'Iterable[CameraRecognitionObject]',
+    get_size: 'Callable[[CameraRecognitionObject], float]',
 ) -> Sequence[Tuple[Token, 'CameraRecognitionObject']]:
     """
     Constructs tokens from the given recognised objects, ignoring any which are
@@ -36,7 +38,7 @@ def tokens_from_objects(
     """
 
     tokens_with_info = sorted(
-        (build_token_info(o) for o in objects),
+        (build_token_info(o, get_size(o)) for o in objects),
         key=lambda x: x[0].position.magnitude(),
     )
 

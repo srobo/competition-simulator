@@ -135,7 +135,10 @@ class Camera:
             if marker_info:
                 objects[recognition_object] = marker_info
 
-        tokens = tokens_from_objects(objects.keys())
+        tokens = tokens_from_objects(
+            objects.keys(),
+            lambda o: objects[o].size,
+        )
 
         when = time.time()
 
