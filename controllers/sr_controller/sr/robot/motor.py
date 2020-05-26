@@ -1,5 +1,3 @@
-from collections import OrderedDict
-
 from sr.robot.randomizer import add_jitter
 from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
 

@@ -1,4 +1,3 @@
-import time
 from textwrap import dedent
 from threading import Timer
 

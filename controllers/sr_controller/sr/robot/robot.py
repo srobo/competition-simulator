@@ -5,7 +5,7 @@ from threading import Thread
 from sr.robot import motor, ruggeduino
 from controller import Robot as WebotsRobot  # Webots specific library
 from sr.robot.game import stop_after_delay
-from sr.robot.settings import MAX_SPEED, TIME_STEP
+from sr.robot.settings import TIME_STEP
 
 
 class Robot(object):
