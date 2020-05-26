@@ -16,9 +16,9 @@ class Robot(object):
     def __init__(self, quiet=False, init=True):
 
         # Check this is the right version of Python before continuing
-        assert sys.version_info >= (3, 4), (
-            "Sorry, you must be using Python 3. Please see the SR docs for how "
-            "to switch your Python version."
+        assert sys.version_info >= (3, 5), (
+            "Sorry, you must be using a recent version of Python 3. "
+            "Please see the SR docs for how to switch your Python version."
         )
 
         self._initialised = False
