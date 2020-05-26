@@ -4,10 +4,10 @@ from enum import Enum
 from math import degrees
 from collections import namedtuple
 
+from sr.robot.vision import Face, tokens_from_objects
 from sr.robot.settings import TIME_STEP
 from sr.robot.randomizer import add_jitter
 
-Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
 Position = namedtuple("Position", ["x", "y", "z"])
 
 MarkerInfo = namedtuple('MarkerInfo', (
@@ -21,7 +21,7 @@ MarkerInfo = namedtuple('MarkerInfo', (
 # Note: we cannot suport `image` coordinates for now.
 Point = namedtuple('Point', ('world',))
 
-MARKER_MODEL_RE = re.compile(r"^[AGS]\d{2}$")
+MARKER_MODEL_RE = re.compile(rb"^[AGS]\d{2}$")
 
 
 class MarkerType(Enum):
@@ -58,8 +58,8 @@ def position_jitter(pos):
 
 
 class Marker:
-    def __init__(self, recognition_object, model):
-        self._recognition_object = recognition_object
+    def __init__(self, face: Face, model: str) -> None:
+        self._face = face
         self._model = model
 
     @property
@@ -78,15 +78,11 @@ class Marker:
 
     @property
     def position(self):
-        return Position([position_jitter(pos) for pos in self._recognition_object.get_position()])
+        return Position([position_jitter(pos) for pos in self._face.centre_global().data])
 
     @property
     def orientation(self):
-        x, y, z, t = self._recognition_object.get_orientation()
-        x *= t
-        y *= t
-        z *= t
-        return Orientation(degrees_jitter(x), degrees_jitter(y), degrees_jitter(z))
+        return self._face.orientation()
 
 
 class Camera:
@@ -97,12 +93,19 @@ class Camera:
         self.camera.recognitionEnable(TIME_STEP)
 
     def see(self):
-        markers = []
+        objects = [
+            recognition_object
+            for recognition_object in self.camera.getRecognitionObjects()
+            if MARKER_MODEL_RE.match(recognition_object.get_model())
+        ]
 
-        for recognition_object in self.camera.getRecognitionObjects():
-            model = recognition_object.get_model().decode()
-            if MARKER_MODEL_RE.match(model):
-                markers.append(Marker(recognition_object, model))
+        tokens = tokens_from_objects(objects)
+
+        markers = [
+            Marker(face, recognition_object.get_model().decode())
+            for token, recognition_object in tokens
+            for face in token.visible_faces()
+        ]
 
         time.sleep(0.1 * len(markers))
 
