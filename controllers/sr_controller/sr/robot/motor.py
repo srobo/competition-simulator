@@ -6,14 +6,15 @@ SPEED_MAX = 100
 
 
 def init_motor_array(webot):
-    motor_array = []
-    motor_array.append(Wheel(webot, 'left wheel'))
-    motor_array.append(Wheel(webot, 'right wheel'))
-    motor_array.append(LinearMotor(webot, 'lift motor'))
-    motor_array.append(Gripper(webot, 'left finger motor|right finger motor'))
     return [
-        Motor(0, webot, [motor_array[0], motor_array[1]]),
-        Motor(1, webot, [motor_array[2], motor_array[3]]),
+        Motor(0, webot, [
+            Wheel(webot, 'left wheel'),
+            Wheel(webot, 'right wheel'),
+        ]),
+        Motor(1, webot, [
+            LinearMotor(webot, 'lift motor'),
+            Gripper(webot, 'left finger motor|right finger motor'),
+        ]),
     ]
 
 
