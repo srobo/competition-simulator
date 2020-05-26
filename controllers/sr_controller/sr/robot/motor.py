@@ -1,9 +1,11 @@
 from collections import OrderedDict
+
 from sr.robot.randomizer import add_jitter
-from sr.robot.motor_devices import Wheel, LinearMotor, Gripper
+from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
+
 
 def init_motor_array(webot):
     motor_array = []
@@ -11,7 +13,11 @@ def init_motor_array(webot):
     motor_array.append(Wheel(webot, 'right wheel'))
     motor_array.append(LinearMotor(webot, 'lift motor'))
     motor_array.append(Gripper(webot, 'left finger motor|right finger motor'))
-    return [Motor(0, webot, [motor_array[0], motor_array[1]]), Motor(1, webot, [motor_array[2], motor_array[3]])]    
+    return [
+        Motor(0, webot, [motor_array[0], motor_array[1]]),
+        Motor(1, webot, [motor_array[2], motor_array[3]]),
+    ]
+
 
 def translate(sr_speed_val, sr_motor):
     # Translate from -100 to 100 range to the actual motor control range
@@ -28,17 +34,20 @@ def translate(sr_speed_val, sr_motor):
     out_range = out_to - out_from
     in_range = in_to - in_from
     in_val = sr_speed_val - in_from
-    val=(float(in_val)/in_range)*out_range
-    out_val = out_from+val
+    val = (float(in_val) / in_range) * out_range
+    out_val = out_from + val
     return out_val
+
 
 class Motor(object):
     """A motor"""
+
     def __init__(self, board_id, webot, sr_motors):
         self.board_id = board_id
         self.m0 = MotorChannel(0, webot, board_id, sr_motors[0])
         self.m1 = MotorChannel(1, webot, board_id, sr_motors[1])
-        self.webot = webot                    
+        self.webot = webot
+
 
 class MotorChannel(object):
     def __init__(self, channel, webot, board_id, sr_motor):
@@ -46,7 +55,7 @@ class MotorChannel(object):
         self.webot = webot
         self.board_id = board_id
         # Private shadow of use_brake
-        #self._use_brake = True # TODO create new thread for non-braking slowdown
+        # self._use_brake = True # TODO create new thread for non-braking slowdown
 
         # There is currently no method for reading the power from a motor board
         self._power = 0
@@ -69,7 +78,6 @@ class MotorChannel(object):
             value = -SPEED_MAX
 
         self.sr_motor.set_speed(translate(value, self.sr_motor))
-
 
     ''''@property
     def use_brake(self):

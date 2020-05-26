@@ -1,8 +1,10 @@
 import time
-import _thread
-from threading import Timer
-from sr.robot.settings import GAME_DURATION
 from textwrap import dedent
+from threading import Timer
+
+import _thread
+from sr.robot.settings import GAME_DURATION
+
 
 def game_over():
     print(dedent("""

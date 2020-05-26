@@ -1,8 +1,22 @@
-from sr.robot.sensor_devices import DistanceSensor, Microswitch
+from sr.robot.sensor_devices import Microswitch, DistanceSensor
+
 
 def init_ruggeduino_array(webot):
-    dist_sensor_names = ["Front Left DS", "Front Right DS", "Left DS", "Right DS", "Back Left DS", "Back Right DS"]
-    switch_names = ["front bump sensor", "back bump sensor", "token bump sensor", "left finger sensor", "right finger sensor"]
+    dist_sensor_names = [
+        "Front Left DS",
+        "Front Right DS",
+        "Left DS",
+        "Right DS",
+        "Back Left DS",
+        "Back Right DS",
+    ]
+    switch_names = [
+        "front bump sensor",
+        "back bump sensor",
+        "token bump sensor",
+        "left finger sensor",
+        "right finger sensor",
+    ]
 
     analogue_array = [DistanceSensor(webot, name) for name in dist_sensor_names]
 
@@ -10,9 +24,10 @@ def init_ruggeduino_array(webot):
 
     return [Ruggeduino(webot, analogue_array, digital_array)]
 
+
 class Ruggeduino(object):
-    
-    DIGITAL_PIN_OFFSET = 2 # Exclude pins 0 and 1 as they are used for USB serial comms
+
+    DIGITAL_PIN_OFFSET = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 
     def __init__(self, webot, analogue_array, digital_array):
         self.webot = webot

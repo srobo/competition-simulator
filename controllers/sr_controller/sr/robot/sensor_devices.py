@@ -1,11 +1,13 @@
 from sr.robot.settings import TIME_STEP
 from sr.robot.randomizer import add_jitter
 
+
 class SensorBase(object):
 
     def __init__(self, webot, sensor_name):
         self.webot = webot
         self.sensor_name = sensor_name
+
 
 class DistanceSensor(SensorBase):
 
@@ -23,11 +25,15 @@ class DistanceSensor(SensorBase):
         old_min = self.webot_sensor.getMinValue()
         new_max = DistanceSensor.UPPER_BOUNDS
         new_min = DistanceSensor.LOWER_BOUNDS
-        return ( (val - old_min) / (old_max - old_min) ) * (new_max - new_min) + new_min
-         
+        return ((val - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
     def read_value(self):
-        return add_jitter(self.__get_scaled_distance(), DistanceSensor.LOWER_BOUNDS, DistanceSensor.UPPER_BOUNDS)
+        return add_jitter(
+            self.__get_scaled_distance(),
+            DistanceSensor.LOWER_BOUNDS,
+            DistanceSensor.UPPER_BOUNDS,
+        )
+
 
 class Microswitch(SensorBase):
 
@@ -38,4 +44,3 @@ class Microswitch(SensorBase):
 
     def read_value(self):
         return self.webot_sensor.getValue() > 0
-
