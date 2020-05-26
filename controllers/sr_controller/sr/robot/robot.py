@@ -3,9 +3,11 @@ import time
 from threading import Thread
 
 from sr.robot import motor, ruggeduino
-from controller import Robot as WebotsRobot  # Webots specific library
 from sr.robot.game import stop_after_delay
 from sr.robot.settings import TIME_STEP
+
+# Webots specific library
+from controller import Robot as WebotsRobot  # type: ignore[import] # isort:skip
 
 
 class Robot(object):
