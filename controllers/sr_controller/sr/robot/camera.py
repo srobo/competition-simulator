@@ -101,13 +101,13 @@ class Camera:
         self.camera.recognitionEnable(TIME_STEP)
 
     def see(self):
-        marker = []
+        markers = []
 
         for recognition_object in self.camera.getRecognitionObjects():
             model = recognition_object.get_model().decode()
             if MARKER_MODEL_RE.match(model):
-                marker.append(Marker(recognition_object, model))
+                markers.append(Marker(recognition_object, model))
 
-        time.sleep(0.1 * len(marker))
+        time.sleep(0.1 * len(markers))
 
-        return marker
+        return markers
