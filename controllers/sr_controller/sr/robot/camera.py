@@ -8,7 +8,7 @@ from sr.robot.vision import Face, tokens_from_objects
 from sr.robot.settings import TIME_STEP
 from sr.robot.randomizer import add_jitter
 
-Position = namedtuple("Position", ["x", "y", "z"])
+Cartesian = namedtuple("Cartesian", ["x", "y", "z"])
 
 MarkerInfo = namedtuple('MarkerInfo', (
     'code',
@@ -58,6 +58,9 @@ def position_jitter(pos):
 
 
 class Marker:
+    # Note: properties in the same order as in the docs.
+    # Note: we are _not_ supporting image-related properties, so no `res`.
+
     def __init__(self, face: Face, model: str) -> None:
         self._face = face
         self._model = model
@@ -77,8 +80,22 @@ class Marker:
         )
 
     @property
-    def position(self):
-        return Position([position_jitter(pos) for pos in self._face.centre_global().data])
+    def centre(self):
+        return Point(
+            world=Cartesian(*self._face.centre_global().data),
+        )
+
+    @property
+    def vertices(self):
+        # Note quite the black corners of the marker, though fairly close --
+        # actually the corners of the face of the modelled token.
+        return [Cartesian(*x.data) for x in self._face.corners_global().values()]
+
+    @property
+    def dist(self) -> float:
+        return self._face.centre_global().magnitude()
+
+    # TODO: rot_y
 
     @property
     def orientation(self):
