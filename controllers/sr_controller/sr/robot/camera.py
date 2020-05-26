@@ -1,11 +1,11 @@
-from sr.robot.settings import TIME_STEP
-from sr.robot.randomizer import random_in_range, add_jitter
-from collections import namedtuple
-from math import degrees
-from enum import Enum
 import re
 import time
+from enum import Enum
+from math import degrees
+from collections import namedtuple
 
+from sr.robot.settings import TIME_STEP
+from sr.robot.randomizer import add_jitter
 
 Orientation = namedtuple("Orientation", ["rot_x", "rot_y", "rot_z"])
 Position = namedtuple("Position", ["x", "y", "z"])
