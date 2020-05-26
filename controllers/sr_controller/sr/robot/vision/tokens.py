@@ -1,6 +1,6 @@
 import enum
 import math
-from typing import Dict, Mapping, NamedTuple, List
+from typing import Dict, List, Mapping, NamedTuple
 
 from . import vectors
 from .matrix import Matrix
