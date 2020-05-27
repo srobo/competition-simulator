@@ -1046,7 +1046,7 @@ Robot {
       ]
     }
     DEF GRIPPER_BASE Solid {
-      translation 0 0.25 -0.015
+      translation -1.46357e-22 0.21 -0.015
       rotation 1 3.7567134377662594e-17 9.191229015555427e-16 -3.98090896186861e-06
       children [
         Camera {
