@@ -3,7 +3,7 @@ import sys
 from shutil import copyfile
 from pathlib import Path
 
-ROOT = Path(os.getcwd()).joinpath("../../").resolve()
+ROOT = Path().joinpath("../../").resolve()
 
 ROBOT_FILE = ROOT.parent.joinpath("robot.py")
 
