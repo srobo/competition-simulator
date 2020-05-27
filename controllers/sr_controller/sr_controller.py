@@ -1,49 +1,24 @@
-import time
+import os
+import sys
+from shutil import copyfile
+from pathlib import Path
 
-from sr.robot import *
+ROOT = Path(os.getcwd()).joinpath("../../").resolve()
 
-R = Robot()
+CONTROLLER_NAME = "robot"
+CONTROLLER_FILENAME = CONTROLLER_NAME + ".py"
 
-print("I see {} things".format(len(R.see())))
+ROBOT_FILE_DIR = ROOT.parent
 
-# motor board 0, channel 0 to half power forward
-R.motors[0].m0.power = 50
+ROBOT_FILE = ROBOT_FILE_DIR.joinpath(CONTROLLER_FILENAME)
 
-# motor board 0, channel 1 to half power forward
-R.motors[0].m1.power = 50
+EXAMPLE_CONTROLLER_FILE =ROOT.joinpath("controllers/example_controller/example_controller.py").resolve()
 
-# sleep for 1 second
-time.sleep(1)
 
-# motor board 0, channel 0 to stopped
-R.motors[0].m0.power = 0
+if __name__ == "__main__":
+    if not ROBOT_FILE.exists():
+        print("Robot controller not found, copying example into place.")
+        copyfile(EXAMPLE_CONTROLLER_FILE, ROBOT_FILE)
 
-# motor board 0, channel 1 to stopped
-R.motors[0].m1.power = 0
-
-# sleep for 2 seconds
-time.sleep(2)
-
-# motor board 0, channel 0 to half power backward
-R.motors[0].m0.power = -50
-
-# motor board 0, channel 1 to half power forward
-R.motors[0].m1.power = 50
-
-# sleep for 0.75 seconds
-time.sleep(0.75)
-
-# motor board 0, channel 0 to half power forward
-R.motors[0].m0.power = 50
-
-# motor board 0, channel 1 to half power forward
-R.motors[0].m1.power = 50
-
-# sleep for 1 second
-time.sleep(1)
-
-# motor board 0, channel 0 to stopped
-R.motors[0].m0.power = 0
-
-# motor board 0, channel 1 to stopped
-R.motors[0].m1.power = 0
+    sys.path.insert(0, str(ROBOT_FILE_DIR))
+    __import__(CONTROLLER_NAME)
