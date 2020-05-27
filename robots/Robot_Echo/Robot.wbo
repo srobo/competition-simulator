@@ -1130,42 +1130,6 @@ Robot {
                   0.01 1 0
                 ]
               }
-              Camera {
-                translation 0 0.05 -0.02
-                children [
-                  Transform {
-                    translation 0 0 -0.01
-                    rotation 1 0 0 1.5708003061004252
-                    children [
-                      Shape {
-                        appearance PBRAppearance {
-                          baseColor 0 0 0
-                        }
-                        geometry Cylinder {
-                          height 0.005
-                          radius 0.013
-                        }
-                      }
-                    ]
-                  }
-                  Transform {
-                    translation 0 0 0.005
-                    children [
-                      Shape {
-                        appearance PBRAppearance {
-                          baseColor 0.4 0.4 0.4
-                          metalness 0
-                        }
-                        geometry Box {
-                          size 0.05 0.05 0.025
-                        }
-                      }
-                    ]
-                  }
-                ]
-                recognition Recognition {
-                }
-              }
               DEF LEFT_FINGER_SLIDER SliderJoint {
                 jointParameters JointParameters {
                   position 0.14999997248782274
@@ -1175,7 +1139,7 @@ Robot {
                   LinearMotor {
                     name "left finger motor"
                     maxPosition 0.15000000000005506
-					maxVelocity 0.1
+					          maxVelocity 0.1
                   }
                 ]
                 endPoint DEF LEFT_FINGER Solid {
