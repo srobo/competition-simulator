@@ -823,6 +823,46 @@ Robot {
       children [
         DEF BODY Group {
           children [
+            Camera {
+              translation 0 0.517412 -0.0596593
+              rotation 1 0 0 -0.261795307179586
+              children [
+                Transform {
+                  translation 0 0 -0.01
+                  rotation 1 0 0 1.5708003061004252
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0 0 0
+                      }
+                      geometry Cylinder {
+                        height 0.005
+                        radius 0.013
+                      }
+                    }
+                  ]
+                }
+                Transform {
+                  translation 0 0 0.005
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.4 0.4 0.4
+                        metalness 0
+                      }
+                      geometry Box {
+                        size 0.05 0.05 0.025
+                      }
+                    }
+                  ]
+                }
+              ]
+              width 800
+              height 600
+              recognition Recognition {
+                frameThickness 5
+              }
+            }
             DEF flag_pole Solid {
               translation 0 0.3 0.075
               children [
