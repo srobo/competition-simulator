@@ -12,7 +12,7 @@ class SensorBase(object):
 class DistanceSensor(SensorBase):
 
     LOWER_BOUNDS = 0
-    UPPER_BOUNDS = 30
+    UPPER_BOUNDS = 0.3
 
     def __init__(self, webot, sensor_name):
         super().__init__(webot, sensor_name)
