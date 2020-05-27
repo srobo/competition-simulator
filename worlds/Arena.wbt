@@ -1588,8 +1588,8 @@ Robot {
             }
           ]
           endPoint Solid {
-            translation 0.1999999877729786 0.0002686361091618171 -0.0003603015187829329
-            rotation -0.9999999953968224 4.2849467351666585e-05 8.585032564057782e-05 0.9344151591877564
+            translation 0.19999998777297853 0.00026863610916181706 -0.0003603015187829328
+            rotation -0.9999999953968224 4.284946735166655e-05 8.585032564057774e-05 0.9344151591877564
             children [
               DEF RIGHT_BLACK_CYLINDER_SHAPE Shape {
                 appearance PBRAppearance {
@@ -1771,7 +1771,7 @@ Robot {
           ]
           endPoint Solid {
             translation -0.19999998767113233 0.00026863721059561843 -0.00036030299207660306
-            rotation -0.999999995396832 -4.2849421713714726e-05 -8.58502344116959e-05 0.9344151521635337
+            rotation -0.999999995396832 -4.2849421713715e-05 -8.585023441169642e-05 0.9344151521635337
             children [
               DEF BLACK_CYLINDER_SHAPE Shape {
                 appearance PBRAppearance {
@@ -1948,8 +1948,8 @@ Robot {
             axis 0 1 0
           }
           endPoint Solid {
-            translation 3.567558609411397e-11 0.00029152609756950436 4.812113430210349e-07
-            rotation -0.9826105387155922 -0.18567856413792985 4.972993040880274e-06 3.864201805289567e-06
+            translation 3.567558609411397e-11 0.00029152609756950436 4.81211343021035e-07
+            rotation -0.9826105387155939 -0.1856785641379203 4.972993040880017e-06 3.864201805289567e-06
             children [
               DEF casterWheelRim HingeJoint {
                 jointParameters HingeJointParameters {
@@ -1957,8 +1957,8 @@ Robot {
                   anchor 0 -0.0521014 0.012843
                 }
                 endPoint Solid {
-                  translation -2.968546926221432e-09 -0.052112315544752326 0.011863874977601779
-                  rotation -1 -1.187454807027683e-10 9.781663462284222e-11 1.6144670885446237
+                  translation -2.9685469262214305e-09 -0.052112315544752326 0.011863874977601779
+                  rotation -1 -1.1874548070276828e-10 9.781663462284221e-11 1.6144670885446237
                   children [
                     DEF CASTER_WHEEL_RIM_SHAPE Shape {
                       appearance PBRAppearance {
@@ -2371,6 +2371,8 @@ Robot {
           jointParameters JointParameters {
             position 0.07300454576238873
             axis 0 -1 0
+            minStop -0.2
+            maxStop 0.2
           }
           device [
             LinearMotor {
@@ -2412,6 +2414,7 @@ Robot {
                 jointParameters JointParameters {
                   position 0.14999997248782274
                   axis -1 0 0
+                  maxStop 0.16
                 }
                 device [
                   LinearMotor {
@@ -2497,6 +2500,7 @@ Robot {
                 jointParameters JointParameters {
                   position 0.15000002757757508
                   axis 1 0 0
+                  maxStop 0.16
                 }
                 device [
                   LinearMotor {

@@ -1093,6 +1093,8 @@ Robot {
           jointParameters JointParameters {
             position 0.07300454576238873
             axis 0 -1 0
+            minStop -0.2
+            maxStop 0.2
           }
           device [
             LinearMotor {
@@ -1134,6 +1136,7 @@ Robot {
                 jointParameters JointParameters {
                   position 0.14999997248782274
                   axis -1 0 0
+                  maxStop 0.16
                 }
                 device [
                   LinearMotor {
@@ -1219,6 +1222,7 @@ Robot {
                 jointParameters JointParameters {
                   position 0.15000002757757508
                   axis 1 0 0
+                  maxStop 0.16
                 }
                 device [
                   LinearMotor {
