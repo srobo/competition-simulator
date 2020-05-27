@@ -13,7 +13,7 @@ EXAMPLE_CONTROLLER_FILE = ROOT.joinpath("controllers/example_controller/example_
 if __name__ == "__main__":
     if not ROBOT_FILE.exists():
         print("Robot controller not found, copying example into place.")
-        copyfile(EXAMPLE_CONTROLLER_FILE, ROBOT_FILE)
+        copyfile(str(EXAMPLE_CONTROLLER_FILE), str(ROBOT_FILE))
 
     env = os.environ.copy()
     env['PYTHONPATH'] = os.pathsep.join(sys.path)
