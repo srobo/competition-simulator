@@ -1046,9 +1046,49 @@ Robot {
       ]
     }
     DEF GRIPPER_BASE Solid {
-      translation 0 0.25 -0.015
+      translation -1.46357e-22 0.21 -0.015
       rotation 1 3.7567134377662594e-17 9.191229015555427e-16 -3.98090896186861e-06
       children [
+        Camera {
+          translation 0 0.265165 -0.0370721
+          rotation 1 0 0 -0.261795307179586
+          children [
+            Transform {
+              translation 0 0 -0.01
+              rotation 1 0 0 1.5708003061004252
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0 0 0
+                  }
+                  geometry Cylinder {
+                    height 0.005
+                    radius 0.013
+                  }
+                }
+              ]
+            }
+            Transform {
+              translation 0 0 0.005
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.4 0.4 0.4
+                    metalness 0
+                  }
+                  geometry Box {
+                    size 0.05 0.05 0.025
+                  }
+                }
+              ]
+            }
+          ]
+          width 800
+          height 600
+          recognition Recognition {
+            frameThickness 5
+          }
+        }
         DEF LIFT_SLIDER SliderJoint {
           jointParameters JointParameters {
             position 0.07300454576238873
@@ -1090,42 +1130,6 @@ Robot {
                   0.01 1 0
                 ]
               }
-              Camera {
-                translation 0 0.05 -0.02
-                children [
-                  Transform {
-                    translation 0 0 -0.01
-                    rotation 1 0 0 1.5708003061004252
-                    children [
-                      Shape {
-                        appearance PBRAppearance {
-                          baseColor 0 0 0
-                        }
-                        geometry Cylinder {
-                          height 0.005
-                          radius 0.013
-                        }
-                      }
-                    ]
-                  }
-                  Transform {
-                    translation 0 0 0.005
-                    children [
-                      Shape {
-                        appearance PBRAppearance {
-                          baseColor 0.4 0.4 0.4
-                          metalness 0
-                        }
-                        geometry Box {
-                          size 0.05 0.05 0.025
-                        }
-                      }
-                    ]
-                  }
-                ]
-                recognition Recognition {
-                }
-              }
               DEF LEFT_FINGER_SLIDER SliderJoint {
                 jointParameters JointParameters {
                   position 0.14999997248782274
@@ -1135,7 +1139,7 @@ Robot {
                   LinearMotor {
                     name "left finger motor"
                     maxPosition 0.15000000000005506
-					maxVelocity 0.1
+					          maxVelocity 0.1
                   }
                 ]
                 endPoint DEF LEFT_FINGER Solid {

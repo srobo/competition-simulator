@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.06459287614887771 -0.9874680037606474 -0.14399549263702013 2.3699211124748154
-  position -6.461247662933961 2.8450224221626237 -6.632665012751648
+  orientation -0.10238438298885476 -0.9674578639971838 -0.2313929979709807 2.3716107142131384
+  position -5.8669832126243735 3.616471007611013 -6.066888665989435
 }
 TexturedBackgroundLight {
   texture "noon_park_empty"
@@ -1588,8 +1588,8 @@ Robot {
             }
           ]
           endPoint Solid {
-            translation 0.19999998777297875 0.00026863610916181733 -0.00036030151878293327
-            rotation -0.9999999953968225 4.284946735168831e-05 8.585032564062136e-05 0.9344151591877781
+            translation 0.1999999877729786 0.0002686361091618171 -0.0003603015187829329
+            rotation -0.9999999953968224 4.2849467351666585e-05 8.585032564057782e-05 0.9344151591877564
             children [
               DEF RIGHT_BLACK_CYLINDER_SHAPE Shape {
                 appearance PBRAppearance {
@@ -1770,8 +1770,8 @@ Robot {
             }
           ]
           endPoint Solid {
-            translation -0.19999998767113233 0.00026863721059561843 -0.000360302992076603
-            rotation -0.9999999953968322 -4.2849421713718385e-05 -8.585023441170325e-05 0.9344151521635371
+            translation -0.19999998767113233 0.00026863721059561843 -0.00036030299207660306
+            rotation -0.999999995396832 -4.2849421713714726e-05 -8.58502344116959e-05 0.9344151521635337
             children [
               DEF BLACK_CYLINDER_SHAPE Shape {
                 appearance PBRAppearance {
@@ -1948,8 +1948,8 @@ Robot {
             axis 0 1 0
           }
           endPoint Solid {
-            translation 3.567558609411411e-11 0.00029152609756950436 4.812113430210345e-07
-            rotation -0.9826105374155626 -0.18567857101768226 4.9729930343002575e-06 3.864201805289567e-06
+            translation 3.567558609411397e-11 0.00029152609756950436 4.812113430210349e-07
+            rotation -0.9826105387155922 -0.18567856413792985 4.972993040880274e-06 3.864201805289567e-06
             children [
               DEF casterWheelRim HingeJoint {
                 jointParameters HingeJointParameters {
@@ -1957,8 +1957,8 @@ Robot {
                   anchor 0 -0.0521014 0.012843
                 }
                 endPoint Solid {
-                  translation -2.968546926221437e-09 -0.052112315544752326 0.011863874977601782
-                  rotation -1 -1.1874548070276857e-10 9.781663462284246e-11 1.6144670885446248
+                  translation -2.968546926221432e-09 -0.052112315544752326 0.011863874977601779
+                  rotation -1 -1.187454807027683e-10 9.781663462284222e-11 1.6144670885446237
                   children [
                     DEF CASTER_WHEEL_RIM_SHAPE Shape {
                       appearance PBRAppearance {
@@ -2324,9 +2324,49 @@ Robot {
       ]
     }
     DEF GRIPPER_BASE Solid {
-      translation 0 0.25 -0.015
+      translation -1.46357e-22 0.21 -0.015
       rotation 1 3.7567134377662594e-17 9.191229015555427e-16 -3.98090896186861e-06
       children [
+        Camera {
+          translation 0 0.265165 -0.0370721
+          rotation 1 0 0 -0.261795307179586
+          children [
+            Transform {
+              translation 0 0 -0.01
+              rotation 1 0 0 1.5708003061004252
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0 0 0
+                  }
+                  geometry Cylinder {
+                    height 0.005
+                    radius 0.013
+                  }
+                }
+              ]
+            }
+            Transform {
+              translation 0 0 0.005
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.4 0.4 0.4
+                    metalness 0
+                  }
+                  geometry Box {
+                    size 0.05 0.05 0.025
+                  }
+                }
+              ]
+            }
+          ]
+          width 800
+          height 600
+          recognition Recognition {
+            frameThickness 5
+          }
+        }
         DEF LIFT_SLIDER SliderJoint {
           jointParameters JointParameters {
             position 0.07300454576238873
@@ -2367,45 +2407,6 @@ Robot {
                   0 0 0
                   0.01 1 0
                 ]
-              }
-              Camera {
-                translation 0 0.05 -0.02
-                children [
-                  Transform {
-                    translation 0 0 -0.01
-                    rotation 1 0 0 1.5708003061004252
-                    children [
-                      Shape {
-                        appearance PBRAppearance {
-                          baseColor 0 0 0
-                        }
-                        geometry Cylinder {
-                          height 0.005
-                          radius 0.013
-                        }
-                      }
-                    ]
-                  }
-                  Transform {
-                    translation 0 0 0.005
-                    children [
-                      Shape {
-                        appearance PBRAppearance {
-                          baseColor 0.4 0.4 0.4
-                          metalness 0
-                        }
-                        geometry Box {
-                          size 0.05 0.05 0.025
-                        }
-                      }
-                    ]
-                  }
-                ]
-                width 800
-                height 600
-                recognition Recognition {
-                  frameThickness 5
-                }
               }
               DEF LEFT_FINGER_SLIDER SliderJoint {
                 jointParameters JointParameters {
@@ -2501,7 +2502,7 @@ Robot {
                   LinearMotor {
                     name "right finger motor"
                     maxVelocity 0.1
-                    maxPosition 0.150000000001241
+                    maxPosition 0.15000002757757508
                   }
                 ]
                 endPoint DEF RIGHT_FINGER Solid {
