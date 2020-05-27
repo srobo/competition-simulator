@@ -16,8 +16,11 @@ if __name__ == "__main__":
         print("Robot controller not found, copying example into place.")
         copyfile(str(EXAMPLE_CONTROLLER_FILE), str(ROBOT_FILE))
 
+    # Ensure the python path is properly passed down so the `sr` module can be imported
     env = os.environ.copy()
     env['PYTHONPATH'] = os.pathsep.join(sys.path)
 
     completed_process = subprocess.run([sys.executable, "-u", str(ROBOT_FILE)], env=env)
+
+    # Exit with the same return code so webots reports it as an error
     sys.exit(completed_process.returncode)
