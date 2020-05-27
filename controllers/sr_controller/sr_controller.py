@@ -17,4 +17,4 @@ if __name__ == "__main__":
 
     env = os.environ.copy()
     env['PYTHONPATH'] = os.pathsep.join(sys.path)
-    os.execvpe(sys.executable, ["-u", str(ROBOT_FILE)], env)
+    os.execvpe(sys.executable, [sys.executable, "-u", str(ROBOT_FILE)], env)
