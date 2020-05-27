@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.10261863985233144 0.9650549982169233 0.24111877813930593 3.883614086545036
-  position -6.09858069643376 4.093991909330928 -6.304466344967567
+  orientation 0.06919988577598529 -0.9717476382897375 -0.22564995742722366 3.7613694474173665
+  position -2.087070512108278 0.658924980389935 -2.669250240811875
 }
 TexturedBackgroundLight {
   texture "noon_park_empty"
@@ -2101,46 +2101,6 @@ Robot {
       children [
         DEF BODY Group {
           children [
-            Camera {
-              translation 0 0.517412 -0.0596593
-              rotation 1 0 0 -0.261795307179586
-              children [
-                Transform {
-                  translation 0 0 -0.01
-                  rotation 1 0 0 1.5708003061004252
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0 0 0
-                      }
-                      geometry Cylinder {
-                        height 0.005
-                        radius 0.013
-                      }
-                    }
-                  ]
-                }
-                Transform {
-                  translation 0 0 0.005
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0.4 0.4 0.4
-                        metalness 0
-                      }
-                      geometry Box {
-                        size 0.05 0.05 0.025
-                      }
-                    }
-                  ]
-                }
-              ]
-              width 800
-              height 600
-              recognition Recognition {
-                frameThickness 5
-              }
-            }
             DEF flag_pole Solid {
               translation 0 0.3 0.075
               children [
@@ -2367,6 +2327,46 @@ Robot {
       translation 0 0.25 -0.015
       rotation 1 3.7567134377662594e-17 9.191229015555427e-16 -3.98090896186861e-06
       children [
+        Camera {
+          translation 0 0.265165 -0.0370721
+          rotation 1 0 0 -0.261795307179586
+          children [
+            Transform {
+              translation 0 0 -0.01
+              rotation 1 0 0 1.5708003061004252
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0 0 0
+                  }
+                  geometry Cylinder {
+                    height 0.005
+                    radius 0.013
+                  }
+                }
+              ]
+            }
+            Transform {
+              translation 0 0 0.005
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.4 0.4 0.4
+                    metalness 0
+                  }
+                  geometry Box {
+                    size 0.05 0.05 0.025
+                  }
+                }
+              ]
+            }
+          ]
+          width 800
+          height 600
+          recognition Recognition {
+            frameThickness 5
+          }
+        }
         DEF LIFT_SLIDER SliderJoint {
           jointParameters JointParameters {
             position 0.07300454576238873
