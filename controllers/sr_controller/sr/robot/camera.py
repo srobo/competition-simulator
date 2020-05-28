@@ -162,11 +162,13 @@ class Camera:
 
         when = time.time()
 
-        markers = [
-            Marker(face, object_infos[recognition_object], when)
-            for token, recognition_object in tokens
-            for face in token.visible_faces()
-        ]
+        markers = []
+
+        for token, recognition_object in tokens:
+            marker_info = object_infos[recognition_object]
+            is_2d = marker_info.marker_type == MarkerType.ARENA
+            for face in token.visible_faces(is_2d=is_2d):
+                markers.append(Marker(face, marker_info, when))
 
         time.sleep(0.1 * len(markers))
 

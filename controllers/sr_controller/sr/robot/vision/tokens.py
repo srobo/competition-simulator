@@ -93,11 +93,13 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def visible_faces(self, angle_tolernace: float = 75) -> 'List[Face]':
+    def visible_faces(self, angle_tolernace: float = 75, is_2d: bool = False) -> 'List[Face]':
         """
         Returns a list of the faces which are visible to the global origin.
+        If a token should be considered 2D, only check its front and rear faces.
         """
-        faces = [self.face(x) for x in FaceName]
+        face_names = [FaceName.Front, FaceName.Rear] if is_2d else list(FaceName)
+        faces = [self.face(x) for x in face_names]
         return [f for f in faces if f.is_visible_to_global_origin(angle_tolernace)]
 
 
