@@ -111,7 +111,7 @@ DEF WALL Solid {
         }
       ]
       name "A2"
-      model "A1"
+      model "A2"
       boundingObject USE WALL_MARKER_GEOMETRY
       locked TRUE
       recognitionColors [
