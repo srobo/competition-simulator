@@ -1,5 +1,6 @@
 from sr.robot.randomizer import add_jitter
 from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
+from sr.robot.utils import map_to_range
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 100
@@ -30,12 +31,7 @@ def translate(sr_speed_val, sr_motor):
     if sr_speed_val != 0:
         sr_speed_val = add_jitter(sr_speed_val, -SPEED_MAX, SPEED_MAX)
 
-    out_range = out_to - out_from
-    in_range = in_to - in_from
-    in_val = sr_speed_val - in_from
-    val = (float(in_val) / in_range) * out_range
-    out_val = out_from + val
-    return out_val
+    return map_to_range(in_from, in_to, out_from, out_to, sr_speed_val)
 
 
 class Motor(object):
