@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     # Ensure the python path is properly passed down so the `sr` module can be imported
     env = os.environ.copy()
-    env['PYTHONPATH'] = os.pathsep.join(sys.path + [str(ROBOT_FILE.parent)])
+    env['PYTHONPATH'] = os.pathsep.join(sys.path)
 
     completed_process = subprocess.run(
         [sys.executable, "-u", str(ROBOT_FILE)],
