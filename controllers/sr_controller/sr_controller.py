@@ -4,7 +4,8 @@ import subprocess
 from shutil import copyfile
 from pathlib import Path
 
-ROOT = Path().joinpath("../../").resolve()
+# Root directory of the SR webots simulator (equivalent to the root of the git repo)
+ROOT = Path(__file__).resolve().parent.parent.parent
 
 ROBOT_FILE_DIR = ROOT.parent
 ROBOT_FILE = ROOT.parent.joinpath("robot.py")
