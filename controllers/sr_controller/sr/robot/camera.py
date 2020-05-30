@@ -34,6 +34,12 @@ class MarkerType(Enum):
     SILVER = "TOKEN_SILVER"
 
 
+# Existing token types
+MARKER_ARENA = MarkerType.ARENA
+MARKER_TOKEN_GOLD = MarkerType.GOLD
+MARKER_TOKEN_SILVER = MarkerType.SILVER
+
+
 MarkerInfo = NamedTuple('MarkerInfo', (
     ('code', int),
     ('marker_type', MarkerType),
