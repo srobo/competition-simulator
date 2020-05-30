@@ -21,8 +21,7 @@ class DistanceSensor(SensorBase):
         self.webot_sensor.enable(TIME_STEP)
 
     def __get_scaled_distance(self):
-        val = self.webot_sensor.getValue()
-        return map_to_range(self.webot_sensor.getMinValue(), self.webot_sensor.getMaxValue(), DistanceSensor.LOWER_BOUND, DistanceSensor.UPPER_BOUND, val)
+        return map_to_range(self.webot_sensor.getMinValue(), self.webot_sensor.getMaxValue(), DistanceSensor.LOWER_BOUND, DistanceSensor.UPPER_BOUND, self.webot_sensor.getValue())
 
     def read_value(self):
         return add_jitter(
