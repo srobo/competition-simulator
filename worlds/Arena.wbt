@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.10238438298885476 -0.9674578639971838 -0.2313929979709807 2.3716107142131384
-  position -5.8669832126243735 3.616471007611013 -6.066888665989435
+  orientation 0.33246481952953133 -0.9314016676496985 -0.14818258087426103 5.456433700612629
+  position 6.9972994812935 3.16953523821157 7.1575439818618
 }
 TexturedBackgroundLight {
   texture "noon_park_empty"
@@ -111,7 +111,7 @@ DEF WALL Solid {
         }
       ]
       name "A2"
-      model "A1"
+      model "A2"
       boundingObject USE WALL_MARKER_GEOMETRY
       locked TRUE
       recognitionColors [
@@ -232,6 +232,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 2.8749 0.175 -2.154
+      rotation 0 1 0 -1.5708003061004252
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -246,7 +247,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -260,6 +261,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 2.8749 0.175 -1.436
+      rotation 0 1 0 -1.5708003061004252
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -274,7 +276,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -288,6 +290,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 2.8749 0.175 -0.718
+      rotation 0 1 0 -1.5708003061004252
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -302,7 +305,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -316,6 +319,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 2.8749 0.175 0
+      rotation 0 1 0 -1.5708003061004252
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -330,7 +334,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -344,6 +348,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 2.8749 0.175 0.718
+      rotation 0 1 0 -1.5708003061004252
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -358,7 +363,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -372,6 +377,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 2.8749 0.175 1.436
+      rotation 0 1 0 -1.5708003061004252
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -386,7 +392,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -400,6 +406,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 2.8749 0.175 2.154
+      rotation 0 1 0 -1.5708003061004252
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -414,7 +421,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -428,6 +435,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 2.154 0.175 2.8749
+      rotation 0 1 0 -3.14159
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -456,6 +464,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 1.436 0.175 2.8749
+      rotation 0 1 0 -3.14159
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -484,6 +493,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 0.718 0.175 2.8749
+      rotation 0 1 0 -3.14159
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -512,6 +522,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation 0 0.175 2.8749
+      rotation 0 1 0 -3.14159
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -540,6 +551,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -0.718 0.175 2.8749
+      rotation 0 1 0 -3.14159
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -568,6 +580,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -1.436 0.175 2.8749
+      rotation 0 1 0 -3.14159
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -596,6 +609,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -2.154 0.175 2.8749
+      rotation 0 1 0 -3.14159
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -624,6 +638,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -2.8749 0.175 2.154
+      rotation 0 1 0 -4.712389693899574
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -638,7 +653,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -652,6 +667,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -2.8749 0.175 1.436
+      rotation 0 1 0 -4.712389693899574
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -666,7 +682,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -680,6 +696,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -2.8749 0.175 0.718
+      rotation 0 1 0 -4.712389693899574
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -694,7 +711,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -708,6 +725,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -2.8749 0.175 0
+      rotation 0 1 0 -4.712389693899574
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -722,7 +740,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -736,6 +754,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -2.8749 0.175 -0.718
+      rotation 0 1 0 -4.712389693899574
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -750,7 +769,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -764,6 +783,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -2.8749 0.175 -1.436
+      rotation 0 1 0 -4.712389693899574
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -778,7 +798,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
@@ -792,6 +812,7 @@ DEF WALL Solid {
     }
     DEF WALL_MARKER Solid {
       translation -2.8749 0.175 -2.154
+      rotation 0 1 0 -4.712389693899574
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -806,7 +827,7 @@ DEF WALL Solid {
             metalness 0
           }
           geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.0001 0.25 0.25
+            size 0.25 0.25 0.0001
           }
         }
       ]
