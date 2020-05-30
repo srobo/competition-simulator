@@ -1,49 +1,31 @@
-import time
+import os
+import sys
+import subprocess
+from shutil import copyfile
+from pathlib import Path
 
-from sr.robot import *
+# Root directory of the SR webots simulator (equivalent to the root of the git repo)
+ROOT = Path(__file__).resolve().parent.parent.parent
 
-R = Robot()
+ROBOT_FILE = ROOT.parent / "robot.py"
 
-print("I see {} things".format(len(R.see())))
+EXAMPLE_CONTROLLER_FILE = ROOT / "controllers/example_controller/example_controller.py"
 
-# motor board 0, channel 0 to half power forward
-R.motors[0].m0.power = 50
 
-# motor board 0, channel 1 to half power forward
-R.motors[0].m1.power = 50
+if __name__ == "__main__":
+    if not ROBOT_FILE.exists():
+        print("Robot controller not found, copying example into place.")
+        copyfile(str(EXAMPLE_CONTROLLER_FILE), str(ROBOT_FILE))
 
-# sleep for 1 second
-time.sleep(1)
+    # Ensure the python path is properly passed down so the `sr` module can be imported
+    env = os.environ.copy()
+    env['PYTHONPATH'] = os.pathsep.join(sys.path)
 
-# motor board 0, channel 0 to stopped
-R.motors[0].m0.power = 0
+    completed_process = subprocess.run(
+        [sys.executable, "-u", str(ROBOT_FILE)],
+        env=env,
+        cwd=str(ROBOT_FILE.parent),
+    )
 
-# motor board 0, channel 1 to stopped
-R.motors[0].m1.power = 0
-
-# sleep for 2 seconds
-time.sleep(2)
-
-# motor board 0, channel 0 to half power backward
-R.motors[0].m0.power = -50
-
-# motor board 0, channel 1 to half power forward
-R.motors[0].m1.power = 50
-
-# sleep for 0.75 seconds
-time.sleep(0.75)
-
-# motor board 0, channel 0 to half power forward
-R.motors[0].m0.power = 50
-
-# motor board 0, channel 1 to half power forward
-R.motors[0].m1.power = 50
-
-# sleep for 1 second
-time.sleep(1)
-
-# motor board 0, channel 0 to stopped
-R.motors[0].m0.power = 0
-
-# motor board 0, channel 1 to stopped
-R.motors[0].m1.power = 0
+    # Exit with the same return code so webots reports it as an error
+    sys.exit(completed_process.returncode)
