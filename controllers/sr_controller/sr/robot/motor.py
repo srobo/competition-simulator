@@ -1,3 +1,4 @@
+from sr.robot.utils import map_to_range
 from sr.robot.randomizer import add_jitter
 from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
 
@@ -21,21 +22,16 @@ def init_motor_array(webot):
 def translate(sr_speed_val, sr_motor):
     # Translate from -100 to 100 range to the actual motor control range
 
-    # Set the speed ranges
-    in_from = -SPEED_MAX
-    in_to = SPEED_MAX
-    out_from = -sr_motor.max_speed
-    out_to = sr_motor.max_speed
-
     if sr_speed_val != 0:
         sr_speed_val = add_jitter(sr_speed_val, -SPEED_MAX, SPEED_MAX)
 
-    out_range = out_to - out_from
-    in_range = in_to - in_from
-    in_val = sr_speed_val - in_from
-    val = (float(in_val) / in_range) * out_range
-    out_val = out_from + val
-    return out_val
+    return map_to_range(
+        -SPEED_MAX,
+        SPEED_MAX,
+        -sr_motor.max_speed,
+        sr_motor.max_speed,
+        sr_speed_val,
+    )
 
 
 class Motor(object):
