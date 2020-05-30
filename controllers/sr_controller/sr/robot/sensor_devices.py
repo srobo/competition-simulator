@@ -1,6 +1,6 @@
-from sr.robot.randomizer import add_jitter
-from sr.robot.settings import TIME_STEP
 from sr.robot.utils import map_to_range
+from sr.robot.settings import TIME_STEP
+from sr.robot.randomizer import add_jitter
 
 
 class SensorBase(object):
@@ -22,11 +22,11 @@ class DistanceSensor(SensorBase):
 
     def __get_scaled_distance(self):
         return map_to_range(
-            self.webot_sensor.getMinValue(), 
-            self.webot_sensor.getMaxValue(), 
-            DistanceSensor.LOWER_BOUND, 
-            DistanceSensor.UPPER_BOUND, 
-            self.webot_sensor.getValue()
+            self.webot_sensor.getMinValue(),
+            self.webot_sensor.getMaxValue(),
+            DistanceSensor.LOWER_BOUND,
+            DistanceSensor.UPPER_BOUND,
+            self.webot_sensor.getValue(),
         )
 
     def read_value(self):
