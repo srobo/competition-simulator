@@ -170,6 +170,4 @@ class Camera:
             for face in token.visible_faces(is_2d=is_2d):
                 markers.append(Marker(face, marker_info, when))
 
-        time.sleep(0.1 * len(markers))
-
         return markers
