@@ -22,11 +22,7 @@ class DistanceSensor(SensorBase):
 
     def __get_scaled_distance(self):
         val = self.webot_sensor.getValue()
-        old_max = self.webot_sensor.getMaxValue()
-        old_min = self.webot_sensor.getMinValue()
-        new_max = DistanceSensor.UPPER_BOUNDS
-        new_min = DistanceSensor.LOWER_BOUNDS
-        return map_to_range(old_min, old_max, new_min, new_max, val)
+        return map_to_range(self.webot_sensor.getMinValue(), self.webot_sensor.getMaxValue(), DistanceSensor.LOWER_BOUNDS, DistanceSensor.UPPER_BOUNDS, val)
 
     def read_value(self):
         return add_jitter(
