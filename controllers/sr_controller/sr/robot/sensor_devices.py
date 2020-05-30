@@ -1,6 +1,6 @@
+from sr.robot.randomizer import add_jitter
 from sr.robot.settings import TIME_STEP
 from sr.robot.utils import map_to_range
-from sr.robot.randomizer import add_jitter
 
 
 class SensorBase(object):
