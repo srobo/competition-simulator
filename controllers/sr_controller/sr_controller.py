@@ -8,9 +8,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent.parent
 
 ROBOT_FILE_DIR = ROOT.parent
-ROBOT_FILE = ROOT.parent.joinpath("robot.py")
+ROBOT_FILE = ROBOT_FILE_DIR / "robot.py"
 
-EXAMPLE_CONTROLLER_FILE = ROOT.joinpath("controllers/example_controller/example_controller.py")
+EXAMPLE_CONTROLLER_FILE = ROOT / "controllers/example_controller/example_controller.py"
 
 
 if __name__ == "__main__":
