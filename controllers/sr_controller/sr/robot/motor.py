@@ -22,16 +22,16 @@ def init_motor_array(webot):
 def translate(sr_speed_val, sr_motor):
     # Translate from -100 to 100 range to the actual motor control range
 
-    # Set the speed ranges
-    in_from = -SPEED_MAX
-    in_to = SPEED_MAX
-    out_from = -sr_motor.max_speed
-    out_to = sr_motor.max_speed
-
     if sr_speed_val != 0:
         sr_speed_val = add_jitter(sr_speed_val, -SPEED_MAX, SPEED_MAX)
 
-    return map_to_range(in_from, in_to, out_from, out_to, sr_speed_val)
+    return map_to_range(
+        -SPEED_MAX,
+        SPEED_MAX,
+        -sr_motor.max_speed,
+        sr_motor.max_speed,
+        sr_speed_val,
+    )
 
 
 class Motor(object):
