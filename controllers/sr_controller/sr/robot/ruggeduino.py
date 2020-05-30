@@ -50,5 +50,5 @@ class Ruggeduino(object):
 
     def pin_mode(self, pin_no, mode):
         raise NotImplementedError(
-            "The sensors are pre-set on this robot so you don't need to set the pin mode"
+            "The sensors are pre-set on this robot so you don't need to set the pin mode",
         )
