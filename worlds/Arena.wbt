@@ -9,10 +9,6 @@ TexturedBackgroundLight {
   texture "noon_park_empty"
 }
 TexturedBackground {
-  skybox FALSE
-  skyColor [
-    0.960784 0.952941 0.956863
-  ]
 }
 DEF FLOOR Solid {
   children [
@@ -1613,8 +1609,8 @@ Robot {
             }
           ]
           endPoint Solid {
-            translation 0.19999998777297848 0.000268636109161817 -0.0003603015187829327
-            rotation -0.9999999953968224 4.2849467351666524e-05 8.585032564057767e-05 0.9344151591877564
+            translation 0.19999998777297853 0.00026863610916181706 -0.0003603015187829328
+            rotation -0.9999999953968224 4.284946735166655e-05 8.585032564057774e-05 0.9344151591877564
             children [
               DEF RIGHT_BLACK_CYLINDER_SHAPE Shape {
                 appearance PBRAppearance {
@@ -1796,7 +1792,7 @@ Robot {
           ]
           endPoint Solid {
             translation -0.19999998767113233 0.00026863721059561843 -0.00036030299207660306
-            rotation -0.999999995396832 -4.284942171371526e-05 -8.585023441169696e-05 0.9344151521635337
+            rotation -0.999999995396832 -4.2849421713715e-05 -8.585023441169642e-05 0.9344151521635337
             children [
               DEF BLACK_CYLINDER_SHAPE Shape {
                 appearance PBRAppearance {
@@ -1973,8 +1969,8 @@ Robot {
             axis 0 1 0
           }
           endPoint Solid {
-            translation 3.5675586094114385e-11 0.00029152609756950436 4.812113430210351e-07
-            rotation -0.9826105387155939 -0.18567856413791997 4.972993040880436e-06 3.864201805289567e-06
+            translation 3.567558609411397e-11 0.00029152609756950436 4.81211343021035e-07
+            rotation -0.9826105387155939 -0.1856785641379203 4.972993040880017e-06 3.864201805289567e-06
             children [
               DEF casterWheelRim HingeJoint {
                 jointParameters HingeJointParameters {
@@ -1982,8 +1978,8 @@ Robot {
                   anchor 0 -0.0521014 0.012843
                 }
                 endPoint Solid {
-                  translation -2.968546926221429e-09 -0.052112315544752326 0.011863874977601779
-                  rotation -1 -1.1874548070276826e-10 9.781663462284219e-11 1.6144670885446237
+                  translation -2.9685469262214305e-09 -0.052112315544752326 0.011863874977601779
+                  rotation -1 -1.1874548070276828e-10 9.781663462284221e-11 1.6144670885446237
                   children [
                     DEF CASTER_WHEEL_RIM_SHAPE Shape {
                       appearance PBRAppearance {
