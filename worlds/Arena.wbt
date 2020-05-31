@@ -9,6 +9,10 @@ TexturedBackgroundLight {
   texture "noon_park_empty"
 }
 TexturedBackground {
+  skybox FALSE
+  skyColor [
+    0.960784 0.952941 0.956863
+  ]
 }
 DEF FLOOR Solid {
   children [
