@@ -146,15 +146,14 @@ class Marker:
 
 class Camera:
     def __init__(self, webot):
-        self.webot = webot
-        self.camera = self.webot.getCamera("camera")
-        self.camera.enable(TIME_STEP)
-        self.camera.recognitionEnable(TIME_STEP)
+        self.__camera = webot.getCamera("camera")
+        self.__camera.enable(TIME_STEP)
+        self.__camera.recognitionEnable(TIME_STEP)
 
     def see(self) -> List[Marker]:
         object_infos = {}
 
-        for recognition_object in self.camera.getRecognitionObjects():
+        for recognition_object in self.__camera.getRecognitionObjects():
             marker_info = parse_marker_info(
                 recognition_object.get_model().decode(),
             )

@@ -1,39 +1,38 @@
-class MotorBase(object):
-    def __init__(self, webot, motor_name):
-        self.webot = webot
-        self.motor_name = motor_name
-        self.webot_motor = self.webot.getMotor(motor_name)
-        if self.webot_motor is None:
-            return
-        self.max_speed = self.webot_motor.getMaxVelocity()
+from abc import ABC, abstractmethod
 
-    def _set_speed(self, speed):
-        if self.webot_motor is None:
-            return
+
+class MotorBase(ABC):
+    def __init__(self, webot, motor_name):
+        self.__webot_motor = webot.getMotor(motor_name)
+        self._max_speed = self.__webot_motor.getMaxVelocity()
+
+    @abstractmethod
+    def set_speed(self, speed):
+        pass
 
 
 class Wheel(MotorBase):
 
     def __init__(self, webot, motor_name):
         super().__init__(webot, motor_name)
-        self.webot_motor.setPosition(float('inf'))
-        self.webot_motor.setVelocity(0)
+        self.__webot_motor.setPosition(float('inf'))
+        self.__webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        self._set_speed(speed)
-        self.webot_motor.setVelocity(speed)
+        self.set_speed(speed)
+        self.__webot_motor.setVelocity(speed)
 
 
 class LinearMotor(MotorBase):
 
     def __init__(self, webot, motor_name):
         super().__init__(webot, motor_name)
-        self.webot_motor.setPosition(0)
-        self.webot_motor.setVelocity(0)
+        self.__webot_motor.setPosition(0)
+        self.__webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        self._set_speed(speed)
-        motor = self.webot_motor
+        self.set_speed(speed)
+        motor = self.__webot_motor
         if speed < 0:
             motor.setPosition(motor.getMinPosition())
         else:
@@ -43,14 +42,12 @@ class LinearMotor(MotorBase):
 
 class Gripper(MotorBase):
 
-    def __init__(self, webot, motor_name):
-        self.webot = webot
-        names = motor_name.split("|")
+    def __init__(self, webot, motor_1_name, motor_2_name):
         self.gripper_motors = [
-            LinearMotor(self.webot, names[0]),
-            LinearMotor(self.webot, names[1]),
+            LinearMotor(webot, motor_1_name),
+            LinearMotor(webot, motor_2_name),
         ]
-        self.max_speed = self.gripper_motors[0].max_speed
+        self._max_speed = self.gripper_motors[0]._max_speed
 
     def set_speed(self, speed):
         for motor in self.gripper_motors:

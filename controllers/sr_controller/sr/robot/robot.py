@@ -21,10 +21,10 @@ class Robot(object):
         self.zone = 0
         self.arena = "A"
 
-        self.webot = WebotsRobot()
+        self.__webot = WebotsRobot()
 
         if init:
-            self.init()
+            self._init()
             self.wait_start()
             if self.mode == "comp":
                 stop_after_delay()
@@ -33,18 +33,18 @@ class Robot(object):
     def setup(cls):
         return cls()
 
-    def init(self):
-        self.webots_init()
+    def _init(self):
+        self.__webots_init()
         self._init_devs()
         self._initialised = True
 
-    def webots_init(self):
-        t = Thread(target=self.webot_run_robot)
+    def __webots_init(self):
+        t = Thread(target=self.__webot_run_robot)
         t.start()
         time.sleep(TIME_STEP / 1000)
 
-    def webot_run_robot(self):
-        while not self.webot.step(TIME_STEP):
+    def __webot_run_robot(self):
+        while not self.__webot.step(TIME_STEP):
             pass
 
     def wait_start(self):
@@ -74,11 +74,11 @@ class Robot(object):
         self._init_camera()
 
     def _init_motors(self):
-        self.motors = motor.init_motor_array(self.webot)
+        self.motors = motor.init_motor_array(self.__webot)
 
     def _init_ruggeduinos(self):
-        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
+        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.__webot)
 
     def _init_camera(self):
-        self.camera = camera.Camera(self.webot)
+        self.camera = camera.Camera(self.__webot)
         self.see = self.camera.see

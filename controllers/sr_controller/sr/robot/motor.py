@@ -8,13 +8,13 @@ SPEED_MAX = 100
 
 def init_motor_array(webot):
     return [
-        Motor(0, webot, [
+        MotorBoard([
             Wheel(webot, 'left wheel'),
             Wheel(webot, 'right wheel'),
         ]),
-        Motor(1, webot, [
+        MotorBoard([
             LinearMotor(webot, 'lift motor'),
-            Gripper(webot, 'left finger motor|right finger motor'),
+            Gripper(webot, 'left finger motor', 'right finger motor'),
         ]),
     ]
 
@@ -28,33 +28,28 @@ def translate(sr_speed_val, sr_motor):
     return map_to_range(
         -SPEED_MAX,
         SPEED_MAX,
-        -sr_motor.max_speed,
-        sr_motor.max_speed,
+        -sr_motor._max_speed,
+        sr_motor._max_speed,
         sr_speed_val,
     )
 
 
-class Motor(object):
+class MotorBoard(object):
     """A motor"""
 
-    def __init__(self, board_id, webot, sr_motors):
-        self.board_id = board_id
-        self.m0 = MotorChannel(0, webot, board_id, sr_motors[0])
-        self.m1 = MotorChannel(1, webot, board_id, sr_motors[1])
-        self.webot = webot
+    def __init__(self, sr_motors):
+        self.m0 = MotorChannel(sr_motors[0])
+        self.m1 = MotorChannel(sr_motors[1])
 
 
 class MotorChannel(object):
-    def __init__(self, channel, webot, board_id, sr_motor):
-        self.channel = channel
-        self.webot = webot
-        self.board_id = board_id
+    def __init__(self, sr_motor):
         # Private shadow of use_brake
         # self._use_brake = True # TODO create new thread for non-braking slowdown
 
         # There is currently no method for reading the power from a motor board
         self._power = 0
-        self.sr_motor = sr_motor
+        self._sr_motor = sr_motor
 
     @property
     def power(self):
@@ -72,7 +67,7 @@ class MotorChannel(object):
         elif value < -SPEED_MAX:
             value = -SPEED_MAX
 
-        self.sr_motor.set_speed(translate(value, self.sr_motor))
+        self._sr_motor.set_speed(translate(value, self._sr_motor))
 
     ''''@property
     def use_brake(self):

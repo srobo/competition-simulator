@@ -1,13 +1,19 @@
+from abc import ABC, abstractmethod
+
 from sr.robot.utils import map_to_range
 from sr.robot.settings import TIME_STEP
 from sr.robot.randomizer import add_jitter
 
 
-class SensorBase(object):
+class SensorBase(ABC):
 
+    @abstractmethod
     def __init__(self, webot, sensor_name):
-        self.webot = webot
-        self.sensor_name = sensor_name
+        pass
+
+    @abstractmethod
+    def read_value(self):
+        pass
 
 
 class DistanceSensor(SensorBase):
@@ -17,16 +23,16 @@ class DistanceSensor(SensorBase):
 
     def __init__(self, webot, sensor_name):
         super().__init__(webot, sensor_name)
-        self.webot_sensor = self.webot.getDistanceSensor(self.sensor_name)
-        self.webot_sensor.enable(TIME_STEP)
+        self.__webot_sensor = webot.getDistanceSensor(sensor_name)
+        self.__webot_sensor.enable(TIME_STEP)
 
     def __get_scaled_distance(self):
         return map_to_range(
-            self.webot_sensor.getMinValue(),
-            self.webot_sensor.getMaxValue(),
+            self.__webot_sensor.getMinValue(),
+            self.__webot_sensor.getMaxValue(),
             DistanceSensor.LOWER_BOUND,
             DistanceSensor.UPPER_BOUND,
-            self.webot_sensor.getValue(),
+            self.__webot_sensor.getValue(),
         )
 
     def read_value(self):
@@ -41,8 +47,8 @@ class Microswitch(SensorBase):
 
     def __init__(self, webot, sensor_name):
         super().__init__(webot, sensor_name)
-        self.webot_sensor = self.webot.getTouchSensor(self.sensor_name)
-        self.webot_sensor.enable(TIME_STEP)
+        self.__webot_sensor = webot.getTouchSensor(sensor_name)
+        self.__webot_sensor.enable(TIME_STEP)
 
     def read_value(self):
-        return self.webot_sensor.getValue() > 0
+        return self.__webot_sensor.getValue() > 0
