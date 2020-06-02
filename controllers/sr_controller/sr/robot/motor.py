@@ -8,11 +8,11 @@ SPEED_MAX = 100
 
 def init_motor_array(webot):
     return [
-        MotorBoard([
+        Motor([
             Wheel(webot, 'left wheel'),
             Wheel(webot, 'right wheel'),
         ]),
-        MotorBoard([
+        Motor([
             LinearMotor(webot, 'lift motor'),
             Gripper(webot, 'left finger motor', 'right finger motor'),
         ]),
@@ -34,7 +34,7 @@ def translate(sr_speed_val, sr_motor):
     )
 
 
-class MotorBoard(object):
+class Motor(object):
     """A motor"""
 
     def __init__(self, sr_motors):
