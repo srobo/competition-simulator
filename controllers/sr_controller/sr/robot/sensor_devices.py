@@ -6,11 +6,6 @@ from sr.robot.randomizer import add_jitter
 
 
 class SensorBase(ABC):
-
-    @abstractmethod
-    def __init__(self, webot, sensor_name):
-        pass
-
     @abstractmethod
     def read_value(self):
         pass
@@ -22,7 +17,6 @@ class DistanceSensor(SensorBase):
     UPPER_BOUND = 0.3
 
     def __init__(self, webot, sensor_name):
-        super().__init__(webot, sensor_name)
         self.__webot_sensor = webot.getDistanceSensor(sensor_name)
         self.__webot_sensor.enable(TIME_STEP)
 
@@ -46,7 +40,6 @@ class DistanceSensor(SensorBase):
 class Microswitch(SensorBase):
 
     def __init__(self, webot, sensor_name):
-        super().__init__(webot, sensor_name)
         self.__webot_sensor = webot.getTouchSensor(sensor_name)
         self.__webot_sensor.enable(TIME_STEP)
 
