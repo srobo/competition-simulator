@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class MotorBase(ABC):
     def __init__(self, webot, motor_name):
-        self.__webot_motor = webot.getMotor(motor_name)
+        self._webot_motor = webot.getMotor(motor_name)
         self._max_speed = self.__webot_motor.getMaxVelocity()
 
     @abstractmethod
@@ -15,8 +15,8 @@ class Wheel(MotorBase):
 
     def __init__(self, webot, motor_name):
         super().__init__(webot, motor_name)
-        self.__webot_motor.setPosition(float('inf'))
-        self.__webot_motor.setVelocity(0)
+        self._webot_motor.setPosition(float('inf'))
+        self._webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
         self.__webot_motor.setVelocity(speed)
@@ -26,8 +26,8 @@ class LinearMotor(MotorBase):
 
     def __init__(self, webot, motor_name):
         super().__init__(webot, motor_name)
-        self.__webot_motor.setPosition(0)
-        self.__webot_motor.setVelocity(0)
+        self._webot_motor.setPosition(0)
+        self._webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
         motor = self.__webot_motor
