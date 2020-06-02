@@ -19,7 +19,6 @@ class Wheel(MotorBase):
         self.__webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        self.set_speed(speed)
         self.__webot_motor.setVelocity(speed)
 
 
@@ -31,7 +30,6 @@ class LinearMotor(MotorBase):
         self.__webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        self.set_speed(speed)
         motor = self.__webot_motor
         if speed < 0:
             motor.setPosition(motor.getMinPosition())
