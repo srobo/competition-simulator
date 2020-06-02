@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 class MotorBase(ABC):
     def __init__(self, webot, motor_name):
         self._webot_motor = webot.getMotor(motor_name)
-        self._max_speed = self.__webot_motor.getMaxVelocity()
+        self._max_speed = self._webot_motor.getMaxVelocity()
 
     @abstractmethod
     def set_speed(self, speed):
@@ -19,7 +19,7 @@ class Wheel(MotorBase):
         self._webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        self.__webot_motor.setVelocity(speed)
+        self._webot_motor.setVelocity(speed)
 
 
 class LinearMotor(MotorBase):
@@ -30,7 +30,7 @@ class LinearMotor(MotorBase):
         self._webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        motor = self.__webot_motor
+        motor = self._webot_motor
         if speed < 0:
             motor.setPosition(motor.getMinPosition())
         else:
