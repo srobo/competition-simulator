@@ -16,12 +16,13 @@ class Robot(object):
         self._initialised = False
         self._quiet = quiet
 
-        # TODO set these values dynamically
-        self.mode = "dev"
-        self.zone = 0
-        self.arena = "A"
 
         self.webot = WebotsRobot()
+
+        # TODO set these values dynamically
+        self.mode = "dev"
+        self.zone = int(self.webot.getModel()[-1])
+        self.arena = "A"
 
         if init:
             self.init()
