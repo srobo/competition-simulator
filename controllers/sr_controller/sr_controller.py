@@ -38,6 +38,7 @@ def main():
     # Ensure the python path is properly passed down so the `sr` module can be imported
     env = os.environ.copy()
     env['PYTHONPATH'] = os.pathsep.join(sys.path)
+    env['SR_ROBOT_ZONE'] = get_robot_zone()
 
     completed_process = subprocess.run(
         [sys.executable, "-u", str(robot_file)],

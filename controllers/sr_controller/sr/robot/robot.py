@@ -1,3 +1,4 @@
+from os import environ
 import time
 from threading import Thread
 
@@ -21,7 +22,7 @@ class Robot(object):
 
         # TODO set these values dynamically
         self.mode = "dev"
-        self.zone = int(self.webot.getModel()[-1])
+        self.zone = os.environ.get('SR_ROBOT_ZONE', 0)
         self.arena = "A"
 
         if init:
