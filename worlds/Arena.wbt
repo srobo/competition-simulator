@@ -1309,8 +1309,8 @@ SRRobot {
   controller "sr_controller"
 }
 SRRobot {
-  translation -2.375 0 2.375
-  rotation 0 1 0 -0.875
+  translation 2.375 0 -2.375
+  rotation 0 1 0 2.266
   model "Robot1"
 }
 SRRobot {
@@ -1319,7 +1319,7 @@ SRRobot {
   model "Robot2"
 }
 SRRobot {
-  translation 2.375 0 -2.375
-  rotation 0 1 0 2.266
+  translation -2.375 0 2.375
+  rotation 0 1 0 -0.875
   model "Robot3"
 }
