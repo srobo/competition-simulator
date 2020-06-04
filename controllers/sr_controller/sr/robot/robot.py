@@ -26,6 +26,7 @@ class Robot(object):
 
         if init:
             self.init()
+            self.display_info()
             self.wait_start()
             if self.mode == "comp":
                 stop_after_delay()
@@ -38,6 +39,12 @@ class Robot(object):
         self.webots_init()
         self._init_devs()
         self._initialised = True
+
+    def display_info(self):
+        print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(
+            zone=self.zone,
+            mode=self.mode
+        ))
 
     def webots_init(self):
         t = Thread(target=self.webot_run_robot)
