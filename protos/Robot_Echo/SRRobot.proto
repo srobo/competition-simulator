@@ -2,7 +2,7 @@
 PROTO SRRobot [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
-  field SFString controller "sr_controller"
+  field SFString controller ""
   field SFString model ""
 ]
 {
