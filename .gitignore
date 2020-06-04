@@ -1,5 +1,6 @@
 *.pyc
 .*.wbproj
+.*.cache
 
 /.idea
 /.vscode
