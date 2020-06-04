@@ -20,9 +20,8 @@ class Robot(object):
 
         self.webot = WebotsRobot()
 
-        # TODO set these values dynamically
-        self.mode = "dev"
-        self.zone = os.environ.get('SR_ROBOT_ZONE', 0)
+        self.mode = environ.get("SR_ROBOT_MODE", "dev")
+        self.zone = int(environ.get("SR_ROBOT_ZONE", 0))
         self.arena = "A"
 
         if init:

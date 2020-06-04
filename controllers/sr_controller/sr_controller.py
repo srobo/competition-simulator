@@ -7,6 +7,8 @@ from pathlib import Path
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 ROOT = Path(__file__).resolve().parent.parent.parent
 
+MODE_FILE = ROOT / "robot_mode.txt"
+
 EXAMPLE_CONTROLLER_FILE = ROOT / "controllers/example_controller/example_controller.py"
 
 ROBOT_IDS_TO_CORNERS = {
@@ -27,6 +29,11 @@ def get_robot_file() -> Path:
 
     return ROOT.parent / "robot.py"
 
+def get_robot_mode() -> str:
+    if not MODE_FILE.exists():
+        return "dev"
+    return MODE_FILE.read_text().strip()
+
 
 def main():
     robot_file = get_robot_file()
@@ -38,7 +45,8 @@ def main():
     # Ensure the python path is properly passed down so the `sr` module can be imported
     env = os.environ.copy()
     env['PYTHONPATH'] = os.pathsep.join(sys.path)
-    env['SR_ROBOT_ZONE'] = get_robot_zone()
+    env['SR_ROBOT_ZONE'] = str(get_robot_zone())
+    env['SR_ROBOT_MODE'] = get_robot_mode()
 
     completed_process = subprocess.run(
         [sys.executable, "-u", str(robot_file)],

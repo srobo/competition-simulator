@@ -1,6 +1,7 @@
 *.pyc
 .*.wbproj
 .*.cache
+/robot_mode.txt
 
 /.idea
 /.vscode
