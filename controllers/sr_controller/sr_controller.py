@@ -48,8 +48,8 @@ def main():
         print("No robot controller found for zone ", robot_zone)
         sys.exit(0)
 
-    # Ensure the python path is properly passed down so the `sr` module can be imported
     env = os.environ.copy()
+    # Ensure the python path is properly passed down so the `sr` module can be imported
     env['PYTHONPATH'] = os.pathsep.join(sys.path)
     env['SR_ROBOT_ZONE'] = str(robot_zone)
     env['SR_ROBOT_MODE'] = robot_mode
