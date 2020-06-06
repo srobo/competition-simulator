@@ -23,7 +23,7 @@ def get_robot_zone() -> int:
 
 def get_robot_file() -> Path:
     zone_id = get_robot_zone()
-    robot_file_dir = ROOT.parent / str(zone_id)
+    robot_file_dir = ROOT.parent / "zone-" + zone_id
     if robot_file_dir.is_dir():
         return robot_file_dir / "robot.py"
     if get_robot_mode() == "comp":
