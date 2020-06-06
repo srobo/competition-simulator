@@ -37,8 +37,9 @@ def get_robot_mode() -> str:
 
 def main():
     robot_file = get_robot_file()
+    robot_mode = get_robot_mode()
 
-    if not robot_file.exists():
+    if robot_mode == "dev" and not robot_file.exists():
         print("Robot controller not found, copying example into place.")
         copyfile(str(EXAMPLE_CONTROLLER_FILE), str(robot_file))
 
@@ -46,7 +47,7 @@ def main():
     env = os.environ.copy()
     env['PYTHONPATH'] = os.pathsep.join(sys.path)
     env['SR_ROBOT_ZONE'] = str(get_robot_zone())
-    env['SR_ROBOT_MODE'] = get_robot_mode()
+    env['SR_ROBOT_MODE'] = robot_mode
 
     completed_process = subprocess.run(
         [sys.executable, "-u", str(robot_file)],
