@@ -1,5 +1,5 @@
-from os import environ
 import time
+from os import environ
 from threading import Thread
 
 from sr.robot import motor, camera, ruggeduino
@@ -16,7 +16,6 @@ class Robot(object):
     def __init__(self, quiet=False, init=True):
         self._initialised = False
         self._quiet = quiet
-
 
         self.webot = WebotsRobot()
 
@@ -43,7 +42,7 @@ class Robot(object):
     def display_info(self):
         print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(
             zone=self.zone,
-            mode=self.mode
+            mode=self.mode,
         ))
 
     def webots_init(self):

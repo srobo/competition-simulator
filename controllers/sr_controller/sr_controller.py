@@ -18,17 +18,20 @@ ROBOT_IDS_TO_CORNERS = {
     "1470": 3,
 }
 
+
 def get_robot_zone() -> int:
     return ROBOT_IDS_TO_CORNERS[os.environ['WEBOTS_ROBOT_ID']]
 
+
 def get_robot_file() -> Path:
     zone_id = get_robot_zone()
-    robot_file_dir = ROOT.parent / "zone-" + zone_id
+    robot_file_dir = ROOT.parent / ("zone-" + str(zone_id))
     if robot_file_dir.is_dir():
         return robot_file_dir / "robot.py"
     if get_robot_mode() == "comp":
         print("WARNING: Using default robot file location in competition mode.")
     return ROOT.parent / "robot.py"
+
 
 def get_robot_mode() -> str:
     if not MODE_FILE.exists():
@@ -62,7 +65,6 @@ def main():
 
     # Exit with the same return code so webots reports it as an error
     sys.exit(completed_process.returncode)
-
 
 
 if __name__ == "__main__":
