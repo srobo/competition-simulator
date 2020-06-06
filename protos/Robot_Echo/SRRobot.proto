@@ -978,7 +978,7 @@ PROTO SRRobot [
                     appearance PBRAppearance {
                       baseColorMap ImageTexture {
                         url [
-                          "../robots/Robot_Echo/logo.png"
+                          "./logo.png"
                         ]
                         repeatS FALSE
                         repeatT FALSE
