@@ -1526,7 +1526,7 @@ PROTO SRRobot [
         }
       }
     ]
-    name "Echo"
+    name IS model
     model IS model
     boundingObject Transform {
       translation 0 0.185 0.115
