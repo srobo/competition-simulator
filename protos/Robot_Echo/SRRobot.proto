@@ -4,6 +4,7 @@ PROTO SRRobot [
   field SFRotation rotation 0 1 0 0
   field SFString controller ""
   field SFString model ""
+  field SFColor flagColour 1 1 1
 ]
 {
   Robot {
@@ -841,6 +842,7 @@ PROTO SRRobot [
                           metalness 0
                           occlusionMapStrength 130
                           emissiveIntensity 10
+                          baseColor IS flagColour
                         }
                         geometry Box {
                           size 0.005 0.1 0.15

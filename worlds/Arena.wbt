@@ -1307,19 +1307,23 @@ SRRobot {
   rotation 0 1 0 3.926
   model "Robot0"
   controller "sr_controller"
+  flagColour 0 1 0
 }
 SRRobot {
   translation 2.375 0 -2.375
   rotation 0 1 0 2.266
   model "Robot1"
+  flagColour 1 0.375 0
 }
 SRRobot {
   translation 2.375 0 2.375
   rotation 0 1 0 0.875
   model "Robot2"
+  flagColour 1 0 1
 }
 SRRobot {
   translation -2.375 0 2.375
   rotation 0 1 0 -0.875
   model "Robot3"
+  flagColour 1 1 0
 }
