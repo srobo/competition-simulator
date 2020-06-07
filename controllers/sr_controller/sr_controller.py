@@ -44,12 +44,13 @@ def main():
     robot_mode = get_robot_mode()
     robot_zone = get_robot_zone()
 
-    if robot_mode == "dev" and not robot_file.exists():
-        print("Robot controller not found, copying example into place.")
-        copyfile(str(EXAMPLE_CONTROLLER_FILE), str(robot_file))
-    elif not robot_file.exists():
-        print("ERROR: No robot controller found for zone ", robot_zone)
-        sys.exit(1)
+    if not robot_file.exists():
+        if robot_mode == "dev":
+            print("Robot controller not found, copying example into place.")
+            copyfile(str(EXAMPLE_CONTROLLER_FILE), str(robot_file))
+        else:
+            print("ERROR: No robot controller found for zone ", robot_zone)
+            sys.exit(1)
 
     env = os.environ.copy()
     # Ensure the python path is properly passed down so the `sr` module can be imported
