@@ -31,7 +31,7 @@ PROTO SRRobot [
             boundingObject USE BUMPER
             physics Physics {
               density -1
-              mass 0.01
+              mass 1
             }
             lookupTable [
               0 0 0
@@ -56,7 +56,7 @@ PROTO SRRobot [
             boundingObject USE BUMPER
             physics Physics {
               density -1
-              mass 0.01
+              mass 1
             }
             lookupTable [
               0 0 0
@@ -1134,7 +1134,7 @@ PROTO SRRobot [
                   boundingObject USE BUMPER
                   physics Physics {
                     density -1
-                    mass 0.01
+                    mass 1
                   }
                   lookupTable [
                     0 0 0
@@ -1143,14 +1143,14 @@ PROTO SRRobot [
                 }
                 DEF LEFT_FINGER_SLIDER SliderJoint {
                   jointParameters JointParameters {
-                    position 0.14999997248782274
+                    position 0.15
                     axis -1 0 0
                     maxStop 0.16
                   }
                   device [
                     LinearMotor {
                       name "left finger motor"
-                      maxPosition 0.15000000000005506
+                      maxPosition 0.16
                       maxVelocity 0.1
                     }
                   ]
@@ -1177,7 +1177,7 @@ PROTO SRRobot [
                             boundingObject USE BUMPER
                             physics Physics {
                               density -1
-                              mass 0.01
+                              mass 1
                             }
                             lookupTable [
                               0 0 0
@@ -1223,20 +1223,20 @@ PROTO SRRobot [
                     name "left finger"
                     boundingObject USE LEFT_FINGER_TRANSFORM
                     physics DEF LEFT_FINGER_PHYSICS Physics {
-                      density 900
+                      density 1000
                     }
                   }
                 }
                 DEF RIGHT_FINGER_SLIDER SliderJoint {
                   jointParameters JointParameters {
-                    position 0.15000002757757508
+                    position 0.15
                     axis 1 0 0
                     maxStop 0.16
                   }
                   device [
                     LinearMotor {
                       name "right finger motor"
-                      maxPosition 0.15
+                      maxPosition 0.16
                       maxVelocity 0.1
                     }
                   ]
@@ -1263,7 +1263,7 @@ PROTO SRRobot [
                             boundingObject USE BUMPER
                             physics Physics {
                               density -1
-                              mass 0.01
+                              mass 1
                             }
                             lookupTable [
                               0 0 0
