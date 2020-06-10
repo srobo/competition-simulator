@@ -1110,6 +1110,8 @@ PROTO SRRobot [
                 name "lift motor"
                 minPosition -0.2
                 maxPosition 0.2
+                maxForce 200
+                maxVelocity 0.1
               }
             ]
             endPoint DEF LIFT Solid {
