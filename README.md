@@ -28,3 +28,9 @@ On first run, the robot will execute an example program. On first run, this will
 │   └── worlds
 └── robot.py
 ```
+
+## Isolation
+
+In a competition environment, you may want to run the robot controllers in an isolated environment. To do this, webots has an integration with [Firejail](https://firejail.wordpress.com/).
+
+To allow webots to pass through controller code into the jails, it must be started using the [`script/webots-firejail`](./script/webots-firejail) script in the repo. Once started using this, all controllers will be run inside jails.

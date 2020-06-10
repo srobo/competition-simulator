@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Run webots controllers in jails
+export WEBOTS_FIREJAIL_CONTROLLERS=1
+
+# Used by `runtime.ini` to pass through all relevant files into jail
+export SR_SIM_JAIL_PATHS=$(realpath -e ${PWD}/$(dirname $0)/../../)
+
+exec webots $@
