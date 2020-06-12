@@ -1,4 +1,5 @@
 import time
+from os import environ
 from threading import Lock, Thread
 
 from sr.robot import motor, camera, ruggeduino
@@ -16,12 +17,11 @@ class Robot(object):
         self._initialised = False
         self._quiet = quiet
 
-        # TODO set these values dynamically
-        self.mode = "dev"
-        self.zone = 0
-        self.arena = "A"
-
         self.webot = WebotsRobot()
+
+        self.mode = environ.get("SR_ROBOT_MODE", "dev")
+        self.zone = int(environ.get("SR_ROBOT_ZONE", 0))
+        self.arena = "A"
 
         # Lock used to guard access to Webot's time stepping machinery, allowing
         # us to safely advance simulation time from *either* the competitor's
@@ -31,6 +31,7 @@ class Robot(object):
 
         if init:
             self.init()
+            self.display_info()
             self.wait_start()
             if self.mode == "comp":
                 stop_after_delay()
@@ -43,6 +44,12 @@ class Robot(object):
         self.webots_init()
         self._init_devs()
         self._initialised = True
+
+    def display_info(self):
+        print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(
+            zone=self.zone,
+            mode=self.mode,
+        ))
 
     def webots_init(self):
         # Create a thread which will advance time in the background, so that the
