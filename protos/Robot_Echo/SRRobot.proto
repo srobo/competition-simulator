@@ -610,24 +610,24 @@ PROTO SRRobot [
                 appearance PBRAppearance {
                   baseColorMap ImageTexture {
                     url [
-                      "C:/Program Files/Webots/projects/robots/adept/pioneer3/protos/textures/smooth_rubber_base_color.jpg"
+                      "./textures/smooth_rubber_base_color.jpg"
                     ]
                   }
                   roughness 0.9
                   roughnessMap ImageTexture {
                     url [
-                      "C:/Program Files/Webots/projects/robots/adept/pioneer3/protos/textures/smooth_rubber_roughness.jpg"
+                      "./textures/smooth_rubber_roughness.jpg"
                     ]
                   }
                   metalness 0
                   normalMap ImageTexture {
                     url [
-                      "C:/Program Files/Webots/projects/robots/adept/pioneer3/protos/textures/smooth_rubber_normal.jpg"
+                      "./textures/smooth_rubber_normal.jpg"
                     ]
                   }
                   occlusionMap ImageTexture {
                     url [
-                      "C:/Program Files/Webots/projects/robots/adept/pioneer3/protos/textures/smooth_rubber_occlusion.jpg"
+                      "./textures/smooth_rubber_occlusion.jpg"
                     ]
                   }
                 }
@@ -726,24 +726,24 @@ PROTO SRRobot [
                       appearance PBRAppearance {
                         baseColorMap ImageTexture {
                           url [
-                            "C:/Program Files/Webots/projects/robots/adept/pioneer3/protos/textures/caster_wheel_base_color.jpg"
+                            "./textures/caster_wheel_base_color.jpg"
                           ]
                         }
                         roughness 0.7
                         roughnessMap ImageTexture {
                           url [
-                            "C:/Program Files/Webots/projects/robots/adept/pioneer3/protos/textures/caster_wheel_roughness.jpg"
+                            "./textures/caster_wheel_roughness.jpg"
                           ]
                         }
                         metalness 0
                         normalMap ImageTexture {
                           url [
-                            "C:/Program Files/Webots/projects/robots/adept/pioneer3/protos/textures/caster_wheel_normal.jpg"
+                            "./textures/caster_wheel_normal.jpg"
                           ]
                         }
                         occlusionMap ImageTexture {
                           url [
-                            "C:/Program Files/Webots/projects/robots/adept/pioneer3/protos/textures/caster_wheel_occlusion.jpg"
+                            "./textures/caster_wheel_occlusion.jpg"
                           ]
                         }
                       }
