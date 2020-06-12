@@ -6,7 +6,7 @@ from .convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
 from .vectors import Vector
 
 if TYPE_CHECKING:
-    from .webots import CameraRecognitionObject
+    from controller import CameraRecognitionObject
 
 
 def build_token_info(

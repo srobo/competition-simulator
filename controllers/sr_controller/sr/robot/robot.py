@@ -1,12 +1,13 @@
 import time
-from threading import Thread
+from os import environ
+from threading import Lock, Thread
 
 from sr.robot import motor, camera, ruggeduino
 from sr.robot.game import stop_after_delay
 from sr.robot.settings import TIME_STEP
 
 # Webots specific library
-from controller import Robot as WebotsRobot  # type: ignore[import] # isort:skip
+from controller import Robot as WebotsRobot  # isort:skip
 
 
 class Robot(object):
@@ -16,15 +17,21 @@ class Robot(object):
         self._initialised = False
         self._quiet = quiet
 
-        # TODO set these values dynamically
-        self.mode = "dev"
-        self.zone = 0
+        self.__webot = WebotsRobot()
+
+        self.mode = environ.get("SR_ROBOT_MODE", "dev")
+        self.zone = int(environ.get("SR_ROBOT_ZONE", 0))
         self.arena = "A"
 
-        self.__webot = WebotsRobot()
+        # Lock used to guard access to Webot's time stepping machinery, allowing
+        # us to safely advance simulation time from *either* the competitor's
+        # code (in the form of our `sleep` method) or from our background
+        # thread, but not both.
+        self._step_lock = Lock()
 
         if init:
             self.init()
+            self.display_info()
             self.wait_start()
             if self.mode == "comp":
                 stop_after_delay()
@@ -34,17 +41,47 @@ class Robot(object):
         return cls()
 
     def init(self):
-        self.__webots_init()
+        self.webots_init()
         self._init_devs()
         self._initialised = True
 
-    def __webots_init(self):
-        t = Thread(target=self.__webot_run_robot)
+    def display_info(self):
+        print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(
+            zone=self.zone,
+            mode=self.mode,
+        ))
+
+    def webots_init(self):
+        # Create a thread which will advance time in the background, so that the
+        # competitors' code can ignore the fact that it is actually running in a
+        # simulation.
+        t = Thread(
+            target=self.webot_run_robot,
+            # Ensure our background thread alone won't keep the controller
+            # process runnnig.
+            daemon=True,
+        )
         t.start()
         time.sleep(TIME_STEP / 1000)
 
-    def __webot_run_robot(self):
-        while not self.__webot.step(TIME_STEP):
+    def webots_step_and_should_continue(self, duration_ms: int) -> bool:
+        """
+        Run a webots step of the given duration in milliseconds.
+
+        Returns whether or not the simulation should continue (based on
+        Webots telling us whether or not the simulation is about to end).
+        """
+
+        with self._step_lock:
+            # We use Webots in synchronous mode (specifically
+            # `synchronization` is left at its default value of `TRUE`). In
+            # that mode, Webots returns -1 from step to indicate that the
+            # simulation is terminating, or 0 otherwise.
+            result = self.__webot.step(duration_ms)
+            return result != -1
+
+    def webot_run_robot(self):
+        while self.webots_step_and_should_continue(TIME_STEP):
             pass
 
     def wait_start(self):
@@ -82,3 +119,23 @@ class Robot(object):
     def _init_camera(self):
         self.camera = camera.Camera(self.__webot)
         self.see = self.camera.see
+
+    def time(self) -> float:
+        """
+        Roughly equivalent to `time.time` but for simulation time.
+        """
+        return self.__webot.getTime()
+
+    def sleep(self, secs: float) -> None:
+        """
+        Roughly equivalent to `time.sleep` but accounting for simulation time.
+        """
+
+        # Ensure the time delay is a valid step increment
+        n_steps = int((secs * 1000) // TIME_STEP)
+        duration_ms = n_steps * TIME_STEP
+
+        # We're in the main thread here, so we don't really need to do any
+        # cleanup if Webots tells us the simulation is terminating. When webots
+        # kills the process all the proper tidyup will happen anyway.
+        self.webots_step_and_should_continue(duration_ms)

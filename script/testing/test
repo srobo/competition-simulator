@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export PYTHONPATH=$(realpath $(dirname $0))/webots-fakes
-
 cd $(dirname $(dirname  $(dirname $0)))/controllers
+
+export PYTHONPATH=$(realpath ../stub-webots)
 
 python3 -m unittest discover --start-directory sr_controller "$@"

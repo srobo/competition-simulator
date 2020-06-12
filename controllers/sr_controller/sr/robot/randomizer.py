@@ -1,7 +1,7 @@
 import random
 
 # The maximum randomness which can be added in either direction
-DEFAULT_RANDOM_RANGE_PERCENT = 10
+DEFAULT_RANDOM_RANGE_PERCENT = 2.5
 
 
 def add_jitter(
