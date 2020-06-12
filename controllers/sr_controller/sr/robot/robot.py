@@ -42,7 +42,12 @@ class Robot(object):
         # Create a thread which will advance time in the background, so that the
         # competitors' code can ignore the fact that it is actually running in a
         # simulation.
-        t = Thread(target=self.webot_run_robot)
+        t = Thread(
+            target=self.webot_run_robot,
+            # Ensure our background thread alone won't keep the controller
+            # process runnnig.
+            daemon=True,
+        )
         t.start()
         time.sleep(TIME_STEP / 1000)
 
