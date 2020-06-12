@@ -39,6 +39,9 @@ class Robot(object):
         self._initialised = True
 
     def webots_init(self):
+        # Create a thread which will advance time in the background, so that the
+        # competitors' code can ignore the fact that it is actually running in a
+        # simulation.
         t = Thread(target=self.webot_run_robot)
         t.start()
         time.sleep(TIME_STEP / 1000)
