@@ -6,7 +6,7 @@ export WEBOTS_FIREJAIL_CONTROLLERS=1
 REPO_ROOT=$(dirname $0)/..
 
 # We want the Firejailed process to have access to the siblings of the
-# simulation directory because the  competitors code lives in sibling directories.
+# simulation directory because the competitors' code lives in sibling directories.
 REPO_PARENT=$REPO_ROOT/..
 
 # Used by `runtime.ini` to pass through all relevant files into jail
