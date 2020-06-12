@@ -156,6 +156,7 @@ def angle_between(vec_a: Vector, vec_b: Vector) -> float:
     dp = dot_product(vec_a, vec_b)
     mod_ab = vec_a.magnitude() * vec_b.magnitude()
     cos_theta = dp / mod_ab
+    cos_theta = min(1, max(cos_theta, -1))  # Ensures it is within the bounds of 1 and -1
     theta_rads = math.acos(cos_theta)
     theta_degrees = math.degrees(theta_rads)
     return theta_degrees
