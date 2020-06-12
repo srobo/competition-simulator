@@ -61,7 +61,7 @@ class Robot(object):
         """
         Run a webots step of the given duration in milliseconds.
 
-        Returns whether or not Webots is about to terminate the simulation.
+        Returns whether or not the simulation should continue (ie is webots terminating).
         """
 
         with self._step_lock:
