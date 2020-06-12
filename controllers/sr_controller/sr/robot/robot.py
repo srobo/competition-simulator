@@ -6,7 +6,7 @@ from sr.robot.game import stop_after_delay
 from sr.robot.settings import TIME_STEP
 
 # Webots specific library
-from controller import Robot as WebotsRobot  # type: ignore[import] # isort:skip
+from controller import Robot as WebotsRobot  # isort:skip
 
 
 class Robot(object):
