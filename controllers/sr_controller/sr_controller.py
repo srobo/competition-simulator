@@ -68,10 +68,8 @@ def get_robot_file(zone_id: int, mode: str) -> Path:
         print("No robot controller found for zone {}".format(zone_id))
 
         # Only in competition mode is it an error for a robot file to be missing.
-        if mode == "comp":
-            exit(1)
-        else:
-            exit()
+        missing_file_is_error = mode == "comp"
+        exit(1 if missing_file_is_error else 0)
 
     # For the non-strict zones (i.e: Zone 0 in development mode) we check in the
     # fallback place. If that doesn't exist we copy an example into it.
