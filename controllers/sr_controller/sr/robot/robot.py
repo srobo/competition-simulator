@@ -70,7 +70,7 @@ class Robot(object):
             # that mode, Webots returns -1 from step to indicate that the
             # simulation is terminating, or 0 otherwise.
             result = self.webot.step(duration_ms)
-            return result == -1
+            return result != -1
 
     def webot_run_robot(self):
         while self.webots_step_and_should_continue(TIME_STEP):
