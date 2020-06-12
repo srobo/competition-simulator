@@ -108,6 +108,8 @@ def main():
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode)
 
+    print("Using {} for Zone {}".format(robot_file, robot_zone))
+
     env = os.environ.copy()
     # Ensure the python path is properly passed down so the `sr` module can be imported
     env['PYTHONPATH'] = os.pathsep.join(sys.path)
