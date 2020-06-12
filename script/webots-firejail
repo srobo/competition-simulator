@@ -12,4 +12,4 @@ REPO_PARENT=$REPO_ROOT/..
 # Used by `runtime.ini` to pass through all relevant files into jail
 export SR_SIM_JAIL_PATHS=$(realpath -e $REPO_PARENT)
 
-exec webots $@
+exec webots "$@"
