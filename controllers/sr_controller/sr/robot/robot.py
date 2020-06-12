@@ -1,5 +1,5 @@
 import time
-from threading import Thread
+from threading import Lock, Thread
 
 from sr.robot import motor, camera, ruggeduino
 from sr.robot.game import stop_after_delay
@@ -22,6 +22,12 @@ class Robot(object):
         self.arena = "A"
 
         self.webot = WebotsRobot()
+
+        # Lock used to guard access to Webot's time stepping machinery, allowing
+        # us to safely advance simulation time from *either* the competitor's
+        # code (in the form of our `sleep` method) or from our background
+        # thread, but not both.
+        self._step_lock = Lock()
 
         if init:
             self.init()
@@ -51,8 +57,23 @@ class Robot(object):
         t.start()
         time.sleep(TIME_STEP / 1000)
 
+    def webots_step_and_should_continue(self, duration_ms: int) -> bool:
+        """
+        Run a webots step of the given duration in milliseconds.
+
+        Returns whether or not Webots is about to terminate the simulation.
+        """
+
+        with self._step_lock:
+            # We use Webots in synchronous mode (specifically
+            # `synchronization` is left at its default value of `TRUE`). In
+            # that mode, Webots returns -1 from step to indicate that the
+            # simulation is terminating, or 0 otherwise.
+            result = self.webot.step(duration_ms)
+            return result == -1
+
     def webot_run_robot(self):
-        while not self.webot.step(TIME_STEP):
+        while self.webots_step_and_should_continue(TIME_STEP):
             pass
 
     def wait_start(self):
@@ -90,3 +111,23 @@ class Robot(object):
     def _init_camera(self):
         self.camera = camera.Camera(self.webot)
         self.see = self.camera.see
+
+    def time(self) -> float:
+        """
+        Roughly equivalent to `time.time` but for simulation time.
+        """
+        return self.webot.getTime()
+
+    def sleep(self, secs: float) -> None:
+        """
+        Roughly equivalent to `time.sleep` but accounting for simulation time.
+        """
+
+        # Ensure the time delay is a valid step increment
+        n_steps = int((secs * 1000) // TIME_STEP)
+        duration_ms = n_steps * TIME_STEP
+
+        # We're in the main thread here, so we don't really need to do any
+        # cleanup if Webots tells us the simulation is terminating. When webots
+        # kills the process all the proper tidyup will happen anyway.
+        self.webots_step_and_should_continue(duration_ms)
