@@ -11,7 +11,7 @@ Take a look at [the docs](https://studentrobotics.org/docs/competition-simulator
 Within the IDE, there are a few different panels:
 
 - In the centre of your screen is the 3D simulated view of the arena
-- On the left is a tree heirarchy of all elements in this "world"
+- On the left is a tree hierarchy of all elements in this "world"
 - At the bottom is your console
 - At the top are your general controls which include the time controls. Press the centre play button to run the simulation at normal speed.
 
