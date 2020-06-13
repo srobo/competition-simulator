@@ -891,14 +891,7 @@ DEF STAGE Solid {
   children [
     Shape {
       appearance DEF APP_FLOOR PBRAppearance {
-        baseColor 0.5 0.5 0.5
-        baseColorMap ImageTexture {
-          url [
-            "../textures/stage.png"
-          ]
-          repeatS FALSE
-          repeatT FALSE
-        }
+        baseColor 0.360784 0.309804 0.215686
         roughness 1
         metalness 0
       }
