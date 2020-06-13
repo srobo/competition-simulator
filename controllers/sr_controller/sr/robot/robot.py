@@ -6,6 +6,8 @@ from sr.robot import motor, camera, ruggeduino
 from sr.robot.game import stop_after_delay
 from sr.robot.settings import TIME_STEP
 
+from datetime import datetime
+
 # Webots specific library
 from controller import Robot as WebotsRobot  # isort:skip
 
@@ -79,6 +81,11 @@ class Robot(object):
             # that mode, Webots returns -1 from step to indicate that the
             # simulation is terminating, or 0 otherwise.
             result = self.webot.step(duration_ms)
+
+
+            # save picture
+            print(self.webot.getCamera("camera").saveImage("test"+str(datetime.now.strftime("%m/%d/%Y, %H:%M:%S"))+".png",100))
+
             return result != -1
 
     def webot_run_robot(self):
