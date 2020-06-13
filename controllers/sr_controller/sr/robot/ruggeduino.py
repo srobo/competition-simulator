@@ -17,12 +17,20 @@ def init_ruggeduino_array(webot):
         "left finger sensor",
         "right finger sensor",
     ]
+    led_names = [
+        "led 1",
+        "led 2",
+        "led 3",
+        "led 4",
+        "led 5",
+        "led 6",
+    ]
 
-    analogue_array = [DistanceSensor(webot, name) for name in dist_sensor_names]
+    analogue_input_array = [DistanceSensor(webot, name) for name in dist_sensor_names]
 
-    digital_array = [Microswitch(webot, name) for name in switch_names]
+    digital_input_array = [Microswitch(webot, name) for name in switch_names]
 
-    return [Ruggeduino(webot, analogue_array, digital_array)]
+    return [Ruggeduino(webot, analogue_input_array, digital_input_array)]
 
 
 class Ruggeduino(object):
