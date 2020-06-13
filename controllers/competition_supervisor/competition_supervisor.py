@@ -1,15 +1,28 @@
 import sys
+import contextlib
+from typing import Iterator
 from pathlib import Path
 
 # Webots specific library
 from controller import Supervisor  # isort:skip
 
-sys.path.append(str(Path(__file__).resolve().parent.parent / 'sr_controller'))
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
 
 sr_controller = __import__('sr_controller')
 
 TIME_STEP = 32
 GAME_DURATION_SECONDS = 10
+
+
+@contextlib.contextmanager
+def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
+    file_path.parent.mkdir(parents=True)
+    print("Saving animation to {}".format(file_path))
+    supervisor.animationStartRecording(str(file_path))
+    yield
+    supervisor.animationStopRecording()
 
 
 def quit_if_development_mode() -> None:
@@ -67,7 +80,10 @@ def main() -> None:
 
     remove_unused_robots(supervisor)
 
-    run_match(supervisor)
+    # TODO: where should these actually go? Do we configure an understanding of
+    # the match currently running?
+    with record_animation(supervisor, REPO_ROOT / 'recordings' / 'demo.html'):
+        run_match(supervisor)
 
 
 if __name__ == '__main__':
