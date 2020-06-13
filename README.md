@@ -1,4 +1,5 @@
 # competition-simulator
+
 A simulator to be used for the Student Robotics Virtual Competition 2020
 
 ## Installation instructions
@@ -10,7 +11,7 @@ Take a look at [the docs](https://studentrobotics.org/docs/competition-simulator
 Within the IDE, there are a few different panels:
 
 - In the centre of your screen is the 3D simulated view of the arena
-- On the left is a tree heirarchy of all elements in this "world"
+- On the left is a tree hierarchy of all elements in this "world"
 - At the bottom is your console
 - At the top are your general controls which include the time controls. Press the centre play button to run the simulation at normal speed.
 
@@ -18,7 +19,7 @@ Within the IDE, there are a few different panels:
 
 On first run, the robot will execute an example program. On first run, this will be copied to the directory `competition-simulator` is stored in to make updating easier:
 
-```
+``` plain
 .
 ├── competition-simulator
 │   ├── controllers

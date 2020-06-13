@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.33246481952953133 -0.9314016676496985 -0.14818258087426103 5.456433700612629
-  position 6.9972994812935 3.16953523821157 7.1575439818618
+  orientation -0.9998586089382266 -0.013419362479672799 0.010133254302235292 0.6634646230960338
+  position -0.14128119398414965 6.240867006279962 8.631464197741643
 }
 TexturedBackgroundLight {
   texture "noon_park_empty"
@@ -989,17 +989,20 @@ SRRobot {
   translation 2.375 0 -2.375
   rotation 0 1 0 2.266
   model "Robot1"
+  controller "sr_controller"
   flagColour 1 0.375 0
 }
 SRRobot {
   translation 2.375 0 2.375
   rotation 0 1 0 0.875
   model "Robot2"
+  controller "sr_controller"
   flagColour 1 0 1
 }
 SRRobot {
   translation -2.375 0 2.375
   rotation 0 1 0 -0.875
   model "Robot3"
+  controller "sr_controller"
   flagColour 1 1 0
 }
