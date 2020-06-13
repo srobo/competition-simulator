@@ -1,4 +1,5 @@
 # competition-simulator
+
 A simulator to be used for the Student Robotics Virtual Competition 2020
 
 ## Installation instructions
@@ -18,7 +19,7 @@ Within the IDE, there are a few different panels:
 
 On first run, the robot will execute an example program. On first run, this will be copied to the directory `competition-simulator` is stored in to make updating easier:
 
-```
+``` plain
 .
 ├── competition-simulator
 │   ├── controllers
