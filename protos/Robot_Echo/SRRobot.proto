@@ -394,7 +394,7 @@ PROTO SRRobot [
                 }
                 DEF RIM_SHAPE Shape {
                   appearance PBRAppearance {
-                    baseColor 0.98 0.66 0.02
+                    baseColor IS flagColour
                     roughness 0.3
                     metalness 0
                   }
@@ -576,7 +576,7 @@ PROTO SRRobot [
                 }
                 DEF RIM_SHAPE Shape {
                   appearance PBRAppearance {
-                    baseColor 0.98 0.66 0.02
+                    baseColor IS flagColour
                     roughness 0.3
                     metalness 0
                   }
@@ -1037,7 +1037,7 @@ PROTO SRRobot [
                 children [
                   DEF body Shape {
                     appearance PBRAppearance {
-                      baseColor 0.98 0.66 0.02
+                      baseColor IS flagColour
                       roughness 0.3
                       metalness 0
                     }
