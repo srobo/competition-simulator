@@ -106,7 +106,7 @@ class Marker:
         self.info = marker_info
         self.timestamp = timestamp
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         return '<Marker: {}>'.format(', '.join((
             'info={}'.format(self.info),
             'centre={}'.format(self.centre),
