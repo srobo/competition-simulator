@@ -59,7 +59,6 @@
         /*stroke-dasharray: 0.14142135, 0.14142135;*/
         stroke-dasharray: 0.08 0.08;
         /*stroke-dashoffset: -50%;*/
-        fill: none;
       }
 
       #start-zone {
@@ -111,6 +110,35 @@
         font-size: 0.2px;
         text-anchor: start;
         dominant-baseline: middle;
+      }
+
+      #scoring-zone-0 {
+         fill: #00ff00;
+      }
+      #scoring-zone-1 {
+         fill: #ff6600;
+      }
+      #scoring-zone-2 {
+         fill: #ff00ff;
+      }
+      #scoring-zone-3 {
+         fill: #ffff00;
+      }
+
+      .zone {
+         fill-opacity: 0.2;
+      }
+
+      #start-zone,
+      #token-silver,
+      #token-gold {
+         fill-opacity: 0.2;
+      }
+
+      #legend,
+      #robot,
+      .dimension {
+         display: none;
       }
     ]]></style>
   <!-- common patterns -->
