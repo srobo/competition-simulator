@@ -1,8 +1,16 @@
 
 # Textures
-These textures are the property of Cyberbotics: 
-https://cyberbotics.com/webots_assets_license
+The following textures contained within this folder are the property of Cyberbotics: 
+- caster_wheel_base_color.jpg
+- caster_wheel_normal.jpg
+- caster_wheel_occlusion.jpg
+- caster_wheel_roughness.jpg
+- smooth_rubber_base_color.jpg
+- smooth_rubber_normal.jpg
+- smooth_rubber_occlusion.jpg
+- smooth_rubber_roughness.jpg
 
+https://cyberbotics.com/webots_assets_license
 
 ## Definitions
 Cyberbotics: shall mean the company registered in Switzerland as "Cyberbotics S.à r.l.".

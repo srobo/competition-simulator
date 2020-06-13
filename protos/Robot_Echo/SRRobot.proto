@@ -428,24 +428,24 @@ PROTO SRRobot [
                 appearance PBRAppearance {
                   baseColorMap ImageTexture {
                     url [
-                      "./textures/smooth_rubber_base_color.jpg"
+                      "./textures/cyberbotics/smooth_rubber_base_color.jpg"
                     ]
                   }
                   roughness 0.9
                   roughnessMap ImageTexture {
                     url [
-                      "./textures/smooth_rubber_roughness.jpg"
+                      "./textures/cyberbotics/smooth_rubber_roughness.jpg"
                     ]
                   }
                   metalness 0
                   normalMap ImageTexture {
                     url [
-                      "./textures/smooth_rubber_normal.jpg"
+                      "./textures/cyberbotics/smooth_rubber_normal.jpg"
                     ]
                   }
                   occlusionMap ImageTexture {
                     url [
-                      "./textures/smooth_rubber_occlusion.jpg"
+                      "./textures/cyberbotics/smooth_rubber_occlusion.jpg"
                     ]
                   }
                 }
@@ -610,24 +610,24 @@ PROTO SRRobot [
                 appearance PBRAppearance {
                   baseColorMap ImageTexture {
                     url [
-                      "./textures/smooth_rubber_base_color.jpg"
+                      "./textures/cyberbotics/smooth_rubber_base_color.jpg"
                     ]
                   }
                   roughness 0.9
                   roughnessMap ImageTexture {
                     url [
-                      "./textures/smooth_rubber_roughness.jpg"
+                      "./textures/cyberbotics/smooth_rubber_roughness.jpg"
                     ]
                   }
                   metalness 0
                   normalMap ImageTexture {
                     url [
-                      "./textures/smooth_rubber_normal.jpg"
+                      "./textures/cyberbotics/smooth_rubber_normal.jpg"
                     ]
                   }
                   occlusionMap ImageTexture {
                     url [
-                      "./textures/smooth_rubber_occlusion.jpg"
+                      "./textures/cyberbotics/smooth_rubber_occlusion.jpg"
                     ]
                   }
                 }
@@ -726,24 +726,24 @@ PROTO SRRobot [
                       appearance PBRAppearance {
                         baseColorMap ImageTexture {
                           url [
-                            "./textures/caster_wheel_base_color.jpg"
+                            "./textures/cyberbotics/caster_wheel_base_color.jpg"
                           ]
                         }
                         roughness 0.7
                         roughnessMap ImageTexture {
                           url [
-                            "./textures/caster_wheel_roughness.jpg"
+                            "./textures/cyberbotics/caster_wheel_roughness.jpg"
                           ]
                         }
                         metalness 0
                         normalMap ImageTexture {
                           url [
-                            "./textures/caster_wheel_normal.jpg"
+                            "./textures/cyberbotics/caster_wheel_normal.jpg"
                           ]
                         }
                         occlusionMap ImageTexture {
                           url [
-                            "./textures/caster_wheel_occlusion.jpg"
+                            "./textures/cyberbotics/caster_wheel_occlusion.jpg"
                           ]
                         }
                       }
