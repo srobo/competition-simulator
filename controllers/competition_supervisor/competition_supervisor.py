@@ -1,9 +1,9 @@
-import time
 from pathlib import Path
 
 # Webots specific library
 from controller import Supervisor  # isort:skip
 
+TIME_STEP = 32
 GAME_DURATION_SECONDS = 10
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -24,10 +24,8 @@ supervisor.simulationReset()
 
 supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
 
-end = time.time() + GAME_DURATION_SECONDS
-
-while time.time() < end:
-    supervisor.step(32)
+duration_ms = TIME_STEP * int(1000 * GAME_DURATION_SECONDS // TIME_STEP)
+supervisor.step(duration_ms)
 
 print("==================")
 print("Game over, pausing")
