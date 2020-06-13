@@ -84,7 +84,7 @@ class Robot(object):
 
 
             # save picture
-            print(self.webot.getCamera("camera").saveImage("test"+str(datetime.now.strftime("%m/%d/%Y, %H:%M:%S"))+".png",100))
+            print(self.webot.getCamera("camera").saveImage("webotstest.png",100))
 
             return result != -1
 
