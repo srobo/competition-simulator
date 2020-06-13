@@ -11,14 +11,11 @@ sr_controller = __import__('sr_controller')
 TIME_STEP = 32
 GAME_DURATION_SECONDS = 10
 
-# Root directory of the SR webots simulator (equivalent to the root of the git repo)
-ROOT = Path(__file__).resolve().parent.parent.parent
 
-MODE_FILE = ROOT / 'robot_mode.txt'
-
-if not MODE_FILE.exists() or MODE_FILE.read_text().strip() != 'comp':
-    print("Development mode, exiting competition supervisor")
-    exit()
+def quit_if_development_mode() -> None:
+    if sr_controller.get_robot_mode() != 'comp':
+        print("Development mode, exiting competition supervisor")
+        exit()
 
 
 def prepare(supervisor: Supervisor) -> None:
@@ -62,6 +59,8 @@ def run_match(supervisor: Supervisor) -> None:
 
 
 def main() -> None:
+    quit_if_development_mode()
+
     supervisor = Supervisor()
 
     prepare(supervisor)
