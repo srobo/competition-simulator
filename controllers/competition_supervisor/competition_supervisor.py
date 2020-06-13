@@ -15,20 +15,38 @@ if not MODE_FILE.exists() or MODE_FILE.read_text().strip() != 'comp':
     print("Development mode, exiting competition supervisor")
     exit()
 
-supervisor = Supervisor()
 
-supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
-supervisor.simulationReset()
+def prepare(supervisor: Supervisor) -> None:
+    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
+    supervisor.simulationReset()
 
-# TODO: connect up to wait_start and remove robots which are not present.
 
-supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
+def run_match(supervisor: Supervisor) -> None:
+    print("===========")
+    print("Match start")
+    print("===========")
 
-duration_ms = TIME_STEP * int(1000 * GAME_DURATION_SECONDS // TIME_STEP)
-supervisor.step(duration_ms)
+    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
 
-print("==================")
-print("Game over, pausing")
-print("==================")
+    duration_ms = TIME_STEP * int(1000 * GAME_DURATION_SECONDS // TIME_STEP)
+    supervisor.step(duration_ms)
 
-supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
+    print("==================")
+    print("Game over, pausing")
+    print("==================")
+
+    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
+
+
+def main() -> None:
+    supervisor = Supervisor()
+
+    prepare(supervisor)
+
+    # TODO: connect up to wait_start and remove robots which are not present.
+
+    run_match(supervisor)
+
+
+if __name__ == '__main__':
+    main()
