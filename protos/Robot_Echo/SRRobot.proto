@@ -1566,6 +1566,7 @@ PROTO SRRobot [
       ]
     }
     physics Physics {
+    density 1900
     }
     controller IS controller
   }
