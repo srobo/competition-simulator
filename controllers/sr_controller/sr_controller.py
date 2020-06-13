@@ -113,6 +113,7 @@ def main():
     env['PYTHONPATH'] = os.pathsep.join(sys.path)
     env['SR_ROBOT_ZONE'] = str(robot_zone)
     env['SR_ROBOT_MODE'] = robot_mode
+    env['SR_ROBOT_FILE'] = str(robot_file)
 
     completed_process = subprocess.run(
         [sys.executable, "-u", str(robot_file)],

@@ -1,5 +1,5 @@
 import time
-from os import environ
+from os import path, environ
 from threading import Lock, Thread
 
 from sr.robot import motor, camera, ruggeduino
@@ -22,6 +22,7 @@ class Robot(object):
         self.mode = environ.get("SR_ROBOT_MODE", "dev")
         self.zone = int(environ.get("SR_ROBOT_ZONE", 0))
         self.arena = "A"
+        self.usbkey = path.normpath(path.join(environ["SR_ROBOT_FILE"], "../"))
 
         # Lock used to guard access to Webot's time stepping machinery, allowing
         # us to safely advance simulation time from *either* the competitor's
