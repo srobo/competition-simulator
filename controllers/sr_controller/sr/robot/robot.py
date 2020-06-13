@@ -6,7 +6,6 @@ from sr.robot import motor, camera, ruggeduino
 from sr.robot.game import stop_after_delay
 from sr.robot.settings import TIME_STEP
 
-from datetime import datetime
 
 # Webots specific library
 from controller import Robot as WebotsRobot  # isort:skip
@@ -83,12 +82,19 @@ class Robot(object):
             result = self.webot.step(duration_ms)
 
 
+            self.timecount = self.timecount+1
+
+            print("Timecount is "+str(self.timecount))
+
             # save picture
-            print(self.webot.getCamera("camera").saveImage("webotstest.png",100))
+            filename = "webotstest-"+str(time.time()).replace(".","")+".png"
+            print(filename)
+            print(self.webot.getCamera("camera").saveImage("A:\\antoi\\Documents\\GitHub\\competition-simulator\\stream\\"+filename,100))
 
             return result != -1
 
     def webot_run_robot(self):
+        self.timecount = 0
         while self.webots_step_and_should_continue(TIME_STEP):
             pass
 
