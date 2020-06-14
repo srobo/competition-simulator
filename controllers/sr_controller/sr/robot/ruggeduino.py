@@ -52,10 +52,11 @@ class Ruggeduino(object):
         min_pin = Ruggeduino.DIGITAL_READ_PIN_START
         max_pin = Ruggeduino.DIGITAL_WRITE_PIN_START - 1
         if pin < min_pin or pin > max_pin:
-            raise ValueError("Only digital input pins " +
-                            str(min_pin) + " - " + str(max_pin) +
-                            " are available on the Ruggeduino",
-                )
+            raise ValueError(
+                "Only digital input pins " +
+                str(min_pin) + " - " + str(max_pin) +
+                " are available on the Ruggeduino",
+            )
         return self.digital_input_array[pin - Ruggeduino.DIGITAL_READ_PIN_START].read_value()
 
     def digital_write(self, pin, level):
@@ -63,10 +64,11 @@ class Ruggeduino(object):
         min_pin = Ruggeduino.DIGITAL_WRITE_PIN_START
         max_pin = Ruggeduino.DIGITAL_END_PIN
         if pin < min_pin or pin > max_pin:
-            raise ValueError("Only digital output pins " +
-                            str(min_pin) + " - " + str(max_pin) +
-                            " are available on the Ruggeduino",
-                )
+            raise ValueError(
+                "Only digital output pins " +
+                str(min_pin) + " - " + str(max_pin) +
+                " are available on the Ruggeduino",
+            )
         self.digital_output_array[pin - Ruggeduino.DIGITAL_WRITE_PIN_START].write_value(level)
 
     def analogue_read(self, pin):
