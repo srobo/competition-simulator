@@ -25,7 +25,7 @@ def init_ruggeduino_array(webot):
     return [Ruggeduino(webot, analogue_array, digital_array)]
 
 
-class Ruggeduino(object):
+class Ruggeduino:
 
     DIGITAL_PIN_OFFSET = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 

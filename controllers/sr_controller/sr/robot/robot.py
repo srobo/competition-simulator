@@ -10,7 +10,7 @@ from sr.robot.settings import TIME_STEP
 from controller import Robot as WebotsRobot  # isort:skip
 
 
-class Robot(object):
+class Robot:
     """Class for initialising and accessing robot hardware"""
 
     def __init__(self, quiet=False, init=True):

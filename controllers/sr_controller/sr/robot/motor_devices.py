@@ -1,4 +1,4 @@
-class MotorBase(object):
+class MotorBase:
     def __init__(self, webot, motor_name):
         self.webot = webot
         self.motor_name = motor_name

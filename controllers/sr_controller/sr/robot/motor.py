@@ -34,7 +34,7 @@ def translate(sr_speed_val, sr_motor):
     )
 
 
-class Motor(object):
+class Motor:
     """A motor"""
 
     def __init__(self, board_id, webot, sr_motors):
@@ -44,7 +44,7 @@ class Motor(object):
         self.webot = webot
 
 
-class MotorChannel(object):
+class MotorChannel:
     def __init__(self, channel, webot, board_id, sr_motor):
         self.channel = channel
         self.webot = webot

@@ -3,7 +3,7 @@ from sr.robot.settings import TIME_STEP
 from sr.robot.randomizer import add_jitter
 
 
-class SensorBase(object):
+class SensorBase:
 
     def __init__(self, webot, sensor_name):
         self.webot = webot
