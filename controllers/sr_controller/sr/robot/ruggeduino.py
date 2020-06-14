@@ -37,7 +37,8 @@ def init_ruggeduino_array(webot):
 
 class Ruggeduino(object):
 
-    DIGITAL_PIN_OFFSET = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
+    DIGITAL_OUT_PIN_OFFSET = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
+    DIGITAL_IN_PIN_OFFSET = 7  # Offset output pins by input pins. They can't occupy the same pins
 
     def __init__(self, webot, analogue_input_array, digital_input_array, digital_output_array):
         self.webot = webot
@@ -49,12 +50,12 @@ class Ruggeduino(object):
         "Read an digital input"
         if pin < 2 or pin > 6:
             raise ValueError("Only digital input pins 2 - 6 are available on the Ruggeduino")
-        return self.digital_input_array[pin - Ruggeduino.DIGITAL_PIN_OFFSET].read_value()
+        return self.digital_input_array[pin - Ruggeduino.DIGITAL_OUT_PIN_OFFSET].read_value()
 
     def digital_write(self, pin, level):
         if pin < 7 or pin > 12:
             raise ValueError("Only digital output pins 7 - 12 are available on the Ruggeduino")
-        self.digital_output_array[pin].write_value(level)
+        self.digital_output_array[pin - Ruggeduino.DIGITAL_IN_PIN_OFFSET].write_value(level)
 
     def analogue_read(self, pin):
         "Read an analogue input"
