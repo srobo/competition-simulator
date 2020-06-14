@@ -13,9 +13,9 @@ EXAMPLE_CONTROLLER_FILE = ROOT / "controllers/example_controller/example_control
 
 ROBOT_IDS_TO_CORNERS = {
     "291": 0,
-    "684": 1,
-    "1077": 2,
-    "1470": 3,
+    "679": 1,
+    "1067": 2,
+    "1455": 3,
 }
 
 STRICT_ZONES = {
