@@ -47,14 +47,14 @@ class Ruggeduino(object):
 
     def digital_read(self, pin):
         "Read an digital input"
-        if pin < 2 or pin > 13:
-            raise ValueError("Only pins 2 - 13 are available on the Ruggeduino")
+        if pin < 2 or pin > 6:
+            raise ValueError("Only digital input pins 2 - 6 are available on the Ruggeduino")
         return self.digital_input_array[pin - Ruggeduino.DIGITAL_PIN_OFFSET].read_value()
 
     def digital_write(self, pin, level):
-        if pin < 0 or pin > 5:
-            raise ValueError("Only output pins 0 - 5 are available on the Ruggeduino")
-        self.digital_output_array[pin].write_value(level) # TODO convert level to bool
+        if pin < 7 or pin > 12:
+            raise ValueError("Only digital output pins 7 - 12 are available on the Ruggeduino")
+        self.digital_output_array[pin].write_value(level)
 
     def analogue_read(self, pin):
         "Read an analogue input"
