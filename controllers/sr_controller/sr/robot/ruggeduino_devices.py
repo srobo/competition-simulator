@@ -46,3 +46,11 @@ class Microswitch(SensorBase):
 
     def read_value(self):
         return self.webot_sensor.getValue() > 0
+
+class Led(class):
+
+    def __init__(self, webot, device_name):
+        
+
+    def write_value(self):
+        

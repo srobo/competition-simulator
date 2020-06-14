@@ -1,4 +1,4 @@
-from sr.robot.sensor_devices import Microswitch, DistanceSensor
+from sr.robot.ruggeduino_devices import Microswitch, DistanceSensor, Led
 
 
 def init_ruggeduino_array(webot):
@@ -30,31 +30,35 @@ def init_ruggeduino_array(webot):
 
     digital_input_array = [Microswitch(webot, name) for name in switch_names]
 
-    return [Ruggeduino(webot, analogue_input_array, digital_input_array)]
+    digital_output_array = [Led(webot, name) for name in led_names]
+
+    return [Ruggeduino(webot, analogue_input_array, digital_input_array, digital_output_array)]
 
 
 class Ruggeduino(object):
 
     DIGITAL_PIN_OFFSET = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 
-    def __init__(self, webot, analogue_array, digital_array):
+    def __init__(self, webot, analogue_input_array, digital_input_array, digital_output_array):
         self.webot = webot
-        self.analogue_array = analogue_array
-        self.digital_array = digital_array
+        self.analogue_input_array = analogue_input_array
+        self.digital_input_array = digital_input_array
+        self.digital_output_array = digital_output_array
 
     def digital_read(self, pin):
         "Read an digital input"
         if pin < 2 or pin > 13:
             raise ValueError("Only pins 2 - 13 are available on the Ruggeduino")
-        return self.digital_array[pin - Ruggeduino.DIGITAL_PIN_OFFSET].read_value()
+        return self.digital_input_array[pin - Ruggeduino.DIGITAL_PIN_OFFSET].read_value()
 
     def digital_write(self, pin, level):
-        "Write to an output"
-        raise NotImplementedError("This robot does not support digital_write")
+        if pin < 0 or pin > 5:
+            raise ValueError("Only output pins 0 - 5 are available on the Ruggeduino")
+        self.digital_output_array[pin].write_value(level) # TODO convert level to bool
 
     def analogue_read(self, pin):
         "Read an analogue input"
-        return self.analogue_array[pin].read_value()
+        return self.analogue_input_array[pin].read_value()
 
     def pin_mode(self, pin_no, mode):
         raise NotImplementedError(
