@@ -1,4 +1,4 @@
-from sr.robot.ruggeduino_devices import Microswitch, DistanceSensor, Led
+from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
 
 
 def init_ruggeduino_array(webot):
@@ -38,7 +38,8 @@ def init_ruggeduino_array(webot):
 class Ruggeduino(object):
 
     DIGITAL_OUT_PIN_OFFSET = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
-    DIGITAL_IN_PIN_OFFSET = 7  # Offset output pins by input pins. They can't occupy the same pins
+    DIGITAL_IN_PIN_OFFSET = 7   # Offset output pins by input pins
+                                # They can't occupy the same pins
 
     def __init__(self, webot, analogue_input_array, digital_input_array, digital_output_array):
         self.webot = webot
