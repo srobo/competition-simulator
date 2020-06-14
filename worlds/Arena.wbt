@@ -910,403 +910,79 @@ DEF STAGE Solid {
   boundingObject USE STAGE_GEOMETRY
   locked TRUE
 }
-DEF TOKEN_GOLD Solid {
-  translation 0.9 0.124996 0.9
-  rotation 0.7071067801442413 1.7528871940598554e-09 -0.7071067822288535 -1.0987799130863795e-08
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        baseColor 1 1 0
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "G42"
+SRToken_Gold {
+  translation 0.9 0.13 0.9
   model "G42"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_GOLD Solid {
-  translation -0.9 0.124996 0.9
-  rotation -0.7071067824979693 4.0021568839374943e-10 0.7071067798751257 1.0987799115647408e-08
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        baseColor 1 1 0
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "G40"
+SRToken_Gold {
+  translation -0.9 0.13 0.9
   model "G40"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_GOLD Solid {
-  translation -0.9 0.124996 -0.9
-  rotation -0.7071067811575862 1.3842701422872506e-09 0.7071067812155089 1.0987799104884908e-08
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        baseColor 1 1 0
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "G41"
+SRToken_Gold {
+  translation -0.9 0.13 -0.9
   model "G41"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_GOLD Solid {
-  translation 0.9 0.124996 -0.9
-  rotation -0.7071067801418399 3.8134708331229313e-10 0.7071067822312551 1.0987799112882934e-08
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        baseColor 1 1 0
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "G43"
+SRToken_Gold {
+  translation 0.9 0.13 -0.9
   model "G43"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_GOLD Solid {
-  translation -0.41 0.304996 3.05533e-18
-  rotation 0.7337479633392148 0.053579500766779094 -0.6773058123131211 7.553320235066303e-17
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        baseColor 1 1 0
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "G44"
+SRToken_Gold {
+  translation -0.42 0.31 0
   model "G44"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_GOLD Solid {
-  translation 3.91015e-18 0.304996 0.42
-  rotation -0.9082282710147144 0.28890868939977055 0.3027427570049028 -1.408210870753068e-17
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        baseColor 1 1 0
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "G45"
+SRToken_Gold {
+  translation 0 0.31 0.42
   model "G45"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_GOLD Solid {
-  translation 9.33797e-18 0.304996 -0.41
-  rotation -0.9832539366285931 0.14586307974120555 0.10925043740317648 -3.9022785774554895e-17
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        baseColor 1 1 0
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "G46"
+SRToken_Gold {
+  translation 0 0.31 -0.42
   model "G46"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_GOLD Solid {
-  translation 0.41 0.304996 2.97439e-18
-  rotation 0.7337479633392148 0.053579500766779094 -0.6773058123131211 7.553320235066303e-17
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        baseColor 1 1 0
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "G47"
+SRToken_Gold {
+  translation 0.42 0.31 0
   model "G47"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_SILVER Solid {
-  translation 0.32 0.30499607988564803 0.32
-  rotation 0.842227745448497 0.058274940778106285 0.5359631107399557 5.568068828603349e-17
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "S38"
+SRToken_Silver {
+  translation 0.32 0.31 0.32
   model "S38"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_SILVER Solid {
-  translation -0.31 0.304996 0.32
-  rotation 0.974225554908581 0.018437987065253136 -0.2248212819019787 5.688860563146329e-17
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "S36"
+SRToken_Silver {
+  translation -0.32 0.31 0.32
   model "S36"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_SILVER Solid {
-  translation -0.31 0.304996 -0.31
-  rotation 0.7337479633392148 0.053579500766779094 -0.6773058123131211 7.553320235066303e-17
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "S37"
+SRToken_Silver {
+  translation -0.32 0.31 -0.32
   model "S37"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_SILVER Solid {
-  translation 0.32 0.304996 -0.31
-  rotation 0.7337479633392148 0.053579500766779094 -0.6773058123131211 7.553320235066303e-17
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "S39"
+SRToken_Silver {
+  translation 0.32 0.31 -0.32
   model "S39"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_SILVER Solid {
-  translation -1.3731863149147013e-09 0.1249960789146245 1.3000000000000023
-  rotation -5.493879226546504e-09 1 1.3263426583374052e-08 0.7853996938995743
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "S35"
+SRToken_Silver {
+  translation 0 0.13 1.3
+  rotation 0 1 0 0.7853996938995746
   model "S35"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_SILVER Solid {
-  translation -1.3731863149147013e-09 0.1249960789146245 -1.2999999999999978
-  rotation -5.493879226546504e-09 1 1.3263426583374052e-08 0.7853996938995743
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "S33"
+SRToken_Silver {
+  translation 0 0.13 -1.3
+  rotation 0 1 0 0.7853996938995746
   model "S33"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_SILVER Solid {
-  translation 1.299999998626814 0.12499607891462448 2.106022558667375e-15
-  rotation -5.493879200667026e-09 1 1.32634264690066e-08 0.7853996938995741
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "S34"
+SRToken_Silver {
+  translation 1.3 0.13 0
+  rotation 0 1 0 0.7853996938995746
   model "S34"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
-DEF TOKEN_SILVER Solid {
-  translation -1.300000001373186 0.12499607891462448 2.106022558667375e-15
-  rotation -5.493879200667026e-09 1 1.32634264690066e-08 0.7853996938995741
-  children [
-    Shape {
-      appearance DEF TOKEN_APPEARANCE PBRAppearance {
-        metalness 0
-      }
-      geometry DEF TOKEN_GEOMETRY Box {
-        size 0.25 0.25 0.25
-      }
-    }
-  ]
-  name "S32"
+SRToken_Silver {
+  translation -1.3 0.13 0
+  rotation 0 1 0 0.7853996938995746
   model "S32"
-  boundingObject USE TOKEN_GEOMETRY
-  physics Physics {
-    density -1
-    mass 0.01
-  }
-  recognitionColors [
-    1 1 1
-  ]
 }
 SRRobot {
   translation -2.375 0 -2.375
   rotation 0 1 0 3.926
-  model "Robot0"
   controller "sr_controller"
+  model "Robot0"
   flagColour 0 1 0
 }
 SRRobot {
