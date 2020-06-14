@@ -55,5 +55,8 @@ class Led(object):
         self.device_name = device_name
         self.webot_sensor = self.webot.getLED(self.device_name)
 
+    def read_value(self):
+        return self.webot_sensor.get() > 0
+
     def write_value(self, value):
         self.webot_sensor.set(value)
