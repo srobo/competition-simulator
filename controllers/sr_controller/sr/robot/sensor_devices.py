@@ -56,6 +56,6 @@ class LED(SensorBase):
 
     def read_value(self):
         return self.webot_sensor.get() > 0
-    
+
     def set_value(self, value):
         self.webot_sensor.set(value)
