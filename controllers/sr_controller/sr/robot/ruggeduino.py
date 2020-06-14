@@ -29,7 +29,7 @@ def init_ruggeduino_array(webot):
 
     digital_array = [Microswitch(webot, name) for name in switch_names]
     digital_array = digital_array + [LED(webot, name) for name in led_names]
-    
+
     return [Ruggeduino(webot, analogue_array, digital_array)]
 
 
