@@ -1,5 +1,4 @@
-from sr.robot.sensor_devices import Microswitch, DistanceSensor
-
+from sr.robot.sensor_devices import Microswitch, DistanceSensor, LED
 
 def init_ruggeduino_array(webot):
     dist_sensor_names = [
@@ -17,11 +16,20 @@ def init_ruggeduino_array(webot):
         "left finger sensor",
         "right finger sensor",
     ]
+    led_names = [
+        "led 1",
+        "led 2",
+        "led 3",
+        "led 4",
+        "led 5",
+        "led 6",
+    ]
 
     analogue_array = [DistanceSensor(webot, name) for name in dist_sensor_names]
 
     digital_array = [Microswitch(webot, name) for name in switch_names]
-
+    digital_array = digital_array + [LED(webot, name) for name in led_names]
+    
     return [Ruggeduino(webot, analogue_array, digital_array)]
 
 
@@ -42,7 +50,9 @@ class Ruggeduino(object):
 
     def digital_write(self, pin, level):
         "Write to an output"
-        raise NotImplementedError("This robot does not support digital_write")
+        if pin < 7 or pin > 12:
+            raise ValueError("Only pins 7 - 12 are writable on the Ruggeduino")
+        self.digital_array[pin - Ruggeduino.DIGITAL_PIN_OFFSET].set_value(level)
 
     def analogue_read(self, pin):
         "Read an analogue input"
