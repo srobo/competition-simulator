@@ -22,15 +22,14 @@ def init_ruggeduino_array(webot):
 
     digital_array = [Microswitch(webot, name) for name in switch_names]
 
-    return [Ruggeduino(webot, analogue_array, digital_array)]
+    return [Ruggeduino(analogue_array, digital_array)]
 
 
 class Ruggeduino:
 
     DIGITAL_PIN_OFFSET = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 
-    def __init__(self, webot, analogue_array, digital_array):
-        self.webot = webot
+    def __init__(self, analogue_array, digital_array):
         self.analogue_array = analogue_array
         self.digital_array = digital_array
 

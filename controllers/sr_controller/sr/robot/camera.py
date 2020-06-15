@@ -146,8 +146,7 @@ class Marker:
 
 class Camera:
     def __init__(self, webot):
-        self.webot = webot
-        self.camera = self.webot.getCamera("camera")
+        self.camera = webot.getCamera("camera")
         self.camera.enable(TIME_STEP)
         self.camera.recognitionEnable(TIME_STEP)
 
