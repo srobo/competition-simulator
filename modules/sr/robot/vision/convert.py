@@ -75,7 +75,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    print(rotation_matrix_from_axis_and_angle(WebotsOrientation(
+    print(rotation_matrix_from_axis_and_angle(WebotsOrientation(  # noqa:T001
         args.x,
         args.y,
         args.z,

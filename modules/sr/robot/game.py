@@ -10,7 +10,7 @@ def game_over():
     ==========
     Game Over!
     ==========
-    """).strip())
+    """).strip())  # noqa:T001
     _thread.interrupt_main()
 
 
