@@ -48,7 +48,7 @@ class Microswitch(SensorBase):
         return self.webot_sensor.getValue() > 0
 
 
-class Led(object):
+class Led:
 
     def __init__(self, webot, device_name):
         self.webot = webot
