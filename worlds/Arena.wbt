@@ -912,71 +912,71 @@ DEF STAGE Solid {
 }
 SRToken_Gold {
   translation 0.9 0.13 0.9
-  model "G42"
+  model "G32"
 }
 SRToken_Gold {
   translation -0.9 0.13 0.9
-  model "G40"
+  model "G33"
 }
 SRToken_Gold {
   translation -0.9 0.13 -0.9
-  model "G41"
+  model "G34"
 }
 SRToken_Gold {
   translation 0.9 0.13 -0.9
-  model "G43"
+  model "G35"
 }
 SRToken_Gold {
   translation -0.42 0.31 0
-  model "G44"
+  model "G36"
 }
 SRToken_Gold {
   translation 0 0.31 0.42
-  model "G45"
+  model "G37"
 }
 SRToken_Gold {
   translation 0 0.31 -0.42
-  model "G46"
+  model "G38"
 }
 SRToken_Gold {
   translation 0.42 0.31 0
-  model "G47"
+  model "G39"
 }
 SRToken_Silver {
   translation 0.32 0.31 0.32
-  model "S38"
+  model "S40"
 }
 SRToken_Silver {
   translation -0.32 0.31 0.32
-  model "S36"
+  model "S41"
 }
 SRToken_Silver {
   translation -0.32 0.31 -0.32
-  model "S37"
+  model "S42"
 }
 SRToken_Silver {
   translation 0.32 0.31 -0.32
-  model "S39"
+  model "S43"
 }
 SRToken_Silver {
   translation 0 0.13 1.3
   rotation 0 1 0 0.7853996938995746
-  model "S35"
+  model "S44"
 }
 SRToken_Silver {
   translation 0 0.13 -1.3
   rotation 0 1 0 0.7853996938995746
-  model "S33"
+  model "S45"
 }
 SRToken_Silver {
   translation 1.3 0.13 0
   rotation 0 1 0 0.7853996938995746
-  model "S34"
+  model "S46"
 }
 SRToken_Silver {
   translation -1.3 0.13 0
   rotation 0 1 0 0.7853996938995746
-  model "S32"
+  model "S47"
 }
 SRRobot {
   translation -2.375 0 -2.375
