@@ -1,15 +1,8 @@
 class MotorBase:
     def __init__(self, webot, motor_name):
-        self.webot = webot
         self.motor_name = motor_name
-        self.webot_motor = self.webot.getMotor(motor_name)
-        if self.webot_motor is None:
-            return
+        self.webot_motor = webot.getMotor(motor_name)
         self.max_speed = self.webot_motor.getMaxVelocity()
-
-    def _set_speed(self, speed):
-        if self.webot_motor is None:
-            return
 
 
 class Wheel(MotorBase):
@@ -20,7 +13,6 @@ class Wheel(MotorBase):
         self.webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        self._set_speed(speed)
         self.webot_motor.setVelocity(speed)
 
 
@@ -32,7 +24,6 @@ class LinearMotor(MotorBase):
         self.webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        self._set_speed(speed)
         motor = self.webot_motor
         if speed < 0:
             motor.setPosition(motor.getMinPosition() + 0.01)
