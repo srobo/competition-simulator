@@ -53,9 +53,9 @@ class Ruggeduino(object):
         max_pin = Ruggeduino.DIGITAL_WRITE_PIN_START - 1
         if pin < min_pin or pin > max_pin:
             raise ValueError(
-                "Only digital input pins " +
-                str(min_pin) + " - " + str(max_pin) +
-                " are available on the Ruggeduino",
+                "Pin {!r} is not available as a digital input "
+                "pin on the Ruggeduino (must be in the "
+                "range {} - {})".format(pin, min_pin, max_pin),
             )
         return self.digital_input_array[pin - Ruggeduino.DIGITAL_READ_PIN_START].read_value()
 
