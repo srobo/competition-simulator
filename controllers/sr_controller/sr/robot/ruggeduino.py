@@ -37,9 +37,7 @@ def init_ruggeduino_array(webot):
 
 class Ruggeduino(object):
 
-    DIGITAL_READ_PIN_START = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
-    DIGITAL_WRITE_PIN_START = 7   # Offset output pins by input pins
-    DIGITAL_END_PIN = 12
+    DIGITAL_READ_PIN_START = 2
 
     def __init__(self, webot, analogue_input_array, digital_input_array, digital_output_array):
         self.webot = webot
@@ -49,27 +47,14 @@ class Ruggeduino(object):
 
     def digital_read(self, pin):
         "Read an digital input"
-        min_pin = Ruggeduino.DIGITAL_READ_PIN_START
-        max_pin = Ruggeduino.DIGITAL_WRITE_PIN_START - 1
-        if pin < min_pin or pin > max_pin:
-            raise ValueError(
-                "Pin {!r} is not available as a digital input "
-                "pin on the Ruggeduino (must be in the "
-                "range {} - {})".format(pin, min_pin, max_pin),
-            )
         return self.digital_input_array[pin - Ruggeduino.DIGITAL_READ_PIN_START].read_value()
+        
 
     def digital_write(self, pin, level):
         "Write a digital output"
-        min_pin = Ruggeduino.DIGITAL_WRITE_PIN_START
-        max_pin = Ruggeduino.DIGITAL_END_PIN
-        if pin < min_pin or pin > max_pin:
-            raise ValueError(
-                "Only digital output pins " +
-                str(min_pin) + " - " + str(max_pin) +
-                " are available on the Ruggeduino",
-            )
-        self.digital_output_array[pin - Ruggeduino.DIGITAL_WRITE_PIN_START].write_value(level)
+        array_index = pin - Ruggeduino.DIGITAL_READ_PIN_START - len(self.digital_input_array)
+        print(array_index)
+        return self.digital_output_array[array_index].write_value(level)
 
     def analogue_read(self, pin):
         "Read an analogue input"
