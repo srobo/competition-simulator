@@ -47,7 +47,7 @@ class Robot:
         self._initialised = True
 
     def display_info(self):
-        print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(
+        print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(  # noqa:T001
             zone=self.zone,
             mode=self.mode,
         ))
