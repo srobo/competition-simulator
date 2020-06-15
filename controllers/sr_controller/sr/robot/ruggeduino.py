@@ -48,7 +48,6 @@ class Ruggeduino(object):
     def digital_read(self, pin):
         "Read an digital input"
         return self.digital_input_array[pin - Ruggeduino.DIGITAL_READ_PIN_START].read_value()
-        
 
     def digital_write(self, pin, level):
         "Write a digital output"
