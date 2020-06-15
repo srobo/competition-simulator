@@ -110,7 +110,7 @@ def main():
 
     env = os.environ.copy()
     # Ensure the python path is properly passed down so the `sr` module can be imported
-    env['PYTHONPATH'] = os.pathsep.join(sys.path)
+    env['PYTHONPATH'] = os.pathsep.join(sys.path + [str(ROOT / "modules")])
     env['SR_ROBOT_ZONE'] = str(robot_zone)
     env['SR_ROBOT_MODE'] = robot_mode
     env['SR_ROBOT_FILE'] = str(robot_file)
