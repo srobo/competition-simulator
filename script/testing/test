@@ -1,7 +1,5 @@
 #!/bin/bash
 
-cd $(dirname $(dirname  $(dirname $0)))/controllers
+export PYTHONPATH=$(realpath ./stubs):$(realpath ./modules)
 
-export PYTHONPATH=$(realpath ../stub-webots)
-
-python3 -m unittest discover --start-directory sr_controller "$@"
+python3 -m unittest discover --start-directory modules "$@"
