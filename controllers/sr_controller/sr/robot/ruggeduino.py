@@ -37,7 +37,7 @@ def init_ruggeduino_array(webot):
 
 class Ruggeduino(object):
 
-    DIGITAL_READ_PIN_START = 2
+    DIGITAL_READ_PIN_START = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 
     def __init__(self, webot, analogue_input_array, digital_input_array, digital_output_array):
         self.webot = webot
