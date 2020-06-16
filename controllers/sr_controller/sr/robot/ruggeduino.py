@@ -52,7 +52,6 @@ class Ruggeduino(object):
     def digital_write(self, pin, level):
         "Write a digital output"
         array_index = pin - Ruggeduino.DIGITAL_READ_PIN_START - len(self.digital_input_array)
-        print(array_index)
         return self.digital_output_array[array_index].write_value(level)
 
     def analogue_read(self, pin):
