@@ -37,7 +37,7 @@ def init_ruggeduino_array(webot):
 
 class Ruggeduino(object):
 
-    DIGITAL_READ_PIN_START = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
+    DIGITAL_PIN_START = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 
     def __init__(self, webot, analogue_input_array, digital_input_array, digital_output_array):
         self.webot = webot
@@ -47,11 +47,11 @@ class Ruggeduino(object):
 
     def digital_read(self, pin):
         "Read an digital input"
-        return self.digital_input_array[pin - Ruggeduino.DIGITAL_READ_PIN_START].read_value()
+        return self.digital_input_array[pin - Ruggeduino.DIGITAL_PIN_START].read_value()
 
     def digital_write(self, pin, level):
         "Write a digital output"
-        array_index = pin - Ruggeduino.DIGITAL_READ_PIN_START - len(self.digital_input_array)
+        array_index = pin - Ruggeduino.DIGITAL_PIN_START - len(self.digital_input_array)
         return self.digital_output_array[array_index].write_value(level)
 
     def analogue_read(self, pin):
