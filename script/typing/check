@@ -1,11 +1,11 @@
 #!/bin/bash
 
-PY_ROOT=$(dirname $(dirname  $(dirname $0)))
+ROOT=$(dirname $(dirname  $(dirname $0)))
 
-export PYTHONPATH=$PY_ROOT/stubs:$PY_ROOT/modules
+export PYTHONPATH=$ROOT/stubs:$ROOT/modules
 
 if [ -z "$MYPY" ]; then
     MYPY=mypy
 fi
 
-exec "$MYPY" $PY_ROOT/controllers/* $PY_ROOT/modules $PY_ROOT/stubs "$@"
+exec "$MYPY" $ROOT/controllers/* $ROOT/modules $ROOT/stubs "$@"
