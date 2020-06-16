@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd $(dirname $(dirname  $(dirname $0)))
+
 export PYTHONPATH=$(realpath ./stubs):$(realpath ./modules)
 
 python3 -m unittest discover --start-directory modules "$@"
