@@ -1,5 +1,6 @@
 import time
 from os import path, environ
+from typing import Optional
 from threading import Lock, Thread
 
 from sr.robot import motor, camera, ruggeduino
@@ -46,18 +47,26 @@ class Robot:
         self._init_devs()
         self._initialised = True
 
-    def display_info(self) -> None:
-        print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(  # noqa:T001
-            zone=self.zone,
-            mode=self.mode,
-        ))
-
+    def _get_user_code_info(self) -> Optional[str]:
         user_version_path = path.join(self.usbkey, '.user-rev')
         if path.exists(user_version_path):
             with open(user_version_path) as f:
-                user_version = f.read().strip()
+                return f.read().strip()
 
-            print("User code: {}".format(user_version))  # noqa:T001
+        return None
+
+    def display_info(self) -> None:
+        user_code_version = self._get_user_code_info()
+
+        parts = [
+            "Zone: {}".format(self.zone),
+            "Mode: {}".format(self.mode),
+        ]
+
+        if user_code_version:
+            parts.append("User code: {}".format(user_code_version))
+
+        print("Robot Initialized. {}.".format(", ".join(parts)))  # noqa:T001
 
     def webots_init(self) -> None:
         # Create a thread which will advance time in the background, so that the
