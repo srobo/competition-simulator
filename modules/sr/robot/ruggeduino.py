@@ -1,7 +1,10 @@
+from typing import List
+
+from controller import Robot
 from sr.robot.sensor_devices import Microswitch, DistanceSensor
 
 
-def init_ruggeduino_array(webot):
+def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
     dist_sensor_names = [
         "Front Left DS",
         "Front Right DS",
@@ -29,7 +32,11 @@ class Ruggeduino:
 
     DIGITAL_PIN_OFFSET = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 
-    def __init__(self, analogue_array, digital_array):
+    def __init__(
+        self,
+        analogue_array: List[DistanceSensor],
+        digital_array: List[Microswitch],
+    ) -> None:
         self.analogue_array = analogue_array
         self.digital_array = digital_array
 
