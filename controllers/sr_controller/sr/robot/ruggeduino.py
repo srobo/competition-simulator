@@ -58,6 +58,8 @@ class Ruggeduino:
     def digital_write(self, pin, level):
         "Write a digital output"
         array_index = pin - Ruggeduino.DIGITAL_PIN_START - len(self.digital_input_array)
+        if array_index < 0:
+            raise IndexError("Sorry pin %d can't be written to" % pin)
         return self.digital_output_array[array_index].write_value(level)
 
     def analogue_read(self, pin):
