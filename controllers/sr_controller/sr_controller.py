@@ -101,10 +101,29 @@ def get_robot_mode() -> str:
     return MODE_FILE.read_text().strip()
 
 
+def print_simulation_version() -> None:
+    version_path = (ROOT / '.simulation-rev')
+    if version_path.exists():
+        description, revision = version_path.read_text().splitlines()
+        version = "{} (rev {})".format(description, revision)
+    else:
+        version = subprocess.check_output(
+            ['git', 'describe', '--always', '--tags'],
+            cwd=str(ROOT.resolve()),
+        ).decode().strip()
+
+    print("Running simulator version {}".format(version))
+
+
 def main():
     robot_mode = get_robot_mode()
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode)
+
+    if robot_zone == 0:
+        # Only print once, but rely on Zone 0 always being run to ensure this is
+        # always printed somewhere.
+        print_simulation_version()
 
     print("Using {} for Zone {}".format(robot_file, robot_zone))
 
