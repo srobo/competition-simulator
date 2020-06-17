@@ -114,6 +114,21 @@ jobs:
             source venv/bin/activate
             ./script/typing/check
 
+  release:
+    docker:
+      - image: circleci/python:3.5
+    steps:
+      - checkout
+
+      - run:
+          name: Build archive
+          command: |
+            NAME="competition-simulator-$(git describe --always --tags).zip"
+            ./script/create-archive --output $NAME
+
+      - store_artifacts:
+          path: competition-simulator-*.zip
+
 workflows:
   version: 2.1
 
@@ -125,3 +140,21 @@ workflows:
           <<: *python-top-and-bottom-version-matrix
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
+
+  release:
+    jobs:
+      - test:
+          <<: *python-full-version-matrix
+          <<: *filter-tags
+      - lint:
+          <<: *python-top-and-bottom-version-matrix
+          <<: *filter-tags
+      - typecheck:
+          <<: *python-top-and-bottom-version-matrix
+          <<: *filter-tags
+      - release:
+          <<: *filter-tags
+          requires:
+            - test
+            - lint
+            - typecheck
