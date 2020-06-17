@@ -3,6 +3,7 @@ import time
 from enum import Enum
 from typing import List, Optional, NamedTuple
 
+from controller import Robot
 from sr.robot.vision import (
     Face,
     Vector,
@@ -145,9 +146,8 @@ class Marker:
 
 
 class Camera:
-    def __init__(self, webot):
-        self.webot = webot
-        self.camera = self.webot.getCamera("camera")
+    def __init__(self, webot: Robot) -> None:
+        self.camera = webot.getCamera("camera")
         self.camera.enable(TIME_STEP)
         self.camera.recognitionEnable(TIME_STEP)
 

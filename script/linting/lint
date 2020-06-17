@@ -6,4 +6,4 @@ if [ -z "$FLAKE8" ]; then
     FLAKE8=flake8
 fi
 
-exec "$FLAKE8" $PY_ROOT/sr_controller "$@"
+exec "$FLAKE8" $PY_ROOT "$@"

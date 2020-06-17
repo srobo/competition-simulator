@@ -1,7 +1,9 @@
-from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
+from typing import List
+from controller import Robot
+from sr.robot.sensor_devices import Led, Microswitch, DistanceSensor
 
 
-def init_ruggeduino_array(webot):
+def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
     dist_sensor_names = [
         "Front Left DS",
         "Front Right DS",
@@ -32,15 +34,19 @@ def init_ruggeduino_array(webot):
 
     digital_output_array = [Led(webot, name) for name in led_names]
 
-    return [Ruggeduino(webot, analogue_input_array, digital_input_array, digital_output_array)]
+    return [Ruggeduino(analogue_input_array, digital_input_array, digital_output_array)]
 
 
-class Ruggeduino(object):
+class Ruggeduino:
 
     DIGITAL_PIN_START = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 
-    def __init__(self, webot, analogue_input_array, digital_input_array, digital_output_array):
-        self.webot = webot
+    def __init__(
+        self,
+        analogue_input_array: List[DistanceSensor],
+        digital_input_array: List[Microswitch],
+        digital_output_array: List[Led],
+    ) -> None:
         self.analogue_input_array = analogue_input_array
         self.digital_input_array = digital_input_array
         self.digital_output_array = digital_output_array

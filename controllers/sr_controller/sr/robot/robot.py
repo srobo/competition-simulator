@@ -10,10 +10,10 @@ from sr.robot.settings import TIME_STEP
 from controller import Robot as WebotsRobot  # isort:skip
 
 
-class Robot(object):
+class Robot:
     """Class for initialising and accessing robot hardware"""
 
-    def __init__(self, quiet=False, init=True):
+    def __init__(self, quiet: bool = False, init: bool = True) -> None:
         self._initialised = False
         self._quiet = quiet
 
@@ -41,18 +41,18 @@ class Robot(object):
     def setup(cls):
         return cls()
 
-    def init(self):
+    def init(self) -> None:
         self.webots_init()
         self._init_devs()
         self._initialised = True
 
-    def display_info(self):
-        print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(
+    def display_info(self) -> None:
+        print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(  # noqa:T001
             zone=self.zone,
             mode=self.mode,
         ))
 
-    def webots_init(self):
+    def webots_init(self) -> None:
         # Create a thread which will advance time in the background, so that the
         # competitors' code can ignore the fact that it is actually running in a
         # simulation.
@@ -85,7 +85,7 @@ class Robot(object):
         while self.webots_step_and_should_continue(TIME_STEP):
             pass
 
-    def wait_start(self):
+    def wait_start(self) -> None:
         "Wait for the start signal to happen"
 
         if self.mode not in ["comp", "dev"]:
@@ -99,7 +99,7 @@ class Robot(object):
         if self.arena not in ["A", "B"]:
             raise Exception("arena must be A or B")
 
-    def _init_devs(self):
+    def _init_devs(self) -> None:
         "Initialise the attributes for accessing devices"
 
         # Motor boards
@@ -111,13 +111,13 @@ class Robot(object):
         # Camera
         self._init_camera()
 
-    def _init_motors(self):
+    def _init_motors(self) -> None:
         self.motors = motor.init_motor_array(self.webot)
 
-    def _init_ruggeduinos(self):
+    def _init_ruggeduinos(self) -> None:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
 
-    def _init_camera(self):
+    def _init_camera(self) -> None:
         self.camera = camera.Camera(self.webot)
         self.see = self.camera.see
 
