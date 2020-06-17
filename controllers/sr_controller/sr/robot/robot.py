@@ -52,6 +52,13 @@ class Robot:
             mode=self.mode,
         ))
 
+        user_version_path = path.join(self.usbkey, '.user-rev')
+        if path.exists(user_version_path):
+            with open(user_version_path) as f:
+                user_version = f.read().strip()
+
+            print("User code: {}".format(user_version))  # noqa:T001
+
     def webots_init(self) -> None:
         # Create a thread which will advance time in the background, so that the
         # competitors' code can ignore the fact that it is actually running in a
