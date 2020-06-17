@@ -1,9 +1,11 @@
 #!/bin/bash
 
-PY_ROOT=$(dirname $(dirname  $(dirname $0)))/controllers
+ROOT=$(dirname $(dirname  $(dirname $0)))
+
+export PYTHONPATH=$ROOT/stubs:$ROOT/modules
 
 if [ -z "$MYPY" ]; then
     MYPY=mypy
 fi
 
-exec "$MYPY" $PY_ROOT/sr_controller "$@"
+exec "$MYPY" $ROOT/controllers/* $ROOT/modules $ROOT/stubs "$@"

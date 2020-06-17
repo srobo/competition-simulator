@@ -1,4 +1,4 @@
-# Stub Webots
+# Stubs
 
 The stub files here serve two purposes:
 
