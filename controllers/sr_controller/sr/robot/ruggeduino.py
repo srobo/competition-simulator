@@ -1,6 +1,6 @@
 from typing import List
 from controller import Robot
-from sr.robot.sensor_devices import Led, Microswitch, DistanceSensor
+from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
 
 
 def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
