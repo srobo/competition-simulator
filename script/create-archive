@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+"""
+A script for use when creating an archive of the simulator code for publication.
+"""
+
+import argparse
+import subprocess
+from pathlib import Path
+from zipfile import ZipFile
+
+
+def git(*command: str) -> str:
+    return subprocess.check_output(
+        ['git', *command],
+        cwd=str(Path(__file__).parent.parent),
+    ).decode()
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--output-archive',
+        help="The path to the desired archive to create",
+        type=Path,
+        required=True,
+    )
+    return parser.parse_args()
+
+
+def main(args: argparse.Namespace) -> None:
+    version = git('rev-parse', 'HEAD').strip()
+    description = git('describe', '--always', '--tags').strip()
+
+    in_archive_directory_name = 'competition-simulator-{}'.format(description)
+
+    git(
+        'archive',
+        'HEAD',
+        '--prefix',
+        '{}/'.format(in_archive_directory_name),
+        '--output',
+        str(args.output_archive.resolve()),
+    )
+
+    with ZipFile(args.output_archive, mode='a') as zipfile:
+        # Add in the version of the simulation
+        zipfile.writestr(
+            '{}/.simulation-rev'.format(in_archive_directory_name),
+            "{}\n{}\n".format(description, version),
+        )
+
+
+if __name__ == '__main__':
+    main(parse_args())
