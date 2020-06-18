@@ -1,5 +1,6 @@
 import os
 import sys
+import signal
 import subprocess
 from shutil import copyfile
 from pathlib import Path
@@ -134,14 +135,24 @@ def main():
     env['SR_ROBOT_MODE'] = robot_mode
     env['SR_ROBOT_FILE'] = str(robot_file)
 
-    completed_process = subprocess.run(
+    child_process = subprocess.Popen(
         [sys.executable, "-u", str(robot_file)],
         env=env,
         cwd=str(robot_file.parent),
     )
 
+    def terminate_handler(*args, **kwargs):
+        child_process.terminate()
+        sys.exit(0)
+
+    # Ensure the child dies
+    signal.signal(signal.SIGKILL, terminate_handler)
+    signal.signal(signal.SIGTERM, terminate_handler)
+
+    child_process.wait()
+
     # Exit with the same return code so webots reports it as an error
-    sys.exit(completed_process.returncode)
+    sys.exit(child_process.returncode)
 
 
 if __name__ == "__main__":
