@@ -46,6 +46,7 @@ def main(args: argparse.Namespace) -> None:
         # Add in the version of the simulation
         zipfile.writestr(
             '{}/.simulation-rev'.format(in_archive_directory_name),
+            # Updating this? Also update the equivalent in create-ide-archive.
             "{}\n{}\n".format(description, version),
         )
 

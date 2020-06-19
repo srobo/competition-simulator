@@ -56,11 +56,16 @@ def main(args: argparse.Namespace) -> None:
         str(args.output_archive.resolve()),
     )
 
-    version = git('rev-parse', 'HEAD')
+    version = git('rev-parse', 'HEAD').strip()
+    description = git('describe', '--always', '--tags').strip()
 
     with ZipFile(args.output_archive, mode='a') as zipfile:
         # Add in the version of the simulation
-        zipfile.writestr('competition-simulator/.simulation-rev', version)
+        zipfile.writestr(
+            'competition-simulator/.simulation-rev',
+            # Updating this? Also update the equivalent in create-archive.
+            "{}\n{}\n".format(description, version),
+        )
 
         # Write in the user code
         add_to_archive(
