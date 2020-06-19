@@ -49,7 +49,7 @@ references:
       branches:
         ignore: /.*/
       tags:
-        only: /^v.*/
+        only: /.*/
 
 
 executors:
@@ -118,6 +118,10 @@ jobs:
     docker:
       - image: circleci/python:3.5
     steps:
+      # Note: we run the release on *all* tags. If we change to creating
+      # releases here (or anything more involved) we should review whether or
+      # not we want to run the release only for a given pattern of tag names.
+
       - checkout
 
       - run:
