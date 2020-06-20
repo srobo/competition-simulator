@@ -345,6 +345,13 @@ class VectorTests(unittest.TestCase):
             (180, Vector((1, 0, 0)), Vector((-1, 0, 0))),
             (90, Vector((1, 0, 0)), Vector((0, 1, 0))),
             (90, Vector((2, 0, 0)), Vector((0, 0, 2))),
+            (
+                # Regression test for input which manages to be out of bounds
+                # for cos theta due to floating point rounding errors.
+                180,
+                Vector((-0.1757748978918965, -0.027978574520328252, -0.09121614242503248)),
+                Vector((0.8788744894594824, 0.13989287260164124, 0.4560807121251624)),
+            ),
         )
 
         for case in cases:
