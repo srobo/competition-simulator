@@ -12,7 +12,6 @@ DEGREES_TOLERANCE = 10
 class Vector:
     """
     An arbitrary length vector of floating point values.
-
     In addition to the usual Python niceties, this supports scalar
     multiplication & division, vector addition and vector multiplication (dot
     product).
@@ -74,7 +73,6 @@ class Vector:
     def __mul__(self, other: 'Vector') -> float:
         """
         Dot product between two vectors of equal length.
-
         Given vectors A and B, ``A · B == ||A|| ||B|| cos(theta)`` where
         theta is the angle between them.
         """
@@ -107,7 +105,6 @@ class Vector:
 def cross_product(vec_a: Vector, vec_b: Vector) -> Vector:
     """
     Cross product of two 3-vectors.
-
     Given vectors A and B, ``A × B == ||A|| ||B|| sin(theta)`` where
     theta is the angle between them.
     """
@@ -124,7 +121,6 @@ def cross_product(vec_a: Vector, vec_b: Vector) -> Vector:
 def dot_product(vec_a: Vector, vec_b: Vector) -> float:
     """
     Dot product between two vectors of equal size.
-
     Given vectors A and B, ``A · B == ||A|| ||B|| cos(theta)`` where
     theta is the angle between them.
     """
@@ -137,7 +133,6 @@ ZERO_3VECTOR = Vector((0, 0, 0))
 def angle_between(vec_a: Vector, vec_b: Vector) -> float:
     """
     Determine the angle between two vectors, in degrees.
-
     This is calculated using the definition of the dot product and
     knowing the size of the vectors.
     """
@@ -156,7 +151,12 @@ def angle_between(vec_a: Vector, vec_b: Vector) -> float:
     dp = dot_product(vec_a, vec_b)
     mod_ab = vec_a.magnitude() * vec_b.magnitude()
     cos_theta = dp / mod_ab
-    cos_theta = min(1, max(cos_theta, -1))  # Ensures it is within the bounds of 1 and -1
+
+    if abs(cos_theta) > 1:
+        # Round small floating point rounding errors to avoid a math domain
+        # error from math.acos, without masking genuine errors.
+        cos_theta = round(cos_theta, 15)
+
     theta_rads = math.acos(cos_theta)
     theta_degrees = math.degrees(theta_rads)
     return theta_degrees
