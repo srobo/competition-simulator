@@ -147,6 +147,9 @@ class Robot:
         """
         Roughly equivalent to `time.sleep` but accounting for simulation time.
         """
+        # Checks that secs is positive or zero
+        if secs < 0:
+            raise ValueError('sleep length must be non-negative')
 
         # Ensure the time delay is a valid step increment
         n_steps = int((secs * 1000) // TIME_STEP)
