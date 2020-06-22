@@ -147,7 +147,6 @@ class Robot:
         """
         Roughly equivalent to `time.sleep` but accounting for simulation time.
         """
-        
         # Checks that secs is positive or zero
         if secs < 0:
             raise ValueError('sleep length must be non-negative')
