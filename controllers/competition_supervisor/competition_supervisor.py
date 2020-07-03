@@ -1,6 +1,7 @@
 import sys
+import datetime
 import contextlib
-from typing import Iterator
+from typing import Iterator, Optional
 from pathlib import Path
 
 # Webots specific library
@@ -14,6 +15,15 @@ import sr_controller  # noqa:E402 # isort:skip
 
 TIME_STEP = 32
 GAME_DURATION_SECONDS = 10
+
+
+def recording_path(when: Optional[datetime.datetime] = None) -> Path:
+    if not when:
+        when = datetime.datetime.now()
+
+    date = when.date().isoformat()
+    name = '{}.html'.format(when.isoformat())
+    return Path(date) / name
 
 
 @contextlib.contextmanager
@@ -80,9 +90,7 @@ def main() -> None:
 
     remove_unused_robots(supervisor)
 
-    # TODO: where should these actually go? Do we configure an understanding of
-    # the match currently running?
-    with record_animation(supervisor, REPO_ROOT / 'recordings' / 'demo.html'):
+    with record_animation(supervisor, REPO_ROOT / 'recordings' / recording_path()):
         run_match(supervisor)
 
 
