@@ -1,5 +1,6 @@
 import re
 import time
+import threading
 from enum import Enum
 from typing import List, Optional, NamedTuple
 
@@ -146,12 +147,25 @@ class Marker:
 
 
 class Camera:
-    def __init__(self, webot: Robot) -> None:
+    def __init__(self, webot: Robot, lock: threading.Lock) -> None:
         self.camera = webot.getCamera("camera")
         self.camera.enable(TIME_STEP)
         self.camera.recognitionEnable(TIME_STEP)
 
+        self._lock = lock
+
     def see(self) -> List[Marker]:
+        # Webots appears not to like it if you try to hang on to a
+        # `CameraRecognitionObject` after another time-step has passed. However
+        # because we advance the time-steps in a background thread we're likely
+        # to do that all the time. In order to counter that we have our `Robot`
+        # pass down its time-step lock so that we can hold that while we do the
+        # processing. The objects which we pass back to the caller are safe to
+        # use because they don't refer to Webots' objects at all.
+        with self._lock:
+            return self._see()
+
+    def _see(self) -> List[Marker]:
         object_infos = {}
 
         for recognition_object in self.camera.getRecognitionObjects():
