@@ -13,6 +13,7 @@ sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
 
 import sr_controller  # noqa:E402 # isort:skip
 
+# Updating this? Also update TIME_STEP in modules/sr/robot/settings.py
 TIME_STEP = 32
 GAME_DURATION_SECONDS = 150
 
