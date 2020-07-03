@@ -14,7 +14,7 @@ sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
 import sr_controller  # noqa:E402 # isort:skip
 
 TIME_STEP = 32
-GAME_DURATION_SECONDS = 10
+GAME_DURATION_SECONDS = 150
 
 
 def recording_path(when: Optional[datetime.datetime] = None) -> Path:
