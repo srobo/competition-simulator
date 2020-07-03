@@ -33,19 +33,19 @@ class Robot:
 
         if init:
             self.init()
-            self.display_info()
             self.wait_start()
             if self.mode == "comp":
                 stop_after_delay()
 
     @classmethod
     def setup(cls):
-        return cls()
+        return cls(init=False)
 
     def init(self) -> None:
         self.webots_init()
         self._init_devs()
         self._initialised = True
+        self.display_info()
 
     def _get_user_code_info(self) -> Optional[str]:
         user_version_path = path.join(self.usbkey, '.user-rev')
