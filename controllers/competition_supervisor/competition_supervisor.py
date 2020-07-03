@@ -10,7 +10,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
 
-sr_controller = __import__('sr_controller')
+import sr_controller  # noqa:E402 # isort:skip
 
 TIME_STEP = 32
 GAME_DURATION_SECONDS = 10
