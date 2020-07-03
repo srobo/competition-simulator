@@ -29,7 +29,7 @@ def recording_path(when: Optional[datetime.datetime] = None) -> Path:
 
 @contextlib.contextmanager
 def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
-    file_path.parent.mkdir(parents=True)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
     print("Saving animation to {}".format(file_path))
     supervisor.animationStartRecording(str(file_path))
     yield
