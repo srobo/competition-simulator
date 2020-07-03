@@ -2,7 +2,6 @@ import os
 import sys
 import subprocess
 from shutil import copyfile
-from typing import Dict
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -150,9 +149,7 @@ def main():
     # Swith to running the competitor code
     reconfigure_environment(robot_file)
 
-    robot_globals = {}  # type: Dict[str, object]
-
-    exec(robot_file.read_text(), robot_globals, robot_globals)
+    exec(robot_file.read_text(), {})
 
 
 if __name__ == "__main__":
