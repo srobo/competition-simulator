@@ -28,6 +28,14 @@ def get_robot_zone() -> int:
     return ROBOT_IDS_TO_CORNERS[os.environ['WEBOTS_ROBOT_ID']]
 
 
+def get_zone_robot_file_path(zone_id: int) -> Path:
+    """
+    Return the path to the robot.py for the given zone, without checking for
+    existence.
+    """
+    return ROOT.parent / "zone-{}".format(zone_id) / "robot.py"
+
+
 def get_robot_file(zone_id: int, mode: str) -> Path:
     """
     Get the path to the proper robot.py file for zone_id and mode, ensuring that
@@ -46,7 +54,7 @@ def get_robot_file(zone_id: int, mode: str) -> Path:
           are found it copies an example into place (at the root) and uses that.
     """
 
-    robot_file = ROOT.parent / "zone-{}".format(zone_id) / "robot.py"
+    robot_file = get_zone_robot_file_path(zone_id)
     fallback_robot_file = ROOT.parent / "robot.py"
     strict_zones = STRICT_ZONES[mode]
 

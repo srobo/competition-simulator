@@ -4,7 +4,6 @@ from typing import Optional
 from threading import Lock, Thread
 
 from sr.robot import motor, camera, ruggeduino
-from sr.robot.game import stop_after_delay
 from sr.robot.settings import TIME_STEP
 
 # Webots specific library
@@ -34,8 +33,6 @@ class Robot:
         if init:
             self.init()
             self.wait_start()
-            if self.mode == "comp":
-                stop_after_delay()
 
     @classmethod
     def setup(cls):
