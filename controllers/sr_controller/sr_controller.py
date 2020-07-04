@@ -1,7 +1,10 @@
 import os
 import sys
+import datetime
 import subprocess
+from types import TracebackType
 from shutil import copyfile
+from typing import Type, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -137,27 +140,65 @@ def reconfigure_environment(robot_file: Path) -> None:
     os.chdir(str(robot_file.parent))
 
 
+def log_filename(zone_id: int) -> str:
+    now = datetime.datetime.now()
+    return 'log-zone-{}-{}.txt'.format(
+        zone_id,
+        now.isoformat().replace(':', ''),
+    )
+
+
+class TeeStdout:
+    def __init__(self, name: Path) -> None:
+        self.name = name
+
+    def __enter__(self) -> None:
+        self.file = open(str(self.name), mode='w').__enter__()
+        self.stdout = sys.stdout
+        sys.stdout = self  # type: ignore
+
+    def __exit__(
+        self,
+        exctype: Optional[Type[BaseException]],
+        excinst: Optional[BaseException],
+        exctb: Optional[TracebackType],
+    ) -> None:
+        self.flush()
+        self.file.__exit__(exctype, excinst, exctb)
+        sys.stdout = self.stdout
+
+    def write(self, data):
+        self.file.write(data)
+        self.stdout.write(data)
+        self.flush()
+
+    def flush(self):
+        self.stdout.flush()
+        self.file.flush()
+
+
 def main():
     robot_mode = get_robot_mode()
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode).resolve()
 
-    if robot_zone == 0:
-        # Only print once, but rely on Zone 0 always being run to ensure this is
-        # always printed somewhere.
-        print_simulation_version()
+    with TeeStdout(robot_file.parent / log_filename(robot_zone)):
+        if robot_zone == 0:
+            # Only print once, but rely on Zone 0 always being run to ensure this is
+            # always printed somewhere.
+            print_simulation_version()
 
-    print("Using {} for Zone {}".format(robot_file, robot_zone))
+        print("Using {} for Zone {}".format(robot_file, robot_zone))
 
-    # Pass through the various data our library needs
-    os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
-    os.environ['SR_ROBOT_MODE'] = robot_mode
-    os.environ['SR_ROBOT_FILE'] = str(robot_file)
+        # Pass through the various data our library needs
+        os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
+        os.environ['SR_ROBOT_MODE'] = robot_mode
+        os.environ['SR_ROBOT_FILE'] = str(robot_file)
 
-    # Swith to running the competitor code
-    reconfigure_environment(robot_file)
+        # Swith to running the competitor code
+        reconfigure_environment(robot_file)
 
-    exec(robot_file.read_text(), {})
+        exec(robot_file.read_text(), {})
 
 
 if __name__ == "__main__":
