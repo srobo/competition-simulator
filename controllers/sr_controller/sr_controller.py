@@ -1,6 +1,7 @@
 import os
 import sys
 import datetime
+import contextlib
 import subprocess
 from types import TracebackType
 from shutil import copyfile
@@ -149,13 +150,19 @@ def log_filename(zone_id: int) -> str:
 
 
 class TeeStdout:
+    """
+    Tee stdout also to the named log file.
+    """
+
     def __init__(self, name: Path) -> None:
         self.name = name
 
-    def __enter__(self) -> None:
-        self.file = open(str(self.name), mode='w').__enter__()
+    def __enter__(self):
         self.stdout = sys.stdout
-        sys.stdout = self  # type: ignore
+        self.stack = contextlib.ExitStack()
+        self.file = self.stack.enter_context(open(str(self.name), mode='w'))
+        self.stack.enter_context(contextlib.redirect_stdout(self))  # type:ignore
+        self.stack.__enter__()
 
     def __exit__(
         self,
@@ -164,8 +171,7 @@ class TeeStdout:
         exctb: Optional[TracebackType],
     ) -> None:
         self.flush()
-        self.file.__exit__(exctype, excinst, exctb)
-        sys.stdout = self.stdout
+        self.stack.__exit__(exctype, excinst, exctb)
 
     def write(self, data):
         self.file.write(data)
