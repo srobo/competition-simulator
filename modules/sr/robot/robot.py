@@ -9,8 +9,13 @@ from sr.robot import motor, camera, ruggeduino
 from controller import Robot as WebotsRobot  # isort:skip
 
 
-class Robot:
-    """Class for initialising and accessing robot hardware"""
+class ManualTimestepRobot:
+    """
+    Class for initialising and accessing robot hardware.
+
+    This robot requires that the consumer manage the progession of time manually
+    by calling the `sleep` method.
+    """
 
     def __init__(self, quiet: bool = False, init: bool = True) -> None:
         self._initialised = False
@@ -142,9 +147,17 @@ class Robot:
         self.webots_step_and_should_continue(duration_ms)
 
 
-class LegacyRobot(Robot):
+class AutomaticTimestepRobot(ManualTimestepRobot):
     """
-    Robot class which preserves the original somewhat jittery Robot behaviour.
+    Robot class which preserves the original automatic time-advancing behaviour.
+
+    This class launches a background thread which advances the timestep in a
+    tight loop. This is somewhat more convenient to program against because it
+    does not rely on the `sleep` method being called in order for time to
+    advance. However as a result the timestep is considerably less predictable
+    which can result in unexpected robot behaviours.
+
+    The `sleep` method of this class is still available and is thread-safe.
     """
 
     def init(self) -> None:
