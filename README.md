@@ -30,6 +30,14 @@ On first run, the robot will execute an example program. On first run, this will
 └── robot.py
 ```
 
+## Doing a release
+
+1. Create a new tag & push
+2. Wait for CI to build a zip archive
+3. Upload the archive to the GitHub release for the tag
+4. Update the [docs](https://github.com/srobo/docs) to point to the new archive
+5. Announce the update to teams via the forums and [email](https://github.com/srobo/team-emails)
+
 ## Running competition matches
 
 In order to run competition matches you'll need to:
