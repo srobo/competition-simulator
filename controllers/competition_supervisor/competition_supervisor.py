@@ -21,7 +21,7 @@ def recording_path() -> Path:
 
     date = now.date().isoformat()
     # Windows doesn't like colons in filenames
-    name = str(now.isoformat()).replace(':', '-')
+    name = now.isoformat().replace(':', '-')
     return Path(date) / name / '{}.html'.format(name)
 
 
