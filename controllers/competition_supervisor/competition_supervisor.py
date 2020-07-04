@@ -20,10 +20,9 @@ def recording_path() -> Path:
     now = datetime.datetime.now()
 
     date = now.date().isoformat()
-    name = '{}.html'.format(now.isoformat())
     # Windows doesn't like colons in filenames
-    name = name.replace(':', '-')
-    return Path(date) / name
+    name = str(now.isoformat()).replace(':', '-')
+    return Path(date) / name / '{}.html'.format(name)
 
 
 @contextlib.contextmanager
