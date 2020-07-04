@@ -22,6 +22,8 @@ def recording_path(when: Optional[datetime.datetime] = None) -> Path:
 
     date = when.date().isoformat()
     name = '{}.html'.format(when.isoformat())
+    # Windows doesn't like colons in filenames
+    name = name.replace(':', '-')
     return Path(date) / name
 
 
