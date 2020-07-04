@@ -4,7 +4,6 @@ from typing import Optional
 from threading import Lock, Thread
 
 from sr.robot import motor, camera, ruggeduino
-from sr.robot.settings import TIME_STEP
 
 # Webots specific library
 from controller import Robot as WebotsRobot  # isort:skip
@@ -18,6 +17,8 @@ class Robot:
         self._quiet = quiet
 
         self.webot = WebotsRobot()
+        # returns a float, but should always actually be an integer value
+        self._timestep = int(self.webot.getBasicTimeStep())
 
         self.mode = environ.get("SR_ROBOT_MODE", "dev")
         self.zone = int(environ.get("SR_ROBOT_ZONE", 0))
@@ -76,7 +77,7 @@ class Robot:
             daemon=True,
         )
         t.start()
-        time.sleep(TIME_STEP / 1000)
+        time.sleep(self._timestep / 1000)
 
     def webots_step_and_should_continue(self, duration_ms: int) -> bool:
         """
@@ -95,7 +96,7 @@ class Robot:
             return result != -1
 
     def webot_run_robot(self):
-        while self.webots_step_and_should_continue(TIME_STEP):
+        while self.webots_step_and_should_continue(self._timestep):
             pass
 
     def wait_start(self) -> None:
@@ -150,8 +151,8 @@ class Robot:
             raise ValueError('sleep length must be non-negative')
 
         # Ensure the time delay is a valid step increment
-        n_steps = int((secs * 1000) // TIME_STEP)
-        duration_ms = n_steps * TIME_STEP
+        n_steps = int((secs * 1000) // self._timestep)
+        duration_ms = n_steps * self._timestep
 
         # We're in the main thread here, so we don't really need to do any
         # cleanup if Webots tells us the simulation is terminating. When webots

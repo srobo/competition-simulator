@@ -13,8 +13,6 @@ sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
 
 import sr_controller  # noqa:E402 # isort:skip
 
-# Updating this? Also update TIME_STEP in modules/sr/robot/settings.py
-TIME_STEP = 32
 GAME_DURATION_SECONDS = 150
 
 
@@ -72,7 +70,8 @@ def run_match(supervisor: Supervisor) -> None:
 
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
 
-    duration_ms = TIME_STEP * int(1000 * GAME_DURATION_SECONDS // TIME_STEP)
+    time_step = int(supervisor.getBasicTimeStep())
+    duration_ms = time_step * int(1000 * GAME_DURATION_SECONDS // time_step)
     supervisor.step(duration_ms)
 
     print("==================")
