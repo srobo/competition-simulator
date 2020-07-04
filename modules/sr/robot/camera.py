@@ -155,10 +155,12 @@ class Marker:
 
 class Camera:
     def __init__(self, webot: Robot, lock: threading.Lock) -> None:
+        self._webot = webot
+        self._timestep = int(webot.getBasicTimeStep())
+
         self.camera = webot.getCamera("camera")
-        timestep = int(webot.getBasicTimeStep())
-        self.camera.enable(timestep)
-        self.camera.recognitionEnable(timestep)
+        self.camera.enable(self._timestep)
+        self.camera.recognitionEnable(self._timestep)
 
         self._lock = lock
 
@@ -175,6 +177,7 @@ class Camera:
         # processing. The objects which we pass back to the caller are safe to
         # use because they don't refer to Webots' objects at all.
         with self._lock:
+            self._webot.step(self._timestep)
             return self._see()
 
     def _see(self) -> List[Marker]:

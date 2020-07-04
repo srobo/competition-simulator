@@ -1,5 +1,5 @@
 import sr.robot._version_check  # noqa
-from sr.robot.robot import Robot
+from sr.robot.robot import ManualTimestepRobot, AutomaticTimestepRobot as Robot
 from sr.robot.camera import (
     MarkerType,
     MARKER_ARENA,
@@ -12,5 +12,6 @@ __all__ = (
     'MarkerType',
     'MARKER_ARENA',
     'MARKER_TOKEN_GOLD',
+    'ManualTimestepRobot',
     'MARKER_TOKEN_SILVER',
 )
