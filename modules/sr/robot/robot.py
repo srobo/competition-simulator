@@ -1,3 +1,4 @@
+import math
 import time
 from os import path, environ
 from typing import Optional
@@ -155,8 +156,9 @@ class Robot:
         if secs < 0:
             raise ValueError('sleep length must be non-negative')
 
-        # Ensure the time delay is a valid step increment
-        n_steps = int((secs * 1000) // self._timestep) or 1
+        # Ensure the time delay is a valid step increment, while also ensuring
+        # that small values remain nonzero.
+        n_steps = math.ceil((secs * 1000) / self._timestep)
         duration_ms = n_steps * self._timestep
 
         # We're in the main thread here, so we don't really need to do any
