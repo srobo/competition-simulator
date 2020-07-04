@@ -40,7 +40,6 @@ class Robot:
         return cls(init=False)
 
     def init(self) -> None:
-        self.webots_init()
         self._init_devs()
         self._initialised = True
         self.display_info()
@@ -66,19 +65,6 @@ class Robot:
 
         print("Robot Initialized. {}.".format(", ".join(parts)))  # noqa:T001
 
-    def webots_init(self) -> None:
-        # Create a thread which will advance time in the background, so that the
-        # competitors' code can ignore the fact that it is actually running in a
-        # simulation.
-        t = Thread(
-            target=self.webot_run_robot,
-            # Ensure our background thread alone won't keep the controller
-            # process runnnig.
-            daemon=True,
-        )
-        t.start()
-        time.sleep(self._timestep / 1000)
-
     def webots_step_and_should_continue(self, duration_ms: int) -> bool:
         """
         Run a webots step of the given duration in milliseconds.
@@ -94,10 +80,6 @@ class Robot:
             # simulation is terminating, or 0 otherwise.
             result = self.webot.step(duration_ms)
             return result != -1
-
-    def webot_run_robot(self):
-        while self.webots_step_and_should_continue(self._timestep):
-            pass
 
     def wait_start(self) -> None:
         "Wait for the start signal to happen"
@@ -158,3 +140,30 @@ class Robot:
         # cleanup if Webots tells us the simulation is terminating. When webots
         # kills the process all the proper tidyup will happen anyway.
         self.webots_step_and_should_continue(duration_ms)
+
+
+class LegacyRobot(Robot):
+    """
+    Robot class which preserves the original somewhat jittery Robot behaviour.
+    """
+
+    def init(self) -> None:
+        self.webots_init()
+        super().init()
+
+    def webots_init(self) -> None:
+        # Create a thread which will advance time in the background, so that the
+        # competitors' code can ignore the fact that it is actually running in a
+        # simulation.
+        t = Thread(
+            target=self.webot_run_robot,
+            # Ensure our background thread alone won't keep the controller
+            # process runnnig.
+            daemon=True,
+        )
+        t.start()
+        time.sleep(self._timestep / 1000)
+
+    def webot_run_robot(self):
+        while self.webots_step_and_should_continue(self._timestep):
+            pass
