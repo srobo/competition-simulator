@@ -13,7 +13,6 @@ from sr.robot.vision import (
     tokens_from_objects,
     polar_from_cartesian,
 )
-from sr.robot.settings import TIME_STEP
 
 Cartesian = NamedTuple("Cartesian", (
     ("x", float),
@@ -149,8 +148,9 @@ class Marker:
 class Camera:
     def __init__(self, webot: Robot, lock: threading.Lock) -> None:
         self.camera = webot.getCamera("camera")
-        self.camera.enable(TIME_STEP)
-        self.camera.recognitionEnable(TIME_STEP)
+        timestep = int(webot.getBasicTimeStep())
+        self.camera.enable(timestep)
+        self.camera.recognitionEnable(timestep)
 
         self._lock = lock
 
