@@ -142,6 +142,7 @@ def reconfigure_environment(robot_file: Path) -> None:
 
 
 def log_filename(zone_id: int) -> str:
+    # Local time for convenience. We only care that this is a unique filename.
     now = datetime.datetime.now()
     return 'log-zone-{}-{}.txt'.format(
         zone_id,
