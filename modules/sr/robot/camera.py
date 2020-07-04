@@ -124,24 +124,32 @@ class Marker:
 
     @property
     def centre(self) -> Point:
+        """A `Point` describing the position of the centre of the marker."""
         return self._build_point(self._face.centre_global())
 
     @property
     def vertices(self) -> List[Point]:
+        """
+        A list of 4 `Point` instances, each representing the position of the
+        black corners of the marker.
+        """
         # Note quite the black corners of the marker, though fairly close --
         # actually the corners of the face of the modelled token.
         return [self._build_point(x) for x in self._face.corners_global().values()]
 
     @property
     def dist(self) -> float:
+        """An alias for `centre.polar.length`."""
         return self._face.centre_global().magnitude()
 
     @property
     def rot_y(self) -> float:
+        """An alias for `centre.polar.rot_y`."""
         return self.centre.polar.rot_y
 
     @property
     def orientation(self) -> Orientation:
+        """An `Orientation` instance describing the orientation of the marker."""
         return self._face.orientation()
 
 
@@ -155,6 +163,10 @@ class Camera:
         self._lock = lock
 
     def see(self) -> List[Marker]:
+        """
+        Identify items which the camera can see and return a list of `Marker`
+        instances describing them.
+        """
         # Webots appears not to like it if you try to hang on to a
         # `CameraRecognitionObject` after another time-step has passed. However
         # because we advance the time-steps in a background thread we're likely
