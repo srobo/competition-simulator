@@ -11,7 +11,7 @@ from controller import Robot as WebotsRobot  # isort:skip
 
 class ManualTimestepRobot:
     """
-    Class for initialising and accessing robot hardware.
+    Primary API for access to robot parts.
 
     This robot requires that the consumer manage the progession of time manually
     by calling the `sleep` method.
