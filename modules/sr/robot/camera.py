@@ -163,6 +163,10 @@ class Camera:
         self._lock = lock
 
     def see(self) -> List[Marker]:
+        """
+        Identify items which the camera can see and return a list of `Marker`
+        instances describing them.
+        """
         # Webots appears not to like it if you try to hang on to a
         # `CameraRecognitionObject` after another time-step has passed. However
         # because we advance the time-steps in a background thread we're likely
