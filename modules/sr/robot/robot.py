@@ -1,3 +1,4 @@
+import math
 import time
 from os import path, environ
 from typing import Optional
@@ -87,6 +88,11 @@ class Robot:
         Webots telling us whether or not the simulation is about to end).
         """
 
+        if duration_ms <= 0:
+            raise ValueError(
+                "Duration must be greater than zero, not {!r}".format(duration_ms),
+            )
+
         with self._step_lock:
             # We use Webots in synchronous mode (specifically
             # `synchronization` is left at its default value of `TRUE`). In
@@ -150,8 +156,9 @@ class Robot:
         if secs < 0:
             raise ValueError('sleep length must be non-negative')
 
-        # Ensure the time delay is a valid step increment
-        n_steps = int((secs * 1000) // self._timestep)
+        # Ensure the time delay is a valid step increment, while also ensuring
+        # that small values remain nonzero.
+        n_steps = math.ceil((secs * 1000) / self._timestep)
         duration_ms = n_steps * self._timestep
 
         # We're in the main thread here, so we don't really need to do any
