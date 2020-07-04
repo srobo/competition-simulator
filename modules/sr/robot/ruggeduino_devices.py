@@ -1,23 +1,16 @@
+from controller import Robot
 from sr.robot.utils import map_to_range
 from sr.robot.settings import TIME_STEP
 from sr.robot.randomizer import add_jitter
 
 
-class SensorBase(object):
-
-    def __init__(self, webot, sensor_name):
-        self.webot = webot
-        self.sensor_name = sensor_name
-
-
-class DistanceSensor(SensorBase):
+class DistanceSensor:
 
     LOWER_BOUND = 0
     UPPER_BOUND = 0.3
 
-    def __init__(self, webot, sensor_name):
-        super().__init__(webot, sensor_name)
-        self.webot_sensor = self.webot.getDistanceSensor(self.sensor_name)
+    def __init__(self, webot: Robot, sensor_name: str) -> None:
+        self.webot_sensor = webot.getDistanceSensor(sensor_name)
         self.webot_sensor.enable(TIME_STEP)
 
     def __get_scaled_distance(self):
@@ -37,12 +30,20 @@ class DistanceSensor(SensorBase):
         )
 
 
-class Microswitch(SensorBase):
+class Microswitch:
 
-    def __init__(self, webot, sensor_name):
-        super().__init__(webot, sensor_name)
-        self.webot_sensor = self.webot.getTouchSensor(self.sensor_name)
+    def __init__(self, webot: Robot, sensor_name: str) -> None:
+        self.webot_sensor = webot.getTouchSensor(sensor_name)
         self.webot_sensor.enable(TIME_STEP)
 
     def read_value(self):
         return self.webot_sensor.getValue() > 0
+
+
+class Led:
+
+    def __init__(self, webot, device_name):
+        self.webot_sensor = webot.getLED(device_name)
+
+    def write_value(self, value):
+        self.webot_sensor.set(value)

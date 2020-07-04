@@ -1,3 +1,6 @@
+from typing import List, Union
+
+from controller import Robot
 from sr.robot.utils import map_to_range
 from sr.robot.randomizer import add_jitter
 from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
@@ -6,16 +9,16 @@ from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
 SPEED_MAX = 100
 
 
-def init_motor_array(webot):
+def init_motor_array(webot: Robot) -> 'List[Motor]':
     return [
-        Motor(0, webot, [
+        Motor(
             Wheel(webot, 'left wheel'),
             Wheel(webot, 'right wheel'),
-        ]),
-        Motor(1, webot, [
+        ),
+        Motor(
             LinearMotor(webot, 'lift motor'),
             Gripper(webot, 'left finger motor|right finger motor'),
-        ]),
+        ),
     ]
 
 
@@ -34,21 +37,17 @@ def translate(sr_speed_val, sr_motor):
     )
 
 
-class Motor(object):
+class Motor:
     """A motor"""
 
-    def __init__(self, board_id, webot, sr_motors):
-        self.board_id = board_id
-        self.m0 = MotorChannel(0, webot, board_id, sr_motors[0])
-        self.m1 = MotorChannel(1, webot, board_id, sr_motors[1])
-        self.webot = webot
+    def __init__(self, m0: Union[Wheel, LinearMotor], m1: Union[Wheel, Gripper]) -> None:
+        self.m0 = MotorChannel(0, m0)
+        self.m1 = MotorChannel(1, m1)
 
 
-class MotorChannel(object):
-    def __init__(self, channel, webot, board_id, sr_motor):
+class MotorChannel:
+    def __init__(self, channel: int, sr_motor: Union[Gripper, Wheel, LinearMotor]) -> None:
         self.channel = channel
-        self.webot = webot
-        self.board_id = board_id
         # Private shadow of use_brake
         # self._use_brake = True # TODO create new thread for non-braking slowdown
 

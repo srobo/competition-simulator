@@ -1,38 +1,32 @@
-class MotorBase(object):
-    def __init__(self, webot, motor_name):
-        self.webot = webot
-        self.motor_name = motor_name
-        self.webot_motor = self.webot.getMotor(motor_name)
-        if self.webot_motor is None:
-            return
-        self.max_speed = self.webot_motor.getMaxVelocity()
+from controller import Robot
 
-    def _set_speed(self, speed):
-        if self.webot_motor is None:
-            return
+
+class MotorBase:
+    def __init__(self, webot: Robot, motor_name: str) -> None:
+        self.motor_name = motor_name
+        self.webot_motor = webot.getMotor(motor_name)
+        self.max_speed = self.webot_motor.getMaxVelocity()
 
 
 class Wheel(MotorBase):
 
-    def __init__(self, webot, motor_name):
+    def __init__(self, webot: Robot, motor_name: str) -> None:
         super().__init__(webot, motor_name)
         self.webot_motor.setPosition(float('inf'))
         self.webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        self._set_speed(speed)
         self.webot_motor.setVelocity(speed)
 
 
 class LinearMotor(MotorBase):
 
-    def __init__(self, webot, motor_name):
+    def __init__(self, webot: Robot, motor_name: str) -> None:
         super().__init__(webot, motor_name)
         self.webot_motor.setPosition(0)
         self.webot_motor.setVelocity(0)
 
     def set_speed(self, speed):
-        self._set_speed(speed)
         motor = self.webot_motor
         if speed < 0:
             motor.setPosition(motor.getMinPosition() + 0.01)
@@ -43,7 +37,7 @@ class LinearMotor(MotorBase):
 
 class Gripper(MotorBase):
 
-    def __init__(self, webot, motor_name):
+    def __init__(self, webot: Robot, motor_name: str) -> None:
         self.webot = webot
         names = motor_name.split("|")
         self.gripper_motors = [

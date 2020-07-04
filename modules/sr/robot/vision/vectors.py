@@ -156,6 +156,12 @@ def angle_between(vec_a: Vector, vec_b: Vector) -> float:
     dp = dot_product(vec_a, vec_b)
     mod_ab = vec_a.magnitude() * vec_b.magnitude()
     cos_theta = dp / mod_ab
+
+    if abs(cos_theta) > 1:
+        # Round small floating point rounding errors to avoid a math domain
+        # error from math.acos, without masking genuine errors.
+        cos_theta = round(cos_theta, 15)
+
     theta_rads = math.acos(cos_theta)
     theta_degrees = math.degrees(theta_rads)
     return theta_degrees

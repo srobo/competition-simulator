@@ -1,19 +1,19 @@
 import time
 from os import path, environ
+from typing import Optional
 from threading import Lock, Thread
 
 from sr.robot import motor, camera, ruggeduino
-from sr.robot.game import stop_after_delay
 from sr.robot.settings import TIME_STEP
 
 # Webots specific library
 from controller import Robot as WebotsRobot  # isort:skip
 
 
-class Robot(object):
+class Robot:
     """Class for initialising and accessing robot hardware"""
 
-    def __init__(self, quiet=False, init=True):
+    def __init__(self, quiet: bool = False, init: bool = True) -> None:
         self._initialised = False
         self._quiet = quiet
 
@@ -32,27 +32,40 @@ class Robot(object):
 
         if init:
             self.init()
-            self.display_info()
             self.wait_start()
-            if self.mode == "comp":
-                stop_after_delay()
 
     @classmethod
     def setup(cls):
-        return cls()
+        return cls(init=False)
 
-    def init(self):
+    def init(self) -> None:
         self.webots_init()
         self._init_devs()
         self._initialised = True
+        self.display_info()
 
-    def display_info(self):
-        print("Robot Initialized. Zone: {zone}. Mode: {mode}.".format(
-            zone=self.zone,
-            mode=self.mode,
-        ))
+    def _get_user_code_info(self) -> Optional[str]:
+        user_version_path = path.join(self.usbkey, '.user-rev')
+        if path.exists(user_version_path):
+            with open(user_version_path) as f:
+                return f.read().strip()
 
-    def webots_init(self):
+        return None
+
+    def display_info(self) -> None:
+        user_code_version = self._get_user_code_info()
+
+        parts = [
+            "Zone: {}".format(self.zone),
+            "Mode: {}".format(self.mode),
+        ]
+
+        if user_code_version:
+            parts.append("User code: {}".format(user_code_version))
+
+        print("Robot Initialized. {}.".format(", ".join(parts)))  # noqa:T001
+
+    def webots_init(self) -> None:
         # Create a thread which will advance time in the background, so that the
         # competitors' code can ignore the fact that it is actually running in a
         # simulation.
@@ -85,7 +98,7 @@ class Robot(object):
         while self.webots_step_and_should_continue(TIME_STEP):
             pass
 
-    def wait_start(self):
+    def wait_start(self) -> None:
         "Wait for the start signal to happen"
 
         if self.mode not in ["comp", "dev"]:
@@ -99,7 +112,7 @@ class Robot(object):
         if self.arena not in ["A", "B"]:
             raise Exception("arena must be A or B")
 
-    def _init_devs(self):
+    def _init_devs(self) -> None:
         "Initialise the attributes for accessing devices"
 
         # Motor boards
@@ -111,13 +124,13 @@ class Robot(object):
         # Camera
         self._init_camera()
 
-    def _init_motors(self):
+    def _init_motors(self) -> None:
         self.motors = motor.init_motor_array(self.webot)
 
-    def _init_ruggeduinos(self):
+    def _init_ruggeduinos(self) -> None:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
 
-    def _init_camera(self):
+    def _init_camera(self) -> None:
         self.camera = camera.Camera(self.webot)
         self.see = self.camera.see
 
@@ -131,6 +144,9 @@ class Robot(object):
         """
         Roughly equivalent to `time.sleep` but accounting for simulation time.
         """
+        # Checks that secs is positive or zero
+        if secs < 0:
+            raise ValueError('sleep length must be non-negative')
 
         # Ensure the time delay is a valid step increment
         n_steps = int((secs * 1000) // TIME_STEP)

@@ -1,0 +1,6 @@
+{
+    "python.autoComplete.extraPaths": ["stubs"],
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.pythonPath": "${env:VIRTUAL_ENV}/bin/python",
+}

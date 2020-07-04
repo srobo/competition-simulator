@@ -49,7 +49,7 @@ references:
       branches:
         ignore: /.*/
       tags:
-        only: /^v.*/
+        only: /.*/
 
 
 executors:
@@ -114,6 +114,25 @@ jobs:
             source venv/bin/activate
             ./script/typing/check
 
+  release:
+    docker:
+      - image: circleci/python:3.5
+    steps:
+      # Note: we run the release on *all* tags. If we change to creating
+      # releases here (or anything more involved) we should review whether or
+      # not we want to run the release only for a given pattern of tag names.
+
+      - checkout
+
+      - run:
+          name: Build archive
+          command: |
+            NAME="competition-simulator-$(git describe --always --tags).zip"
+            ./script/create-archive --output $NAME
+
+      - store_artifacts:
+          path: competition-simulator-*.zip
+
 workflows:
   version: 2.1
 
@@ -125,3 +144,21 @@ workflows:
           <<: *python-top-and-bottom-version-matrix
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
+
+  release:
+    jobs:
+      - test:
+          <<: *python-full-version-matrix
+          <<: *filter-tags
+      - lint:
+          <<: *python-top-and-bottom-version-matrix
+          <<: *filter-tags
+      - typecheck:
+          <<: *python-top-and-bottom-version-matrix
+          <<: *filter-tags
+      - release:
+          <<: *filter-tags
+          requires:
+            - test
+            - lint
+            - typecheck
