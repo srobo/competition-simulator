@@ -131,7 +131,8 @@ class Robot:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
 
     def _init_camera(self) -> None:
-        self.camera = camera.Camera(self.webot)
+        # See comment in Camera.see for why we need to pass the step lock here.
+        self.camera = camera.Camera(self.webot, self._step_lock)
         self.see = self.camera.see
 
     def time(self) -> float:
