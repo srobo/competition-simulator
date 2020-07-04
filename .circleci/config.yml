@@ -116,7 +116,8 @@ jobs:
 
   release:
     docker:
-      - image: circleci/python:3.5
+      # Release on 3.6+ so we can have non-strict Path.resolve()
+      - image: circleci/python:3.6
     steps:
       # Note: we run the release on *all* tags. If we change to creating
       # releases here (or anything more involved) we should review whether or
