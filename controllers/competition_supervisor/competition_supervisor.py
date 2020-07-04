@@ -1,7 +1,7 @@
 import sys
 import datetime
 import contextlib
-from typing import Iterator, Optional
+from typing import Iterator
 from pathlib import Path
 
 # Webots specific library
@@ -16,12 +16,11 @@ import sr_controller  # noqa:E402 # isort:skip
 GAME_DURATION_SECONDS = 150
 
 
-def recording_path(when: Optional[datetime.datetime] = None) -> Path:
-    if not when:
-        when = datetime.datetime.now()
+def recording_path() -> Path:
+    now = datetime.datetime.now()
 
-    date = when.date().isoformat()
-    name = '{}.html'.format(when.isoformat())
+    date = now.date().isoformat()
+    name = '{}.html'.format(now.isoformat())
     # Windows doesn't like colons in filenames
     name = name.replace(':', '-')
     return Path(date) / name
