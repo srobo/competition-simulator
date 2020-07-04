@@ -87,6 +87,11 @@ class Robot:
         Webots telling us whether or not the simulation is about to end).
         """
 
+        if duration_ms <= 0:
+            raise ValueError(
+                "Duration must be greater than zero, not {!r}".format(duration_ms),
+            )
+
         with self._step_lock:
             # We use Webots in synchronous mode (specifically
             # `synchronization` is left at its default value of `TRUE`). In
@@ -151,7 +156,7 @@ class Robot:
             raise ValueError('sleep length must be non-negative')
 
         # Ensure the time delay is a valid step increment
-        n_steps = int((secs * 1000) // self._timestep)
+        n_steps = int((secs * 1000) // self._timestep) or 1
         duration_ms = n_steps * self._timestep
 
         # We're in the main thread here, so we don't really need to do any
