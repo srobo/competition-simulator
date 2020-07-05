@@ -134,9 +134,14 @@ def reconfigure_environment(robot_file: Path) -> None:
     """
 
     # Remove ourselves from the path and insert the competitor code
-    sys.path.pop()
-    sys.path.insert(0, str(ROOT / "modules"))
-    sys.path.insert(0, str(robot_file.parent))
+    sys.path[:1] = [
+        # User code first
+        str(robot_file.parent),
+        # Then the SR module
+        str(ROOT / "modules"),
+        # Then everything else which was on the path, except for the
+        # `sr_controller` directory (which was previously first).
+    ]
 
     os.chdir(str(robot_file.parent))
 
