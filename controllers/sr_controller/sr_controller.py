@@ -1,11 +1,9 @@
 import os
 import sys
 import datetime
-import contextlib
 import subprocess
-from types import TracebackType
 from shutil import copyfile
-from typing import Type, Optional
+from typing import IO
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -150,38 +148,36 @@ def log_filename(zone_id: int) -> str:
     )
 
 
-class TeeStdout:
+class SimpleTee:
     """
-    Tee stdout also to the named log file.
+    Forwards calls from its `write` and `flush` methods to each of the given targets.
     """
 
-    def __init__(self, name: Path) -> None:
-        self.name = name
+    def __init__(self, *streams: IO[str]) -> None:
+        self.streams = streams
 
-    def __enter__(self):
-        self.stdout = sys.stdout
-        self.stack = contextlib.ExitStack()
-        self.file = self.stack.enter_context(open(str(self.name), mode='w'))
-        self.stack.enter_context(contextlib.redirect_stdout(self))  # type:ignore
-        self.stack.__enter__()
-
-    def __exit__(
-        self,
-        exctype: Optional[Type[BaseException]],
-        excinst: Optional[BaseException],
-        exctb: Optional[TracebackType],
-    ) -> None:
-        self.flush()
-        self.stack.__exit__(exctype, excinst, exctb)
-
-    def write(self, data):
-        self.file.write(data)
-        self.stdout.write(data)
-        self.flush()
+    def write(self, data: str) -> None:
+        for stream in self.streams:
+            stream.write(data)
 
     def flush(self):
-        self.stdout.flush()
-        self.file.flush()
+        for stream in self.streams:
+            stream.flush()
+
+
+def tee_streams(name: Path) -> None:
+    """
+    Tee stdout and stderr also to the named log file.
+
+    Note: we intentionally don't provide a way to clean up the stream
+    replacement so that any error handling from Python which causes us to exit
+    is also captured by the log file.
+    """
+
+    log_file = name.open(mode='w')
+
+    sys.stdout = SimpleTee(sys.stdout, log_file)  # type: ignore
+    sys.stderr = SimpleTee(sys.stderr, log_file)  # type: ignore
 
 
 def main():
@@ -189,23 +185,24 @@ def main():
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode).resolve()
 
-    with TeeStdout(robot_file.parent / log_filename(robot_zone)):
-        if robot_zone == 0:
-            # Only print once, but rely on Zone 0 always being run to ensure this is
-            # always printed somewhere.
-            print_simulation_version()
+    tee_streams(robot_file.parent / log_filename(robot_zone))
 
-        print("Using {} for Zone {}".format(robot_file, robot_zone))
+    if robot_zone == 0:
+        # Only print once, but rely on Zone 0 always being run to ensure this is
+        # always printed somewhere.
+        print_simulation_version()
 
-        # Pass through the various data our library needs
-        os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
-        os.environ['SR_ROBOT_MODE'] = robot_mode
-        os.environ['SR_ROBOT_FILE'] = str(robot_file)
+    print("Using {} for Zone {}".format(robot_file, robot_zone))
 
-        # Swith to running the competitor code
-        reconfigure_environment(robot_file)
+    # Pass through the various data our library needs
+    os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
+    os.environ['SR_ROBOT_MODE'] = robot_mode
+    os.environ['SR_ROBOT_FILE'] = str(robot_file)
 
-        exec(robot_file.read_text(), {})
+    # Swith to running the competitor code
+    reconfigure_environment(robot_file)
+
+    exec(robot_file.read_text(), {})
 
 
 if __name__ == "__main__":
