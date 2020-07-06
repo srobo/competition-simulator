@@ -134,7 +134,7 @@ def reconfigure_environment(robot_file: Path) -> None:
     """
 
     # Remove ourselves from the path and insert the competitor code
-    sys.path.pop()
+    sys.path.pop(0)
     sys.path.insert(0, str(ROOT / "modules"))
     sys.path.insert(0, str(robot_file.parent))
 
