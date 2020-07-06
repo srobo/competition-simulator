@@ -128,11 +128,18 @@ jobs:
       - run:
           name: Build archive
           command: |
+            mkdir archive
             NAME="competition-simulator-$(git describe --always --tags).zip"
-            ./script/create-archive --output $NAME
+            ./script/create-archive --output archive/$NAME
 
       - store_artifacts:
-          path: competition-simulator-*.zip
+          # Note: the interim directory here is a work-around to not knowing the
+          # exact filename of the archive we're creating (as it depends on the
+          # tag name) and not being able to pass a wildcard name. Since we don't
+          # want the directory in the stored results, we override the
+          # destination to remove it.
+          path: archive
+          destination: .
 
 workflows:
   version: 2.1
