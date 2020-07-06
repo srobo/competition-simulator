@@ -114,7 +114,7 @@ jobs:
             source venv/bin/activate
             ./script/typing/check
 
-  release:
+  build:
     docker:
       # Release on 3.6+ so we can have non-strict Path.resolve()
       - image: circleci/python:3.6
@@ -144,7 +144,7 @@ jobs:
 workflows:
   version: 2.1
 
-  validate:
+  build:
     jobs:
       - test:
           <<: *python-full-version-matrix
@@ -152,20 +152,7 @@ workflows:
           <<: *python-top-and-bottom-version-matrix
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
-
-  release:
-    jobs:
-      - test:
-          <<: *python-full-version-matrix
-          <<: *filter-tags
-      - lint:
-          <<: *python-top-and-bottom-version-matrix
-          <<: *filter-tags
-      - typecheck:
-          <<: *python-top-and-bottom-version-matrix
-          <<: *filter-tags
-      - release:
-          <<: *filter-tags
+      - build:
           requires:
             - test
             - lint
