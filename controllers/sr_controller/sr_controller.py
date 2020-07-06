@@ -155,8 +155,9 @@ class TeeStdout:
     Tee stdout also to the named log file.
     """
 
-    def __init__(self, name: Path) -> None:
+    def __init__(self, name: Path, zone: int) -> None:
         self.name = name
+        self.zone = zone
 
     def __enter__(self):
         self.stdout = sys.stdout
@@ -176,7 +177,10 @@ class TeeStdout:
 
     def write(self, data):
         self.file.write(data)
-        self.stdout.write(data)
+        if data == '\n':
+            self.stdout.write(data)
+        else:
+            self.stdout.write(f'{self.zone}| {data}')
         self.flush()
 
     def flush(self):
@@ -189,7 +193,7 @@ def main():
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode).resolve()
 
-    with TeeStdout(robot_file.parent / log_filename(robot_zone)):
+    with TeeStdout(robot_file.parent / log_filename(robot_zone), robot_zone):
         if robot_zone == 0:
             # Only print once, but rely on Zone 0 always being run to ensure this is
             # always printed somewhere.
