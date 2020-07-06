@@ -159,6 +159,7 @@ class SimpleTee:
     def write(self, data: str) -> None:
         for stream in self.streams:
             stream.write(data)
+        self.flush()
 
     def flush(self):
         for stream in self.streams:
