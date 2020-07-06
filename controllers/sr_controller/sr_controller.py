@@ -1,7 +1,11 @@
 import os
 import sys
+import datetime
+import contextlib
 import subprocess
+from types import TracebackType
 from shutil import copyfile
+from typing import Type, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -28,6 +32,14 @@ def get_robot_zone() -> int:
     return ROBOT_IDS_TO_CORNERS[os.environ['WEBOTS_ROBOT_ID']]
 
 
+def get_zone_robot_file_path(zone_id: int) -> Path:
+    """
+    Return the path to the robot.py for the given zone, without checking for
+    existence.
+    """
+    return ROOT.parent / "zone-{}".format(zone_id) / "robot.py"
+
+
 def get_robot_file(zone_id: int, mode: str) -> Path:
     """
     Get the path to the proper robot.py file for zone_id and mode, ensuring that
@@ -46,7 +58,7 @@ def get_robot_file(zone_id: int, mode: str) -> Path:
           are found it copies an example into place (at the root) and uses that.
     """
 
-    robot_file = ROOT.parent / "zone-{}".format(zone_id) / "robot.py"
+    robot_file = get_zone_robot_file_path(zone_id)
     fallback_robot_file = ROOT.parent / "robot.py"
     strict_zones = STRICT_ZONES[mode]
 
@@ -115,33 +127,85 @@ def print_simulation_version() -> None:
     print("Running simulator version {}".format(version))
 
 
+def reconfigure_environment(robot_file: Path) -> None:
+    """
+    Reconfigure the interpreter environment for the actual location of the
+    competitor code.
+    """
+
+    # Remove ourselves from the path and insert the competitor code
+    sys.path.pop()
+    sys.path.insert(0, str(ROOT / "modules"))
+    sys.path.insert(0, str(robot_file.parent))
+
+    os.chdir(str(robot_file.parent))
+
+
+def log_filename(zone_id: int) -> str:
+    # Local time for convenience. We only care that this is a unique filename.
+    now = datetime.datetime.now()
+    return 'log-zone-{}-{}.txt'.format(
+        zone_id,
+        now.isoformat().replace(':', ''),
+    )
+
+
+class TeeStdout:
+    """
+    Tee stdout also to the named log file.
+    """
+
+    def __init__(self, name: Path) -> None:
+        self.name = name
+
+    def __enter__(self):
+        self.stdout = sys.stdout
+        self.stack = contextlib.ExitStack()
+        self.file = self.stack.enter_context(open(str(self.name), mode='w'))
+        self.stack.enter_context(contextlib.redirect_stdout(self))  # type:ignore
+        self.stack.__enter__()
+
+    def __exit__(
+        self,
+        exctype: Optional[Type[BaseException]],
+        excinst: Optional[BaseException],
+        exctb: Optional[TracebackType],
+    ) -> None:
+        self.flush()
+        self.stack.__exit__(exctype, excinst, exctb)
+
+    def write(self, data):
+        self.file.write(data)
+        self.stdout.write(data)
+        self.flush()
+
+    def flush(self):
+        self.stdout.flush()
+        self.file.flush()
+
+
 def main():
     robot_mode = get_robot_mode()
     robot_zone = get_robot_zone()
-    robot_file = get_robot_file(robot_zone, robot_mode)
+    robot_file = get_robot_file(robot_zone, robot_mode).resolve()
 
-    if robot_zone == 0:
-        # Only print once, but rely on Zone 0 always being run to ensure this is
-        # always printed somewhere.
-        print_simulation_version()
+    with TeeStdout(robot_file.parent / log_filename(robot_zone)):
+        if robot_zone == 0:
+            # Only print once, but rely on Zone 0 always being run to ensure this is
+            # always printed somewhere.
+            print_simulation_version()
 
-    print("Using {} for Zone {}".format(robot_file, robot_zone))
+        print("Using {} for Zone {}".format(robot_file, robot_zone))
 
-    env = os.environ.copy()
-    # Ensure the python path is properly passed down so the `sr` module can be imported
-    env['PYTHONPATH'] = os.pathsep.join(sys.path + [str(ROOT / "modules")])
-    env['SR_ROBOT_ZONE'] = str(robot_zone)
-    env['SR_ROBOT_MODE'] = robot_mode
-    env['SR_ROBOT_FILE'] = str(robot_file)
+        # Pass through the various data our library needs
+        os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
+        os.environ['SR_ROBOT_MODE'] = robot_mode
+        os.environ['SR_ROBOT_FILE'] = str(robot_file)
 
-    completed_process = subprocess.run(
-        [sys.executable, "-u", str(robot_file)],
-        env=env,
-        cwd=str(robot_file.parent),
-    )
+        # Swith to running the competitor code
+        reconfigure_environment(robot_file)
 
-    # Exit with the same return code so webots reports it as an error
-    sys.exit(completed_process.returncode)
+        exec(robot_file.read_text(), {})
 
 
 if __name__ == "__main__":

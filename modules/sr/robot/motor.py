@@ -38,7 +38,7 @@ def translate(sr_speed_val, sr_motor):
 
 
 class Motor:
-    """A motor"""
+    """Represents a motor board."""
 
     def __init__(self, m0: Union[Wheel, LinearMotor], m1: Union[Wheel, Gripper]) -> None:
         self.m0 = MotorChannel(0, m0)
@@ -46,6 +46,8 @@ class Motor:
 
 
 class MotorChannel:
+    """Represents a motor output channel."""
+
     def __init__(self, channel: int, sr_motor: Union[Gripper, Wheel, LinearMotor]) -> None:
         self.channel = channel
         # Private shadow of use_brake
@@ -57,6 +59,7 @@ class MotorChannel:
 
     @property
     def power(self):
+        """Get or set the level of power for this motor channel."""
         return self._power
 
     @power.setter

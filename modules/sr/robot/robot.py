@@ -1,24 +1,30 @@
+import math
 import time
 from os import path, environ
 from typing import Optional
 from threading import Lock, Thread
 
 from sr.robot import motor, camera, ruggeduino
-from sr.robot.game import stop_after_delay
-from sr.robot.settings import TIME_STEP
 
 # Webots specific library
 from controller import Robot as WebotsRobot  # isort:skip
 
 
-class Robot:
-    """Class for initialising and accessing robot hardware"""
+class ManualTimestepRobot:
+    """
+    Primary API for access to robot parts.
+
+    This robot requires that the consumer manage the progession of time manually
+    by calling the `sleep` method.
+    """
 
     def __init__(self, quiet: bool = False, init: bool = True) -> None:
         self._initialised = False
         self._quiet = quiet
 
         self.webot = WebotsRobot()
+        # returns a float, but should always actually be an integer value
+        self._timestep = int(self.webot.getBasicTimeStep())
 
         self.mode = environ.get("SR_ROBOT_MODE", "dev")
         self.zone = int(environ.get("SR_ROBOT_ZONE", 0))
@@ -33,19 +39,16 @@ class Robot:
 
         if init:
             self.init()
-            self.display_info()
             self.wait_start()
-            if self.mode == "comp":
-                stop_after_delay()
 
     @classmethod
     def setup(cls):
-        return cls()
+        return cls(init=False)
 
     def init(self) -> None:
-        self.webots_init()
         self._init_devs()
         self._initialised = True
+        self.display_info()
 
     def _get_user_code_info(self) -> Optional[str]:
         user_version_path = path.join(self.usbkey, '.user-rev')
@@ -68,19 +71,6 @@ class Robot:
 
         print("Robot Initialized. {}.".format(", ".join(parts)))  # noqa:T001
 
-    def webots_init(self) -> None:
-        # Create a thread which will advance time in the background, so that the
-        # competitors' code can ignore the fact that it is actually running in a
-        # simulation.
-        t = Thread(
-            target=self.webot_run_robot,
-            # Ensure our background thread alone won't keep the controller
-            # process runnnig.
-            daemon=True,
-        )
-        t.start()
-        time.sleep(TIME_STEP / 1000)
-
     def webots_step_and_should_continue(self, duration_ms: int) -> bool:
         """
         Run a webots step of the given duration in milliseconds.
@@ -89,6 +79,11 @@ class Robot:
         Webots telling us whether or not the simulation is about to end).
         """
 
+        if duration_ms <= 0:
+            raise ValueError(
+                "Duration must be greater than zero, not {!r}".format(duration_ms),
+            )
+
         with self._step_lock:
             # We use Webots in synchronous mode (specifically
             # `synchronization` is left at its default value of `TRUE`). In
@@ -96,10 +91,6 @@ class Robot:
             # simulation is terminating, or 0 otherwise.
             result = self.webot.step(duration_ms)
             return result != -1
-
-    def webot_run_robot(self):
-        while self.webots_step_and_should_continue(TIME_STEP):
-            pass
 
     def wait_start(self) -> None:
         "Wait for the start signal to happen"
@@ -134,7 +125,8 @@ class Robot:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
 
     def _init_camera(self) -> None:
-        self.camera = camera.Camera(self.webot)
+        # See comment in Camera.see for why we need to pass the step lock here.
+        self.camera = camera.Camera(self.webot, self._step_lock)
         self.see = self.camera.see
 
     def time(self) -> float:
@@ -151,11 +143,47 @@ class Robot:
         if secs < 0:
             raise ValueError('sleep length must be non-negative')
 
-        # Ensure the time delay is a valid step increment
-        n_steps = int((secs * 1000) // TIME_STEP)
-        duration_ms = n_steps * TIME_STEP
+        # Ensure the time delay is a valid step increment, while also ensuring
+        # that small values remain nonzero.
+        n_steps = math.ceil((secs * 1000) / self._timestep)
+        duration_ms = n_steps * self._timestep
 
         # We're in the main thread here, so we don't really need to do any
         # cleanup if Webots tells us the simulation is terminating. When webots
         # kills the process all the proper tidyup will happen anyway.
         self.webots_step_and_should_continue(duration_ms)
+
+
+class AutomaticTimestepRobot(ManualTimestepRobot):
+    """
+    Robot class which preserves the original automatic time-advancing behaviour.
+
+    This class launches a background thread which advances the timestep in a
+    tight loop. This is somewhat more convenient to program against because it
+    does not rely on the `sleep` method being called in order for time to
+    advance. However as a result the timestep is considerably less predictable
+    which can result in unexpected robot behaviours.
+
+    The `sleep` method of this class is still available and is thread-safe.
+    """
+
+    def init(self) -> None:
+        self.webots_init()
+        super().init()
+
+    def webots_init(self) -> None:
+        # Create a thread which will advance time in the background, so that the
+        # competitors' code can ignore the fact that it is actually running in a
+        # simulation.
+        t = Thread(
+            target=self.webot_run_robot,
+            # Ensure our background thread alone won't keep the controller
+            # process runnnig.
+            daemon=True,
+        )
+        t.start()
+        time.sleep(self._timestep / 1000)
+
+    def webot_run_robot(self):
+        while self.webots_step_and_should_continue(self._timestep):
+            pass

@@ -1006,3 +1006,11 @@ SRRobot {
   controller "sr_controller"
   flagColour 1 1 0
 }
+Robot {
+  translation 0 -1 0
+  name "comp-supervisor"
+  model "CompetitionSupervisor"
+  controller "competition_supervisor"
+  description "A supervisor 'robot' to help run the competition."
+  supervisor TRUE
+}

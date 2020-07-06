@@ -1,5 +1,6 @@
 import re
 import time
+import threading
 from enum import Enum
 from typing import List, Optional, NamedTuple
 
@@ -12,7 +13,6 @@ from sr.robot.vision import (
     tokens_from_objects,
     polar_from_cartesian,
 )
-from sr.robot.settings import TIME_STEP
 
 Cartesian = NamedTuple("Cartesian", (
     ("x", float),
@@ -124,39 +124,68 @@ class Marker:
 
     @property
     def centre(self) -> Point:
+        """A `Point` describing the position of the centre of the marker."""
         return self._build_point(self._face.centre_global())
 
     @property
     def vertices(self) -> List[Point]:
+        """
+        A list of 4 `Point` instances, each representing the position of the
+        black corners of the marker.
+        """
         # Note quite the black corners of the marker, though fairly close --
         # actually the corners of the face of the modelled token.
         return [self._build_point(x) for x in self._face.corners_global().values()]
 
     @property
     def dist(self) -> float:
+        """An alias for `centre.polar.length`."""
         return self._face.centre_global().magnitude()
 
     @property
     def rot_y(self) -> float:
+        """An alias for `centre.polar.rot_y`."""
         return self.centre.polar.rot_y
 
     @property
     def orientation(self) -> Orientation:
+        """An `Orientation` instance describing the orientation of the marker."""
         return self._face.orientation()
 
 
 class Camera:
-    def __init__(self, webot: Robot) -> None:
+    def __init__(self, webot: Robot, lock: threading.Lock) -> None:
+        self._webot = webot
+        self._timestep = int(webot.getBasicTimeStep())
+
         self.camera = webot.getCamera("camera")
-        self.camera.enable(TIME_STEP)
-        self.camera.recognitionEnable(TIME_STEP)
+        self.camera.enable(self._timestep)
+        self.camera.recognitionEnable(self._timestep)
+
+        self._lock = lock
 
     def see(self) -> List[Marker]:
+        """
+        Identify items which the camera can see and return a list of `Marker`
+        instances describing them.
+        """
+        # Webots appears not to like it if you try to hang on to a
+        # `CameraRecognitionObject` after another time-step has passed. However
+        # because we advance the time-steps in a background thread we're likely
+        # to do that all the time. In order to counter that we have our `Robot`
+        # pass down its time-step lock so that we can hold that while we do the
+        # processing. The objects which we pass back to the caller are safe to
+        # use because they don't refer to Webots' objects at all.
+        with self._lock:
+            self._webot.step(self._timestep)
+            return self._see()
+
+    def _see(self) -> List[Marker]:
         object_infos = {}
 
         for recognition_object in self.camera.getRecognitionObjects():
             marker_info = parse_marker_info(
-                recognition_object.get_model().decode(),
+                recognition_object.get_model().decode(errors='replace'),
             )
             if marker_info:
                 object_infos[recognition_object] = marker_info
