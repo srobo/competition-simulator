@@ -1,0 +1,11 @@
+# This is a requirements file containing the libraries that we have promised to
+# competitors will be present.
+#
+# If you're updating this list, be sure to also update the list in the docs:
+# https://github.com/srobo/docs/blob/master/programming/python/libraries.md#competition-simulator
+#
+# We also parse this to check their presence before starting competition
+# matches, so we *don't* have the full range of requirements.txt supported
+# syntax available.
+
+matplotlib==3.2.2
