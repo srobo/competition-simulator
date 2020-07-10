@@ -42,14 +42,21 @@ On first run, the robot will execute an example program. On first run, this will
 
 In order to run competition matches you'll need to:
 
-1. Create a file `robot_mode.txt` in the root of the repo which contains just
+1. Install the third party libraries the teams are depending on, into the same
+   Python environment as will be running their code:
+
+    ``` bash
+    pip install libraries.txt
+    ```
+
+2. Create a file `robot_mode.txt` in the root of the repo which contains just
    the text `comp`:
 
     ``` bash
     echo comp > robot_mode.txt
     ```
 
-2. Put the competitors' code into the right places for each of the corner zones.
+3. Put the competitors' code into the right places for each of the corner zones.
    These are folder `zone-X` for each zone number `X` which are siblings to the
    directory in which this git repo is checked out:
 
@@ -66,7 +73,7 @@ In order to run competition matches you'll need to:
         └── robot.py
     ```
 
-3. Load the simulation afresh and let it run. This does not need to be a fresh
+4. Load the simulation afresh and let it run. This does not need to be a fresh
    launch of the Webots simulator program, but does need to be a fresh load of
    the world.
    There is a supervisor "robot" in the simulation which will remove any robots

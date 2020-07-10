@@ -4,6 +4,8 @@ import contextlib
 from typing import Iterator
 from pathlib import Path
 
+import pkg_resources
+
 # Webots specific library
 from controller import Supervisor  # isort:skip
 
@@ -38,6 +40,28 @@ def quit_if_development_mode() -> None:
     if sr_controller.get_robot_mode() != 'comp':
         print("Development mode, exiting competition supervisor")
         exit()
+
+
+def check_required_libraries(path: Path) -> None:
+    missing, incorrect = [], []
+
+    for package in path.read_text().splitlines():
+        package = package.partition('#')[0].strip()
+        if not package:
+            continue
+
+        try:
+            pkg_resources.get_distribution(package)
+        except pkg_resources.DistributionNotFound:
+            missing.append(package)
+        except pkg_resources.VersionConflict:
+            incorrect.append(package)
+
+    if missing or incorrect:
+        raise RuntimeError(
+            "Required packages are missing ({!r}) or incorrect ({!r}). Have you "
+            "installed {}?".format(missing, incorrect, path.relative_to(REPO_ROOT)),
+        )
 
 
 def prepare(supervisor: Supervisor) -> None:
@@ -83,6 +107,8 @@ def run_match(supervisor: Supervisor) -> None:
 
 def main() -> None:
     quit_if_development_mode()
+
+    check_required_libraries(REPO_ROOT / 'libraries.txt')
 
     supervisor = Supervisor()
 
