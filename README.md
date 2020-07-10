@@ -49,6 +49,12 @@ In order to run competition matches you'll need to:
     pip install libraries.txt
     ```
 
+   Note: you can change the version of Python which Webots uses from the UI --
+   go to "Tools" > "Preferences" > "General" > "Python command".
+
+   We are using Python 3.7, though it shouldn't matter whether it's a system
+   install or a virtual environment.
+
 2. Create a file `robot_mode.txt` in the root of the repo which contains just
    the text `comp`:
 
