@@ -1,7 +1,7 @@
 import sys
 import datetime
 import contextlib
-from typing import Iterator, Optional
+from typing import Iterator
 from pathlib import Path
 
 import pkg_resources
@@ -18,23 +18,12 @@ import sr_controller  # noqa:E402 # isort:skip
 GAME_DURATION_SECONDS = 150
 
 
-def get_match_num() -> Optional[int]:
-    if sr_controller.MATCH_FILE.exists():
-        return int(sr_controller.MATCH_FILE.read_text().strip())
-    return None
-
-
 def recording_path() -> Path:
     now = datetime.datetime.now()
 
     date = now.date().isoformat()
 
-    match_num = get_match_num()
-    if match_num is not None:
-        name = 'match-{}'.format(match_num)
-    else:
-        # Windows doesn't like colons in filenames
-        name = now.isoformat().replace(':', '-')
+    name: str = sr_controller.get_filename_safe_identifier()
 
     return Path(date) / name / '{}.html'.format(name)
 

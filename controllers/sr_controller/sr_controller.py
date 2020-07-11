@@ -3,7 +3,7 @@ import sys
 import datetime
 import subprocess
 from shutil import copyfile
-from typing import IO
+from typing import IO, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -25,6 +25,30 @@ STRICT_ZONES = {
     "dev": (1, 2, 3),
     "comp": (0, 1, 2, 3),
 }
+
+
+def get_match_num() -> Optional[int]:
+    if MATCH_FILE.exists():
+        return int(MATCH_FILE.read_text().strip())
+    return None
+
+
+def get_filename_safe_identifier() -> str:
+    """
+    Return an identifier for the current run which is safe to use in filenames.
+
+    This is of the form "match-{N}" during competition matches, or the current
+    datetime in approximately ISO 8601 format otherwise.
+    """
+
+    match_num = get_match_num()
+    if match_num is not None:
+        return 'match-{}'.format(match_num)
+    else:
+        # Local time for convenience. We only care that this is a unique identifier.
+        now = datetime.datetime.now()
+        # Windows doesn't like colons in filenames.
+        return now.isoformat().replace(':', '_')
 
 
 def get_robot_zone() -> int:
@@ -141,11 +165,9 @@ def reconfigure_environment(robot_file: Path) -> None:
 
 
 def log_filename(zone_id: int) -> str:
-    # Local time for convenience. We only care that this is a unique filename.
-    now = datetime.datetime.now()
     return 'log-zone-{}-{}.txt'.format(
         zone_id,
-        now.isoformat().replace(':', ''),
+        get_filename_safe_identifier(),
     )
 
 
