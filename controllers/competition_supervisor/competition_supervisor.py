@@ -1,6 +1,7 @@
 import sys
 import datetime
 import contextlib
+import time
 from typing import Iterator
 from pathlib import Path
 
@@ -15,7 +16,7 @@ sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
 
 import sr_controller  # noqa:E402 # isort:skip
 
-GAME_DURATION_SECONDS = 150
+GAME_DURATION_SECONDS = 10
 
 
 def recording_path() -> Path:
@@ -24,16 +25,19 @@ def recording_path() -> Path:
     date = now.date().isoformat()
     # Windows doesn't like colons in filenames
     name = now.isoformat().replace(':', '-')
-    return Path(date) / name / '{}.html'.format(name)
+    return Path(date) / name / '{}'.format(name)
 
 
 @contextlib.contextmanager
 def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    print("Saving animation to {}".format(file_path))
-    supervisor.animationStartRecording(str(file_path))
+    print("Saving animation to {}.html".format(file_path))
+    print("Saving video to {}.mp4".format(file_path))
+    supervisor.animationStartRecording(str(file_path) + '.html')
+    supervisor.movieStartRecording(str(file_path) + '.mp4', width=1920, height=1080, quality=100, codec=0, acceleration=1, caption=False)
     yield
     supervisor.animationStopRecording()
+    supervisor.movieStopRecording()
 
 
 def quit_if_development_mode() -> None:
@@ -66,7 +70,7 @@ def check_required_libraries(path: Path) -> None:
 
 def prepare(supervisor: Supervisor) -> None:
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
-    supervisor.simulationReset()
+    #supervisor.simulationReset()
 
 
 def remove_unused_robots(supervisor: Supervisor) -> None:
@@ -118,7 +122,6 @@ def main() -> None:
 
     with record_animation(supervisor, REPO_ROOT / 'recordings' / recording_path()):
         run_match(supervisor)
-
 
 if __name__ == '__main__':
     main()
