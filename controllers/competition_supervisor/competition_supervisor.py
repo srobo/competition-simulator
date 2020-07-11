@@ -108,11 +108,13 @@ def run_match(supervisor: Supervisor) -> None:
 def main() -> None:
     quit_if_development_mode()
 
-    check_required_libraries(REPO_ROOT / 'libraries.txt')
-
     supervisor = Supervisor()
 
     prepare(supervisor)
+
+    # Check after we've paused the sim so that any errors won't be masked by
+    # subsequent console output from a robot.
+    check_required_libraries(REPO_ROOT / 'libraries.txt')
 
     remove_unused_robots(supervisor)
 
