@@ -35,8 +35,8 @@ def parse_args() -> argparse.Namespace:
         'tla',
         nargs=NUM_ZONES,
         help=(
-            "TLA of the team in each zone. Use dash (-) for an empty zone."
-            "Must specify all zones."
+            f"TLA of the team in each zone, in order from zone 0 to {NUM_ZONES - 1}. "
+            "Use dash (-) for an empty zone. Must specify all zones."
         ),
     )
     return parser.parse_args()
