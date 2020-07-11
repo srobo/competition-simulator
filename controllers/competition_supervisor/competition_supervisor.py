@@ -1,7 +1,6 @@
 import sys
 import datetime
 import contextlib
-import time
 from typing import Iterator
 from pathlib import Path
 
