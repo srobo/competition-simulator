@@ -2,6 +2,7 @@
 .*.wbproj
 .*.cache
 /robot_mode.txt
+/match.txt
 
 /.idea
 /.vscode
