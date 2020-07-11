@@ -23,7 +23,7 @@ def recording_path() -> Path:
 
     date = now.date().isoformat()
 
-    name: str = sr_controller.get_filename_safe_identifier()
+    name = sr_controller.get_filename_safe_identifier()  # type: str
 
     return Path(date) / name / '{}.html'.format(name)
 
