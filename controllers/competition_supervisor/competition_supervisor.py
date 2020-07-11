@@ -87,6 +87,9 @@ def prepare(supervisor: Supervisor) -> None:
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
     supervisor.simulationReset()
 
+    for _, robot in get_robots(supervisor):
+        robot.restartController()
+
 
 def remove_unused_robots(supervisor: Supervisor) -> None:
     for zone_id, robot in get_robots(supervisor):
