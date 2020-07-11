@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+"""
+A script to prepare for a competition match.
+"""
+
+import sys
+import shutil
+import argparse
+from pathlib import Path
+from zipfile import ZipFile
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
+
+import sr_controller  # noqa:E402 # isort:skip
+
+NUM_ZONES = 4
+
+
+def get_zone_path(zone_id: int) -> Path:
+    robot_file: Path = sr_controller.get_zone_robot_file_path(zone_id)
+    return robot_file.parent
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'archives_dir',
+        help="The directory containing the user's robot code",
+        type=Path,
+    )
+    parser.add_argument('match_num', help="The match number to prepare for.")
+    parser.add_argument(
+        'tla',
+        nargs=NUM_ZONES,
+        help=(
+            "TLA of the team in each zone. Use dash (-) for an empty zone."
+            "Must specify all zones."
+        ),
+    )
+    return parser.parse_args()
+
+
+def main(args: argparse.Namespace) -> None:
+    sr_controller.MODE_FILE.write_text('comp\n')
+    sr_controller.MATCH_FILE.write_text(f'{args.match_num}\n')
+
+    for zone_id, tla in enumerate(args.tla):
+        zone_path = get_zone_path(zone_id)
+
+        if zone_path.exists():
+            shutil.rmtree(zone_path)
+
+        if tla == '-':
+            # no team in this zone
+            continue
+
+        zone_path.mkdir()
+        with ZipFile(f'{args.archives_dir / tla}.zip') as zipfile:
+            zipfile.extractall(zone_path)
+
+
+if __name__ == '__main__':
+    main(parse_args())

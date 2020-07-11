@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent.parent
 
 MODE_FILE = ROOT / "robot_mode.txt"
+MATCH_FILE = ROOT / 'match.txt'
 
 EXAMPLE_CONTROLLER_FILE = ROOT / "controllers/example_controller/example_controller.py"
 
