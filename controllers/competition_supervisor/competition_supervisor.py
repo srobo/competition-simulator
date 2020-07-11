@@ -18,23 +18,30 @@ import sr_controller  # noqa:E402 # isort:skip
 GAME_DURATION_SECONDS = 150
 
 
-def recording_path() -> Path:
+def get_recording_path() -> Path:
     now = datetime.datetime.now()
 
     date = now.date().isoformat()
-    # Windows doesn't like colons in filenames
-    name = now.isoformat().replace(':', '-')
-    return Path(date) / name / '{}'.format(name)
+
+    name = sr_controller.get_filename_safe_identifier()  # type: str
+
+    return Path(date) / name
 
 
 @contextlib.contextmanager
 def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    print("Saving animation to {}.html".format(file_path))
-    print("Saving video to {}.mp4".format(file_path))
-    supervisor.animationStartRecording(str(file_path) + '.html')
+    print("Saving animation to {}".format(file_path))
+    supervisor.animationStartRecording(str(file_path))
+    yield
+    supervisor.animationStopRecording()
+
+@contextlib.contextmanager
+def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    print("Saving video to {}".format(file_path))
     supervisor.movieStartRecording(
-        str(file_path) + '.mp4',
+        str(file_path),
         width=1920,
         height=1080,
         quality=100,
@@ -42,7 +49,6 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
         acceleration=1,
         caption=False)
     yield
-    supervisor.animationStopRecording()
     supervisor.movieStopRecording()
 
 
@@ -76,6 +82,7 @@ def check_required_libraries(path: Path) -> None:
 
 def prepare(supervisor: Supervisor) -> None:
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
+    supervisor.simulationReset()
 
 
 def remove_unused_robots(supervisor: Supervisor) -> None:
@@ -117,16 +124,21 @@ def run_match(supervisor: Supervisor) -> None:
 def main() -> None:
     quit_if_development_mode()
 
-    check_required_libraries(REPO_ROOT / 'libraries.txt')
-
     supervisor = Supervisor()
 
     prepare(supervisor)
 
+    # Check after we've paused the sim so that any errors won't be masked by
+    # subsequent console output from a robot.
+    check_required_libraries(REPO_ROOT / 'libraries.txt')
+
     remove_unused_robots(supervisor)
 
-    with record_animation(supervisor, REPO_ROOT / 'recordings' / recording_path()):
-        run_match(supervisor)
+    recording_path = get_recording_path()
+
+    with record_animation(supervisor, REPO_ROOT / 'recordings' / '{}.html'.format(recording_path)):
+        with record_video(supervisor, REPO_ROOT / 'recordings' / '{}.mp4'.format(recording_path)):
+            run_match(supervisor)
 
 
 if __name__ == '__main__':
