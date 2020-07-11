@@ -33,10 +33,14 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     print("Saving animation to {}.html".format(file_path))
     print("Saving video to {}.mp4".format(file_path))
     supervisor.animationStartRecording(str(file_path) + '.html')
-    supervisor.movieStartRecording(str(file_path) + '.mp4',
-                                   width=1920, height=1080,
-                                   quality=100, codec=0, 
-                                   acceleration=1, caption=False)
+    supervisor.movieStartRecording(
+        str(file_path) + '.mp4',
+        width=1920,
+        height=1080,
+        quality=100,
+        codec=0,
+        acceleration=1,
+        caption=False)
     yield
     supervisor.animationStopRecording()
     supervisor.movieStopRecording()
@@ -123,7 +127,7 @@ def main() -> None:
 
     with record_animation(supervisor, REPO_ROOT / 'recordings' / recording_path()):
         run_match(supervisor)
-        
+
 
 if __name__ == '__main__':
     main()
