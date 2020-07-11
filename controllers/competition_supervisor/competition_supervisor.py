@@ -1,7 +1,7 @@
 import sys
 import datetime
 import contextlib
-from typing import Iterator
+from typing import List, Tuple, Iterator
 from pathlib import Path
 
 import pkg_resources
@@ -65,17 +65,10 @@ def check_required_libraries(path: Path) -> None:
         )
 
 
-def prepare(supervisor: Supervisor) -> None:
-    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
-    supervisor.simulationReset()
+def get_robots(supervisor: Supervisor) -> List[Tuple[int, Supervisor]]:
+    robots = []  # List[Tuple[int, Supervisor]]
 
-
-def remove_unused_robots(supervisor: Supervisor) -> None:
     for webots_id_str, zone_id in sr_controller.ROBOT_IDS_TO_CORNERS.items():
-        if sr_controller.get_zone_robot_file_path(zone_id).exists():
-            continue
-
-        # Remove the robot
         robot = supervisor.getFromId(int(webots_id_str))
         if robot is None:
             msg = "Failed to get Webots node for zone {} (id: {})".format(
@@ -84,6 +77,21 @@ def remove_unused_robots(supervisor: Supervisor) -> None:
             )
             print(msg)
             raise ValueError(msg)
+
+        robots.append((zone_id, robot))
+
+    return robots
+
+
+def prepare(supervisor: Supervisor) -> None:
+    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
+    supervisor.simulationReset()
+
+
+def remove_unused_robots(supervisor: Supervisor) -> None:
+    for zone_id, robot in get_robots(supervisor):
+        if sr_controller.get_zone_robot_file_path(zone_id).exists():
+            continue
 
         robot.remove()
 
