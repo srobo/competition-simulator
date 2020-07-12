@@ -95,7 +95,10 @@ jobs:
             source venv/bin/activate
 
             # Only check the scripts when not on Python 3.5
-            SCRIPTS=$(python3 --version | grep -vF '3.5.' > /dev/null && find script -type f | grep -vP "/(linting/|testing/|typing/|check$)")
+            if python3 --version | grep -vF '3.5.' > /dev/null
+            then
+                SCRIPTS=$(find script -type f | grep -vP "/(linting/|testing/|typing/|check$)")
+            fi
 
             # Ignore TODOs on CI, for now, even though we do want them
             # highlighted in development.
@@ -118,7 +121,10 @@ jobs:
             source venv/bin/activate
 
             # Only check the scripts when not on Python 3.5
-            SCRIPTS=$(python3 --version | grep -vF '3.5.' > /dev/null && find script -type f | grep -vP "/(linting/|testing/|typing/|check$)")
+            if python3 --version | grep -vF '3.5.' > /dev/null
+            then
+                SCRIPTS=$(find script -type f | grep -vP "/(linting/|testing/|typing/|check$)")
+            fi
 
             ./script/typing/check $SCRIPTS
 
