@@ -46,7 +46,7 @@ In order to run competition matches you'll need to:
    Python environment as will be running their code:
 
     ``` bash
-    pip install libraries.txt
+    pip install -r libraries.txt
     ```
 
    Note: you can change the version of Python which Webots uses from the UI --

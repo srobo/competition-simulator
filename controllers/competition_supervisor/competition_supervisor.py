@@ -22,9 +22,10 @@ def recording_path() -> Path:
     now = datetime.datetime.now()
 
     date = now.date().isoformat()
-    # Windows doesn't like colons in filenames
-    name = now.isoformat().replace(':', '-')
-    return Path(date) / name / '{}'.format(name)
+
+    name = sr_controller.get_filename_safe_identifier()  # type: str
+
+    return Path(date) / name / '{}.html'.format(name)
 
 
 @contextlib.contextmanager
@@ -122,11 +123,13 @@ def run_match(supervisor: Supervisor) -> None:
 def main() -> None:
     quit_if_development_mode()
 
-    check_required_libraries(REPO_ROOT / 'libraries.txt')
-
     supervisor = Supervisor()
 
     prepare(supervisor)
+
+    # Check after we've paused the sim so that any errors won't be masked by
+    # subsequent console output from a robot.
+    check_required_libraries(REPO_ROOT / 'libraries.txt')
 
     remove_unused_robots(supervisor)
 
