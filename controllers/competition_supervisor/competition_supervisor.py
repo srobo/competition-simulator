@@ -18,6 +18,11 @@ import controller_utils  # isort:skip
 GAME_DURATION_SECONDS = 120
 
 
+def get_log_filename() -> Path:
+    identifier = controller_utils.get_filename_safe_identifier()
+    return controller_utils.ARENA_ROOT / f'supervisor-log-{identifier}.txt'
+
+
 def get_recording_path() -> Path:
     now = datetime.datetime.now()
 
@@ -159,6 +164,8 @@ def run_match(supervisor: Supervisor) -> None:
 
 def main() -> None:
     quit_if_development_mode()
+
+    controller_utils.tee_streams(get_log_filename())
 
     supervisor = Supervisor()
 
