@@ -159,6 +159,7 @@ class Supervisor(Robot):
 
     def movieStartRecording(
         self,
+        file: str,
         width: int,
         height: int,
         quality: int,
