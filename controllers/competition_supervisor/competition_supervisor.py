@@ -30,11 +30,17 @@ def recording_path() -> Path:
 @contextlib.contextmanager
 def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    print("Saving animation to {}.html".format(file_path))
-    print("Saving video to {}.mp4".format(file_path))
-    supervisor.animationStartRecording(str(file_path) + '.html')
+    print("Saving animation to {}".format(file_path))
+    supervisor.animationStartRecording(str(file_path))
+    yield
+    supervisor.animationStopRecording()
+
+@contextlib.contextmanager
+def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    print("Saving video to {}".format(file_path))
     supervisor.movieStartRecording(
-        str(file_path) + '.mp4',
+        str(file_path),
         width=1920,
         height=1080,
         quality=100,
@@ -42,7 +48,6 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
         acceleration=1,
         caption=False)
     yield
-    supervisor.animationStopRecording()
     supervisor.movieStopRecording()
 
 
@@ -125,8 +130,9 @@ def main() -> None:
 
     remove_unused_robots(supervisor)
 
-    with record_animation(supervisor, REPO_ROOT / 'recordings' / recording_path()):
-        run_match(supervisor)
+    with record_animation(supervisor, REPO_ROOT / 'recordings' / '{}.html'.format(recording_path)):
+        with record_video(supervisor, REPO_ROOT / 'recordings' / '{}.mp4'.format(recording_path)):
+            run_match(supervisor)
 
 
 if __name__ == '__main__':
