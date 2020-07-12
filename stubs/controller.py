@@ -157,7 +157,6 @@ class Supervisor(Robot):
     def animationStartRecording(self, file: str) -> bool: ...
     def animationStopRecording(self) -> bool: ...
 
-    
     def movieStartRecording(
         self,
         width: int,
