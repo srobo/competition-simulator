@@ -15,7 +15,7 @@ sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
 
 import sr_controller  # noqa:E402 # isort:skip
 
-GAME_DURATION_SECONDS = 150
+GAME_DURATION_SECONDS = 10
 
 
 def get_recording_path() -> Path:
@@ -61,6 +61,7 @@ def quit_if_development_mode() -> None:
 
 
 def check_required_libraries(path: Path) -> None:
+    print("check libs")
     missing, incorrect = [], []
 
     for package in path.read_text().splitlines():
@@ -82,7 +83,6 @@ def check_required_libraries(path: Path) -> None:
         )
 
 
-
 def get_robots(supervisor: Supervisor) -> List[Tuple[int, Supervisor]]:
     robots = []  # List[Tuple[int, Supervisor]]
 
@@ -102,14 +102,18 @@ def get_robots(supervisor: Supervisor) -> List[Tuple[int, Supervisor]]:
 
 
 def prepare(supervisor: Supervisor) -> None:
+    print("prepare")
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
     supervisor.simulationReset()
 
     for _, robot in get_robots(supervisor):
         robot.restartController()
 
+    #supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
+
 
 def remove_unused_robots(supervisor: Supervisor) -> None:
+    print("remove unused robots")
     for zone_id, robot in get_robots(supervisor):
         if sr_controller.get_zone_robot_file_path(zone_id).exists():
             continue

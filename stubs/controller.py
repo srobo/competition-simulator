@@ -159,12 +159,14 @@ class Supervisor(Robot):
 
     def movieStartRecording(
         self,
+        file: str,
         width: int,
         height: int,
         quality: int,
         codec: int,
         acceleration: int,
         caption: bool) -> bool: ...
+
     def movieStopRecording(self) -> bool: ...
 
     def restartController(self) -> None: ...
