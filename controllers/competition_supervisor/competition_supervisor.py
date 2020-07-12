@@ -18,7 +18,7 @@ import sr_controller  # noqa:E402 # isort:skip
 GAME_DURATION_SECONDS = 150
 
 
-def recording_path() -> Path:
+def get_recording_path() -> Path:
     now = datetime.datetime.now()
 
     date = now.date().isoformat()
@@ -35,6 +35,7 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     supervisor.animationStartRecording(str(file_path))
     yield
     supervisor.animationStopRecording()
+
 
 @contextlib.contextmanager
 def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
@@ -133,8 +134,12 @@ def main() -> None:
 
     remove_unused_robots(supervisor)
 
-    with record_animation(supervisor, REPO_ROOT / 'recordings' / '{}.html'.format(recording_path)):
-        with record_video(supervisor, REPO_ROOT / 'recordings' / '{}.mp4'.format(recording_path)):
+    recording_path = get_recording_path()
+    animation_recording_path = '{}.html'.format(recording_path)
+    video_recording_path = '{}.mp4'.format(recording_path)
+
+    with record_animation(supervisor, REPO_ROOT / 'recordings' / animation_recording_path):
+        with record_video(supervisor, REPO_ROOT / 'recordings' / video_recording_path):
             run_match(supervisor)
 
 
