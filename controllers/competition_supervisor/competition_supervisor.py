@@ -49,7 +49,8 @@ def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
         quality=100,
         codec=0,
         acceleration=1,
-        caption=False)
+        caption=False,
+    )
     yield
     supervisor.movieStopRecording()
 
