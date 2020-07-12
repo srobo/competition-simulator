@@ -36,6 +36,7 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     yield
     supervisor.animationStopRecording()
 
+
 @contextlib.contextmanager
 def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
