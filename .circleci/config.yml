@@ -99,7 +99,7 @@ jobs:
 
             # Ignore TODOs on CI, for now, even though we do want them
             # highlighted in development.
-            ./script/linting/lint --extend-ignore=T000 $SCRIPTS
+            ./script/linting/lint $SCRIPTS --extend-ignore=T000
 
   typecheck:
     <<: *parametrised-python-executor
