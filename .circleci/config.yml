@@ -157,3 +157,8 @@ workflows:
             - test
             - lint
             - typecheck
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /.*/
