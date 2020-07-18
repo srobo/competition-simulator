@@ -43,6 +43,16 @@ class Led:
 
     def __init__(self, webot, device_name):
         self.webot_sensor = webot.getLED(device_name)
+        self._webot = webot
+        self._last_change = 0
 
     def write_value(self, value):
+        now = self._webot.getTime()
+        diff = now - self._last_change
+        if diff < 0.6:
+            # Avoid creating strobing effects by allowing LEDs to change at most
+            # once per second.
+            return
+
+        self._last_change = now
         self.webot_sensor.set(value)
