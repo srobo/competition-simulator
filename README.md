@@ -79,10 +79,17 @@ In order to run competition matches you'll need to:
         └── robot.py
     ```
 
-4. Load the simulation afresh and let it run. This does not need to be a fresh
-   launch of the Webots simulator program, but does need to be a fresh load of
-   the world.
-   There is a supervisor "robot" in the simulation which will remove any robots
-   for which there is no competitor code and pause the simulation at the end of
-   the match. The only way to restore the robots is to reload the simulation
-   between matches.
+4. Start webots from the command line using:
+
+    ```bash
+    webots --mode=pause
+    ```
+5. Got to File > Make Movie
+   Choose: Resolution: 1920x1080, Quality: 100, Video acceleration: 1.0
+
+6. Press Ctrl + 2 to start simulation
+
+7. After match complete robots will stop moving, press esc.
+   Wait for video to finish processing and saving before closing webots
+
+8. Close webots and repeat for next match
