@@ -98,6 +98,6 @@ In order to run competition matches you'll need to:
 7. After match complete robots will stop moving, press esc.
    Wait for video to finish processing and saving before closing webots
 
-8. Copy logs into `competition-simulator/recordings/yyy-mm-dd/logs`
+8. Copy logs into `competition-simulator/recordings/yyy-mm-dd/match-<match number>/logs`
 
 9. Close webots and repeat for next match
