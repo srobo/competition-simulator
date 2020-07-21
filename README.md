@@ -62,9 +62,13 @@ In order to run competition matches you'll need to:
     echo comp > robot_mode.txt
     ```
 
-3. Put the competitors' code into the right places for each of the corner zones.
-   These are folder `zone-X` for each zone number `X` which are siblings to the
-   directory in which this git repo is checked out:
+3. Run
+
+    ```bash
+    competition-simulator/script/prepare-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>
+    ```
+
+    Using a dash instead of a TLA if a robot is not present. This provides filenames and sets up the directory structure:
 
     ``` plain
     .
