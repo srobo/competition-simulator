@@ -78,9 +78,11 @@ In order to run competition matches you'll need to:
     │   ├── robot_mode.txt
     │   └── worlds
     ├── zone-0
-    |   └── robot.py
+    |   ├── robot.py
+    │   └── log-zone-0-match-<match number>.txt
     └── zone-2
-        └── robot.py
+        ├── robot.py
+        └── log-zone-2-match-<match number>.txt
     ```
 
 4. Start webots from the command line using:
@@ -96,4 +98,6 @@ In order to run competition matches you'll need to:
 7. After match complete robots will stop moving, press esc.
    Wait for video to finish processing and saving before closing webots
 
-8. Close webots and repeat for next match
+8. Copy logs into `competition-simulator/recordings/yyy-mm-dd/logs`
+
+9. Close webots and repeat for next match
