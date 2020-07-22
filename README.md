@@ -78,11 +78,11 @@ In order to run competition matches you'll need to:
     │   ├── robot_mode.txt
     │   └── worlds
     ├── zone-0
-    |   ├── robot.py
-    │   └── log-zone-0-match-<match number>.txt
+    |   ├── log-zone-0-match-<match number>.txt
+    │   └── robot.py
     └── zone-2
-        ├── robot.py
-        └── log-zone-2-match-<match number>.txt
+        ├── log-zone-2-match-<match number>.txt
+        └── robot.py
     ```
 
 4. Start webots from the command line using:
