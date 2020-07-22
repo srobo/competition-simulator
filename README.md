@@ -62,7 +62,7 @@ In order to run competition matches you'll need to:
     echo comp > robot_mode.txt
     ```
 
-3. Launch webots go to Tools -> Preferences -> OpenGL and set Ambient Occlusion to Disabled, Texture Quality to High, Disable shadows to false and Disable anti-aliasing to false
+3. Launch webots go to "Tools" > "Preferences" > "OpenGL" and set Ambient Occlusion to Disabled, Texture Quality to High, Disable shadows to false and Disable anti-aliasing to false
 
 4. To put the competitors' code into the right places for each of the corner zones, run
 
@@ -92,7 +92,7 @@ In order to run competition matches you'll need to:
     ```bash
     webots --mode=pause
     ```
-6. Got to File > Make Movie
+6. Got to "File" > "Make Movie"
    Choose: Resolution: 1920x1080, Quality: 100, Video acceleration: 1.0
 
 7. Start the simulation (shortcut ctrl + 2)
