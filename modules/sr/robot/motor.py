@@ -75,4 +75,3 @@ class MotorChannel:
             value = -SPEED_MAX
 
         self.sr_motor.set_speed(translate(value, self.sr_motor))
-
