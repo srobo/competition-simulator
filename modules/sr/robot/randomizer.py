@@ -1,6 +1,11 @@
 import random
 from typing import TypeVar
 
+"""
+    To better reflect reality, we add a little randomness to robot inputs and outputs.
+    This prevents the simulation from providing unrealistic perfection.
+"""
+
 T = TypeVar('T', float, int)
 
 # The maximum randomness which can be added in either direction

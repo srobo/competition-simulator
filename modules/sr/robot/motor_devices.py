@@ -2,6 +2,10 @@ from controller import Robot
 
 
 class MotorBase:
+    """
+        A base class for any type of motor as these are common attributes
+    """
+
     def __init__(self, webot: Robot, motor_name: str) -> None:
         self.motor_name = motor_name
         self.webot_motor = webot.getMotor(motor_name)
@@ -9,6 +13,9 @@ class MotorBase:
 
 
 class Wheel(MotorBase):
+    """
+        A standard rotational motor in Webots
+    """
 
     def __init__(self, webot: Robot, motor_name: str) -> None:
         super().__init__(webot, motor_name)
@@ -20,6 +27,9 @@ class Wheel(MotorBase):
 
 
 class LinearMotor(MotorBase):
+    """
+        A standard linear motor in Webots
+    """
 
     def __init__(self, webot: Robot, motor_name: str) -> None:
         super().__init__(webot, motor_name)
@@ -36,6 +46,13 @@ class LinearMotor(MotorBase):
 
 
 class Gripper(MotorBase):
+    """
+        Our default robot's gripper has its fingers attached to linear motors.
+        This class allows you to control these as a single entity to open/close.
+
+        You should initialise with the motor_name as the two Webots motor names separated by
+        a pipe character (|)
+    """
 
     def __init__(self, webot: Robot, motor_name: str) -> None:
         self.webot = webot

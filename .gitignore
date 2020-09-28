@@ -9,3 +9,4 @@
 /.mypy_cache
 /venv
 /recordings
+.vscode/settings.json

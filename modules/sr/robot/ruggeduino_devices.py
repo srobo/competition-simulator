@@ -4,6 +4,10 @@ from sr.robot.randomizer import add_jitter
 
 
 class DistanceSensor:
+    """
+    A standard Webots distance sensor. Unfortunately there is a 30cm range limit within Webots.
+    We convert the distance to metres as to match the standard SR API.
+    """
 
     LOWER_BOUND = 0
     UPPER_BOUND = 0.3
@@ -30,6 +34,10 @@ class DistanceSensor:
 
 
 class Microswitch:
+    """
+    A standard Webots touch sensor.
+    Reading from this sensor returns a boolean to match the SR API.
+    """
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
         self.webot_sensor = webot.getTouchSensor(sensor_name)
@@ -40,6 +48,10 @@ class Microswitch:
 
 
 class Led:
+    """
+    A standard Webots LED.
+    The value is a boolean to switch the LED on (True) or off (False).
+    """
 
     def __init__(self, webot, device_name):
         self.webot_sensor = webot.getLED(device_name)
