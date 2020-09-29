@@ -5,7 +5,7 @@ from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
 
 
 def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
-    
+
     # The names in these arrays correspond to the names given to devices in Webots
 
     dist_sensor_names = [
