@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from controller import Robot
 
 
@@ -54,12 +56,10 @@ class Gripper(MotorBase):
     a pipe character (|)
     """
 
-    def __init__(self, webot: Robot, motor_name: str) -> None:
+    def __init__(self, webot: Robot, motor_names: Tuple[str, str]) -> None:
         self.webot = webot
-        names = motor_name.split("|")
         self.gripper_motors = [
-            LinearMotor(self.webot, names[0]),
-            LinearMotor(self.webot, names[1]),
+            LinearMotor(self.webot, name) for name in motor_names
         ]
         self.max_speed = self.gripper_motors[0].max_speed
 
