@@ -62,9 +62,15 @@ In order to run competition matches you'll need to:
     echo comp > robot_mode.txt
     ```
 
-3. Put the competitors' code into the right places for each of the corner zones.
-   These are folder `zone-X` for each zone number `X` which are siblings to the
-   directory in which this git repo is checked out:
+3. Launch webots go to "Tools" > "Preferences" > "OpenGL" and set Ambient Occlusion to Disabled, Texture Quality to High, Disable shadows to false and Disable anti-aliasing to false
+
+4. To put the competitors' code into the right places for each of the corner zones, run
+
+    ```bash
+    competition-simulator/script/prepare-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>
+    ```
+
+    Using a dash instead of a TLA if a robot is not present. This provides filenames and sets up the directory structure:
 
     ``` plain
     .
@@ -74,15 +80,26 @@ In order to run competition matches you'll need to:
     │   ├── robot_mode.txt
     │   └── worlds
     ├── zone-0
-    |   └── robot.py
+    |   ├── log-zone-0-match-<match number>.txt
+    │   └── robot.py
     └── zone-2
+        ├── log-zone-2-match-<match number>.txt
         └── robot.py
     ```
 
-4. Load the simulation afresh and let it run. This does not need to be a fresh
-   launch of the Webots simulator program, but does need to be a fresh load of
-   the world.
-   There is a supervisor "robot" in the simulation which will remove any robots
-   for which there is no competitor code and pause the simulation at the end of
-   the match. The only way to restore the robots is to reload the simulation
-   between matches.
+5. Start webots from the command line using:
+
+    ```bash
+    webots --mode=pause
+    ```
+6. Got to "File" > "Make Movie"
+   Choose: Resolution: 1920x1080, Quality: 100, Video acceleration: 1.0
+
+7. Start the simulation (shortcut ctrl + 2)
+
+8. After match complete robots will stop moving, press esc.
+   Wait for video to finish processing and saving before closing webots
+
+9. Copy logs into `competition-simulator/recordings/yyy-mm-dd/match-<match number>/logs`
+
+10. Close webots and repeat for next match
