@@ -26,6 +26,9 @@ class DistanceSensor:
         )
 
     def read_value(self) -> float:
+        """
+        Returns the distance measured by the sensor, in metres.
+        """
         return add_jitter(
             self.__get_scaled_distance(),
             DistanceSensor.LOWER_BOUND,
@@ -43,6 +46,9 @@ class Microswitch:
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
     def read_value(self) -> bool:
+        """
+        Returns whether or not the touch sensor is in contact with something.
+        """
         return self.webot_sensor.getValue() > 0
 
 
