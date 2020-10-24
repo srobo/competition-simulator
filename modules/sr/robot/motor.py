@@ -17,7 +17,7 @@ def init_motor_array(webot: Robot) -> 'List[Motor]':
         ),
         Motor(
             LinearMotor(webot, 'lift motor'),
-            Gripper(webot, 'left finger motor|right finger motor'),
+            Gripper(webot, ('left finger motor', 'right finger motor')),
         ),
     ]
 
