@@ -75,3 +75,16 @@ class MotorChannel:
             value = -SPEED_MAX
 
         self.sr_motor.set_speed(translate(value, self.sr_motor))
+
+    ''''@property
+    def use_brake(self):
+        "Whether to use the brake when at 0 speed"
+        return self._use_brake
+
+    @use_brake.setter
+    def use_brake(self, value):
+        self._use_brake = value
+
+        if self.power == 0:
+            "Implement the new braking setting"
+            self.power = 0'''
