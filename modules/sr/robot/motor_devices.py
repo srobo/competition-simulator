@@ -22,7 +22,7 @@ class Wheel(MotorBase):
         self.webot_motor.setPosition(float('inf'))
         self.webot_motor.setVelocity(0)
 
-    def set_speed(self, speed):
+    def set_speed(self, speed: float) -> None:
         self.webot_motor.setVelocity(speed)
 
 
@@ -36,7 +36,7 @@ class LinearMotor(MotorBase):
         self.webot_motor.setPosition(0)
         self.webot_motor.setVelocity(0)
 
-    def set_speed(self, speed):
+    def set_speed(self, speed: float) -> None:
         motor = self.webot_motor
         if speed < 0:
             motor.setPosition(motor.getMinPosition() + 0.01)
@@ -63,6 +63,6 @@ class Gripper(MotorBase):
         ]
         self.max_speed = self.gripper_motors[0].max_speed
 
-    def set_speed(self, speed):
+    def set_speed(self, speed: float) -> None:
         for motor in self.gripper_motors:
             motor.set_speed(speed)

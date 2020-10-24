@@ -16,7 +16,7 @@ class DistanceSensor:
         self.webot_sensor = webot.getDistanceSensor(sensor_name)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def __get_scaled_distance(self):
+    def __get_scaled_distance(self) -> float:
         return map_to_range(
             self.webot_sensor.getMinValue(),
             self.webot_sensor.getMaxValue(),
@@ -25,7 +25,7 @@ class DistanceSensor:
             self.webot_sensor.getValue(),
         )
 
-    def read_value(self):
+    def read_value(self) -> float:
         return add_jitter(
             self.__get_scaled_distance(),
             DistanceSensor.LOWER_BOUND,
@@ -36,14 +36,13 @@ class DistanceSensor:
 class Microswitch:
     """
     A standard Webots touch sensor.
-    Reading from this sensor returns a boolean.
     """
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
         self.webot_sensor = webot.getTouchSensor(sensor_name)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def read_value(self):
+    def read_value(self) -> bool:
         return self.webot_sensor.getValue() > 0
 
 
@@ -56,5 +55,5 @@ class Led:
     def __init__(self, webot, device_name):
         self.webot_sensor = webot.getLED(device_name)
 
-    def write_value(self, value):
+    def write_value(self, value: bool) -> None:
         self.webot_sensor.set(value)
