@@ -40,7 +40,6 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
 @contextlib.contextmanager
 def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    supervisor.step(int(supervisor.getBasicTimeStep()))
     print("Saving video to {}".format(file_path))
     supervisor.movieStartRecording(
         str(file_path),
