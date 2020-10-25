@@ -55,8 +55,8 @@ In order to run competition matches you'll need to:
    We are using Python 3.7, though it shouldn't matter whether it's a system
    install or a virtual environment.
 
-2. Create a file `robot_mode.txt` in the root of the repo which contains just
-   the text `comp`:
+2. Create a file `robot_mode.txt` in the parent directory of the git repo, which
+   contains just the text `comp`:
 
     ``` bash
     echo comp > robot_mode.txt
@@ -77,8 +77,8 @@ In order to run competition matches you'll need to:
     ├── competition-simulator
     │   ├── controllers
     │   ├── ...
-    │   ├── robot_mode.txt
     │   └── worlds
+    ├── robot_mode.txt
     ├── zone-0
     |   ├── log-zone-0-match-<match number>.txt
     │   └── robot.py
