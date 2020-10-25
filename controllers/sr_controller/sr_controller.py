@@ -11,10 +11,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 EXAMPLE_CONTROLLER_FILE = REPO_ROOT / 'controllers/example_controller/example_controller.py'
 
 # Root directory of the specification of the Arena (and match)
-ARENA_ROOT = REPO_ROOT.parent
+ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
 
-MODE_FILE = REPO_ROOT / 'robot_mode.txt'
-MATCH_FILE = REPO_ROOT / 'match.txt'
+MODE_FILE = ARENA_ROOT / 'robot_mode.txt'
+MATCH_FILE = ARENA_ROOT / 'match.txt'
 
 
 ROBOT_IDS_TO_CORNERS = {
