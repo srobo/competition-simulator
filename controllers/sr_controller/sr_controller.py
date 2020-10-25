@@ -7,12 +7,15 @@ from typing import IO, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
-ROOT = Path(__file__).resolve().parent.parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+EXAMPLE_CONTROLLER_FILE = REPO_ROOT / 'controllers/example_controller/example_controller.py'
 
-MODE_FILE = ROOT / "robot_mode.txt"
-MATCH_FILE = ROOT / 'match.txt'
+# Root directory of the specification of the Arena (and match)
+ARENA_ROOT = REPO_ROOT.parent
 
-EXAMPLE_CONTROLLER_FILE = ROOT / "controllers/example_controller/example_controller.py"
+MODE_FILE = REPO_ROOT / 'robot_mode.txt'
+MATCH_FILE = REPO_ROOT / 'match.txt'
+
 
 ROBOT_IDS_TO_CORNERS = {
     "291": 0,
@@ -60,7 +63,7 @@ def get_zone_robot_file_path(zone_id: int) -> Path:
     Return the path to the robot.py for the given zone, without checking for
     existence.
     """
-    return ROOT.parent / "zone-{}".format(zone_id) / "robot.py"
+    return ARENA_ROOT / "zone-{}".format(zone_id) / "robot.py"
 
 
 def get_robot_file(zone_id: int, mode: str) -> Path:
@@ -82,7 +85,7 @@ def get_robot_file(zone_id: int, mode: str) -> Path:
     """
 
     robot_file = get_zone_robot_file_path(zone_id)
-    fallback_robot_file = ROOT.parent / "robot.py"
+    fallback_robot_file = ARENA_ROOT / "robot.py"
     strict_zones = STRICT_ZONES[mode]
 
     if (
@@ -137,14 +140,14 @@ def get_robot_mode() -> str:
 
 
 def print_simulation_version() -> None:
-    version_path = (ROOT / '.simulation-rev')
+    version_path = (REPO_ROOT / '.simulation-rev')
     if version_path.exists():
         description, revision = version_path.read_text().splitlines()
         version = "{} (rev {})".format(description, revision)
     else:
         version = subprocess.check_output(
             ['git', 'describe', '--always', '--tags'],
-            cwd=str(ROOT.resolve()),
+            cwd=str(REPO_ROOT.resolve()),
         ).decode().strip()
 
     print("Running simulator version {}".format(version))
@@ -158,7 +161,7 @@ def reconfigure_environment(robot_file: Path) -> None:
 
     # Remove ourselves from the path and insert the competitor code
     sys.path.pop(0)
-    sys.path.insert(0, str(ROOT / "modules"))
+    sys.path.insert(0, str(REPO_ROOT / "modules"))
     sys.path.insert(0, str(robot_file.parent))
 
     os.chdir(str(robot_file.parent))
