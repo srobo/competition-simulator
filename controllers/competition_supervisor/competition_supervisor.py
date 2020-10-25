@@ -83,12 +83,23 @@ def get_robots(supervisor: Supervisor) -> List[Tuple[int, Node]]:
     return robots
 
 
-def prepare(supervisor: Supervisor) -> None:
-    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
-    supervisor.simulationReset()
+def wait_until_robots_ready(supervisor: Supervisor) -> None:
+    time_step = int(supervisor.getBasicTimeStep())
 
-    for _, robot in get_robots(supervisor):
-        robot.restartController()
+    for zone_id, robot in get_robots(supervisor):
+        field = robot.getField('customData')
+
+        if field.getSFString() != 'ready':
+            print("Waiting for {}".format(zone_id))
+            while field.getSFString():
+                supervisor.step(time_step)
+
+        print("Zone {} ready".format(zone_id))
+
+
+def prepare(supervisor: Supervisor) -> None:
+    wait_until_robots_ready(supervisor)
+    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
 
 
 def remove_unused_robots(supervisor: Supervisor) -> None:
@@ -104,6 +115,11 @@ def run_match(supervisor: Supervisor) -> None:
     print("Match start")
     print("===========")
 
+    # First signal the robot controllers that they're able to start ...
+    for _, robot in get_robots(supervisor):
+        robot.getField('customData').setSFString('start')
+
+    # ... then un-pause the simulation, so they all start together
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
 
     time_step = int(supervisor.getBasicTimeStep())

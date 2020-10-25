@@ -105,6 +105,16 @@ class Robot:
         if self.arena not in ["A", "B"]:
             raise Exception("arena must be A or B")
 
+        print("Waiting for start signal.")  # noqa:T001
+
+        if self.mode == 'comp':
+            self.webot.setCustomData('ready')
+            while (
+                self.webot.getCustomData() != 'start' and
+                self.webots_step_and_should_continue(self._timestep)
+            ):
+                pass
+
     def _init_devs(self) -> None:
         "Initialise the attributes for accessing devices"
 
