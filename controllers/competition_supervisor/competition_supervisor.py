@@ -1,4 +1,5 @@
 import sys
+import time
 import datetime
 import contextlib
 from typing import List, Tuple, Iterator
@@ -52,6 +53,12 @@ def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     )
     yield
     supervisor.movieStopRecording()
+
+    while not supervisor.movieIsReady():
+        time.sleep(0.1)
+
+    if supervisor.movieFailed():
+        print("Movie failed to record")
 
 
 def quit_if_development_mode() -> None:
@@ -156,6 +163,12 @@ def main() -> None:
     with record_animation(supervisor, REPO_ROOT / 'recordings' / animation_recording_path):
         with record_video(supervisor, REPO_ROOT / 'recordings' / video_recording_path):
             run_match(supervisor)
+
+    # Give the user time to notive any error messages
+    time.sleep(5)
+
+    # Quit, the next round will get a fresh instance
+    supervisor.simulationQuit(0)
 
 
 if __name__ == '__main__':
