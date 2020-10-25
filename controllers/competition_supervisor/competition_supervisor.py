@@ -7,7 +7,7 @@ from pathlib import Path
 import pkg_resources
 
 # Webots specific library
-from controller import Supervisor  # isort:skip
+from controller import Node, Supervisor  # isort:skip
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -65,7 +65,7 @@ def check_required_libraries(path: Path) -> None:
         )
 
 
-def get_robots(supervisor: Supervisor) -> List[Tuple[int, Supervisor]]:
+def get_robots(supervisor: Supervisor) -> List[Tuple[int, Node]]:
     robots = []  # List[Tuple[int, Supervisor]]
 
     for webots_id_str, zone_id in sr_controller.ROBOT_IDS_TO_CORNERS.items():
