@@ -147,7 +147,7 @@ class Robot:
         n_steps = math.ceil((secs * 1000) / self._timestep)
         duration_ms = n_steps * self._timestep
 
-        # We're in the main thread here, so we don't really need to do any
-        # cleanup if Webots tells us the simulation is terminating. When webots
-        # kills the process all the proper tidyup will happen anyway.
+        # Assume that we're in the main thread here, so we don't really need to
+        # do any cleanup if Webots tells us the simulation is terminating. When
+        # webots kills the process all the proper tidyup will happen anyway.
         self.webots_step_and_should_continue(duration_ms)
