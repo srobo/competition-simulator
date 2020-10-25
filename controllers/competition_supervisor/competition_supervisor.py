@@ -151,8 +151,8 @@ def main() -> None:
     remove_unused_robots(supervisor)
 
     recording_path = get_recording_path()
-    animation_recording_path = '{}.html'.format(recording_path)
-    video_recording_path = '{}.mp4'.format(recording_path)
+    animation_recording_path = recording_path.with_suffix('.html')
+    video_recording_path = recording_path.with_suffix('.mp4')
 
     with record_animation(supervisor, REPO_ROOT / 'recordings' / animation_recording_path):
         with record_video(supervisor, REPO_ROOT / 'recordings' / video_recording_path):
