@@ -179,10 +179,28 @@ class SimpleTee:
     Forwards calls from its `write` and `flush` methods to each of the given targets.
     """
 
-    def __init__(self, *streams: IO[str]) -> None:
+    def __init__(self, *streams: IO[str], prefix: str = '') -> None:
         self.streams = streams
+        self._line_start = True
+        self.prefix = prefix
+
+    def _insert_prefix(self, data: str) -> str:
+        # Append our prefix just after all inner newlines. Don't append to a
+        # trailing newline as we don't know if the next line in the log will be
+        # from this zone.
+        final_newline = data.endswith('\n')
+        data = data.replace('\n', '\n' + self.prefix)
+        if final_newline:
+            data = data[:-len(self.prefix)]
+        return data
 
     def write(self, data: str) -> None:
+        if self._line_start:
+            data = self.prefix + data
+
+        self._line_start = data.endswith('\n')
+        data = self._insert_prefix(data)
+
         for stream in self.streams:
             stream.write(data)
         self.flush()
@@ -192,7 +210,7 @@ class SimpleTee:
             stream.flush()
 
 
-def tee_streams(name: Path) -> None:
+def tee_streams(name: Path, zone_id: int) -> None:
     """
     Tee stdout and stderr also to the named log file.
 
@@ -203,8 +221,10 @@ def tee_streams(name: Path) -> None:
 
     log_file = name.open(mode='w')
 
-    sys.stdout = SimpleTee(sys.stdout, log_file)  # type: ignore
-    sys.stderr = SimpleTee(sys.stderr, log_file)  # type: ignore
+    prefix = '{}| '.format(zone_id)
+
+    sys.stdout = SimpleTee(sys.stdout, log_file, prefix=prefix)  # type: ignore
+    sys.stderr = SimpleTee(sys.stderr, log_file, prefix=prefix)  # type: ignore
 
 
 def main():
@@ -212,7 +232,7 @@ def main():
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode).resolve()
 
-    tee_streams(robot_file.parent / log_filename(robot_zone))
+    tee_streams(robot_file.parent / log_filename(robot_zone), robot_zone)
 
     if robot_zone == 0:
         # Only print once, but rely on Zone 0 always being run to ensure this is
