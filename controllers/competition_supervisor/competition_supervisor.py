@@ -156,12 +156,10 @@ def main() -> None:
 
     remove_unused_robots(supervisor)
 
-    recording_path = get_recording_path()
-    animation_recording_path = recording_path.with_suffix('.html')
-    video_recording_path = recording_path.with_suffix('.mp4')
+    recording_path = REPO_ROOT / 'recordings' / get_recording_path()
 
-    with record_animation(supervisor, REPO_ROOT / 'recordings' / animation_recording_path):
-        with record_video(supervisor, REPO_ROOT / 'recordings' / video_recording_path):
+    with record_animation(supervisor, recording_path.with_suffix('.html')):
+        with record_video(supervisor, recording_path.with_suffix('.mp4')):
             run_match(supervisor)
 
     # Give the user time to notive any error messages
