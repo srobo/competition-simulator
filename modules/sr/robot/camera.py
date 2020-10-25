@@ -1,5 +1,4 @@
 import re
-import time
 import threading
 from enum import Enum
 from typing import List, Optional, NamedTuple
@@ -195,7 +194,7 @@ class Camera:
             lambda o: object_infos[o].size,
         )
 
-        when = time.time()
+        when = self._webot.getTime()
 
         markers = []
 
