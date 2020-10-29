@@ -87,6 +87,7 @@ def wait_until_robots_ready(supervisor: Supervisor) -> None:
     time_step = int(supervisor.getBasicTimeStep())
 
     for zone_id, robot in get_robots(supervisor):
+        # Robot.wait_start sets this to 'ready', then waits to see 'start'
         field = robot.getField('customData')
 
         if field.getSFString() != 'ready':

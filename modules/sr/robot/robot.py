@@ -108,6 +108,7 @@ class Robot:
         print("Waiting for start signal.")  # noqa:T001
 
         if self.mode == 'comp':
+            # Interact with the supervisor "robot" to wait for the start of the match.
             self.webot.setCustomData('ready')
             while (
                 self.webot.getCustomData() != 'start' and
