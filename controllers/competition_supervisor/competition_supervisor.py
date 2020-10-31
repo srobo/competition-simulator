@@ -177,12 +177,6 @@ def main() -> None:
         with record_video(supervisor, recording_path.with_suffix('.mp4')):
             run_match(supervisor)
 
-    # Give the user time to notice any error messages
-    time.sleep(5)
-
-    # Quit, the next round will get a fresh instance
-    supervisor.simulationQuit(0)
-
 
 if __name__ == '__main__':
     main()
