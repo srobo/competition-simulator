@@ -126,8 +126,6 @@ def prepare(supervisor: Supervisor) -> None:
     wait_until_robots_ready(supervisor)
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
 
-    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
-
 
 def remove_unused_robots(supervisor: Supervisor) -> None:
     for zone_id, robot in get_robots(supervisor):
