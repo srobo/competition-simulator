@@ -93,8 +93,8 @@ In order to run competition matches you'll need to:
     webots --batch worlds/Arena.wbt
     ```
 
-   This run begin the match, including capturing the video and animation, and
-   then pause the simulation at the end.
+   This runs a single match, including capturing the video and animation, and
+   then pauses the simulation at the end.
 
 6. After the match completes the robots will stop moving. Wait for the video to
    complete its rendering (check in the output console) and then quit Webots.
