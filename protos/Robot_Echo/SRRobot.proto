@@ -4,6 +4,7 @@ PROTO SRRobot [
   field SFRotation rotation 0 1 0 0
   field SFString controller ""
   field SFString model ""
+  field SFString customData ""
   field SFColor flagColour 1 1 1
 ]
 {
@@ -1568,5 +1569,6 @@ PROTO SRRobot [
     physics Physics {
     }
     controller IS controller
+    customData IS customData
   }
 }
