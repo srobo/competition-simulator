@@ -1,4 +1,5 @@
 import sys
+import time
 import datetime
 import contextlib
 from typing import List, Tuple, Iterator
@@ -18,14 +19,14 @@ import sr_controller  # noqa:E402 # isort:skip
 GAME_DURATION_SECONDS = 150
 
 
-def recording_path() -> Path:
+def get_recording_path() -> Path:
     now = datetime.datetime.now()
 
     date = now.date().isoformat()
 
     name = sr_controller.get_filename_safe_identifier()  # type: str
 
-    return Path(date) / name / '{}.html'.format(name)
+    return Path(date) / name
 
 
 @contextlib.contextmanager
@@ -35,6 +36,29 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     supervisor.animationStartRecording(str(file_path))
     yield
     supervisor.animationStopRecording()
+
+
+@contextlib.contextmanager
+def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+    print("Saving video to {}".format(file_path))
+    supervisor.movieStartRecording(
+        str(file_path),
+        width=1920,
+        height=1080,
+        quality=100,
+        codec=0,
+        acceleration=1,
+        caption=False,
+    )
+    yield
+    supervisor.movieStopRecording()
+
+    while not supervisor.movieIsReady():
+        time.sleep(0.1)
+
+    if supervisor.movieFailed():
+        print("Movie failed to record")
 
 
 def quit_if_development_mode() -> None:
@@ -147,8 +171,11 @@ def main() -> None:
 
     remove_unused_robots(supervisor)
 
-    with record_animation(supervisor, REPO_ROOT / 'recordings' / recording_path()):
-        run_match(supervisor)
+    recording_path = REPO_ROOT / 'recordings' / get_recording_path()
+
+    with record_animation(supervisor, recording_path.with_suffix('.html')):
+        with record_video(supervisor, recording_path.with_suffix('.mp4')):
+            run_match(supervisor)
 
 
 if __name__ == '__main__':
