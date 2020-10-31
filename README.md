@@ -87,19 +87,16 @@ In order to run competition matches you'll need to:
         └── robot.py
     ```
 
-5. Start webots from the command line using:
+5. Run webots from the command line using:
 
     ```bash
-    webots --mode=pause
+    webots --batch worlds/Arena.wbt
     ```
-6. Got to "File" > "Make Movie"
-   Choose: Resolution: 1920x1080, Quality: 100, Video acceleration: 1.0
 
-7. Start the simulation (shortcut ctrl + 2)
+   This run begin the match, including capturing the video and animation, and
+   then pause the simulation at the end.
 
-8. After match complete robots will stop moving, press esc.
-   Wait for video to finish processing and saving before closing webots
+6. After the match completes the robots will stop moving. Wait for the video to
+   complete its rendering (check in the output console) and then quit Webots.
 
-9. Copy logs into `competition-simulator/recordings/yyy-mm-dd/match-<match number>/logs`
-
-10. Close webots and repeat for next match
+7. Copy logs into `competition-simulator/recordings/yyy-mm-dd/match-<match number>/logs`
