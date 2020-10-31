@@ -7,12 +7,15 @@ from typing import IO, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
-ROOT = Path(__file__).resolve().parent.parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+EXAMPLE_CONTROLLER_FILE = REPO_ROOT / 'controllers/example_controller/example_controller.py'
 
-MODE_FILE = ROOT / "robot_mode.txt"
-MATCH_FILE = ROOT / 'match.txt'
+# Root directory of the specification of the Arena (and match)
+ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
 
-EXAMPLE_CONTROLLER_FILE = ROOT / "controllers/example_controller/example_controller.py"
+MODE_FILE = ARENA_ROOT / 'robot_mode.txt'
+MATCH_FILE = ARENA_ROOT / 'match.txt'
+
 
 ROBOT_IDS_TO_CORNERS = {
     "291": 0,
@@ -60,7 +63,7 @@ def get_zone_robot_file_path(zone_id: int) -> Path:
     Return the path to the robot.py for the given zone, without checking for
     existence.
     """
-    return ROOT.parent / "zone-{}".format(zone_id) / "robot.py"
+    return ARENA_ROOT / "zone-{}".format(zone_id) / "robot.py"
 
 
 def get_robot_file(zone_id: int, mode: str) -> Path:
@@ -82,7 +85,7 @@ def get_robot_file(zone_id: int, mode: str) -> Path:
     """
 
     robot_file = get_zone_robot_file_path(zone_id)
-    fallback_robot_file = ROOT.parent / "robot.py"
+    fallback_robot_file = ARENA_ROOT / "robot.py"
     strict_zones = STRICT_ZONES[mode]
 
     if (
@@ -137,14 +140,14 @@ def get_robot_mode() -> str:
 
 
 def print_simulation_version() -> None:
-    version_path = (ROOT / '.simulation-rev')
+    version_path = (REPO_ROOT / '.simulation-rev')
     if version_path.exists():
         description, revision = version_path.read_text().splitlines()
         version = "{} (rev {})".format(description, revision)
     else:
         version = subprocess.check_output(
             ['git', 'describe', '--always', '--tags'],
-            cwd=str(ROOT.resolve()),
+            cwd=str(REPO_ROOT.resolve()),
         ).decode().strip()
 
     print("Running simulator version {}".format(version))
@@ -158,7 +161,7 @@ def reconfigure_environment(robot_file: Path) -> None:
 
     # Remove ourselves from the path and insert the competitor code
     sys.path.pop(0)
-    sys.path.insert(0, str(ROOT / "modules"))
+    sys.path.insert(0, str(REPO_ROOT / "modules"))
     sys.path.insert(0, str(robot_file.parent))
 
     os.chdir(str(robot_file.parent))
@@ -176,10 +179,28 @@ class SimpleTee:
     Forwards calls from its `write` and `flush` methods to each of the given targets.
     """
 
-    def __init__(self, *streams: IO[str]) -> None:
+    def __init__(self, *streams: IO[str], prefix: str = '') -> None:
         self.streams = streams
+        self._line_start = True
+        self.prefix = prefix
+
+    def _insert_prefix(self, data: str) -> str:
+        # Append our prefix just after all inner newlines. Don't append to a
+        # trailing newline as we don't know if the next line in the log will be
+        # from this zone.
+        final_newline = data.endswith('\n')
+        data = data.replace('\n', '\n' + self.prefix)
+        if final_newline:
+            data = data[:-len(self.prefix)]
+        return data
 
     def write(self, data: str) -> None:
+        if self._line_start:
+            data = self.prefix + data
+
+        self._line_start = data.endswith('\n')
+        data = self._insert_prefix(data)
+
         for stream in self.streams:
             stream.write(data)
         self.flush()
@@ -189,7 +210,7 @@ class SimpleTee:
             stream.flush()
 
 
-def tee_streams(name: Path) -> None:
+def tee_streams(name: Path, zone_id: int) -> None:
     """
     Tee stdout and stderr also to the named log file.
 
@@ -200,8 +221,10 @@ def tee_streams(name: Path) -> None:
 
     log_file = name.open(mode='w')
 
-    sys.stdout = SimpleTee(sys.stdout, log_file)  # type: ignore
-    sys.stderr = SimpleTee(sys.stderr, log_file)  # type: ignore
+    prefix = '{}| '.format(zone_id)
+
+    sys.stdout = SimpleTee(sys.stdout, log_file, prefix=prefix)  # type: ignore
+    sys.stderr = SimpleTee(sys.stderr, log_file, prefix=prefix)  # type: ignore
 
 
 def main():
@@ -209,7 +232,7 @@ def main():
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode).resolve()
 
-    tee_streams(robot_file.parent / log_filename(robot_zone))
+    tee_streams(robot_file.parent / log_filename(robot_zone), robot_zone)
 
     if robot_zone == 0:
         # Only print once, but rely on Zone 0 always being run to ensure this is

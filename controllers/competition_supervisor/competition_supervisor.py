@@ -8,7 +8,7 @@ from pathlib import Path
 import pkg_resources
 
 # Webots specific library
-from controller import Supervisor  # isort:skip
+from controller import Node, Supervisor  # isort:skip
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -89,7 +89,7 @@ def check_required_libraries(path: Path) -> None:
         )
 
 
-def get_robots(supervisor: Supervisor) -> List[Tuple[int, Supervisor]]:
+def get_robots(supervisor: Supervisor) -> List[Tuple[int, Node]]:
     robots = []  # List[Tuple[int, Supervisor]]
 
     for webots_id_str, zone_id in sr_controller.ROBOT_IDS_TO_CORNERS.items():
@@ -107,12 +107,24 @@ def get_robots(supervisor: Supervisor) -> List[Tuple[int, Supervisor]]:
     return robots
 
 
-def prepare(supervisor: Supervisor) -> None:
-    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
-    supervisor.simulationReset()
+def wait_until_robots_ready(supervisor: Supervisor) -> None:
+    time_step = int(supervisor.getBasicTimeStep())
 
-    for _, robot in get_robots(supervisor):
-        robot.restartController()
+    for zone_id, robot in get_robots(supervisor):
+        # Robot.wait_start sets this to 'ready', then waits to see 'start'
+        field = robot.getField('customData')
+
+        if field.getSFString() != 'ready':
+            print("Waiting for {}".format(zone_id))
+            while field.getSFString():
+                supervisor.step(time_step)
+
+        print("Zone {} ready".format(zone_id))
+
+
+def prepare(supervisor: Supervisor) -> None:
+    wait_until_robots_ready(supervisor)
+    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
 
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
 
@@ -130,6 +142,11 @@ def run_match(supervisor: Supervisor) -> None:
     print("Match start")
     print("===========")
 
+    # First signal the robot controllers that they're able to start ...
+    for _, robot in get_robots(supervisor):
+        robot.getField('customData').setSFString('start')
+
+    # ... then un-pause the simulation, so they all start together
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
 
     time_step = int(supervisor.getBasicTimeStep())

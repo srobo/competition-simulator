@@ -5,6 +5,8 @@ from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
 
 
 def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
+    # The names in these arrays correspond to the names given to devices in Webots
+
     dist_sensor_names = [
         "Front Left DS",
         "Front Right DS",
@@ -52,19 +54,19 @@ class Ruggeduino:
         self.digital_input_array = digital_input_array
         self.digital_output_array = digital_output_array
 
-    def digital_read(self, pin):
-        "Read an digital input"
+    def digital_read(self, pin: int) -> bool:
+        """Read an digital input"""
         return self.digital_input_array[pin - Ruggeduino.DIGITAL_PIN_START].read_value()
 
-    def digital_write(self, pin, level):
-        "Write a digital output"
+    def digital_write(self, pin: int, level: bool) -> None:
+        """Write a digital output"""
         array_index = pin - Ruggeduino.DIGITAL_PIN_START - len(self.digital_input_array)
         if array_index < 0:
             raise IndexError("Sorry pin %d can't be written to" % pin)
         return self.digital_output_array[array_index].write_value(level)
 
-    def analogue_read(self, pin):
-        "Read an analogue input"
+    def analogue_read(self, pin: int) -> float:
+        """Read an analogue input"""
         return self.analogue_input_array[pin].read_value()
 
     def pin_mode(self, pin_no, mode):
