@@ -3,6 +3,7 @@ import logging
 from controller import Robot
 from sr.robot.utils import map_to_range
 from sr.robot.randomizer import add_jitter
+from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
 
 LOGGER = logging.getLogger(__name__)
 
@@ -45,12 +46,12 @@ class Microswitch:
 
 class Led:
 
-    def __init__(self, webot, device_name, limiter) -> None:
+    def __init__(self, webot, device_name: str, limiter: OutputFrequencyLimiter) -> None:
         self._name = device_name
         self.webot_sensor = webot.getLED(device_name)
         self._limiter = limiter
 
-    def write_value(self, value):
+    def write_value(self, value: bool) -> None:
         if not self._limiter.can_change():
             LOGGER.warning(
                 "Rate limited change to LED output (requested setting %s to %r)",
