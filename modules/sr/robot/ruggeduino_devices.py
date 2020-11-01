@@ -51,7 +51,7 @@ class Led:
         self._limiter = limiter
 
     def write_value(self, value):
-        if not self._limiter.can_chage():
+        if not self._limiter.can_change():
             LOGGER.warning(
                 "Rate limited change to LED output (requested setting %s to %r)",
                 self._name,
