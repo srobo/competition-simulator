@@ -48,7 +48,6 @@ class Led:
     def __init__(self, webot, device_name, limiter) -> None:
         self._name = device_name
         self.webot_sensor = webot.getLED(device_name)
-        self._webot = webot
         self._limiter = limiter
 
     def write_value(self, value):
