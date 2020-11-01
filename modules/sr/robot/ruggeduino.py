@@ -2,6 +2,7 @@ from typing import List
 
 from controller import Robot
 from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
+from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
 
 
 def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
@@ -33,7 +34,8 @@ def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
 
     digital_input_array = [Microswitch(webot, name) for name in switch_names]
 
-    digital_output_array = [Led(webot, name) for name in led_names]
+    limiter = OutputFrequencyLimiter(webot)
+    digital_output_array = [Led(webot, name, limiter) for name in led_names]
 
     return [Ruggeduino(analogue_input_array, digital_input_array, digital_output_array)]
 

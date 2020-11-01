@@ -41,18 +41,13 @@ class Microswitch:
 
 class Led:
 
-    def __init__(self, webot, device_name):
+    def __init__(self, webot, device_name, limiter) -> None:
         self.webot_sensor = webot.getLED(device_name)
         self._webot = webot
-        self._last_change = 0
+        self._limiter = limiter
 
     def write_value(self, value):
-        now = self._webot.getTime()
-        diff = now - self._last_change
-        if diff < 0.6:
-            # Avoid creating strobing effects by allowing LEDs to change at most
-            # once per second.
+        if not self._limiter.can_chage():
             return
 
-        self._last_change = now
         self.webot_sensor.set(value)
