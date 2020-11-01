@@ -58,7 +58,7 @@ class Led:
     The value is a boolean to switch the LED on (True) or off (False).
     """
 
-    def __init__(self, webot, device_name):
+    def __init__(self, webot: Robot, device_name: str) -> None:
         self.webot_sensor = webot.getLED(device_name)
 
     def write_value(self, value: bool) -> None:
