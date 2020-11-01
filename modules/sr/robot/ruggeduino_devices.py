@@ -1,6 +1,10 @@
+import logging
+
 from controller import Robot
 from sr.robot.utils import map_to_range
 from sr.robot.randomizer import add_jitter
+
+LOGGER = logging.getLogger(__name__)
 
 
 class DistanceSensor:
@@ -42,12 +46,18 @@ class Microswitch:
 class Led:
 
     def __init__(self, webot, device_name, limiter) -> None:
+        self._name = device_name
         self.webot_sensor = webot.getLED(device_name)
         self._webot = webot
         self._limiter = limiter
 
     def write_value(self, value):
         if not self._limiter.can_chage():
+            LOGGER.warning(
+                "Rate limited change to LED output (requested setting %s to %r)",
+                self._name,
+                value,
+            )
             return
 
         self.webot_sensor.set(value)
