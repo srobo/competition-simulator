@@ -75,11 +75,11 @@ class MotorChannel:
         self.sr_motor.set_speed(translate(value, self.sr_motor))
 
     @property
-    def use_brake(self):
+    def use_brake(self) -> bool:
         """Whether to brake when motor speed is 0"""
         return self.sr_motor._use_brake
 
     @use_brake.setter
-    def use_brake(self, value):
+    def use_brake(self, value: bool):
         """Set whether to brake when motor speed is 0"""
         self.sr_motor.set_brake(value)

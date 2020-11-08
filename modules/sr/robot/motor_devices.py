@@ -16,7 +16,7 @@ class MotorBase:
         # Apply the brake when this motor speed = 0 by default
         self._use_brake = True
 
-    def set_brake(self, value: bool) -> None:
+    def _set_brake(self, value: bool) -> None:
         self._use_brake = value
 
 
@@ -36,7 +36,7 @@ class Wheel(MotorBase):
 
         # If not using braking, set torque to 0.1 when motor speed is 0
         # Otherwise set max torque
-        if(speed == 0 and not self._use_brake):
+        if speed == 0 and not self._use_brake:
             self.webot_motor.setAvailableTorque(0.1)
         else:
             self.webot_motor.setAvailableTorque(self.max_torque)
@@ -63,7 +63,7 @@ class LinearMotor(MotorBase):
 
         # If not using braking, set force to 0.1 when motor speed is 0
         # Otherwise set max force
-        if(speed == 0 and not self._use_brake):
+        if speed == 0 and not self._use_brake:
             self.webot_motor.setAvailableForce(0.1)
         else:
             self.webot_motor.setAvailableForce(self.max_force)
