@@ -13,6 +13,12 @@ class MotorBase:
         self.webot_motor = webot.getMotor(motor_name)
         self.max_speed = self.webot_motor.getMaxVelocity()
 
+        # Apply the brake when this motor speed = 0 by default
+        self._use_brake = True
+
+    def set_brake(self, value: bool) -> None:
+        self._use_brake = value
+
 
 class Wheel(MotorBase):
     """
@@ -23,9 +29,17 @@ class Wheel(MotorBase):
         super().__init__(webot, motor_name)
         self.webot_motor.setPosition(float('inf'))
         self.webot_motor.setVelocity(0)
+        self.max_torque = self.webot_motor.getMaxTorque()
 
     def set_speed(self, speed: float) -> None:
         self.webot_motor.setVelocity(speed)
+
+        # If not using braking, set torque to 0.1 when motor speed is 0
+        # Otherwise set max torque
+        if(speed == 0 and not self._use_brake):
+            self.webot_motor.setAvailableTorque(0.1)
+        else:
+            self.webot_motor.setAvailableTorque(self.max_torque)
 
 
 class LinearMotor(MotorBase):
@@ -37,6 +51,7 @@ class LinearMotor(MotorBase):
         super().__init__(webot, motor_name)
         self.webot_motor.setPosition(0)
         self.webot_motor.setVelocity(0)
+        self.max_force = self.webot_motor.getMaxForce()
 
     def set_speed(self, speed: float) -> None:
         motor = self.webot_motor
@@ -45,6 +60,13 @@ class LinearMotor(MotorBase):
         else:
             motor.setPosition(motor.getMaxPosition())
         motor.setVelocity(abs(speed))
+
+        # If not using braking, set force to 0.1 when motor speed is 0
+        # Otherwise set max force
+        if(speed == 0 and not self._use_brake):
+            self.webot_motor.setAvailableForce(0.1)
+        else:
+            self.webot_motor.setAvailableForce(self.max_force)
 
 
 class Gripper(MotorBase):

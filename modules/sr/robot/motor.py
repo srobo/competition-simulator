@@ -50,8 +50,6 @@ class MotorChannel:
 
     def __init__(self, channel: int, sr_motor: Union[Gripper, Wheel, LinearMotor]) -> None:
         self.channel = channel
-        # Private shadow of use_brake
-        # self._use_brake = True # TODO create new thread for non-braking slowdown
 
         # There is currently no method for reading the power from a motor board
         self._power = 0
@@ -76,15 +74,12 @@ class MotorChannel:
 
         self.sr_motor.set_speed(translate(value, self.sr_motor))
 
-    ''''@property
-    def use_brake(self) -> bool:
-        "Whether to use the brake when at 0 speed"
-        return self._use_brake
+    @property
+    def use_brake(self):
+        """Whether to brake when motor speed is 0"""
+        return self.sr_motor._use_brake
 
     @use_brake.setter
-    def use_brake(self, value: bool) -> None:
-        self._use_brake = value
-
-        if self.power == 0:
-            "Implement the new braking setting"
-            self.power = 0'''
+    def use_brake(self, value):
+        """Set whether to brake when motor speed is 0"""
+        self.sr_motor.set_brake(value)
