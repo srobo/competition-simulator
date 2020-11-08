@@ -30,6 +30,19 @@ On first run, the robot will execute an example program. On first run, this will
 └── robot.py
 ```
 
+## Development setup
+
+In addition to the basic setup for running the simulator, if you are intending
+to work on our wrapper API, our controllers or other helper scripts then you
+should also install the linting requirements:
+
+``` shell
+pip install -r script/linting/requirements.txt
+pip install -r script/typing/requirements.txt
+```
+
+You can then run all linting/type checking/tests in one go using `script/check`.
+
 ## Doing a release
 
 1. Create a new tag & push
