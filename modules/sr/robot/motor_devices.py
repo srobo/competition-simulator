@@ -7,6 +7,8 @@ class MotorBase:
     """
     A base class for any type of motor as these are common attributes
     """
+    # Rolling friction torque/force when braking disabled
+    ROLLING_FRICTION = 0.5 # Nm for rotary motors and N for linear motors
 
     def __init__(self, webot: Robot, motor_name: str) -> None:
         self.motor_name = motor_name
@@ -37,7 +39,7 @@ class Wheel(MotorBase):
         # If not using braking, set torque to 0.1 when motor speed is 0
         # Otherwise set max torque
         if speed == 0 and not self._use_brake:
-            self.webot_motor.setAvailableTorque(0.1)
+            self.webot_motor.setAvailableTorque(self.ROLLING_FRICTION)
         else:
             self.webot_motor.setAvailableTorque(self.max_torque)
 
@@ -64,7 +66,7 @@ class LinearMotor(MotorBase):
         # If not using braking, set force to 0.1 when motor speed is 0
         # Otherwise set max force
         if speed == 0 and not self._use_brake:
-            self.webot_motor.setAvailableForce(0.1)
+            self.webot_motor.setAvailableForce(self.ROLLING_FRICTION)
         else:
             self.webot_motor.setAvailableForce(self.max_force)
 
