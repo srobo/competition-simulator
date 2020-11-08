@@ -8,7 +8,8 @@ class MotorBase:
     A base class for any type of motor as these are common attributes
     """
     # Rolling friction torque/force when braking disabled
-    ROLLING_FRICTION = 0.5 # Nm for rotary motors and N for linear motors
+    # (Nm for rotary motors and N for linear motors)
+    ROLLING_FRICTION = 0.5
 
     def __init__(self, webot: Robot, motor_name: str) -> None:
         self.motor_name = motor_name
