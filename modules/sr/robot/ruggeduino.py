@@ -71,7 +71,5 @@ class Ruggeduino:
         """Read an analogue input"""
         return self.analogue_input_array[pin].read_value()
 
-    def pin_mode(self, pin_no, mode):
-        raise NotImplementedError(
-            "The sensors are pre-set on this robot so you don't need to set the pin mode",
-        )
+    # pin_mode not present as the pins have fixed behaviours
+    # in the simulator.

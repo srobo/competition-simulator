@@ -41,7 +41,7 @@ class Robot:
             self.wait_start()
 
     @classmethod
-    def setup(cls):
+    def setup(cls) -> 'Robot':
         return cls(init=False)
 
     def init(self) -> None:

@@ -63,7 +63,7 @@ class Led:
     The value is a boolean to switch the LED on (True) or off (False).
     """
 
-    def __init__(self, webot, device_name: str, limiter: OutputFrequencyLimiter) -> None:
+    def __init__(self, webot: Robot, device_name: str, limiter: OutputFrequencyLimiter) -> None:
         self._name = device_name
         self.webot_sensor = webot.getLED(device_name)
         self._limiter = limiter

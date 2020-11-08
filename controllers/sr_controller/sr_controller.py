@@ -205,7 +205,7 @@ class SimpleTee:
             stream.write(data)
         self.flush()
 
-    def flush(self):
+    def flush(self) -> None:
         for stream in self.streams:
             stream.flush()
 
@@ -227,7 +227,7 @@ def tee_streams(name: Path, zone_id: int) -> None:
     sys.stderr = SimpleTee(sys.stderr, log_file, prefix=prefix)  # type: ignore
 
 
-def main():
+def main() -> None:
     robot_mode = get_robot_mode()
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode).resolve()

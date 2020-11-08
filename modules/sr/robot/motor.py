@@ -22,7 +22,7 @@ def init_motor_array(webot: Robot) -> 'List[Motor]':
     ]
 
 
-def translate(sr_speed_val, sr_motor):
+def translate(sr_speed_val: int, sr_motor: Union[Gripper, Wheel, LinearMotor]) -> float:
     # Translate from -100 to 100 range to the actual motor control range
 
     if sr_speed_val != 0:
@@ -58,12 +58,12 @@ class MotorChannel:
         self.sr_motor = sr_motor
 
     @property
-    def power(self):
+    def power(self) -> int:
         """Get or set the level of power for this motor channel."""
         return self._power
 
     @power.setter
-    def power(self, value):
+    def power(self, value: int) -> None:
         "target setter function"
         value = int(value)
         self._power = value
@@ -77,12 +77,12 @@ class MotorChannel:
         self.sr_motor.set_speed(translate(value, self.sr_motor))
 
     ''''@property
-    def use_brake(self):
+    def use_brake(self) -> bool:
         "Whether to use the brake when at 0 speed"
         return self._use_brake
 
     @use_brake.setter
-    def use_brake(self, value):
+    def use_brake(self, value: bool) -> None:
         self._use_brake = value
 
         if self.power == 0:
