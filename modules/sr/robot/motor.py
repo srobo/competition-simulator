@@ -80,6 +80,6 @@ class MotorChannel:
         return self.sr_motor._use_brake
 
     @use_brake.setter
-    def use_brake(self, value: bool):
+    def use_brake(self, value: bool) -> None:
         """Set whether to brake when motor speed is 0"""
         self.sr_motor._set_brake(value)
