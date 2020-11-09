@@ -12,10 +12,50 @@ PROTO SRRobot [
     translation IS translation
     rotation IS rotation
       children [
+        Camera {
+          translation 0 0.259989 -0.0289778
+          rotation 1 0 0 -0.2618
+          children [
+            Transform {
+              translation 0 0 -0.01
+              rotation 1 0 0 1.5708003061004252
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0 0 0
+                  }
+                  geometry Cylinder {
+                    height 0.005
+                    radius 0.013
+                  }
+                }
+              ]
+            }
+            Transform {
+              translation 0 0 0.005
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.4 0.4 0.4
+                    metalness 0
+                  }
+                  geometry Box {
+                    size 0.05 0.05 0.025
+                  }
+                }
+              ]
+            }
+          ]
+          width 800
+          height 600
+          recognition Recognition {
+            frameThickness 5
+          }
+        }
     DEF bump_sensors Group {
       children [
         TouchSensor {
-          translation 0 0.042 -0.06
+          translation 0 0.122 -0.03
           rotation 0 1 0 -3.1415926535897705
           children [
             Shape {
@@ -29,22 +69,10 @@ PROTO SRRobot [
             }
           ]
           name "front bump sensor"
-          boundingObject Transform {
-            translation 0 0 -0.015
-            children [
-              Box {
-                size 0.139 0.01 0.04
-              }
-            ]
-          }
           physics Physics {
             density -1
             mass 0.01
           }
-          lookupTable [
-            0 0 0
-            0.01 1 0
-          ]
         }
         TouchSensor {
           translation -6.155785592376617e-08 0.11197716612685456 0.2420422365365993
@@ -908,6 +936,23 @@ PROTO SRRobot [
               physics Physics {
               }
             }
+            DEF front_bar Solid {
+              translation 0 0.12 -0.0175
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.0705882 0.0705882 0.0705882
+                    roughness 0.4
+                    metalness 0
+                  }
+                  geometry USE front_bar
+                }
+              ]
+              name "solid(6)"
+              boundingObject USE front_bar
+              physics Physics {
+              }
+            }
             DEF horizontal Solid {
               translation 0.177 0.255 0.095
               children [
@@ -971,22 +1016,6 @@ PROTO SRRobot [
               }
               physics Physics {
               }
-            }
-            DEF GripperConnector Solid {
-              translation 0 0.14 0.025
-              children [
-                Shape {
-                  appearance PBRAppearance {
-                    baseColor 0.0705882 0.0705882 0.0705882
-                    roughness 0.4
-                    metalness 0
-                  }
-                  geometry Box {
-                    size 0.15 0.1 0.1
-                  }
-                }
-              ]
-              name "solid(8)"
             }
             DEF LOGO Solid {
               translation 0 0.18 0.186
@@ -1068,492 +1097,6 @@ PROTO SRRobot [
           ]
         }
       ]
-    }
-    DEF GRIPPER_BASE Solid {
-      translation -1.46357e-22 0.21 -0.015
-      rotation 1 3.7567134377662594e-17 9.191229015555427e-16 -3.98090896186861e-06
-      children [
-        Camera {
-          translation 0 0.265165 -0.0370721
-          rotation 1 0 0 -0.261795307179586
-          children [
-            Transform {
-              translation 0 0 -0.01
-              rotation 1 0 0 1.5708003061004252
-              children [
-                Shape {
-                  appearance PBRAppearance {
-                    baseColor 0 0 0
-                  }
-                  geometry Cylinder {
-                    height 0.005
-                    radius 0.013
-                  }
-                }
-              ]
-            }
-            Transform {
-              translation 0 0 0.005
-              children [
-                Shape {
-                  appearance PBRAppearance {
-                    baseColor 0.4 0.4 0.4
-                    metalness 0
-                  }
-                  geometry Box {
-                    size 0.05 0.05 0.025
-                  }
-                }
-              ]
-            }
-          ]
-          width 800
-          height 600
-          recognition Recognition {
-            frameThickness 5
-          }
-        }
-        DEF LIFT_SLIDER SliderJoint {
-          jointParameters JointParameters {
-            position 0.07300454576238873
-            axis 0 -1 0
-            minStop -0.2
-            maxStop 0.2
-          }
-          device [
-            LinearMotor {
-              name "lift motor"
-              minPosition -0.2
-              maxPosition 0.2
-            }
-          ]
-          endPoint DEF LIFT Solid {
-            translation -3.486842741500655e-12 -0.0730046416186066 -0.03733189276713589
-            rotation -0.9999999999999998 -1.9702012879199335e-08 -1.3442211613676216e-08 -1.6930314121711754e-05
-            children [
-              TouchSensor {
-                translation 6.328416457535013e-09 -5.612134721943995e-07 -0.04000612070536569
-                rotation 6.583167171114734e-15 1 1.3999738868936632e-12 -3.14159265358978
-                children [
-                  Shape {
-                    appearance PBRAppearance {
-                      baseColor 0.5 0 0
-                      roughness 0.6980390000000001
-                    }
-                    geometry DEF BUMPER Box {
-                      size 0.01 0.04 0.01
-                    }
-                  }
-                ]
-                name "token bump sensor"
-                boundingObject USE BUMPER
-                physics Physics {
-                  density -1
-                  mass 0.01
-                }
-                lookupTable [
-                  0 0 0
-                  0.01 1 0
-                ]
-              }
-              DEF LEFT_FINGER_SLIDER SliderJoint {
-                jointParameters JointParameters {
-                  position 0.14999997248782274
-                  axis -1 0 0
-                  maxStop 0.16
-                }
-                device [
-                  LinearMotor {
-                    name "left finger motor"
-                    maxVelocity 0.1
-                    maxPosition 0.15000000000131355
-                  }
-                ]
-                endPoint DEF LEFT_FINGER Solid {
-                  translation -0.1719999724878228 0 -0.02
-                  children [
-                    Group {
-                      children [
-                        TouchSensor {
-                          translation 0.012000002847967206 -3.9125627204761315e-07 -0.11000291635923398
-                          rotation 7.60449726234437e-12 1 7.599815813974467e-12 1.5707996938995543
-                          children [
-                            Shape {
-                              appearance PBRAppearance {
-                                baseColor 0.5 0 0
-                                roughness 0.6980390000000001
-                              }
-                              geometry DEF BUMPER Box {
-                                size 0.08 0.01 0.005
-                              }
-                            }
-                          ]
-                          name "left finger sensor"
-                          boundingObject Transform {
-                            translation 0 0 -0.007
-                            rotation 0 0 1 4.692820414042842e-06
-                            children [
-                              Box {
-                                size 0.08 0.01 0.02
-                              }
-                            ]
-                          }
-                          physics Physics {
-                            density -1
-                            mass 0.01
-                          }
-                          lookupTable [
-                            0 0 0
-                            0.01 1 0
-                          ]
-                        }
-                        Transform {
-                          translation 0 0.0015 -0.003
-                          children [
-                            Shape {
-                              appearance DEF METAL_APPEARANCE PBRAppearance {
-                                baseColor 0.8 0.8 0.8
-                                roughness 0.2
-                              }
-                              geometry Box {
-                                size 0.018 0.031 0.036
-                              }
-                            }
-                          ]
-                        }
-                        DEF LEFT_FINGER_TRANSFORM Transform {
-                          translation 0.0015 0 -0.1
-                          children [
-                            Shape {
-                              appearance DEF BLACK_APPEARANCE PBRAppearance {
-                                baseColor 0.0705882 0.0705882 0.0705882
-                                roughness 0.4
-                                metalness 0
-                              }
-                              geometry Box {
-                                size 0.015 0.035 0.16
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                  name "left finger"
-                  boundingObject USE LEFT_FINGER_TRANSFORM
-                  physics DEF LEFT_FINGER_PHYSICS Physics {
-                    density -1
-                    mass 0.1
-                  }
-                }
-              }
-              DEF RIGHT_FINGER_SLIDER SliderJoint {
-                jointParameters JointParameters {
-                  position 0.15000002757757508
-                  axis 1 0 0
-                  maxStop 0.16
-                }
-                device [
-                  LinearMotor {
-                    name "right finger motor"
-                    maxVelocity 0.1
-                    maxPosition 0.15000002757757508
-                  }
-                ]
-                endPoint DEF RIGHT_FINGER Solid {
-                  translation 0.17200002757757502 0 -0.02
-                  children [
-                    Group {
-                      children [
-                        TouchSensor {
-                          translation -0.011999997453825628 -3.978283871219901e-07 -0.1100029108620646
-                          rotation 7.607541443594192e-12 1 7.596793678571934e-12 1.5707996938995548
-                          children [
-                            Shape {
-                              appearance PBRAppearance {
-                                baseColor 0.5 0 0
-                                roughness 0.6980390000000001
-                              }
-                              geometry DEF BUMPER Box {
-                                size 0.08 0.01 0.005
-                              }
-                            }
-                          ]
-                          name "right finger sensor"
-                          boundingObject Transform {
-                            translation 0 0 0.007
-                            rotation 0 0 1 4.692820414042842e-06
-                            children [
-                              Box {
-                                size 0.08 0.01 0.02
-                              }
-                            ]
-                          }
-                          physics Physics {
-                            density -1
-                            mass 0.01
-                          }
-                          lookupTable [
-                            0 0 0
-                            0.01 1 0
-                          ]
-                        }
-                        Transform {
-                          translation 0 0.0015 -0.003
-                          children [
-                            Shape {
-                              appearance USE METAL_APPEARANCE
-                              geometry Box {
-                                size 0.018 0.031 0.036
-                              }
-                            }
-                          ]
-                        }
-                        DEF RIGHT_FINGER_TRANSFORM Transform {
-                          translation -0.0015 0 -0.1
-                          children [
-                            Shape {
-                              appearance USE BLACK_APPEARANCE
-                              geometry Box {
-                                size 0.015 0.035 0.16
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                  name "right finger"
-                  boundingObject USE RIGHT_FINGER_TRANSFORM
-                  physics USE LEFT_FINGER_PHYSICS
-                }
-              }
-              Transform {
-                translation 0 -0.126 0.135
-                children [
-                  Group {
-                    children [
-                      DEF finger_top Transform {
-                        translation 0 0.1478 -0.154
-                        children [
-                          DEF UPPER_BOX Shape {
-                            appearance USE BLACK_APPEARANCE
-                            geometry Box {
-                              size 0.377 0.01 0.043419
-                            }
-                          }
-                        ]
-                      }
-                      DEF finger_mid Transform {
-                        translation 0 0.1072 -0.154
-                        children [
-                          USE UPPER_BOX
-                        ]
-                      }
-                      DEF finger_left_wall Transform {
-                        translation -0.185 0.1275 -0.154
-                        children [
-                          DEF LEFT_BOX Shape {
-                            appearance USE BLACK_APPEARANCE
-                            geometry Box {
-                              size 0.007 0.05 0.042227
-                            }
-                          }
-                        ]
-                      }
-                      DEF finger_right_wall Transform {
-                        translation 0.184 0.1275 -0.154
-                        children [
-                          USE LEFT_BOX
-                        ]
-                      }
-                      DEF middle_wall Transform {
-                        translation 0 0.126 -0.158
-                        children [
-                          DEF CENTER_BOX Shape {
-                            appearance USE BLACK_APPEARANCE
-                            geometry Box {
-                              size 0.027 0.0341 0.035
-                            }
-                          }
-                        ]
-                      }
-                      DEF top_rod Transform {
-                        translation 0 0.132 -0.154
-                        rotation 0 0 1 1.5708
-                        children [
-                          DEF UPPER_CYLINDER Shape {
-                            appearance USE METAL_APPEARANCE
-                            geometry Cylinder {
-                              height 0.35
-                              radius 0.00225
-                            }
-                          }
-                        ]
-                      }
-                      Transform {
-                        translation 0 0.118 -0.154
-                        rotation 0 0 1 1.5708
-                        children [
-                          Shape {
-                            appearance USE METAL_APPEARANCE
-                            geometry Cylinder {
-                              height 0.35
-                              radius 0.00125
-                            }
-                          }
-                        ]
-                      }
-                      DEF left_slider_connector Transform {
-                        translation -0.041 0.155 -0.148
-                        children [
-                          Shape {
-                            appearance USE BLACK_APPEARANCE
-                            geometry Box {
-                              size 0.0141907 0.006 0.04
-                            }
-                          }
-                        ]
-                      }
-                      DEF left_slider Transform {
-                        translation -0.036 0.145 -0.116
-                        children [
-                          Shape {
-                            appearance USE METAL_APPEARANCE
-                            geometry Box {
-                              size 0.027 0.03 0.03
-                            }
-                          }
-                        ]
-                      }
-                      DEF right_slider_connector Transform {
-                        translation 0.041 0.155 -0.148
-                        children [
-                          Shape {
-                            appearance USE BLACK_APPEARANCE
-                            geometry Box {
-                              size 0.0141907 0.006 0.04
-                            }
-                          }
-                        ]
-                      }
-                      DEF right_slider Transform {
-                        translation 0.036 0.145 -0.116
-                        children [
-                          Shape {
-                            appearance USE METAL_APPEARANCE
-                            geometry Box {
-                              size 0.027 0.03 0.03
-                            }
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-            boundingObject Transform {
-              translation 0 0.0015 -0.019
-              children [
-                Shape {
-                  appearance USE METAL_APPEARANCE
-                  geometry Box {
-                    size 0.374 0.05 0.045
-                  }
-                }
-              ]
-            }
-            physics DEF LIFT_PHYSICS Physics {
-              density 50
-            }
-          }
-        }
-        Transform {
-          translation 0 -0.126 0.135
-          children [
-            DEF BASE_SHAPE_GROUP Group {
-              children [
-                DEF Top_plate Transform {
-                  translation 0 0.368 -0.154
-                  children [
-                    DEF UPPER_BOX Shape {
-                      appearance USE BLACK_APPEARANCE
-                      geometry Box {
-                        size 0.141092 0.0170038 0.043419
-                      }
-                    }
-                  ]
-                }
-                DEF bottom_plate Transform {
-                  translation 0 -0.04 -0.154
-                  children [
-                    USE UPPER_BOX
-                  ]
-                }
-                DEF left_upright Transform {
-                  translation -0.06 0.16 -0.158
-                  children [
-                    DEF LEFT_BOX Shape {
-                      appearance USE BLACK_APPEARANCE
-                      geometry Box {
-                        size 0.02 0.4 0.035
-                      }
-                    }
-                  ]
-                }
-                DEF right_upright Transform {
-                  translation 0.06 0.16 -0.158
-                  children [
-                    USE LEFT_BOX
-                  ]
-                }
-                DEF centrebox Transform {
-                  translation 0 0.16 -0.158
-                  children [
-                    DEF CENTER_BOX Shape {
-                      appearance USE BLACK_APPEARANCE
-                      geometry Box {
-                        size 0.044 0.4 0.0315
-                      }
-                    }
-                  ]
-                }
-                DEF leftRod Transform {
-                  translation -0.037 0.16 -0.158
-                  children [
-                    DEF LEFT_CYLINDER Shape {
-                      appearance USE METAL_APPEARANCE
-                      geometry Cylinder {
-                        height 0.4
-                        radius 0.003
-                      }
-                    }
-                  ]
-                }
-                DEF right_rod Transform {
-                  translation 0.037 0.16 -0.158
-                  children [
-                    USE LEFT_CYLINDER
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-      name "Gripper"
-      model "Gripper"
-      boundingObject Transform {
-        translation 0 0.04 -0.019
-        children [
-          Box {
-            size 0.141 0.42 0.043
-          }
-        ]
-      }
-      physics DEF BASE_PHYSICS Physics {
-      }
     }
   ]
     name IS model
