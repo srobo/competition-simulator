@@ -867,7 +867,7 @@ PROTO SRRobot [
         DEF BODY Group {
           children [
             DEF flag_pole Solid {
-              translation 0 0.3 0.075
+              translation 0 0.25 0
               children [
                 LED {
                   translation 0 0.1 0.085
