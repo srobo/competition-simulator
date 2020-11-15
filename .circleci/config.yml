@@ -39,11 +39,11 @@ references:
   python-full-version-matrix: &python-full-version-matrix
     matrix:
       parameters:
-        version: ["3.5", "3.6", "3.7", "3.8", "3.9"]
+        version: ["3.7", "3.8", "3.9"]
   python-top-and-bottom-version-matrix: &python-top-and-bottom-version-matrix
     matrix:
       parameters:
-        version: ["3.5", "3.9"]
+        version: ["3.7", "3.9"]
   filter-tags: &filter-tags
     filters:
       branches:
@@ -94,12 +94,6 @@ jobs:
           command: |
             source venv/bin/activate
 
-            # Only check the scripts when not on Python 3.5
-            if python3 --version | grep -vF '3.5.' > /dev/null
-            then
-                SCRIPTS=$(find script -type f | grep -vP "/(linting/|testing/|typing/|check$)")
-            fi
-
             # Ignore TODOs on CI, for now, even though we do want them
             # highlighted in development.
             ./script/linting/lint $SCRIPTS --extend-ignore=T000
@@ -119,19 +113,11 @@ jobs:
           name: Run Mypy
           command: |
             source venv/bin/activate
-
-            # Only check the scripts when not on Python 3.5
-            if python3 --version | grep -vF '3.5.' > /dev/null
-            then
-                SCRIPTS=$(find script -type f | grep -vP "/(linting/|testing/|typing/|check$)")
-            fi
-
             ./script/typing/check $SCRIPTS
 
   build:
     docker:
-      # Release on 3.6+ so we can have non-strict Path.resolve()
-      - image: circleci/python:3.6
+      - image: circleci/python:3.7
     steps:
       # Note: we run the release on *all* tags. If we change to creating
       # releases here (or anything more involved) we should review whether or
