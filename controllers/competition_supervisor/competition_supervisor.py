@@ -24,7 +24,7 @@ def get_recording_path() -> Path:
 
     date = now.date().isoformat()
 
-    name = sr_controller.get_filename_safe_identifier()  # type: str
+    name: str = sr_controller.get_filename_safe_identifier()
 
     return Path(date) / name
 

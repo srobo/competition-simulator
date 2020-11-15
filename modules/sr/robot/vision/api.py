@@ -48,7 +48,7 @@ def tokens_from_objects(
         key=lambda x: x[0].position.magnitude(),
     )
 
-    preceding_rectangles = []  # type: List[Rectangle]
+    preceding_rectangles: List[Rectangle] = []
     tokens = []
     for token, image_rectangle, recognition_object in tokens_with_info:
         if not any(x.overlaps(image_rectangle) for x in preceding_rectangles):
