@@ -19,9 +19,6 @@ def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
     switch_names = [
         "front bump sensor",
         "back bump sensor",
-        "token bump sensor",
-        "left finger sensor",
-        "right finger sensor",
     ]
     led_names = [
         "led 1",
