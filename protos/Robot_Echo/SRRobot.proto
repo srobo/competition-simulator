@@ -923,7 +923,7 @@ PROTO SRRobot [
                   }
                 }
               ]
-              name "solid(6)"
+              name "front_bar_top"
               physics Physics {
               }
             }
@@ -939,7 +939,7 @@ PROTO SRRobot [
                   geometry USE front_bar
                 }
               ]
-              name "solid(6)"
+              name "front_bar_bottom"
               boundingObject USE front_bar
               physics Physics {
               }
