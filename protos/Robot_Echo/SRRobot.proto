@@ -69,9 +69,13 @@ PROTO SRRobot [
             }
           ]
           name "front bump sensor"
-          physics Physics {
-            density -1
-            mass 0.01
+          boundingObject Transform {
+            translation 0 0 -0.015
+            children [
+              Box {
+                size 0.14 0.01 0.01
+              }
+            ]
           }
         }
         TouchSensor {
@@ -89,14 +93,14 @@ PROTO SRRobot [
             }
           ]
           name "back bump sensor"
-          physics Physics {
-            density -1
-            mass 0.01
+          boundingObject Transform {
+            translation 0 0 0
+            children [
+              Box {
+                size 0.2 0.01 0.01
+              }
+            ]
           }
-          lookupTable [
-            0 0 0
-            0.01 1 0
-          ]
         }
       ]
     }
@@ -924,6 +928,7 @@ PROTO SRRobot [
                 }
               ]
               name "front_bar_top"
+              boundingObject USE front_bar
               physics Physics {
               }
             }
