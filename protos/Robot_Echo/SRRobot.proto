@@ -1102,6 +1102,7 @@ PROTO SRRobot [
     }
     physics Physics {
     }
-  controller "sr_controller"
-}
+    controller IS controller
+    customData IS customData
+  }
 }
