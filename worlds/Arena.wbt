@@ -1,6 +1,9 @@
 #VRML_SIM R2020a utf8
 WorldInfo {
+  # CFM is the 'bounciness' of the constraints, chosen through experiment to reduce robot 'explosions'.
   CFM 0.0001
+  # basicTimeStep is the time in ms betweeen each physics simulation step. This value is chosen to reduce
+  # the instance of robot 'explosions' by reducing constraint 'overreactions' through recomputing forces too late.
   basicTimeStep 16
 }
 Viewpoint {
