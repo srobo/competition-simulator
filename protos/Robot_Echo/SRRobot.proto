@@ -340,7 +340,7 @@ PROTO SRRobot [
       ]
     }
     DEF DRIVE_WHEELS Transform {
-      translation 0 0.1 0.06
+      translation 0 0.1 0.08
       children [
         DEF RIGHT_WHEEL HingeJoint {
           jointParameters HingeJointParameters {
@@ -990,7 +990,7 @@ PROTO SRRobot [
               }
             }
             DEF Wheel_axes Solid {
-              translation 0 0.1 0.06
+              translation 0 0.1 0.08
               rotation 0 0 1 1.5707996938995747
               children [
                 Shape {
