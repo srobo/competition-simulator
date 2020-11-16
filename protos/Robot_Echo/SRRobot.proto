@@ -717,8 +717,9 @@ PROTO SRRobot [
             axis 0 1 0
           }
           endPoint Solid {
-            translation 0 0 0.11
-            rotation -0.9826105387155939 -0.18567856413791997 4.972993040880436e-06 3.864201805289567e-06
+            translation 0 -0.02 0.13
+            rotation 0 0 0 0
+            scale 0.8 0.8 0.8
             children [
               DEF casterWheelRim HingeJoint {
                 jointParameters HingeJointParameters {
