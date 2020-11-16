@@ -1098,7 +1098,7 @@ PROTO SRRobot [
     name IS model
     model IS model
     boundingObject Transform {
-      translation 0 0.185 0.115
+      translation 0 0.155 0.155
       children [
         Shape {
           geometry USE body_geo
