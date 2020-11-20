@@ -1,9 +1,10 @@
 from typing import List, Tuple, Callable, Iterable, Sequence, TYPE_CHECKING
 
+from sr.robot.coordinates.vectors import Vector
+
 from .image import Rectangle
 from .tokens import Token
 from .convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
-from .vectors import Vector
 
 if TYPE_CHECKING:
     from controller import CameraRecognitionObject

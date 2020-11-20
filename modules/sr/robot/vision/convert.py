@@ -9,7 +9,7 @@ import math
 import argparse
 from typing import NamedTuple
 
-from .matrix import Matrix
+from sr.robot.coordinates.matrix import Matrix
 
 WebotsOrientation = NamedTuple('WebotsOrientation', (
     ('x', float),
