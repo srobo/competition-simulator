@@ -62,6 +62,10 @@ def parse_transmitter_info(model_id: str) -> Optional[TransmitterInfo]:
 
 
 class Transmitter:
+    """
+    A snapshot of information about a radio transmitter.
+    """
+
     # Note: properties in the same order as in the docs.
 
     def __init__(
@@ -99,10 +103,18 @@ class Transmitter:
 
 
 class Beacon(Transmitter):
-    pass
+    """
+    A snapshot of information about a radio beacon.
+    """
 
 
 class Tower(Transmitter):
+    """
+    A snapshot of information about a radio tower.
+
+    Radio towers can be claimed to score points.
+    """
+
     def __init__(
         self,
         vector: Vector,
@@ -114,14 +126,23 @@ class Tower(Transmitter):
         self.claimed_by = claimed_by
 
 
-class Radar:
+class Radio:
     """
-    Wraps a radar transmitter and reciever unit on the Robot.
+    Wraps a radio transmitter and reciever unit on the Robot.
     """
 
     def __init__(self, webot: Robot) -> None:
         self._webot = webot
 
-    def scan(self) -> List[Transmitter]:
-        # TODO!
-        pass
+    def listen(self) -> List[Transmitter]:
+        """
+        Listen for signals from nearby transmitters.
+        """
+
+    def claim_tower(self) -> None:
+        """
+        Attempt to claim a nearby tower.
+
+        Your radio has a limited transmission power, so will only be able to
+        reach at most a single tower at a time.
+        """
