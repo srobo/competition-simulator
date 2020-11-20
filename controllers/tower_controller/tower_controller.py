@@ -1,9 +1,9 @@
-from typing import Dict, Collection, NewType
 import math
 import struct
+from typing import Dict, NewType, Collection
 
 # Webots specific library
-from controller import Node, Robot, Emitter, Receiver, Supervisor  # isort:skip
+from controller import Emitter, Receiver, Supervisor  # isort:skip
 
 StationCode = NewType('StationCode', str)
 Claimant = NewType('Claimant', int)
