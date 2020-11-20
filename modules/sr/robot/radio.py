@@ -136,9 +136,9 @@ class Radio:
     def __init__(self, webot: Robot) -> None:
         self._webot = webot
 
-    def listen(self) -> List[Transmitter]:
+    def sweep(self) -> List[Transmitter]:
         """
-        Listen for signals from nearby transmitters.
+        Sweep for nearby radio transmitters.
         """
 
     def claim_tower(self) -> None:
