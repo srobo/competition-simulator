@@ -4,7 +4,7 @@ A simulator to be used for the Student Robotics Virtual Competition 2020
 
 ## Installation instructions
 
-Take a look at [the docs](https://studentrobotics.org/docs/competition-simulator/#installation).
+Take a look at [the docs](https://studentrobotics.org/docs/simulator/#installation).
 
 ## Overview
 
