@@ -5,19 +5,7 @@ from typing import List, Optional, NamedTuple
 
 from controller import Robot
 from sr.robot.vision import Face, Orientation, tokens_from_objects
-from sr.robot.coordinates import Vector, PolarCoord, polar_from_cartesian
-
-Cartesian = NamedTuple("Cartesian", (
-    ("x", float),
-    ("y", float),
-    ("z", float),
-))
-
-# Note: we cannot suport `image` coordinates for now.
-Point = NamedTuple('Point', (
-    ('world', Cartesian),
-    ('polar', PolarCoord),
-))
+from sr.robot.coordinates import Point
 
 MARKER_MODEL_RE = re.compile(r"^[AGS]\d{0,2}$")
 
@@ -108,17 +96,10 @@ class Marker:
             'orientation={}'.format(self.orientation),
         )))
 
-    @staticmethod
-    def _build_point(vector: Vector) -> Point:
-        return Point(
-            world=Cartesian(*vector.data),
-            polar=polar_from_cartesian(vector),
-        )
-
     @property
     def centre(self) -> Point:
         """A `Point` describing the position of the centre of the marker."""
-        return self._build_point(self._face.centre_global())
+        return Point.from_vector(self._face.centre_global())
 
     @property
     def vertices(self) -> List[Point]:
@@ -128,7 +109,7 @@ class Marker:
         """
         # Note quite the black corners of the marker, though fairly close --
         # actually the corners of the face of the modelled token.
-        return [self._build_point(x) for x in self._face.corners_global().values()]
+        return [Point.from_vector(x) for x in self._face.corners_global().values()]
 
     @property
     def dist(self) -> float:
