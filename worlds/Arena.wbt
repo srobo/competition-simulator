@@ -16,14 +16,14 @@ TexturedBackground {
   ]
 }
 SRRobot {
-  translation -4.6239 0 -2.10865
+  translation -4.5 0 -2
   rotation 0 1 0 3.926
   controller "sr_controller"
   model "Robot0"
   flagColour 0 1 0
 }
 SRRobot {
-  translation 4.64775 0 -2.14822
+  translation 4.4 0 -2
   rotation 0 1 0 2.266
   controller "sr_controller"
   model "Robot1"
