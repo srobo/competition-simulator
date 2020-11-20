@@ -33,7 +33,7 @@ TRANSMITTER_TYPE_OFFSETS = {
 }
 
 
-def parse_transmitter_info(model_id: str) -> Optional[TransmitterInfo]:
+def parse_radio_message(message: bytes) -> Optional[TransmitterInfo]:
     """
     Parse the model id of a transmitter model into a `TransmitterInfo`.
 
@@ -43,11 +43,13 @@ def parse_transmitter_info(model_id: str) -> Optional[TransmitterInfo]:
     Examples: 'B00', 'B01', 'T02', 'T03', ..., 'R15', 'R16', ...
     """
 
-    match = TRANSMITTER_MODEL_RE.match(model_id)
+    # TODO: replace this with the actual comms protocol
+
+    match = TRANSMITTER_MODEL_RE.match(...)
     if match is None:
         return None
 
-    kind, number = model_id[0], model_id[1:]
+    kind, number = message[0], message[1:]
 
     transmitter_type = TRANSMITTER_MODEL_TYPE_MAP[kind]
     code = int(number)
