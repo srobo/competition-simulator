@@ -4,14 +4,8 @@ from enum import Enum
 from typing import List, Optional, NamedTuple
 
 from controller import Robot
-from sr.robot.vision import (
-    Face,
-    Vector,
-    PolarCoord,
-    Orientation,
-    tokens_from_objects,
-    polar_from_cartesian,
-)
+from sr.robot.vision import Face, Orientation, tokens_from_objects
+from sr.robot.coordinates import Vector, PolarCoord, polar_from_cartesian
 
 Cartesian = NamedTuple("Cartesian", (
     ("x", float),
