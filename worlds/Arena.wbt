@@ -160,7 +160,7 @@ Solid {
             }
             Shape {
               appearance PBRAppearance {
-                baseColor 0.34191456 0.34191436 0.34191447
+                baseColor 0.095395215 0.22841774 0.8000001
                 roughness 1
                 metalness 0
                 name "Triangle"
