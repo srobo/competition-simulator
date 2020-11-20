@@ -22,7 +22,6 @@ BROADCASTS_PER_SECOND = 10
 class TowerController:
     def __init__(self) -> None:
         self._robot = Supervisor()
-        # Station statuses: -1 if unclaimed, otherwise the Zone number of the robot.
         self._station_statuses: Dict[StationCode, Claimant] = {
             code: UNCLAIMED for code in STATION_CODES
         }
