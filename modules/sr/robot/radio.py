@@ -28,26 +28,27 @@ def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
         print("Robot starting in zone {zone} received malformed message.")  # noqa:T001
         return None
 
+
 class Target(NamedTuple):
     """
     A snapshot of information about a radio target.
     """
     bearing: float
-    strength: float
+    signal_strength: float
     target_info: TargetInfo
 
     @classmethod
-    def from_vector(cls, strength: float, target_info: TargetInfo, vector: Vector):            
+    def from_vector(cls, signal_strength: float, target_info: TargetInfo, vector: Vector) -> 'Target':
         x, _, z = vector.data  # 2-dimensional bearing in the xz plane, elevation is ignored
         bearing = pi - atan2(x, z)
         bearing = bearing - (2 * pi) if bearing > pi else bearing  # Normalize to (-pi, pi)
-        return cls(bearing=bearing, strength=strength, target_info=target_info)
+        return cls(bearing=bearing, signal_strength=signal_strength, target_info=target_info)
 
     def __repr__(self) -> str:
         return '<{}: {}>'.format(type(self).__name__, ', '.join((
-            'info={}'.format(self.info),
+            'info={}'.format(self.target_info),
             'bearing={}'.format(self.bearing),
-            'strength={}'.format(self.strength),
+            'strength={}'.format(self.signal_strength),
         )))
 
 
@@ -84,7 +85,7 @@ class Radio:
                 info = parse_radio_message(receiver.getData(), self._zone)
                 if info is not None:
                     targets.append(
-                        Target(
+                        Target.from_vector(
                             vector=Vector(receiver.getEmitterDirection()),
                             signal_strength=receiver.getSignalStrength(),
                             target_info=info,
