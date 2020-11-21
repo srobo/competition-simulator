@@ -1,6 +1,6 @@
 import enum
 import struct
-from typing import Dict, Tuple, NewType, Collection
+from typing import Dict, Tuple
 
 # Webots specific library
 from controller import Emitter, Receiver, Supervisor  # isort:skip
