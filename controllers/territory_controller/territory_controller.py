@@ -1,6 +1,6 @@
 import enum
 import struct
-from typing import Dict
+from typing import Dict, Tuple
 
 # Webots specific library
 from controller import Emitter, Receiver, Supervisor  # isort:skip
@@ -48,6 +48,13 @@ class TerritoryController:
         self._station_statuses: Dict[StationCode, Claimant] = {
             code: Claimant.UNCLAIMED for code in StationCode
         }
+        self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
+
+    def get_claimant(
+        self,
+        station_code: StationCode,
+    ) -> Claimant:
+        return self._station_statuses[station_code]
 
     def setup(self) -> None:
         self._emitters = {station_code: self._robot.getEmitter(station_code + "Emitter")
@@ -70,13 +77,34 @@ class TerritoryController:
         # TODO add better logging so we can score
         print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
 
+    def begin_claim(
+        self,
+        station_code: StationCode,
+        claimed_by: Claimant,
+        claim_time: float,
+    ) -> None:
+        self._claim_starts[station_code, claimed_by] = claim_time
+
+    def has_begun_claim_in_time_window(
+        self,
+        station_code: StationCode,
+        claimant: Claimant,
+        current_time: float,
+    ) -> bool:
+        try:
+            start_time = self._claim_starts[station_code, claimant]
+        except KeyError:
+            return False
+        time_delta = current_time - start_time
+        return 1.8 <= time_delta <= 2.1
+
     def claim_territory(
         self,
         station_code: StationCode,
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self._station_statuses[station_code] == claimed_by:
+        if self.get_claimant(station_code) == claimed_by:
             # This territory is already claimed by this claimant.
             return
 
@@ -95,8 +123,24 @@ class TerritoryController:
         receive_time: float,
     ) -> None:
         try:
-            robot_id, = struct.unpack("!B", packet)
-            self.claim_territory(station_code, robot_id, self._robot.getTime())
+            robot_id, is_conclude = struct.unpack("!BB", packet)
+            if is_conclude:
+                if self.has_begun_claim_in_time_window(
+                    station_code,
+                    robot_id,
+                    receive_time,
+                ):
+                    self.claim_territory(
+                        station_code,
+                        robot_id,
+                        receive_time,
+                    )
+            else:
+                self.begin_claim(
+                    station_code,
+                    robot_id,
+                    receive_time,
+                )
         except ValueError:
             print(  # noqa:T001
                 f"Received malformed packet at {receive_time} on {station_code}: {packet!r}",
@@ -121,7 +165,7 @@ class TerritoryController:
     def transmit_pulses(self) -> None:
         for station_code, emitter in self._emitters.items():
             emitter.send(struct.pack("!2sb", station_code.encode('ASCII'),
-                         self._station_statuses[station_code]))
+                         int(self.get_claimant(station_code))))
 
     def main(self) -> None:
         self.setup()
