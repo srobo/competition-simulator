@@ -44,7 +44,6 @@ def parse_args() -> argparse.Namespace:
 
 def main(args: argparse.Namespace) -> None:
     controller_utils.MODE_FILE.write_text('comp\n')
-    controller_utils.MATCH_FILE.write_text(f'{args.match_num}\n')
 
     for zone_id, tla in enumerate(args.tla):
         zone_path = get_zone_path(zone_id)

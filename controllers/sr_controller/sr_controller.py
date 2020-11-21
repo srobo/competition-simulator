@@ -120,9 +120,11 @@ def reconfigure_environment(robot_file: Path) -> None:
 
 
 def log_filename(zone_id: int) -> str:
-    return 'log-zone-{}-{}.txt'.format(
-        zone_id,
-        controller_utils.get_filename_safe_identifier(),
+    when = controller_utils.get_filename_safe_datetime()
+    return controller_utils.string_from_environment(
+        'LOG_FILENAME',
+        {'zone_id': zone_id, 'when': when},
+        default=f'log-zone-{zone_id}-{when}.txt',
     )
 
 

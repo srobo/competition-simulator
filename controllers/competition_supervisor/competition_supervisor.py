@@ -23,9 +23,13 @@ def get_recording_stem() -> Path:
 
     date = now.date().isoformat()
 
-    name: str = controller_utils.get_filename_safe_identifier()
+    when: str = controller_utils.get_filename_safe_datetime()
 
-    return REPO_ROOT / 'recordings' / date / name
+    return Path(controller_utils.string_from_environment(
+        'RECORDING_STEM',
+        {'when': when},
+        default=str(REPO_ROOT / 'recordings' / date / when),
+    ))
 
 
 @contextlib.contextmanager

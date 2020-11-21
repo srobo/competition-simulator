@@ -1,7 +1,7 @@
 import os
 import sys
 import datetime
-from typing import IO, Optional
+from typing import IO, Dict
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -11,7 +11,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
 
 MODE_FILE = ARENA_ROOT / 'robot_mode.txt'
-MATCH_FILE = ARENA_ROOT / 'match.txt'
 
 
 ROBOT_IDS_TO_CORNERS = {
@@ -20,28 +19,25 @@ ROBOT_IDS_TO_CORNERS = {
 }
 
 
-def get_match_num() -> Optional[int]:
-    if MATCH_FILE.exists():
-        return int(MATCH_FILE.read_text().strip())
-    return None
+def string_from_environment(name: str, placeholders: Dict[str, object], default: str) -> str:
+    value = os.environ.get(name)
+    if not value:
+        return default
+
+    return value.format(**placeholders)
 
 
-def get_filename_safe_identifier() -> str:
+def get_filename_safe_datetime() -> str:
     """
-    Return an identifier for the current run which is safe to use in filenames.
+    Return a datetime for the current run which is safe to use in filenames.
 
-    This is of the form "match-{N}" during competition matches, or the current
-    datetime in approximately ISO 8601 format otherwise.
+    This is the current datetime in approximately ISO 8601 format.
     """
 
-    match_num = get_match_num()
-    if match_num is not None:
-        return 'match-{}'.format(match_num)
-    else:
-        # Local time for convenience. We only care that this is a unique identifier.
-        now = datetime.datetime.now()
-        # Windows doesn't like colons in filenames.
-        return now.isoformat().replace(':', '_')
+    # Local time for convenience. We only care that this is a unique identifier.
+    now = datetime.datetime.now()
+    # Windows doesn't like colons in filenames.
+    return now.isoformat().replace(':', '_')
 
 
 def get_zone_robot_file_path(zone_id: int) -> Path:
