@@ -91,7 +91,6 @@ class Radio:
                 if info is not None:
                     targets.append(
                         Target.from_vector(
-                        Target.from_vector(
                             vector=Vector(receiver.getEmitterDirection()),
                             signal_strength=receiver.getSignalStrength(),
                             target_info=info,
