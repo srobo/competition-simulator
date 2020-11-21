@@ -37,82 +37,82 @@ Robot {
   controller "competition_supervisor"
   supervisor TRUE
 }
-DEF AB SRTerritory {
+DEF PN SRTerritory {
   translation -3 0 -1.5
-  name "AB"
-  emitterName "ABEmitter"
-  receiverName "ABReceiver"
+  name "PN"
+  emitterName "PNEmitter"
+  receiverName "PNReceiver"
 }
-DEF CD SRTerritory {
+DEF EY SRTerritory {
   translation -1.5 0 -0.75
-  name "T2"
-  emitterName "CDEmitter"
-  receiverName "CDReceiver"
+  name "EY"
+  emitterName "EYEmitter"
+  receiverName "EYReceiver"
 }
-DEF EF SRTerritory {
-  name "EF"
-  emitterName "EFEmitter"
-  receiverName "EFReceiver"
+DEF BE SRTerritory {
+  name "BE"
+  emitterName "BEEmitter"
+  receiverName "BEReceiver"
 }
-DEF GH SRTerritory {
+DEF PO SRTerritory {
   translation 1.5 0 -0.75
-  name "GH"
-  emitterName "GHEmitter"
-  receiverName "GHReceiver"
+  name "PO"
+  emitterName "POEmitter"
+  receiverName "POReceiver"
 }
-DEF IJ SRTerritory {
+DEF YL SRTerritory {
   translation 3 0 -1.5
-  name "IJ"
-  emitterName "IJEmitter"
-  receiverName "IJReceiver"
+  name "YL"
+  emitterName "YLEmitter"
+  receiverName "YLReceiver"
 }
-DEF KL SRTerritory {
+DEF BG SRTerritory {
   translation -4.1 0 0.1
-  name "KL"
-  emitterName "KLEmitter"
-  receiverName "KLReceiver"
+  name "BG"
+  emitterName "BGEmitter"
+  receiverName "BGReceiver"
 }
-DEF MN SRTerritory {
+DEF OX SRTerritory {
   translation -4.1 0 1.7
-  name "MN"
-  emitterName "MNEmitter"
-  receiverName "MNReceiver"
+  name "OX"
+  emitterName "OXEmitter"
+  receiverName "OXReceiver"
 }
-DEF OP SRTerritory {
+DEF TS SRTerritory {
   translation -2.65 0 0.9
-  name "OP"
-  emitterName "OPEmitter"
-  receiverName "OPReceiver"
+  name "TS"
+  emitterName "TSEmitter"
+  receiverName "TSReceiver"
 }
-DEF QR SRTerritory {
+DEF VB SRTerritory {
   translation -1.1 0 1.7
-  name "QR"
-  emitterName "QREmitter"
-  receiverName "QRReceiver"
+  name "VB"
+  emitterName "VBEmitter"
+  receiverName "VBReceiver"
 }
-DEF ST SRTerritory {
+DEF HV SRTerritory {
   translation 4.1 0 0.1
-  name "ST"
-  emitterName "STEmitter"
-  receiverName "STReceiver"
+  name "HV"
+  emitterName "HVEmitter"
+  receiverName "HVReceiver"
 }
-DEF UV SRTerritory {
+DEF BN SRTerritory {
   translation 4.1 0 1.7
-  name "UV"
-  emitterName "UVEmitter"
-  receiverName "UVReceiver"
+  name "BN"
+  emitterName "BNEmitter"
+  receiverName "BNReceiver"
 }
-DEF WX SRTerritory {
+DEF SW SRTerritory {
   translation 2.65 0 0.9
-  name "WX"
-  emitterName "WXEmitter"
-  receiverName "WXReceiver"
+  name "SW"
+  emitterName "SWEmitter"
+  receiverName "SWReceiver"
 }
-DEF YZ SRTerritory {
+DEF SZ SRTerritory {
   translation 1.1 0 1.7
-  name "YZ"
-  emitterName "YZEmitter"
-  receiverName "YZReceiver"
+  name "SZ"
+  emitterName "SZEmitter"
+  receiverName "SZReceiver"
 }
 Solid {
   children [
