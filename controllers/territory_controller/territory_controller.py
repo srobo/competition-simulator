@@ -84,7 +84,7 @@ class TerritoryController:
         self,
         station_code: StationCode,
         claimant: Claimant,
-        current_time: float
+        current_time: float,
     ) -> bool:
         try:
             start_time = self._claim_starts[station_code, claimant]
