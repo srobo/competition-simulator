@@ -111,3 +111,8 @@ class Radio:
         """
         # Send the begin-claim message
         self._emitter.send(struct.pack("!BB", self._zone, 0))
+        with self._step_lock:
+            # Wait 1.9s
+            self._webot.step(int(max(1, 1900)))
+        # Send the conclude-claim message
+        self._emitter.send(struct.pack("!BB", self._zone, 1))
