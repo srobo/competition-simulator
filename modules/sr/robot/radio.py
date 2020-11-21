@@ -1,5 +1,5 @@
 import struct
-from math import atan2
+from math import atan2, pi
 from typing import List, NewType, Optional, NamedTuple
 from threading import Lock
 
@@ -43,8 +43,9 @@ class Transmitter:
         transmitter_info: TransmitterInfo,
     ) -> None:
         self.strength = signal_strength
-        x, y, z = vector.data
-        self.bearing = atan2(z, x)  # TODO confirm this is correct
+        x, _, z = vector.data
+        _bearing = pi - atan2(x, z)
+        self.bearing = _bearing - (2 * pi) if _bearing > pi else _bearing
         self.info = transmitter_info
 
     def __repr__(self) -> str:
