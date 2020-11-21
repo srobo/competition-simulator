@@ -50,23 +50,20 @@ class TerritoryController:
         }
         self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
 
-    def get_claimant(
-        self,
-        station_code: StationCode,
-    ) -> Claimant:
-        return self._station_statuses[station_code]
-
-    def setup(self) -> None:
         self._emitters = {station_code: self._robot.getEmitter(station_code + "Emitter")
                           for station_code in StationCode}
 
         self._receivers = {station_code: self._robot.getReceiver(station_code + "Receiver")
                            for station_code in StationCode}
-        self.enable_receivers()
 
-    def enable_receivers(self) -> None:
         for receiver in self._receivers.values():
             receiver.enable(RECEIVE_TICKS)
+
+    def get_claimant(
+        self,
+        station_code: StationCode,
+    ) -> Claimant:
+        return self._station_statuses[station_code]
 
     def _log_territory_claim(
         self,
@@ -168,7 +165,6 @@ class TerritoryController:
                          int(self.get_claimant(station_code))))
 
     def main(self) -> None:
-        self.setup()
         timestep = self._robot.getBasicTimeStep()
         steps_per_broadcast = (1 / BROADCASTS_PER_SECOND) / (timestep / 1000)
         counter = 0
