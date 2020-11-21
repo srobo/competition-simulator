@@ -25,7 +25,8 @@ STATION_CODES: Collection[StationCode] = (
     StationCode('HV'),
 )
 
-ZONE_COLOURS = ((0, 1, 0), (1, 0.375, 0))
+# Updating? Update `Arena.wbt` too
+ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
 
 RECEIVE_TICKS = 1
 

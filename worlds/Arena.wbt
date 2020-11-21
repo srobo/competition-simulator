@@ -16,20 +16,24 @@ TexturedBackground {
     0.960784 0.952941 0.956863
   ]
 }
+
+# Updating colours? Update `territory_controller.py`
 SRRobot {
   translation -4.5 0 -2
   rotation 0 1 0 3.926
   controller "sr_controller"
   model "Robot0"
-  flagColour 0 1 0
+  flagColour 1 0 1
 }
 SRRobot {
   translation 4.4 0 -2
   rotation 0 1 0 2.266
   controller "sr_controller"
   model "Robot1"
-  flagColour 1 0.375 0
+  flagColour 1 1 0
 }
+
+
 Robot {
   translation 0 -1 0
   name "comp-supervisor"
