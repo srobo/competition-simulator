@@ -168,7 +168,7 @@ class TerritoryController:
         while True:
             counter += 1
             self.receive_robot_captures()
-            if (counter > steps_per_broadcast):
+            if counter > steps_per_broadcast:
                 self.transmit_pulses()
                 counter = 0
             self._robot.step(int(timestep))
