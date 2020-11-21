@@ -51,7 +51,7 @@ class TowerController:
         claim_time: float,
     ) -> None:
         # TODO add better logging so we can score
-        print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")
+        print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
 
     def claim_tower(
         self,
@@ -65,7 +65,7 @@ class TowerController:
 
         new_colour = ZONE_COLOURS[claimed_by]
         self._robot.getFromDef(station_code).getField("zoneColour").setSFColor(
-            list(new_colour)
+            list(new_colour),
         )
 
         self._log_territory_claim(station_code, claimed_by, self._robot.getTime())
@@ -88,7 +88,7 @@ class TowerController:
         except ValueError:
             print(
                 f"Received malformed packet at {receive_time} on {station_code}: {packet!r}",
-            )
+            )   # noqa:T001
 
     def receive_tower(self, station_code: StationCode, receiver: Receiver) -> None:
         simulation_time = self._robot.getTime()
