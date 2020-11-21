@@ -298,6 +298,7 @@ Solid {
   name "RootNode"
 }
 Solid {
+  translation 0 -0.01 0
   children [
     Shape {
       geometry Plane {
