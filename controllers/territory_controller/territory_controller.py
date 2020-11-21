@@ -178,7 +178,7 @@ class TerritoryController:
             if (counter > steps_per_broadcast):
                 self.transmit_pulses()
                 counter = 0
-            self._robot.step(int(self._robot.getBasicTimeStep()))
+            self._robot.step(int(timestep))
 
 
 if __name__ == "__main__":
