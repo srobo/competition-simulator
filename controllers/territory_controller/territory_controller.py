@@ -71,6 +71,22 @@ class TerritoryController:
         # TODO add better logging so we can score
         print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
 
+    def begin_claim(
+        self,
+        station_code: StationCode,
+        claimed_by: Claimant,
+        claim_time: float,
+    ) -> None:
+        pass
+
+    def has_begun_claim_in_time_window(
+        self,
+        station_code: StationCode,
+        claimant: Claimant,
+        current_time: float
+    ) -> bool:
+        return True
+
     def claim_territory(
         self,
         station_code: StationCode,
@@ -97,7 +113,23 @@ class TerritoryController:
     ) -> None:
         try:
             robot_id, is_conclude = struct.unpack("!BB", packet)
-            self.claim_territory(station_code, robot_id, self._robot.getTime())
+            if is_conclude:
+                if self.has_begun_claim_in_time_window(
+                    station_code,
+                    robot_id,
+                    receive_time,
+                ):
+                    self.claim_territory(
+                        station_code,
+                        robot_id,
+                        receive_time,
+                    )
+            else:
+                self.begin_claim(
+                    station_code,
+                    robot_id,
+                    receive_time,
+                )
         except ValueError:
             print(  # noqa:T001
                 f"Received malformed packet at {receive_time} on {station_code}: {packet!r}",
