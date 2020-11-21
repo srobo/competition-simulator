@@ -877,14 +877,14 @@ PROTO SRRobot [
                   type "radio"
                   name "robot receiver"
                   bufferSize 30
-                  channel 2
+                  channel 1
                 }
                 Emitter {
                     type "radio"
                     name "robot emitter"
                     range 1
                     maxRange 1
-                    channel 1
+                    channel 2
                 }
                 LED {
                   translation 0 0.1 0.085
