@@ -37,82 +37,91 @@ Robot {
   controller "competition_supervisor"
   supervisor TRUE
 }
-DEF PN SRTerritory {
-  translation -3 0 -1.5
-  name "PN"
-  emitterName "PNEmitter"
-  receiverName "PNReceiver"
-}
-DEF EY SRTerritory {
-  translation -1.5 0 -0.75
-  name "EY"
-  emitterName "EYEmitter"
-  receiverName "EYReceiver"
-}
-DEF BE SRTerritory {
-  name "BE"
-  emitterName "BEEmitter"
-  receiverName "BEReceiver"
-}
-DEF PO SRTerritory {
-  translation 1.5 0 -0.75
-  name "PO"
-  emitterName "POEmitter"
-  receiverName "POReceiver"
-}
-DEF YL SRTerritory {
-  translation 3 0 -1.5
-  name "YL"
-  emitterName "YLEmitter"
-  receiverName "YLReceiver"
-}
-DEF BG SRTerritory {
-  translation -4.1 0 0.1
-  name "BG"
-  emitterName "BGEmitter"
-  receiverName "BGReceiver"
-}
-DEF OX SRTerritory {
-  translation -4.1 0 1.7
-  name "OX"
-  emitterName "OXEmitter"
-  receiverName "OXReceiver"
-}
-DEF TS SRTerritory {
-  translation -2.65 0 0.9
-  name "TS"
-  emitterName "TSEmitter"
-  receiverName "TSReceiver"
-}
-DEF VB SRTerritory {
-  translation -1.1 0 1.7
-  name "VB"
-  emitterName "VBEmitter"
-  receiverName "VBReceiver"
-}
-DEF HV SRTerritory {
-  translation 4.1 0 0.1
-  name "HV"
-  emitterName "HVEmitter"
-  receiverName "HVReceiver"
-}
-DEF BN SRTerritory {
-  translation 4.1 0 1.7
-  name "BN"
-  emitterName "BNEmitter"
-  receiverName "BNReceiver"
-}
-DEF SW SRTerritory {
-  translation 2.65 0 0.9
-  name "SW"
-  emitterName "SWEmitter"
-  receiverName "SWReceiver"
-}
-DEF SZ SRTerritory {
-  translation 1.1 0 1.7
-  name "SZ"
-  emitterName "SZEmitter"
-  receiverName "SZReceiver"
+Robot {
+  translation 0 0 0
+  name "territory_controller"
+  description "A supervisor 'robot' to handle claiming of territories"
+  controller "territory_controller"
+  supervisor TRUE
+  children [
+    DEF PN SRTerritory {
+      translation -3 0 -1.5
+      territoryName "PNTerritory"
+      emitterName "PNEmitter"
+      receiverName "PNReceiver"
+    }
+    DEF EY SRTerritory {
+      translation -1.5 0 -0.75
+      territoryName "EYTerritory"
+      emitterName "EYEmitter"
+      receiverName "EYReceiver"
+    }
+    DEF BE SRTerritory {
+      territoryName "BETerritory"
+      emitterName "BEEmitter"
+      receiverName "BEReceiver"
+    }
+    DEF PO SRTerritory {
+      translation 1.5 0 -0.75
+      territoryName "POTerritory"
+      emitterName "POEmitter"
+      receiverName "POReceiver"
+    }
+    DEF YL SRTerritory {
+      translation 3 0 -1.5
+      territoryName "YLTerritory"
+      emitterName "YLEmitter"
+      receiverName "YLReceiver"
+    }
+    DEF BG SRTerritory {
+      translation -4.1 0 0.1
+      territoryName "BGTerritory"
+      emitterName "BGEmitter"
+      receiverName "BGReceiver"
+    }
+    DEF OX SRTerritory {
+      translation -4.1 0 1.7
+      territoryName "OXTerritory"
+      emitterName "OXEmitter"
+      receiverName "OXReceiver"
+    }
+    DEF TS SRTerritory {
+      translation -2.65 0 0.9
+      territoryName "TSTerritory"
+      emitterName "TSEmitter"
+      receiverName "TSReceiver"
+    }
+    DEF VB SRTerritory {
+      translation -1.1 0 1.7
+      territoryName "VBTerritory"
+      emitterName "VBEmitter"
+      receiverName "VBReceiver"
+    }
+    DEF HV SRTerritory {
+      translation 4.1 0 0.1
+      territoryName "HVTerritory"
+      emitterName "HVEmitter"
+      receiverName "HVReceiver"
+    }
+    DEF BN SRTerritory {
+      translation 4.1 0 1.7
+      territoryName "BNTerritory"
+      emitterName "BNEmitter"
+      receiverName "BNReceiver"
+    }
+    DEF SW SRTerritory {
+      translation 2.65 0 0.9
+      territoryName "SWTerritory"
+      emitterName "SWEmitter"
+      receiverName "SWReceiver"
+    }
+    DEF SZ SRTerritory {
+      translation 1.1 0 1.7
+      territoryName "SZTerritory"
+      emitterName "SZEmitter"
+      receiverName "SZReceiver"
+    }
+  ]
 }
 Solid {
   children [
