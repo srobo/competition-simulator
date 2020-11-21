@@ -47,7 +47,7 @@ def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
     try:
         station_code, owned_by = struct.unpack("!2sb", message)
         return TargetInfo(
-            station_code=StationCode(station_code),
+            station_code=StationCode(station_code.decode('ascii')),
             owned_by=None if owned_by == UNCLAIMED else Claimant(owned_by),
         )
     except ValueError:
