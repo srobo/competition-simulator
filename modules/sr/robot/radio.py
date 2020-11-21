@@ -1,6 +1,7 @@
+import enum
 import struct
 from math import pi, atan2
-from typing import List, NewType, Optional, NamedTuple
+from typing import List, Optional, NamedTuple
 from threading import Lock
 
 from controller import Robot
@@ -9,10 +10,32 @@ from sr.robot.coordinates import Vector
 # Updating? Update territory_controller.py too.
 BROADCASTS_PER_SECOND = 10
 
-StationCode = NewType('StationCode', str)
-Claimant = NewType('Claimant', int)
 
-UNCLAIMED = Claimant(-1)
+# Updating? Update territory_controller.py too.
+UNCLAIMED = -1
+
+
+# Note: this version of this enum deliberately doesn't include `UNCLAIMED`
+class Claimant(enum.IntEnum):
+    ZONE_0 = 0
+    ZONE_1 = 1
+
+
+# Updating? Update territory_controller.py too.
+class StationCode(str, enum.Enum):
+    PN = 'PN'
+    EY = 'EY'
+    BE = 'BE'
+    PO = 'PO'
+    YL = 'YL'
+    BG = 'BG'
+    TS = 'TS'
+    OX = 'OX'
+    VB = 'VB'
+    SZ = 'SZ'
+    SW = 'SW'
+    BN = 'BN'
+    HV = 'HV'
 
 
 class TargetInfo(NamedTuple):
@@ -23,8 +46,10 @@ class TargetInfo(NamedTuple):
 def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
     try:
         station_code, owned_by = struct.unpack("!2sb", message)
-        owned_by = owned_by if owned_by is not UNCLAIMED else None
-        return TargetInfo(station_code=station_code, owned_by=owned_by)
+        return TargetInfo(
+            station_code=StationCode(station_code),
+            owned_by=None if owned_by == UNCLAIMED else Claimant(owned_by),
+        )
     except ValueError:
         print("Robot starting in zone {zone} received malformed message.")  # noqa:T001
         return None
