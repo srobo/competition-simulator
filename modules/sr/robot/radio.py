@@ -6,6 +6,7 @@ from threading import Lock
 from controller import Robot
 from sr.robot.coordinates import Vector
 
+# Updating? Update territory_controller.py too.
 BROADCASTS_PER_SECOND = 10
 
 StationCode = NewType('StationCode', str)

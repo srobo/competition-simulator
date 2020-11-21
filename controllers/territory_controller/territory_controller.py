@@ -30,6 +30,7 @@ ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
 
 RECEIVE_TICKS = 1
 
+# Updating? Update radio.py too.
 BROADCASTS_PER_SECOND = 10
 
 
