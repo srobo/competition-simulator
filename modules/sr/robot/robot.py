@@ -3,7 +3,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, camera, ruggeduino
+from sr.robot import motor, radio, camera, ruggeduino
 
 # Webots specific library
 from controller import Robot as WebotsRobot  # isort:skip
@@ -128,6 +128,9 @@ class Robot:
         # Camera
         self._init_camera()
 
+        # Radio
+        self._init_radio()
+
     def _init_motors(self) -> None:
         self.motors = motor.init_motor_array(self.webot)
 
@@ -138,6 +141,9 @@ class Robot:
         # See comment in Camera.see for why we need to pass the step lock here.
         self.camera = camera.Camera(self.webot, self._step_lock)
         self.see = self.camera.see
+
+    def _init_radio(self) -> None:
+        self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
 
     def time(self) -> float:
         """
