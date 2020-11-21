@@ -903,7 +903,7 @@ PROTO SRRobot [
               }
             }
             DEF LOGO Solid {
-              translation 0 0.17 0.2801
+              translation 0 0.17 0.281
               children [
                 Shape {
                   appearance PBRAppearance {
