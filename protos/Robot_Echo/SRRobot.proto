@@ -873,6 +873,19 @@ PROTO SRRobot [
             DEF flag_pole Solid {
               translation 0 0.25 0
               children [
+                Receiver {
+                  type "radio"
+                  name "robot receiver"
+                  bufferSize 30
+                  channel 2
+                }
+                Emitter {
+                    type "radio"
+                    name "robot emitter"
+                    range 1
+                    maxRange 1
+                    channel 1
+                }
                 LED {
                   translation 0 0.1 0.085
                   children [
