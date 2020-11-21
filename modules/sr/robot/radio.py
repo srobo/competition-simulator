@@ -25,7 +25,7 @@ def parse_radio_message(message: bytes, zone: int) -> Optional[TransmitterInfo]:
         owned_by = owned_by if owned_by is not UNCLAIMED else None
         return TransmitterInfo(station_code=station_code, owned_by=owned_by)
     except ValueError:
-        print("Robot starting in zone {zone} received malformed message.")  # noqa:T000
+        print("Robot starting in zone {zone} received malformed message.")  # noqa:T001
         return None
 
 
