@@ -278,61 +278,6 @@ Solid {
                 ]
               }
             }
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.8 0.8 0.8
-                roughness 1
-                metalness 0
-                name "Arena"
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    -4 1.5 0
-                    4 1.5 0
-                    4 2.5 0
-                    -4 2.5 0
-                    -4 -2.5 0
-                    4 -2.5 0
-                    -5 -2.5 0
-                    -5 1.5 0
-                    5 -2.5 0
-                    5 1.5 0
-                  ]
-                }
-                normal Normal {
-                  vector [
-                    0 0 1
-                    0 0 1
-                    0 0 1
-                    0 0 1
-                    0 0 1
-                    0 0 1
-                    0 0 1
-                    0 0 1
-                    0 0 1
-                    0 0 1
-                  ]
-                }
-                texCoord TextureCoordinate {
-                  point [
-                    0.1 0.8
-                    0.9 0.8
-                    0.9 1
-                    0.1 1
-                    0.1 0
-                    0.9 0
-                    0 0
-                    0 0.8
-                    1 0
-                    1 0.8
-                  ]
-                }
-                coordIndex [
-                  0, 1, 2, -1, 0, 2, 3, -1, 4, 5, 1, -1, 4, 1, 0, -1, 6, 4, 0, -1, 6, 0, 7, -1, 5, 8, 9, -1, 5, 9, 1, -1
-                ]
-              }
-            }
           ]
         }
       ]
@@ -341,4 +286,16 @@ Solid {
     }
   ]
   name "RootNode"
+}
+Solid {
+  children [
+    Shape {
+      geometry Plane {
+        size 10 5
+      }
+    }
+  ]
+  boundingObject Plane {
+    size 10 5
+  }
 }
