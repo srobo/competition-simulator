@@ -83,7 +83,6 @@ class Radio:
         # Read the buffer
         transmitters = []
         while receiver.getQueueLength():
-            receiver.nextPacket()
             try:
                 info = parse_radio_message(receiver.getData(), self._zone)
                 if info:
