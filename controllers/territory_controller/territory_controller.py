@@ -90,7 +90,7 @@ class TerritoryController:
         receive_time: float,
     ) -> None:
         try:
-            robot_id, = struct.unpack("!B", packet)
+            robot_id, is_conclude = struct.unpack("!BB", packet)
             self.claim_territory(station_code, robot_id, self._robot.getTime())
         except ValueError:
             print(  # noqa:T001
