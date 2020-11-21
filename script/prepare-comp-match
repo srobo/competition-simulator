@@ -15,7 +15,7 @@ sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
 
 import sr_controller  # noqa:E402 # isort:skip
 
-NUM_ZONES = 4
+NUM_ZONES = 2
 
 
 def get_zone_path(zone_id: int) -> Path:
