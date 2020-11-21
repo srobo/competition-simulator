@@ -1,5 +1,5 @@
 import struct
-from math import atan2, pi
+from math import pi, atan2
 from typing import List, NewType, Optional, NamedTuple
 from threading import Lock
 
@@ -25,7 +25,7 @@ def parse_radio_message(message: bytes, zone: int) -> Optional[TransmitterInfo]:
         owned_by = owned_by if owned_by is not UNCLAIMED else None
         return TransmitterInfo(station_code=station_code, owned_by=owned_by)
     except ValueError:
-        print("Robot starting in zone {zone} received malformed message.")
+        print("Robot starting in zone {zone} received malformed message.")  # noqa:T000
         return None
 
 
