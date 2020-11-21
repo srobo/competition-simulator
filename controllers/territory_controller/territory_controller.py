@@ -33,7 +33,7 @@ RECEIVE_TICKS = 1
 BROADCASTS_PER_SECOND = 10
 
 
-class TowerController:
+class TerritoryController:
 
     _emitters: Dict[StationCode, Emitter]
     _receivers: Dict[StationCode, Receiver]
@@ -45,7 +45,7 @@ class TowerController:
         }
 
     def setup(self) -> None:
-        tower_controller.enable_receivers()
+        territory_controller.enable_receivers()
         self._emitters = {station_code: self._robot.getEmitter(station_code + "Emitter")
                           for station_code in STATION_CODES}
 
@@ -53,7 +53,7 @@ class TowerController:
                            for station_code in STATION_CODES}
 
     def enable_receivers(self) -> None:
-        for _, receiver in self._receivers.items():
+        for receiver in self._receivers.values():
             receiver.enable(RECEIVE_TICKS)
 
     def sleep(self, time_sec: float) -> None:
@@ -71,7 +71,7 @@ class TowerController:
         # TODO add better logging so we can score
         print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
 
-    def claim_tower(
+    def claim_territory(
         self,
         station_code: StationCode,
         claimed_by: Claimant,
@@ -89,10 +89,6 @@ class TowerController:
         self._log_territory_claim(station_code, claimed_by, self._robot.getTime())
         self._station_statuses[station_code] = claimed_by
 
-    def receive_robot_captures(self) -> None:
-        for station_code, receiver in self._receivers.items():
-            self.receive_tower(station_code, receiver)
-
     def process_packet(
         self,
         station_code: StationCode,
@@ -101,13 +97,13 @@ class TowerController:
     ) -> None:
         try:
             robot_id, = struct.unpack("!B", packet)
-            self.claim_tower(station_code, robot_id, self._robot.getTime())
+            self.claim_territory(station_code, robot_id, self._robot.getTime())
         except ValueError:
             print(  # noqa:T001
                 f"Received malformed packet at {receive_time} on {station_code}: {packet!r}",
             )
 
-    def receive_tower(self, station_code: StationCode, receiver: Receiver) -> None:
+    def receive_territory(self, station_code: StationCode, receiver: Receiver) -> None:
         simulation_time = self._robot.getTime()
 
         while receiver.getQueueLength():
@@ -119,13 +115,17 @@ class TowerController:
                 # it is safer to advance to the next.
                 receiver.nextPacket()
 
+    def receive_robot_captures(self) -> None:
+        for station_code, receiver in self._receivers.items():
+            self.receive_territory(station_code, receiver)
+
     def transmit_pulses(self) -> None:
         for station_code, emitter in self._emitters.items():
             emitter.send(struct.pack("!2sb", str(station_code).encode('ASCII'),
                          self._station_statuses[station_code]))
 
     def main(self) -> None:
-        tower_controller.setup()
+        territory_controller.setup()
         while True:
             self.receive_robot_captures()
             self.transmit_pulses()
@@ -133,5 +133,5 @@ class TowerController:
 
 
 if __name__ == "__main__":
-    tower_controller = TowerController()
-    tower_controller.main()
+    territory_controller = TerritoryController()
+    territory_controller.main()
