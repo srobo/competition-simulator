@@ -164,7 +164,7 @@ class TerritoryController:
 
     def transmit_pulses(self) -> None:
         for station_code, emitter in self._emitters.items():
-            emitter.send(struct.pack("!2sb", str(station_code).encode('ASCII'),
+            emitter.send(struct.pack("!2sb", station_code.encode('ASCII'),
                          int(self.get_claimant(station_code))))
 
     def main(self) -> None:
