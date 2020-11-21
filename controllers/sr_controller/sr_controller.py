@@ -18,10 +18,8 @@ MATCH_FILE = ARENA_ROOT / 'match.txt'
 
 
 ROBOT_IDS_TO_CORNERS = {
-    "291": 0,
-    "534": 1,
-    "777": 2,
-    "1020": 3,
+    "5": 0,
+    "248": 1,
 }
 
 STRICT_ZONES = {

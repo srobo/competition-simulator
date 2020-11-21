@@ -1,0 +1,71 @@
+#VRML_OBJ R2020a utf8
+PROTO SRTerritory [
+  field SFVec3f translation 0 0 0
+  field SFString name ""
+  field SFString emitterName ""
+  field SFString receiverName ""
+  field SFColor colour 0.34191456 0.34191436 0.34191447
+]
+{
+    Solid {
+      translation IS translation
+      children [
+        Group {
+          children [
+
+            # Territory floor
+            Solid {
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor IS colour
+                    roughness 1
+                    metalness 0
+                  }
+                  geometry DEF TERRITORY Cylinder {
+                      height 0.001
+                      radius 0.5
+                  }
+                }
+              ]
+              boundingObject USE TERRITORY
+            }
+
+            # Tower
+            Solid {
+              translation 0 0.2 0
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.79910326 0.33961943 0.037047286
+                    roughness 1
+                    metalness 0
+                  }
+                  geometry DEF TOWER Cylinder {
+                      height 0.4
+                      radius 0.08
+                  }
+                }
+              ]
+              boundingObject USE TOWER
+            }
+
+            Receiver {
+              type "radio"
+              name IS receiverName
+              bufferSize 10
+              channel 2
+            }
+
+            Emitter {
+              type "radio"
+              name IS emitterName
+              range 1
+              channel 1
+            }
+          ]
+        }
+      ]
+      name IS name
+    }
+}
