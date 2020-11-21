@@ -56,12 +56,6 @@ class TerritoryController:
         for receiver in self._receivers.values():
             receiver.enable(RECEIVE_TICKS)
 
-    def sleep(self, time_sec: float) -> None:
-        time_step: int = int(self._robot.getBasicTimeStep())
-        n_steps = math.ceil((time_sec * 1000) / time_step)
-        duration_ms = n_steps * time_step
-        self._robot.step(duration_ms)
-
     def _log_territory_claim(
         self,
         station_code: StationCode,
