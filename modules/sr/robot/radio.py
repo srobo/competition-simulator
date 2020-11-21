@@ -42,7 +42,7 @@ class Target(NamedTuple):
         cls,
         signal_strength: float,
         target_info: TargetInfo,
-        vector: Vector
+        vector: Vector,
     ) -> 'Target':
         x, _, z = vector.data  # 2-dimensional bearing in the xz plane, elevation is ignored
         bearing = pi - atan2(x, z)
