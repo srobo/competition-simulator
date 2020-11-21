@@ -220,7 +220,10 @@ PROTO SRRobot [
       children [
         DEF left DistanceSensor {
           translation -0.155 0.17 0.21
-          rotation 0 0 0 0
+          type "sonar"
+          numberOfRays 10
+          aperture 0.3
+          rotation 0 1 0 3.141
           children [
             Shape {
               appearance PBRAppearance {
@@ -235,11 +238,15 @@ PROTO SRRobot [
           name "Left DS"
           lookupTable [
             0 0 0
-            0.5 1000 0
+            2 1000 0
           ]
         }
         DEF right DistanceSensor {
           translation 0.155 0.17 0.21
+          type "sonar"
+          numberOfRays 10
+          aperture 0.3
+          rotation 0 0 0 0
           children [
             Shape {
               appearance PBRAppearance {
@@ -254,12 +261,15 @@ PROTO SRRobot [
           name "Right DS"
           lookupTable [
             0 0 0
-            0.5 1000 0
+            2 1000 0
           ]
         }
         DEF back_right DistanceSensor {
           translation 0.15 0.21 0.32
-          rotation 0 0 0 0
+          type "sonar"
+          numberOfRays 10
+          aperture 0.3
+          rotation 0 1 0 -1.57
           children [
             Shape {
               appearance PBRAppearance {
@@ -274,12 +284,15 @@ PROTO SRRobot [
           name "Back Right DS"
           lookupTable [
             0 0 0
-            0.5 1000 0
+            2 1000 0
           ]
         }
         DEF back_left DistanceSensor {
           translation -0.15 0.21 0.32
-          rotation 0 0 0 0
+          type "sonar"
+          numberOfRays 10
+          aperture 0.3
+          rotation 0 1 0 -1.57
           children [
             Shape {
               appearance PBRAppearance {
@@ -294,12 +307,15 @@ PROTO SRRobot [
           name "Back Left DS"
           lookupTable [
             0 0 0
-            0.5 1000 0
+            2 1000 0
           ]
         }
         DEF front_right DistanceSensor {
           translation 0.120925 0.17 -0.00995702
-          rotation 0 1 0 1.4781096938995748
+          type "sonar"
+          numberOfRays 10
+          aperture 0.3
+          rotation 0 1 0 1.57
           children [
             Shape {
               appearance PBRAppearance {
@@ -314,12 +330,15 @@ PROTO SRRobot [
           name "Front Right DS"
           lookupTable [
             0 0 0
-            0.5 1000 0
+            2 1000 0
           ]
         }
         DEF front_left DistanceSensor {
           translation -0.120382 0.17 -0.009993
-          rotation 0 1 0 1.6090096938995748
+          type "sonar"
+          numberOfRays 10
+          aperture 0.3
+          rotation 0 1 0 1.57
           children [
             Shape {
               appearance PBRAppearance {
@@ -334,7 +353,7 @@ PROTO SRRobot [
           name "Front Left DS"
           lookupTable [
             0 0 0
-            0.5 1000 0
+            2 1000 0
           ]
         }
       ]
