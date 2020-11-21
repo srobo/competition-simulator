@@ -10,7 +10,21 @@ Claimant = NewType('Claimant', int)
 
 UNCLAIMED = Claimant(-1)
 
-STATION_CODES: Collection[StationCode] = ('AB', 'CD', 'EF', 'GH')
+STATION_CODES: Collection[StationCode] = (
+    StationCode('PN'),
+    StationCode('EY'),
+    StationCode('BE'),
+    StationCode('PO'),
+    StationCode('YL'),
+    StationCode('BG'),
+    StationCode('TS'),
+    StationCode('OX'),
+    StationCode('VB'),
+    StationCode('SZ'),
+    StationCode('SW'),
+    StationCode('BN'),
+    StationCode('HV'),
+)
 
 ZONE_COLOURS = ((0, 1, 0), (1, 0.375, 0))
 
@@ -20,23 +34,27 @@ BROADCASTS_PER_SECOND = 10
 
 
 class TowerController:
+
+    _emitters: Dict[StationCode, Emitter]
+    _receivers: Dict[StationCode, Receiver]
+
     def __init__(self) -> None:
         self._robot = Supervisor()
         self._station_statuses: Dict[StationCode, Claimant] = {
             code: UNCLAIMED for code in STATION_CODES
         }
 
+    def setup(self) -> None:
+        tower_controller.enable_receivers()
+        self._emitters = {station_code: self._robot.getEmitter(station_code + "Emitter")
+                          for station_code in STATION_CODES}
+
+        self._receivers = {station_code: self._robot.getReceiver(station_code + "Receiver")
+                           for station_code in STATION_CODES}
+
     def enable_receivers(self) -> None:
-        for _, receiver in self.get_receivers().items():
+        for _, receiver in self._receivers.items():
             receiver.enable(RECEIVE_TICKS)
-
-    def get_emitters(self) -> Dict[StationCode, Emitter]:
-        return {station_code: self._robot.getEmitter(station_code + "Emitter")
-                for station_code in STATION_CODES}
-
-    def get_receivers(self) -> Dict[StationCode, Receiver]:
-        return {station_code: self._robot.getReceiver(station_code + "Receiver")
-                for station_code in STATION_CODES}
 
     def sleep(self, time_sec: float) -> None:
         time_step: int = int(self._robot.getBasicTimeStep())
@@ -72,8 +90,7 @@ class TowerController:
         self._station_statuses[station_code] = claimed_by
 
     def receive_robot_captures(self) -> None:
-        receivers = self.get_receivers()
-        for station_code, receiver in receivers.items():
+        for station_code, receiver in self._receivers.items():
             self.receive_tower(station_code, receiver)
 
     def process_packet(
@@ -86,9 +103,9 @@ class TowerController:
             robot_id, = struct.unpack("!B", packet)
             self.claim_tower(station_code, robot_id, self._robot.getTime())
         except ValueError:
-            print(
+            print(  # noqa:T001
                 f"Received malformed packet at {receive_time} on {station_code}: {packet!r}",
-            )   # noqa:T001
+            )
 
     def receive_tower(self, station_code: StationCode, receiver: Receiver) -> None:
         simulation_time = self._robot.getTime()
@@ -103,13 +120,12 @@ class TowerController:
                 receiver.nextPacket()
 
     def transmit_pulses(self) -> None:
-        emitters = self.get_emitters()
-        for station_code, emitter in emitters.items():
+        for station_code, emitter in self._emitters.items():
             emitter.send(struct.pack("!2sb", str(station_code).encode('ASCII'),
                          self._station_statuses[station_code]))
 
     def main(self) -> None:
-        tower_controller.enable_receivers()
+        tower_controller.setup()
         while True:
             self.receive_robot_captures()
             self.transmit_pulses()
