@@ -62,7 +62,7 @@ class TerritoryController:
 
         self._receivers = {station_code: self._robot.getReceiver(station_code + "Receiver")
                            for station_code in StationCode}
-        territory_controller.enable_receivers()
+        self.enable_receivers()
 
     def enable_receivers(self) -> None:
         for receiver in self._receivers.values():
