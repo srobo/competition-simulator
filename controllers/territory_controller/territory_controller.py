@@ -1,36 +1,41 @@
+import enum
 import struct
 from typing import Dict, Tuple, NewType, Collection
 
 # Webots specific library
 from controller import Emitter, Receiver, Supervisor  # isort:skip
 
-StationCode = NewType('StationCode', str)
-Claimant = NewType('Claimant', int)
-
-UNCLAIMED = Claimant(-1)
-
-STATION_CODES: Collection[StationCode] = (
-    StationCode('PN'),
-    StationCode('EY'),
-    StationCode('BE'),
-    StationCode('PO'),
-    StationCode('YL'),
-    StationCode('BG'),
-    StationCode('TS'),
-    StationCode('OX'),
-    StationCode('VB'),
-    StationCode('SZ'),
-    StationCode('SW'),
-    StationCode('BN'),
-    StationCode('HV'),
-)
-
 # Updating? Update `Arena.wbt` too
 ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
 
 RECEIVE_TICKS = 1
 
+# Updating? Update radio.py too.
 BROADCASTS_PER_SECOND = 10
+
+
+# Updating? Update radio.py too.
+class Claimant(enum.IntEnum):
+    UNCLAIMED = -1
+    ZONE_0 = 0
+    ZONE_1 = 1
+
+
+# Updating? Update radio.py too.
+class StationCode(str, enum.Enum):
+    PN = 'PN'
+    EY = 'EY'
+    BE = 'BE'
+    PO = 'PO'
+    YL = 'YL'
+    BG = 'BG'
+    TS = 'TS'
+    OX = 'OX'
+    VB = 'VB'
+    SZ = 'SZ'
+    SW = 'SW'
+    BN = 'BN'
+    HV = 'HV'
 
 
 class TerritoryController:
@@ -41,7 +46,7 @@ class TerritoryController:
     def __init__(self) -> None:
         self._robot = Supervisor()
         self._station_statuses: Dict[StationCode, Claimant] = {
-            code: UNCLAIMED for code in STATION_CODES
+            code: Claimant.UNCLAIMED for code in StationCode
         }
         self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
 
@@ -53,10 +58,10 @@ class TerritoryController:
 
     def setup(self) -> None:
         self._emitters = {station_code: self._robot.getEmitter(station_code + "Emitter")
-                          for station_code in STATION_CODES}
+                          for station_code in StationCode}
 
         self._receivers = {station_code: self._robot.getReceiver(station_code + "Receiver")
-                           for station_code in STATION_CODES}
+                           for station_code in StationCode}
         territory_controller.enable_receivers()
 
     def enable_receivers(self) -> None:

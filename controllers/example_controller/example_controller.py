@@ -2,7 +2,7 @@ from sr.robot import *
 
 R = Robot()
 
-print("I see {} things".format(len(R.see())))
+print("I found {} transmitter(s):".format(len(R.radio.sweep())))
 
 # motor board 0, channel 0 to half power forward
 R.motors[0].m0.power = 50

@@ -58,7 +58,8 @@ PROTO SRTerritory [
             Emitter {
               type "radio"
               name IS emitterName
-              range 1
+              range 2
+              maxRange 2
               channel 1
             }
           ]
