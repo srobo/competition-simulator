@@ -22,6 +22,7 @@ class TargetInfo(NamedTuple):
 def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
     try:
         station_code, owned_by = struct.unpack("!2sb", message)
+        station_code = station_code.decode('utf-8')
         owned_by = owned_by if owned_by is not UNCLAIMED else None
         return TargetInfo(station_code=station_code, owned_by=owned_by)
     except ValueError:
