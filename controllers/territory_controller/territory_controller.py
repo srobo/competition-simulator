@@ -45,12 +45,12 @@ class TerritoryController:
         }
 
     def setup(self) -> None:
-        territory_controller.enable_receivers()
         self._emitters = {station_code: self._robot.getEmitter(station_code + "Emitter")
                           for station_code in STATION_CODES}
 
         self._receivers = {station_code: self._robot.getReceiver(station_code + "Receiver")
                            for station_code in STATION_CODES}
+        territory_controller.enable_receivers()
 
     def enable_receivers(self) -> None:
         for receiver in self._receivers.values():
@@ -125,11 +125,17 @@ class TerritoryController:
                          self._station_statuses[station_code]))
 
     def main(self) -> None:
-        territory_controller.setup()
+        self.setup()
+        timestep = self._robot.getBasicTimeStep()
+        steps_per_broadcast = (1 / BROADCASTS_PER_SECOND) / (timestep / 1000)
+        counter = 0
         while True:
+            counter += 1
             self.receive_robot_captures()
-            self.transmit_pulses()
-            self.sleep(1 / BROADCASTS_PER_SECOND)
+            if (counter > steps_per_broadcast):
+                self.transmit_pulses()
+                counter = 0
+            self._robot.step(int(self._robot.getBasicTimeStep()))
 
 
 if __name__ == "__main__":
