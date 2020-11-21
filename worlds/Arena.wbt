@@ -131,7 +131,7 @@ Solid {
       children [
         DEF SHAPE Shape {
           appearance PBRAppearance {
-            baseColor 0 0.7991031 0.043735072
+            baseColor 0.095395215 0.22841774 0.8000001
             roughness 1
             metalness 0
             name "GreenWall"
