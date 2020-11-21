@@ -44,6 +44,12 @@ class TerritoryController:
             code: UNCLAIMED for code in STATION_CODES
         }
 
+    def get_claimant(
+        self,
+        station_code: StationCode,
+    ) -> Claimant:
+        return self._station_statuses[station_code]
+
     def setup(self) -> None:
         self._emitters = {station_code: self._robot.getEmitter(station_code + "Emitter")
                           for station_code in STATION_CODES}
@@ -71,7 +77,7 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self._station_statuses[station_code] == claimed_by:
+        if self.get_claimant(station_code) == claimed_by:
             # This territory is already claimed by this claimant.
             return
 
@@ -116,7 +122,7 @@ class TerritoryController:
     def transmit_pulses(self) -> None:
         for station_code, emitter in self._emitters.items():
             emitter.send(struct.pack("!2sb", str(station_code).encode('ASCII'),
-                         self._station_statuses[station_code]))
+                         int(self.get_claimant(station_code))))
 
     def main(self) -> None:
         self.setup()
