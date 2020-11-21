@@ -1,5 +1,5 @@
 import struct
-from typing import Dict, NewType, Collection
+from typing import Dict, Tuple, NewType, Collection
 
 # Webots specific library
 from controller import Emitter, Receiver, Supervisor  # isort:skip
@@ -43,6 +43,7 @@ class TerritoryController:
         self._station_statuses: Dict[StationCode, Claimant] = {
             code: UNCLAIMED for code in STATION_CODES
         }
+        self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
 
     def get_claimant(
         self,
@@ -77,7 +78,7 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        pass
+        self._claim_starts[station_code, claimed_by] = claim_time
 
     def has_begun_claim_in_time_window(
         self,
@@ -85,7 +86,12 @@ class TerritoryController:
         claimant: Claimant,
         current_time: float
     ) -> bool:
-        return True
+        try:
+            start_time = self._claim_starts[station_code, claimant]
+        except KeyError:
+            return False
+        time_delta = current_time - start_time
+        return 1.8 <= time_delta <= 2.1
 
     def claim_territory(
         self,
