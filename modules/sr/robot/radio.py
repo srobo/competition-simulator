@@ -14,39 +14,34 @@ Claimant = NewType('Claimant', int)
 UNCLAIMED = Claimant(-1)
 
 
-class TransmitterInfo(NamedTuple):
+class TargetInfo(NamedTuple):
     station_code: StationCode
     owned_by: Optional[Claimant]
 
 
-def parse_radio_message(message: bytes, zone: int) -> Optional[TransmitterInfo]:
+def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
     try:
         station_code, owned_by = struct.unpack("!2sb", message)
         owned_by = owned_by if owned_by is not UNCLAIMED else None
-        return TransmitterInfo(station_code=station_code, owned_by=owned_by)
+        return TargetInfo(station_code=station_code, owned_by=owned_by)
     except ValueError:
         print("Robot starting in zone {zone} received malformed message.")  # noqa:T001
         return None
 
-
-class Transmitter:
+class Target(NamedTuple):
     """
-    A snapshot of information about a radio transmitter.
+    A snapshot of information about a radio target.
     """
+    bearing: float
+    strength: float
+    target_info: TargetInfo
 
-    # Note: properties in the same order as in the docs.
-
-    def __init__(
-        self,
-        vector: Vector,
-        signal_strength: float,
-        transmitter_info: TransmitterInfo,
-    ) -> None:
-        self.strength = signal_strength
-        x, _, z = vector.data
-        _bearing = pi - atan2(x, z)
-        self.bearing = _bearing - (2 * pi) if _bearing > pi else _bearing
-        self.info = transmitter_info
+    @classmethod
+    def from_vector(cls, strength: float, target_info: TargetInfo, vector: Vector):            
+        x, _, z = vector.data  # 2-dimensional bearing in the xz plane, elevation is ignored
+        bearing = pi - atan2(x, z)
+        bearing = bearing - (2 * pi) if bearing > pi else bearing  # Normalize to (-pi, pi)
+        return cls(bearing=bearing, strength=strength, target_info=target_info)
 
     def __repr__(self) -> str:
         return '<{}: {}>'.format(type(self).__name__, ', '.join((
@@ -58,7 +53,7 @@ class Transmitter:
 
 class Radio:
     """
-    Wraps a radio transmitter and reciever unit on the Robot.
+    Wraps a radio target and reciever unit on the Robot.
     """
 
     def __init__(self, webot: Robot, zone: int, step_lock: Lock) -> None:
@@ -69,9 +64,10 @@ class Radio:
         self._zone = zone
         self._step_lock = step_lock
 
-    def sweep(self) -> List[Transmitter]:
+    def sweep(self) -> List[Target]:
         """
-        Sweep for nearby radio transmitters.
+        Sweep for nearby radio targets.
+
         Sweeping takes 0.1 seconds
         """
         receiver = self._receiver
@@ -80,31 +76,31 @@ class Radio:
             receiver.nextPacket()
         # Wait 1 sweep
         with self._step_lock:
-            self._webot.step(int(1000 / BROADCASTS_PER_SECOND))
+            self._webot.step(int(max(1, 1000 // BROADCASTS_PER_SECOND)))
         # Read the buffer
-        transmitters = []
+        targets = []
         while receiver.getQueueLength():
             try:
                 info = parse_radio_message(receiver.getData(), self._zone)
-                if info:
-                    transmitters.append(
-                        Transmitter(
+                if info is not None:
+                    targets.append(
+                        Target(
                             vector=Vector(receiver.getEmitterDirection()),
                             signal_strength=receiver.getSignalStrength(),
-                            transmitter_info=info,
+                            target_info=info,
                         ),
                     )
             finally:
                 # Always advance to the next packet in queue: if there has been an exception,
                 # it is safer to advance to the next.
                 receiver.nextPacket()
-        return transmitters
+        return targets
 
     def claim_territory(self) -> None:
         """
         Attempt to claim any nearby territories.
 
-        Your radio has a limited transmission power, so will only be able to claim a territory
+        The radio has a limited transmission power, so will only be able to claim a territory
         if you're inside its receiving range.
         """
         self._emitter.send(struct.pack("!B", self._zone))
