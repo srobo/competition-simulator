@@ -38,7 +38,12 @@ class Target(NamedTuple):
     target_info: TargetInfo
 
     @classmethod
-    def from_vector(cls, signal_strength: float, target_info: TargetInfo, vector: Vector) -> 'Target':
+    def from_vector(
+        cls,
+        signal_strength: float,
+        target_info: TargetInfo,
+        vector: Vector
+    ) -> 'Target':
         x, _, z = vector.data  # 2-dimensional bearing in the xz plane, elevation is ignored
         bearing = pi - atan2(x, z)
         bearing = bearing - (2 * pi) if bearing > pi else bearing  # Normalize to (-pi, pi)
@@ -85,6 +90,7 @@ class Radio:
                 info = parse_radio_message(receiver.getData(), self._zone)
                 if info is not None:
                     targets.append(
+                        Target.from_vector(
                         Target.from_vector(
                             vector=Vector(receiver.getEmitterDirection()),
                             signal_strength=receiver.getSignalStrength(),
