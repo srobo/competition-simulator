@@ -143,7 +143,7 @@ class Robot:
         self.see = self.camera.see
 
     def _init_radio(self) -> None:
-        self.radio = radio.Radio(self.webot)
+        self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
 
     def time(self) -> float:
         """

@@ -1,66 +1,32 @@
-import re
-import enum
-from typing import List, Optional, NamedTuple
+import struct
+from math import atan2
+from typing import List, NewType, Optional, NamedTuple
+from threading import Lock
 
 from controller import Robot
-from sr.robot.coordinates import Point, Vector
+from sr.robot.coordinates import Vector
 
-TRANSMITTER_MODEL_RE = re.compile(r"^[BTR]\d{0,2}$")
+BROADCASTS_PER_SECOND = 10
 
+StationCode = NewType('StationCode', str)
+Claimant = NewType('Claimant', int)
 
-class TransmitterType(enum.Enum):
-    BEACON = 'BEACON'
-    TOWER = 'TOWER'
-    ROBOT = 'ROBOT'
+UNCLAIMED = Claimant(-1)
 
 
 class TransmitterInfo(NamedTuple):
-    code: int
-    offset: int
-    transmitter_type: TransmitterType
+    station_code: StationCode
+    owned_by: Optional[Claimant]
 
 
-TRANSMITTER_MODEL_TYPE_MAP = {
-    'B': TransmitterType.BEACON,
-    'T': TransmitterType.TOWER,
-    'R': TransmitterType.ROBOT,
-}
-
-TRANSMITTER_TYPE_OFFSETS = {
-    TransmitterType.BEACON: 0,
-    TransmitterType.TOWER: 2,
-    TransmitterType.ROBOT: 15,
-}
-
-
-def parse_radio_message(message: bytes) -> Optional[TransmitterInfo]:
-    """
-    Parse the model id of a transmitter model into a `TransmitterInfo`.
-
-    Expected input format is a letter and two digits. The letter indicates the
-    type of the transmitter, the digits its "libkoki" 'code'.
-
-    Examples: 'B00', 'B01', 'T02', 'T03', ..., 'R15', 'R16', ...
-    """
-
-    # TODO: replace this with the actual comms protocol
-
-    match = TRANSMITTER_MODEL_RE.match(...)
-    if match is None:
+def parse_radio_message(message: bytes, zone: int) -> Optional[TransmitterInfo]:
+    try:
+        station_code, owned_by = struct.unpack("!2sb", message)
+        owned_by = owned_by if owned_by is not UNCLAIMED else None
+        return TransmitterInfo(station_code=station_code, owned_by=owned_by)
+    except ValueError:
+        print("Robot starting in zone {zone} received malformed message.")
         return None
-
-    kind, number = message[0], message[1:]
-
-    transmitter_type = TRANSMITTER_MODEL_TYPE_MAP[kind]
-    code = int(number)
-
-    type_offset = TRANSMITTER_TYPE_OFFSETS[transmitter_type]
-
-    return TransmitterInfo(
-        code=code,
-        offset=code - type_offset,
-        transmitter_type=transmitter_type,
-    )
 
 
 class Transmitter:
@@ -73,59 +39,20 @@ class Transmitter:
     def __init__(
         self,
         vector: Vector,
+        signal_strength: float,
         transmitter_info: TransmitterInfo,
-        timestamp: float,
     ) -> None:
-        self._vector = vector
-
+        self.strength = signal_strength
+        x, y, z = vector.data
+        self.bearing = atan2(z, x)  # TODO confirm this is correct
         self.info = transmitter_info
-        self.timestamp = timestamp
 
     def __repr__(self) -> str:
         return '<{}: {}>'.format(type(self).__name__, ', '.join((
             'info={}'.format(self.info),
-            'position={}'.format(self.position),
-            'dist={}'.format(self.dist),
+            'bearing={}'.format(self.bearing),
+            'strength={}'.format(self.strength),
         )))
-
-    @property
-    def position(self) -> Point:
-        """A `Point` describing the position of the transmitter."""
-        return Point.from_vector(self._vector)
-
-    @property
-    def dist(self) -> float:
-        """An alias for `position.polar.length`."""
-        return self._vector.magnitude()
-
-    @property
-    def rot_y(self) -> float:
-        """An alias for `position.polar.rot_y`."""
-        return self.position.polar.rot_y
-
-
-class Beacon(Transmitter):
-    """
-    A snapshot of information about a radio beacon.
-    """
-
-
-class Tower(Transmitter):
-    """
-    A snapshot of information about a radio tower.
-
-    Radio towers can be claimed to score points.
-    """
-
-    def __init__(
-        self,
-        vector: Vector,
-        transmitter_info: TransmitterInfo,
-        timestamp: float,
-        claimed_by: Optional[int],
-    ) -> None:
-        super().__init__(vector, transmitter_info, timestamp)
-        self.claimed_by = claimed_by
 
 
 class Radio:
@@ -133,18 +60,51 @@ class Radio:
     Wraps a radio transmitter and reciever unit on the Robot.
     """
 
-    def __init__(self, webot: Robot) -> None:
+    def __init__(self, webot: Robot, zone: int, step_lock: Lock) -> None:
         self._webot = webot
+        self._receiver = webot.getReceiver("robot receiver")
+        self._receiver.enable(1)
+        self._emitter = webot.getEmitter("robot emitter")
+        self._zone = zone
+        self._step_lock = step_lock
 
     def sweep(self) -> List[Transmitter]:
         """
         Sweep for nearby radio transmitters.
+        Sweeping takes 0.1 seconds
         """
+        receiver = self._receiver
+        # Clear the buffer
+        while receiver.getQueueLength():
+            receiver.nextPacket()
+        # Wait 1 sweep
+        with self._step_lock:
+            self._webot.step(int(1000 / BROADCASTS_PER_SECOND))
+        # Read the buffer
+        transmitters = []
+        while receiver.getQueueLength():
+            receiver.nextPacket()
+            try:
+                info = parse_radio_message(receiver.getData(), self._zone)
+                if info:
+                    transmitters.append(
+                        Transmitter(
+                            vector=Vector(receiver.getEmitterDirection()),
+                            signal_strength=receiver.getSignalStrength(),
+                            transmitter_info=info,
+                        ),
+                    )
+            finally:
+                # Always advance to the next packet in queue: if there has been an exception,
+                # it is safer to advance to the next.
+                receiver.nextPacket()
+        return transmitters
 
-    def claim_tower(self) -> None:
+    def claim_territory(self) -> None:
         """
-        Attempt to claim a nearby tower.
+        Attempt to claim any nearby territories.
 
-        Your radio has a limited transmission power, so will only be able to
-        reach at most a single tower at a time.
+        Your radio has a limited transmission power, so will only be able to claim a territory
+        if you're inside its receiving range.
         """
+        self._emitter.send(struct.pack("!B", self._zone))
