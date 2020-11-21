@@ -3,7 +3,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, radio, camera, ruggeduino
+from sr.robot import motor, radio, ruggeduino
 
 # Webots specific library
 from controller import Robot as WebotsRobot  # isort:skip
@@ -125,8 +125,7 @@ class Robot:
         # Ruggeduinos
         self._init_ruggeduinos()
 
-        # Camera
-        self._init_camera()
+        # No camera for SR2021
 
         # Radio
         self._init_radio()
@@ -136,11 +135,6 @@ class Robot:
 
     def _init_ruggeduinos(self) -> None:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
-
-    def _init_camera(self) -> None:
-        # See comment in Camera.see for why we need to pass the step lock here.
-        self.camera = camera.Camera(self.webot, self._step_lock)
-        self.see = self.camera.see
 
     def _init_radio(self) -> None:
         self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
