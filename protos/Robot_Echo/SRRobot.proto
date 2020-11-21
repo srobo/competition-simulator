@@ -71,10 +71,10 @@ PROTO SRRobot [
           ]
           name "front bump sensor"
           boundingObject Transform {
-            translation 0 0 -0.015
+            translation 0 0 0
             children [
               Box {
-                size 0.14 0.01 0.01
+                size 0.14 0.01 0.03
               }
             ]
           }
@@ -98,7 +98,7 @@ PROTO SRRobot [
             translation 0 0 0
             children [
               Box {
-                size 0.2 0.01 0.01
+                size 0.2 0.01 0.03
               }
             ]
           }
@@ -509,19 +509,10 @@ PROTO SRRobot [
                     }
                   ]
                 }
-                Transform {
-                  rotation 0 0 1 1.5708
-                  children [
-                    Cylinder {
-                      height 0.048
-                      radius 0.07
-                      subdivision 24
-                    }
-                  ]
-                }
               ]
             }
             physics Physics {
+              density 20000
             }
           }
         }
@@ -691,19 +682,10 @@ PROTO SRRobot [
                     }
                   ]
                 }
-                Transform {
-                  rotation 0 0 1 1.5708
-                  children [
-                    Cylinder {
-                      height 0.048
-                      radius 0.07
-                      subdivision 24
-                    }
-                  ]
-                }
               ]
             }
             physics Physics {
+              density 20000
             }
           }
         }
@@ -727,13 +709,17 @@ PROTO SRRobot [
                   metalness 0
                 }
                 geometry DEF SPHERE Sphere {
-                  radius 0.041
+                  radius 0.03
                   subdivision 2
                 }
               }
             ]
-            boundingObject USE SPHERE
+            boundingObject Sphere {
+              radius 0.041
+              subdivision 2
+            }
             physics Physics {
+              density 30000
             }
           }
         }
@@ -750,7 +736,7 @@ PROTO SRRobot [
           }
           geometry DEF flag_pole Cylinder {
             height 0.052
-            radius 0.045
+            radius 0.032
           }
         }
       ]
@@ -991,7 +977,7 @@ PROTO SRRobot [
               ]
               boundingObject USE body_geo
               physics Physics {
-                density 100
+                density 1000
               }
             }
           ]
