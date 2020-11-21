@@ -12,6 +12,8 @@ BROADCASTS_PER_SECOND = 10
 
 
 # Updating? Update territory_controller.py too.
+# UNCLAIMED is used on the wire protocol, but not exposed to competitors. We use
+# `None` to signify that no-one owns a station.
 UNCLAIMED = -1
 
 
