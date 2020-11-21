@@ -10,12 +10,11 @@ LOGGER = logging.getLogger(__name__)
 
 class DistanceSensor:
     """
-    A standard Webots distance sensor. Unfortunately there is a 30cm range limit within Webots.
-    We convert the distance to metres.
+    A standard Webots distance sensor,  we convert the distance to metres.
     """
 
     LOWER_BOUND = 0
-    UPPER_BOUND = 0.3
+    UPPER_BOUND = 2
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
         self.webot_sensor = webot.getDistanceSensor(sensor_name)
