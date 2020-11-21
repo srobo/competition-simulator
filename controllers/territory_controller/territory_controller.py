@@ -59,10 +59,7 @@ class TerritoryController:
         for receiver in self._receivers.values():
             receiver.enable(RECEIVE_TICKS)
 
-    def get_claimant(
-        self,
-        station_code: StationCode,
-    ) -> Claimant:
+    def get_claimant(self, station_code: StationCode) -> Claimant:
         return self._station_statuses[station_code]
 
     def _log_territory_claim(
