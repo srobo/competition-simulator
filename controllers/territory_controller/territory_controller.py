@@ -1,4 +1,3 @@
-import math
 import struct
 from typing import Dict, NewType, Collection
 
