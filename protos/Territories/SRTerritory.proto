@@ -28,7 +28,6 @@ PROTO SRTerritory [
                   }
                 }
               ]
-              boundingObject USE TERRITORY
             }
             Solid {
               name "Territory tower"
