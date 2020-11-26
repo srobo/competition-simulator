@@ -1,26 +1,18 @@
 import os
 import sys
-import datetime
 import subprocess
 from shutil import copyfile
-from typing import IO, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
+
+import controller_utils  # isort:skip
+
 EXAMPLE_CONTROLLER_FILE = REPO_ROOT / 'controllers/example_controller/example_controller.py'
 
-# Root directory of the specification of the Arena (and match)
-ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
-
-MODE_FILE = ARENA_ROOT / 'robot_mode.txt'
-MATCH_FILE = ARENA_ROOT / 'match.txt'
-
-
-ROBOT_IDS_TO_CORNERS = {
-    "5": 0,
-    "225": 1,
-}
 
 STRICT_ZONES = {
     "dev": (1, 2, 3),
@@ -28,40 +20,8 @@ STRICT_ZONES = {
 }
 
 
-def get_match_num() -> Optional[int]:
-    if MATCH_FILE.exists():
-        return int(MATCH_FILE.read_text().strip())
-    return None
-
-
-def get_filename_safe_identifier() -> str:
-    """
-    Return an identifier for the current run which is safe to use in filenames.
-
-    This is of the form "match-{N}" during competition matches, or the current
-    datetime in approximately ISO 8601 format otherwise.
-    """
-
-    match_num = get_match_num()
-    if match_num is not None:
-        return 'match-{}'.format(match_num)
-    else:
-        # Local time for convenience. We only care that this is a unique identifier.
-        now = datetime.datetime.now()
-        # Windows doesn't like colons in filenames.
-        return now.isoformat().replace(':', '_')
-
-
 def get_robot_zone() -> int:
-    return ROBOT_IDS_TO_CORNERS[os.environ['WEBOTS_ROBOT_ID']]
-
-
-def get_zone_robot_file_path(zone_id: int) -> Path:
-    """
-    Return the path to the robot.py for the given zone, without checking for
-    existence.
-    """
-    return ARENA_ROOT / "zone-{}".format(zone_id) / "robot.py"
+    return controller_utils.ROBOT_IDS_TO_CORNERS[os.environ['WEBOTS_ROBOT_ID']]
 
 
 def get_robot_file(zone_id: int, mode: str) -> Path:
@@ -82,8 +42,8 @@ def get_robot_file(zone_id: int, mode: str) -> Path:
           are found it copies an example into place (at the root) and uses that.
     """
 
-    robot_file = get_zone_robot_file_path(zone_id)
-    fallback_robot_file = ARENA_ROOT / "robot.py"
+    robot_file = controller_utils.get_zone_robot_file_path(zone_id)
+    fallback_robot_file = controller_utils.ARENA_ROOT / "robot.py"
     strict_zones = STRICT_ZONES[mode]
 
     if (
@@ -131,12 +91,6 @@ def get_robot_file(zone_id: int, mode: str) -> Path:
     return fallback_robot_file
 
 
-def get_robot_mode() -> str:
-    if not MODE_FILE.exists():
-        return "dev"
-    return MODE_FILE.read_text().strip()
-
-
 def print_simulation_version() -> None:
     version_path = (REPO_ROOT / '.simulation-rev')
     if version_path.exists():
@@ -168,44 +122,8 @@ def reconfigure_environment(robot_file: Path) -> None:
 def log_filename(zone_id: int) -> str:
     return 'log-zone-{}-{}.txt'.format(
         zone_id,
-        get_filename_safe_identifier(),
+        controller_utils.get_filename_safe_identifier(),
     )
-
-
-class SimpleTee:
-    """
-    Forwards calls from its `write` and `flush` methods to each of the given targets.
-    """
-
-    def __init__(self, *streams: IO[str], prefix: str = '') -> None:
-        self.streams = streams
-        self._line_start = True
-        self.prefix = prefix
-
-    def _insert_prefix(self, data: str) -> str:
-        # Append our prefix just after all inner newlines. Don't append to a
-        # trailing newline as we don't know if the next line in the log will be
-        # from this zone.
-        final_newline = data.endswith('\n')
-        data = data.replace('\n', '\n' + self.prefix)
-        if final_newline:
-            data = data[:-len(self.prefix)]
-        return data
-
-    def write(self, data: str) -> None:
-        if self._line_start:
-            data = self.prefix + data
-
-        self._line_start = data.endswith('\n')
-        data = self._insert_prefix(data)
-
-        for stream in self.streams:
-            stream.write(data)
-        self.flush()
-
-    def flush(self) -> None:
-        for stream in self.streams:
-            stream.flush()
 
 
 def tee_streams(name: Path, zone_id: int) -> None:
@@ -221,12 +139,12 @@ def tee_streams(name: Path, zone_id: int) -> None:
 
     prefix = '{}| '.format(zone_id)
 
-    sys.stdout = SimpleTee(  # type: ignore[assignment]
+    sys.stdout = controller_utils.SimpleTee(  # type: ignore[assignment]
         sys.stdout,
         log_file,
         prefix=prefix,
     )
-    sys.stderr = SimpleTee(  # type: ignore[assignment]
+    sys.stderr = controller_utils.SimpleTee(  # type: ignore[assignment]
         sys.stderr,
         log_file,
         prefix=prefix,
@@ -234,7 +152,7 @@ def tee_streams(name: Path, zone_id: int) -> None:
 
 
 def main() -> None:
-    robot_mode = get_robot_mode()
+    robot_mode = controller_utils.get_robot_mode()
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode).resolve()
 
