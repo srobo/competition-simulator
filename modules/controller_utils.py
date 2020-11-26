@@ -4,7 +4,7 @@ from typing import IO, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # Root directory of the specification of the Arena (and match)
 ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
