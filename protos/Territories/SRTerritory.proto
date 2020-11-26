@@ -47,20 +47,24 @@ PROTO SRTerritory [
               ]
               boundingObject USE TOWER
             }
+            Transform{
+              translation 0 0.25 0
+              children [
+                Receiver {
+                  type "radio"
+                  name IS receiverName
+                  bufferSize 10
+                  channel 2
+                }
 
-            Receiver {
-              type "radio"
-              name IS receiverName
-              bufferSize 10
-              channel 2
-            }
-
-            Emitter {
-              type "radio"
-              name IS emitterName
-              range 2
-              maxRange 2
-              channel 1
+                Emitter {
+                  type "radio"
+                  name IS emitterName
+                  range 2
+                  maxRange 2
+                  channel 1
+                }
+              ]
             }
           ]
         }
