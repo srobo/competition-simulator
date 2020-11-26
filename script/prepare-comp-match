@@ -11,15 +11,15 @@ from zipfile import ZipFile
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
-import sr_controller  # noqa:E402 # isort:skip
+import controller_utils  # noqa:E402 # isort:skip
 
 NUM_ZONES = 2
 
 
 def get_zone_path(zone_id: int) -> Path:
-    robot_file: Path = sr_controller.get_zone_robot_file_path(zone_id)
+    robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id)
     return robot_file.parent
 
 
@@ -43,8 +43,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    sr_controller.MODE_FILE.write_text('comp\n')
-    sr_controller.MATCH_FILE.write_text(f'{args.match_num}\n')
+    controller_utils.MODE_FILE.write_text('comp\n')
+    controller_utils.MATCH_FILE.write_text(f'{args.match_num}\n')
 
     for zone_id, tla in enumerate(args.tla):
         zone_path = get_zone_path(zone_id)

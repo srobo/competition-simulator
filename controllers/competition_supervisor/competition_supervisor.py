@@ -12,9 +12,9 @@ from controller import Node, Supervisor  # isort:skip
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
-sys.path.append(str(REPO_ROOT / 'controllers/sr_controller'))
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
-import sr_controller  # noqa:E402 # isort:skip
+import controller_utils  # isort:skip
 
 GAME_DURATION_SECONDS = 120
 
@@ -24,7 +24,7 @@ def get_recording_path() -> Path:
 
     date = now.date().isoformat()
 
-    name: str = sr_controller.get_filename_safe_identifier()
+    name: str = controller_utils.get_filename_safe_identifier()
 
     return Path(date) / name
 
@@ -62,7 +62,7 @@ def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
 
 
 def quit_if_development_mode() -> None:
-    if sr_controller.get_robot_mode() != 'comp':
+    if controller_utils.get_robot_mode() != 'comp':
         print("Development mode, exiting competition supervisor")
         exit()
 
@@ -92,7 +92,7 @@ def check_required_libraries(path: Path) -> None:
 def get_robots(supervisor: Supervisor) -> List[Tuple[int, Node]]:
     robots = []  # List[Tuple[int, Supervisor]]
 
-    for webots_id_str, zone_id in sr_controller.ROBOT_IDS_TO_CORNERS.items():
+    for webots_id_str, zone_id in controller_utils.ROBOT_IDS_TO_CORNERS.items():
         robot = supervisor.getFromId(int(webots_id_str))
         if robot is None:
             msg = "Failed to get Webots node for zone {} (id: {})".format(
@@ -129,7 +129,7 @@ def prepare(supervisor: Supervisor) -> None:
 
 def remove_unused_robots(supervisor: Supervisor) -> None:
     for zone_id, robot in get_robots(supervisor):
-        if sr_controller.get_zone_robot_file_path(zone_id).exists():
+        if controller_utils.get_zone_robot_file_path(zone_id).exists():
             continue
 
         robot.remove()
