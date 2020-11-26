@@ -221,8 +221,16 @@ def tee_streams(name: Path, zone_id: int) -> None:
 
     prefix = '{}| '.format(zone_id)
 
-    sys.stdout = SimpleTee(sys.stdout, log_file, prefix=prefix)  # type: ignore
-    sys.stderr = SimpleTee(sys.stderr, log_file, prefix=prefix)  # type: ignore
+    sys.stdout = SimpleTee(  # type: ignore[assignment]
+        sys.stdout,
+        log_file,
+        prefix=prefix,
+    )
+    sys.stderr = SimpleTee(  # type: ignore[assignment]
+        sys.stderr,
+        log_file,
+        prefix=prefix,
+    )
 
 
 def main() -> None:
