@@ -122,22 +122,23 @@ class TerritoryController:
         receive_time: float,
     ) -> None:
         try:
-            robot_id, is_conclude = struct.unpack("!BB", packet)
+            robot_id, is_conclude = struct.unpack("!BB", packet)  # type: Tuple[int, int]
+            claimant = Claimant(robot_id)
             if is_conclude:
                 if self.has_begun_claim_in_time_window(
                     station_code,
-                    robot_id,
+                    claimant,
                     receive_time,
                 ):
                     self.claim_territory(
                         station_code,
-                        robot_id,
+                        claimant,
                         receive_time,
                     )
             else:
                 self.begin_claim(
                     station_code,
-                    robot_id,
+                    claimant,
                     receive_time,
                 )
         except ValueError:
