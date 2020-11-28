@@ -42,16 +42,21 @@ def parse_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    controller_utils.MODE_FILE.write_text('comp\n')
-    controller_utils.MATCH_FILE.write_text(f'{args.match_num}\n')
+    tlas = [
+        tla if tla != '-' else None
+        for tla in args.tla
+    ]
 
-    for zone_id, tla in enumerate(args.tla):
+    controller_utils.MODE_FILE.write_text('comp\n')
+    controller_utils.record_match_data(args.match_num, tlas)
+
+    for zone_id, tla in enumerate(tlas):
         zone_path = get_zone_path(zone_id)
 
         if zone_path.exists():
             shutil.rmtree(zone_path)
 
-        if tla == '-':
+        if tla is None:
             # no team in this zone
             continue
 
