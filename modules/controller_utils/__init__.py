@@ -1,7 +1,7 @@
 import os
 import json
 import datetime
-from typing import IO, List, Tuple, Optional
+from typing import IO, Dict, List, Tuple, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -32,6 +32,12 @@ def record_match_data(number: int, teams: List[Optional[str]]) -> None:
             if tla is not None
         },
     }, indent=4))
+
+
+def record_arena_data(other_data: Dict[str, List[object]]) -> None:
+    data = json.loads(MATCH_FILE.read_text())
+    data['other'] = other_data
+    MATCH_FILE.write_text(json.dumps(data, indent=4))
 
 
 def read_match_data() -> Tuple[int, List[Optional[str]]]:

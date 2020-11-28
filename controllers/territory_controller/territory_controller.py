@@ -1,9 +1,17 @@
+import sys
 import enum
 import struct
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
+from pathlib import Path
 
 # Webots specific library
 from controller import Emitter, Receiver, Supervisor  # isort:skip
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
+
+import controller_utils  # isort:skip
 
 # Updating? Update `Arena.wbt` too
 ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
@@ -39,10 +47,14 @@ class StationCode(str, enum.Enum):
 
 
 class ClaimLog:
-    def __init__(self) -> None:
+    def __init__(self, record_arena_actions: bool) -> None:
+        self._record_arena_actions = record_arena_actions
+
         self._station_statuses: Dict[StationCode, Claimant] = {
             code: Claimant.UNCLAIMED for code in StationCode
         }
+
+        self._log: List[Tuple[StationCode, Claimant, float]] = []
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
         return self._station_statuses[station_code]
@@ -53,9 +65,22 @@ class ClaimLog:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        # TODO add better logging so we can score
+        self._log.append((station_code, claimed_by, claim_time))
         print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
         self._station_statuses[station_code] = claimed_by
+
+    def record_captures(self) -> None:
+        if not self._record_arena_actions:
+            return
+
+        controller_utils.record_arena_data({'territory_claims': [
+            {
+                'zone': claimed_by.value,
+                'station_code': station_code.value,
+                'time': claim_time,
+            }
+            for station_code, claimed_by, claim_time in self._log
+        ]})
 
 
 class TerritoryController:
@@ -162,6 +187,8 @@ class TerritoryController:
         for station_code, receiver in self._receivers.items():
             self.receive_territory(station_code, receiver)
 
+        self._claim_log.record_captures()
+
     def transmit_pulses(self) -> None:
         for station_code, emitter in self._emitters.items():
             emitter.send(struct.pack("!2sb", station_code.encode('ASCII'),
@@ -181,6 +208,9 @@ class TerritoryController:
 
 
 if __name__ == "__main__":
-    claim_log = ClaimLog()
+    claim_log = ClaimLog(record_arena_actions=(
+        controller_utils.MATCH_FILE.exists() and
+        controller_utils.get_robot_mode() == 'comp'
+    ))
     territory_controller = TerritoryController(claim_log)
     territory_controller.main()
