@@ -17,6 +17,7 @@ ROBOT_IDS_TO_CORNERS = {
     "5": 0,
     "225": 1,
 }
+NUM_ZONES = len(ROBOT_IDS_TO_CORNERS)
 
 
 def get_match_num() -> Optional[int]:

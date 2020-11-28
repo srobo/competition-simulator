@@ -14,8 +14,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # noqa:E402 # isort:skip
-
-NUM_ZONES = 2
+from controller_utils import NUM_ZONES  # isort:skip
 
 
 def get_zone_path(zone_id: int) -> Path:
