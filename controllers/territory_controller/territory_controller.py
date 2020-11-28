@@ -38,16 +38,34 @@ class StationCode(str, enum.Enum):
     HV = 'HV'
 
 
+class ClaimLog:
+    def __init__(self) -> None:
+        self._station_statuses: Dict[StationCode, Claimant] = {
+            code: Claimant.UNCLAIMED for code in StationCode
+        }
+
+    def get_claimant(self, station_code: StationCode) -> Claimant:
+        return self._station_statuses[station_code]
+
+    def log_territory_claim(
+        self,
+        station_code: StationCode,
+        claimed_by: Claimant,
+        claim_time: float,
+    ) -> None:
+        # TODO add better logging so we can score
+        print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
+        self._station_statuses[station_code] = claimed_by
+
+
 class TerritoryController:
 
     _emitters: Dict[StationCode, Emitter]
     _receivers: Dict[StationCode, Receiver]
 
-    def __init__(self) -> None:
+    def __init__(self, claim_log: ClaimLog) -> None:
+        self._claim_log = claim_log
         self._robot = Supervisor()
-        self._station_statuses: Dict[StationCode, Claimant] = {
-            code: Claimant.UNCLAIMED for code in StationCode
-        }
         self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
 
         self._emitters = {station_code: self._robot.getEmitter(station_code + "Emitter")
@@ -58,18 +76,6 @@ class TerritoryController:
 
         for receiver in self._receivers.values():
             receiver.enable(RECEIVE_TICKS)
-
-    def get_claimant(self, station_code: StationCode) -> Claimant:
-        return self._station_statuses[station_code]
-
-    def _log_territory_claim(
-        self,
-        station_code: StationCode,
-        claimed_by: Claimant,
-        claim_time: float,
-    ) -> None:
-        # TODO add better logging so we can score
-        print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
 
     def begin_claim(
         self,
@@ -98,7 +104,7 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self.get_claimant(station_code) == claimed_by:
+        if self._claim_log.get_claimant(station_code) == claimed_by:
             # This territory is already claimed by this claimant.
             return
 
@@ -107,8 +113,7 @@ class TerritoryController:
             list(new_colour),
         )
 
-        self._log_territory_claim(station_code, claimed_by, self._robot.getTime())
-        self._station_statuses[station_code] = claimed_by
+        self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
 
     def process_packet(
         self,
@@ -159,7 +164,7 @@ class TerritoryController:
     def transmit_pulses(self) -> None:
         for station_code, emitter in self._emitters.items():
             emitter.send(struct.pack("!2sb", station_code.encode('ASCII'),
-                         int(self.get_claimant(station_code))))
+                         int(self._claim_log.get_claimant(station_code))))
 
     def main(self) -> None:
         timestep = self._robot.getBasicTimeStep()
@@ -175,5 +180,6 @@ class TerritoryController:
 
 
 if __name__ == "__main__":
-    territory_controller = TerritoryController()
+    claim_log = ClaimLog()
+    territory_controller = TerritoryController(claim_log)
     territory_controller.main()
