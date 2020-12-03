@@ -8,4 +8,12 @@
 # matches, so we *don't* have the full range of requirements.txt supported
 # syntax available.
 
-matplotlib==3.2.2
+matplotlib==3.3.3
+numpy==1.19.3
+pandas==1.1.4
+torch==1.7.0 ; sys_platform != "win32"
+scipy==1.5.4
+
+
+-f https://download.pytorch.org/whl/torch_stable.html
+torch==1.7.0+cpu ; sys_platform == "win32"
