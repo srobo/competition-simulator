@@ -145,7 +145,7 @@ def run_match(supervisor: Supervisor) -> None:
         robot.getField('customData').setSFString('start')
 
     # ... then un-pause the simulation, so they all start together
-    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_REAL_TIME)
+    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_RUN)
 
     time_step = int(supervisor.getBasicTimeStep())
     duration_ms = time_step * int(1000 * GAME_DURATION_SECONDS // time_step)
