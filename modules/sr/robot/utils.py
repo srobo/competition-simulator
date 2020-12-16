@@ -24,7 +24,7 @@ def map_to_range(
 
 def get_robot_emitter(robot: Robot, device: str) -> Emitter:
     try:
-        # webots 2020b fails to assign the output to the expected type
+        # webots 2020b fails to assign the output to the expected type raising TypeError
         emitter: Optional[Emitter] = robot.getDevice(device)
         # webots 2020b always returns None when not raising TypeError
         if emitter is None:
@@ -36,7 +36,7 @@ def get_robot_emitter(robot: Robot, device: str) -> Emitter:
 
 def get_robot_receiver(robot: Robot, device: str) -> Receiver:
     try:
-        # webots 2020b fails to assign the output to the expected type
+        # webots 2020b fails to assign the output to the expected type raising TypeError
         receiver: Optional[Receiver] = robot.getDevice(device)
         # webots 2020b always returns None when not raising TypeError
         if receiver is None:
@@ -48,7 +48,7 @@ def get_robot_receiver(robot: Robot, device: str) -> Receiver:
 
 def get_robot_motor(robot: Robot, device: str) -> Motor:
     try:
-        # webots 2020b fails to assign the output to the expected type
+        # webots 2020b fails to assign the output to the expected type raising TypeError
         motor: Optional[Motor] = robot.getDevice(device)
         # webots 2020b always returns None when not raising TypeError
         if motor is None:
@@ -60,7 +60,7 @@ def get_robot_motor(robot: Robot, device: str) -> Motor:
 
 def get_robot_LED(robot: Robot, device: str) -> LED:
     try:
-        # webots 2020b fails to assign the output to the expected type
+        # webots 2020b fails to assign the output to the expected type raising TypeError
         led: Optional[LED] = robot.getDevice(device)
         # webots 2020b always returns None when not raising TypeError
         if led is None:
@@ -72,7 +72,7 @@ def get_robot_LED(robot: Robot, device: str) -> LED:
 
 def get_robot_distance_sensor(robot: Robot, device: str) -> DistanceSensor:
     try:
-        # webots 2020b fails to assign the output to the expected type
+        # webots 2020b fails to assign the output to the expected type raising TypeError
         distance_sensor: Optional[DistanceSensor] = robot.getDevice(device)
         # webots 2020b always returns None when not raising TypeError
         if distance_sensor is None:
@@ -84,11 +84,11 @@ def get_robot_distance_sensor(robot: Robot, device: str) -> DistanceSensor:
 
 def get_robot_touch_sensor(robot: Robot, device: str) -> TouchSensor:
     try:
-        # webots 2020b fails to assign the output to the expected type
-        touch_Sensor: Optional[TouchSensor] = robot.getDevice(device)
+        # webots 2020b fails to assign the output to the expected type raising TypeError
+        touch_sensor: Optional[TouchSensor] = robot.getDevice(device)
         # webots 2020b always returns None when not raising TypeError
-        if touch_Sensor is None:
+        if touch_sensor is None:
             raise TypeError
     except TypeError:
-        touch_Sensor = robot.getTouchSensor(device)
-    return touch_Sensor
+        touch_sensor = robot.getTouchSensor(device)
+    return touch_sensor

@@ -66,13 +66,15 @@ class TerritoryController:
         return self._station_statuses[station_code]
 
     def setup(self) -> None:
-        self._emitters = {station_code:
-                          get_robot_emitter(self._robot, station_code + "Emitter")
-                          for station_code in StationCode}
+        self._emitters = {
+            station_code: get_robot_emitter(self._robot, station_code + "Emitter")
+            for station_code in StationCode
+        }
 
-        self._receivers = {station_code:
-                           get_robot_receiver(self._robot, station_code + "Receiver")
-                           for station_code in StationCode}
+        self._receivers = {
+            station_code: get_robot_receiver(self._robot, station_code + "Receiver")
+            for station_code in StationCode
+        }
         territory_controller.enable_receivers()
 
     def enable_receivers(self) -> None:
