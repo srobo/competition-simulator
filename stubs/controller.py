@@ -1,5 +1,5 @@
 import enum
-from typing import List, Tuple, Optional, Sequence, Union
+from typing import List, Tuple, Union, Optional, Sequence
 
 
 class Device:
