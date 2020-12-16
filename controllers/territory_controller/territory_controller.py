@@ -12,7 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
-from sr.robot.utils import get_robot_emitter, get_robot_receiver  # isort:skip
+from sr.robot.utils import get_robot_device  # isort:skip
 
 # Updating? Update `Arena.wbt` too
 ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
@@ -67,12 +67,12 @@ class TerritoryController:
 
     def setup(self) -> None:
         self._emitters = {
-            station_code: get_robot_emitter(self._robot, station_code + "Emitter")
+            station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)
             for station_code in StationCode
         }
 
         self._receivers = {
-            station_code: get_robot_receiver(self._robot, station_code + "Receiver")
+            station_code: get_robot_device(self._robot, station_code + "Receiver", Receiver)
             for station_code in StationCode
         }
         territory_controller.enable_receivers()

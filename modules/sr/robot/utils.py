@@ -1,9 +1,10 @@
-from typing import Optional
+from typing import cast, Type, TypeVar, Optional
 
 from controller import (
     LED,
     Motor,
     Robot,
+    Device,
     Emitter,
     Receiver,
     TouchSensor,
@@ -22,73 +23,28 @@ def map_to_range(
     return ((value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
 
-def get_robot_emitter(robot: Robot, device: str) -> Emitter:
-    try:
-        # webots 2020b fails to assign the output to the expected type raising TypeError
-        emitter: Optional[Emitter] = robot.getDevice(device)
-        # webots 2020b always returns None when not raising TypeError
-        if emitter is None:
-            raise TypeError
+TDevice = TypeVar('TDevice', bound=Device)
+
+
+def get_robot_device(robot: Robot, name: str, kind: Type[TDevice]) -> TDevice:
+    device: Optional[Device] = None
+    try:  # webots 2020b fails to assign the output to the expected type raising TypeError
+        device = robot.getDevice(name)
     except TypeError:
-        emitter = robot.getEmitter(device)
-    return emitter
-
-
-def get_robot_receiver(robot: Robot, device: str) -> Receiver:
-    try:
-        # webots 2020b fails to assign the output to the expected type raising TypeError
-        receiver: Optional[Receiver] = robot.getDevice(device)
-        # webots 2020b always returns None when not raising TypeError
-        if receiver is None:
-            raise TypeError
-    except TypeError:
-        receiver = robot.getReceiver(device)
-    return receiver
-
-
-def get_robot_motor(robot: Robot, device: str) -> Motor:
-    try:
-        # webots 2020b fails to assign the output to the expected type raising TypeError
-        motor: Optional[Motor] = robot.getDevice(device)
-        # webots 2020b always returns None when not raising TypeError
-        if motor is None:
-            raise TypeError
-    except TypeError:
-        motor = robot.getMotor(device)
-    return motor
-
-
-def get_robot_LED(robot: Robot, device: str) -> LED:
-    try:
-        # webots 2020b fails to assign the output to the expected type raising TypeError
-        led: Optional[LED] = robot.getDevice(device)
-        # webots 2020b always returns None when not raising TypeError
-        if led is None:
-            raise TypeError
-    except TypeError:
-        led = robot.getLED(device)
-    return led
-
-
-def get_robot_distance_sensor(robot: Robot, device: str) -> DistanceSensor:
-    try:
-        # webots 2020b fails to assign the output to the expected type raising TypeError
-        distance_sensor: Optional[DistanceSensor] = robot.getDevice(device)
-        # webots 2020b always returns None when not raising TypeError
-        if distance_sensor is None:
-            raise TypeError
-    except TypeError:
-        distance_sensor = robot.getDistanceSensor(device)
-    return distance_sensor
-
-
-def get_robot_touch_sensor(robot: Robot, device: str) -> TouchSensor:
-    try:
-        # webots 2020b fails to assign the output to the expected type raising TypeError
-        touch_sensor: Optional[TouchSensor] = robot.getDevice(device)
-        # webots 2020b always returns None when not raising TypeError
-        if touch_sensor is None:
-            raise TypeError
-    except TypeError:
-        touch_sensor = robot.getTouchSensor(device)
-    return touch_sensor
+        pass
+    if device is None:  # webots 2020b always returns None when not raising TypeError
+        if kind is Emitter:
+            device = robot.getEmitter(name)
+        elif kind is Receiver:
+            device = robot.getReceiver(name)
+        elif kind is Motor:
+            device = robot.getMotor(name)
+        elif kind is LED:
+            device = robot.getLED(name)
+        elif kind is DistanceSensor:
+            device = robot.getDistanceSensor(name)
+        elif kind is TouchSensor:
+            device = robot.getTouchSensor(name)
+    if not isinstance(device, kind):
+        raise TypeError
+    return cast(TDevice, device)

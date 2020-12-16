@@ -1,7 +1,7 @@
 from typing import Tuple
 
-from controller import Robot
-from sr.robot.utils import get_robot_motor
+from controller import Motor, Robot
+from sr.robot.utils import get_robot_device
 
 
 class MotorBase:
@@ -11,7 +11,7 @@ class MotorBase:
 
     def __init__(self, webot: Robot, motor_name: str) -> None:
         self.motor_name = motor_name
-        self.webot_motor = get_robot_motor(webot, motor_name)
+        self.webot_motor = get_robot_device(webot, motor_name, Motor)
         self.max_speed = self.webot_motor.getMaxVelocity()
 
 
