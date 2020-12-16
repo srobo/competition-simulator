@@ -229,6 +229,7 @@ class Robot:
         Receiver,
         TouchSensor,
         DistanceSensor,
+        None,
     ]: ...
 
 
