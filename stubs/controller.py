@@ -1,5 +1,5 @@
 import enum
-from typing import List, Tuple, Optional, Sequence
+from typing import List, Tuple, Optional, Sequence, Union
 
 
 class Device:
@@ -221,6 +221,15 @@ class Robot:
     def getMotor(self, name: str) -> Motor: ...
     def getReceiver(self, name: str) -> Receiver: ...
     def getTouchSensor(self, name: str) -> TouchSensor: ...
+
+    def getDevice(self, name: str) -> Union[
+        LED,
+        Motor,
+        Emitter,
+        Receiver,
+        TouchSensor,
+        DistanceSensor,
+    ]: ...
 
 
 class _SimulationMode(enum.Enum):
