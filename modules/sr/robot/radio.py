@@ -92,9 +92,9 @@ class Radio:
 
     def __init__(self, webot: Robot, zone: int, step_lock: Lock) -> None:
         self._webot = webot
-        self._receiver = webot.getReceiver("robot receiver")
+        self._receiver = webot.getDevice("robot receiver")
         self._receiver.enable(1)
-        self._emitter = webot.getEmitter("robot emitter")
+        self._emitter = webot.getDevice("robot emitter")
         self._zone = zone
         self._step_lock = step_lock
 

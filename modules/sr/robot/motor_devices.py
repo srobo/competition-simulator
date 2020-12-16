@@ -10,7 +10,7 @@ class MotorBase:
 
     def __init__(self, webot: Robot, motor_name: str) -> None:
         self.motor_name = motor_name
-        self.webot_motor = webot.getMotor(motor_name)
+        self.webot_motor = webot.getDevice(motor_name)
         self.max_speed = self.webot_motor.getMaxVelocity()
 
 
