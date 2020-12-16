@@ -1,9 +1,18 @@
+import sys
 import enum
 import struct
 from typing import Dict, Tuple
+from pathlib import Path
 
 # Webots specific library
 from controller import Emitter, Receiver, Supervisor  # isort:skip
+
+# Root directory of the SR webots simulator (equivalent to the root of the git repo)
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
+
+from sr.robot.utils import get_robot_emitter, get_robot_receiver  # isort:skip
 
 # Updating? Update `Arena.wbt` too
 ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
@@ -57,10 +66,12 @@ class TerritoryController:
         return self._station_statuses[station_code]
 
     def setup(self) -> None:
-        self._emitters = {station_code: self._robot.getDevice(station_code + "Emitter")
+        self._emitters = {station_code:
+                          get_robot_emitter(self._robot, station_code + "Emitter")
                           for station_code in StationCode}
 
-        self._receivers = {station_code: self._robot.getDevice(station_code + "Receiver")
+        self._receivers = {station_code:
+                           get_robot_receiver(self._robot, station_code + "Receiver")
                            for station_code in StationCode}
         territory_controller.enable_receivers()
 

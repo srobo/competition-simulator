@@ -6,6 +6,7 @@ from threading import Lock
 
 from controller import Robot
 from sr.robot.coordinates import Vector
+from sr.robot.utils import get_robot_emitter, get_robot_receiver
 
 # Updating? Update territory_controller.py too.
 BROADCASTS_PER_SECOND = 10
@@ -92,9 +93,9 @@ class Radio:
 
     def __init__(self, webot: Robot, zone: int, step_lock: Lock) -> None:
         self._webot = webot
-        self._receiver = webot.getDevice("robot receiver")
+        self._receiver = get_robot_receiver(webot, "robot receiver")
         self._receiver.enable(1)
-        self._emitter = webot.getDevice("robot emitter")
+        self._emitter = get_robot_emitter(webot, "robot emitter")
         self._zone = zone
         self._step_lock = step_lock
 
