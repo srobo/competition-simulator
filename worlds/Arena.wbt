@@ -302,9 +302,12 @@ Solid {
   name "RootNode"
 }
 Solid {
-  translation 0 -0.01 0
+  translation 0 -0.001 0
   children [
     Shape {
+      appearance MattePaint {
+        baseColor 0.6 0.6 0.6
+      }
       geometry Plane {
         size 10 5
       }
