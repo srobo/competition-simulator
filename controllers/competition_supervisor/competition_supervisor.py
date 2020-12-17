@@ -1,4 +1,3 @@
-import re
 import sys
 import time
 import datetime
@@ -72,10 +71,9 @@ def check_required_libraries(path: Path) -> None:
     missing, incorrect = [], []
 
     for package in path.read_text().splitlines():
-        package_match = re.match(r"[\w|-]+==[\d|.]+", package)
-        if not package_match:
+        package = package.partition('#')[0].strip()
+        if not package:
             continue
-        package = package_match.group(0)
 
         try:
             pkg_resources.get_distribution(package)
