@@ -1,12 +1,9 @@
 import enum
-from typing import List, Tuple, TypeVar, Optional, Sequence
+from typing import List, Tuple, Optional, Sequence
 
 
 class Device:
     def getModel(self) -> str: ...
-
-
-TDevice = TypeVar('TDevice', bound=Device)
 
 
 # Note: we don't actually know if webots offers up tuples or lists.
@@ -225,7 +222,7 @@ class Robot:
     def getReceiver(self, name: str) -> Receiver: ...
     def getTouchSensor(self, name: str) -> TouchSensor: ...
 
-    def getDevice(self, name: str) -> Optional[TDevice]: ...
+    def getDevice(self, name: str) -> Optional[Device]: ...
 
 
 class _SimulationMode(enum.Enum):

@@ -4,7 +4,7 @@ from controller import (
     LED,
     Robot,
     TouchSensor,
-    DistanceSensor as TDistanceSensor,
+    DistanceSensor as WebotsDistanceSensor,
 )
 from sr.robot.utils import map_to_range, get_robot_device
 from sr.robot.randomizer import add_jitter
@@ -22,7 +22,7 @@ class DistanceSensor:
     UPPER_BOUND = 2
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
-        self.webot_sensor = get_robot_device(webot, sensor_name, TDistanceSensor)
+        self.webot_sensor = get_robot_device(webot, sensor_name, WebotsDistanceSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
     def __get_scaled_distance(self) -> float:

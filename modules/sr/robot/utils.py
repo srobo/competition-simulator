@@ -11,6 +11,8 @@ from controller import (
     DistanceSensor,
 )
 
+TDevice = TypeVar('TDevice', bound=Device)
+
 
 def map_to_range(
     old_min: float,
@@ -21,9 +23,6 @@ def map_to_range(
 ) -> float:
     """Maps a value from within one range of inputs to within a range of outputs."""
     return ((value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
-
-
-TDevice = TypeVar('TDevice', bound=Device)
 
 
 def get_robot_device(robot: Robot, name: str, kind: Type[TDevice]) -> TDevice:
