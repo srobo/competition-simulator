@@ -28,7 +28,9 @@ TDevice = TypeVar('TDevice', bound=Device)
 
 def get_robot_device(robot: Robot, name: str, kind: Type[TDevice]) -> TDevice:
     device: Optional[Device] = None
-    try:  # webots 2020b fails to assign the output to the expected type raising TypeError
+    try:
+        # webots 2020b is buggy and always raises TypeError when passed a str,
+        # however we're aiming to be forwards compatible with 2021a, so try this first.
         device = robot.getDevice(name)
     except TypeError:
         pass
