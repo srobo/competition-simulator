@@ -145,7 +145,11 @@ def run_match(supervisor: Supervisor) -> None:
         robot.getField('customData').setSFString('start')
 
     # ... then un-pause the simulation, so they all start together
-    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_RUN)
+    if supervisor.getDevice("2021a-compatibility") is None:
+        # webots-2021a removed the RUN mode and now uses FAST
+        supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_RUN)
+    else:
+        supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_FAST)
 
     time_step = int(supervisor.getBasicTimeStep())
     duration_ms = time_step * int(1000 * GAME_DURATION_SECONDS // time_step)
