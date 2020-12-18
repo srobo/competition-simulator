@@ -146,9 +146,10 @@ def run_match(supervisor: Supervisor) -> None:
 
     # ... then un-pause the simulation, so they all start together
     if supervisor.getDevice("2021a-compatibility") is None:
-        # webots-2021a removed the RUN mode and now uses FAST
+        # we are running version 2020b so the old command is used
         supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_RUN)
     else:
+        # webots-2021a removed the RUN mode and now uses FAST
         supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_FAST)
 
     time_step = int(supervisor.getBasicTimeStep())
