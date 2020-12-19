@@ -22,6 +22,39 @@ def get_zone_path(zone_id: int) -> Path:
     return robot_file.parent
 
 
+def construct_match_data(args: argparse.Namespace) -> controller_utils.MatchData:
+    tlas = [
+        tla if tla != '-' else None
+        for tla in args.tla
+    ]
+
+    return controller_utils.MatchData(
+        args.match_num,
+        tlas,
+        args.duration,
+        recording_config=None,  # use the default
+    )
+
+
+def prepare_match(archives_dir: Path, match_data: controller_utils.MatchData) -> None:
+    controller_utils.MODE_FILE.write_text('comp\n')
+    controller_utils.record_match_data(match_data)
+
+    for zone_id, tla in enumerate(match_data.teams):
+        zone_path = get_zone_path(zone_id)
+
+        if zone_path.exists():
+            shutil.rmtree(zone_path)
+
+        if tla is None:
+            # no team in this zone
+            continue
+
+        zone_path.mkdir()
+        with ZipFile(f'{archives_dir / tla}.zip') as zipfile:
+            zipfile.extractall(zone_path)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -48,32 +81,8 @@ def parse_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    tlas = [
-        tla if tla != '-' else None
-        for tla in args.tla
-    ]
-
-    controller_utils.MODE_FILE.write_text('comp\n')
-    controller_utils.record_match_data(controller_utils.MatchData(
-        args.match_num,
-        tlas,
-        args.duration,
-        recording_config=None,  # use the default
-    ))
-
-    for zone_id, tla in enumerate(tlas):
-        zone_path = get_zone_path(zone_id)
-
-        if zone_path.exists():
-            shutil.rmtree(zone_path)
-
-        if tla is None:
-            # no team in this zone
-            continue
-
-        zone_path.mkdir()
-        with ZipFile(f'{args.archives_dir / tla}.zip') as zipfile:
-            zipfile.extractall(zone_path)
+    match_data = construct_match_data(args)
+    prepare_match(args.archives_dir, match_data)
 
 
 if __name__ == '__main__':
