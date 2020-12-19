@@ -36,7 +36,8 @@ def record_match_data(number: int, teams: List[Optional[str]]) -> None:
 
 def record_arena_data(other_data: Dict[str, List[object]]) -> None:
     data = json.loads(MATCH_FILE.read_text())
-    data['other'] = other_data
+    arena_zones = data.setdefault('arena_zones', {})
+    arena_zones['other'] = other_data
     MATCH_FILE.write_text(json.dumps(data, indent=4))
 
 

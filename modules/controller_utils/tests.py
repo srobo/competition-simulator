@@ -132,7 +132,7 @@ class TestMatchDataIO(unittest.TestCase):
         raw_data = json.load(self.match_file)
         self.assertEqual(
             {'foop': ['spam']},
-            raw_data['other'],
+            raw_data['arena_zones']['other'],
             "Wrong data read back out",
         )
 
