@@ -1,7 +1,32 @@
 import io
+import json
+import random
+import string
+import tempfile
 import unittest
+import contextlib
+from typing import IO, List, Tuple, Iterator, Optional
+from pathlib import Path
+from unittest import mock
 
-from . import SimpleTee
+from . import (
+    NUM_ZONES,
+    SimpleTee,
+    read_match_data,
+    record_arena_data,
+    record_match_data,
+)
+
+
+def fake_tla() -> str:
+    return ''.join(random.choices(string.ascii_uppercase, k=3))
+
+
+@contextlib.contextmanager
+def mock_match_file() -> Iterator[IO[str]]:
+    with tempfile.NamedTemporaryFile(suffix='.json', mode='r+t') as f:
+        with mock.patch('controller_utils.MATCH_FILE', new=Path(f.name)):
+            yield f
 
 
 class TestSimpleTee(unittest.TestCase):
@@ -68,4 +93,48 @@ class TestSimpleTee(unittest.TestCase):
             "@Bees\n@Foo\n@\n@ABCThree\n@Four\n",
             out.getvalue(),
             "Stream has wrong content after adding content containing newlines",
+        )
+
+
+@mock_match_file()
+class TestMatchDataIO(unittest.TestCase):
+    def fake_match_data(self) -> Tuple[int, List[Optional[str]]]:
+        number = 42
+        teams = [None, *(fake_tla() for _ in range(NUM_ZONES - 1))]
+        random.shuffle(teams)
+
+        return number, teams
+
+    def test_round_trip(self) -> None:
+        number, teams = self.fake_match_data()
+
+        record_match_data(number, teams)
+        read_data = read_match_data()
+
+        self.assertEqual(
+            (number, teams),
+            read_data,
+            "Wrong data read back out",
+        )
+
+    def test_record_arena_data(self, match_file: IO[str]) -> None:
+        number, teams = self.fake_match_data()
+
+        record_match_data(number, teams)
+
+        record_arena_data({'foop': ['spam']})
+
+        raw_data = json.load(match_file)
+        self.assertEqual(
+            {'foop': ['spam']},
+            raw_data['other'],
+            "Wrong data read back out",
+        )
+
+        read_data = read_match_data()
+
+        self.assertEqual(
+            (number, teams),
+            read_data,
+            "Should not have modified match data already present in file",
         )
