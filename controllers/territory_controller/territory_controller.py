@@ -3,7 +3,7 @@ import struct
 from typing import Dict, Tuple
 
 # Webots specific library
-from controller import Emitter, Receiver, Supervisor  # isort:skip
+from controller import Emitter, Receiver, Supervisor
 
 # Updating? Update `Arena.wbt` too
 ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
