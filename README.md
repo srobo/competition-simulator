@@ -77,39 +77,16 @@ In order to run competition matches you'll need to:
 
 3. Launch webots go to "Tools" > "Preferences" > "OpenGL" and set Ambient Occlusion to Disabled, Texture Quality to High, Disable shadows to false and Disable anti-aliasing to false
 
-4. To put the competitors' code into the right places for each of the corner zones, run
+4. Run the match:
 
     ```bash
-    competition-simulator/script/prepare-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>
+    competition-simulator/script/run-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>
     ```
 
-    Using a dash instead of a TLA if a robot is not present. This provides filenames and sets up the directory structure:
+    Using a dash instead of a TLA if a robot is not present.
 
-    ``` plain
-    .
-    ├── competition-simulator
-    │   ├── controllers
-    │   ├── ...
-    │   └── worlds
-    ├── robot_mode.txt
-    ├── zone-0
-    |   ├── log-zone-0-match-<match number>.txt
-    │   └── robot.py
-    └── zone-2
-        ├── log-zone-2-match-<match number>.txt
-        └── robot.py
-    ```
-
-5. Run webots from the command line using:
-
-    ```bash
-    webots --batch worlds/Arena.wbt
-    ```
-
-   This runs a single match, including capturing the video and animation, and
-   then pauses the simulation at the end.
-
-6. After the match completes the robots will stop moving. Wait for the video to
-   complete its rendering (check in the output console) and then quit Webots.
-
-7. Copy logs into `competition-simulator/recordings/yyy-mm-dd/match-<match number>/logs`
+    This will orchestrate everything to run the match, including running webots
+    and collecting together the logs and recordings.
+    - The teams' logs will be next to their code archives.
+    - The match file (suitable for SRComp) will be TODO: where? (currently still in ARENA_ROOT)
+    - The recording will be TODO: where? (currently still in REPO_ROOT/recordings/...)

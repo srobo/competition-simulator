@@ -60,6 +60,17 @@ def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
         print("Movie failed to record")
 
 
+@contextlib.contextmanager
+def propagate_exit_code(supervisor: Supervisor) -> Iterator[None]:
+    try:
+        yield
+    except Exception:
+        supervisor.simulationQuit(1)
+        raise
+    else:
+        supervisor.simulationQuit(0)
+
+
 def quit_if_development_mode() -> None:
     if controller_utils.get_robot_mode() != 'comp':
         print("Development mode, exiting competition supervisor")
@@ -163,19 +174,20 @@ def main() -> None:
 
     supervisor = Supervisor()
 
-    prepare(supervisor)
+    with propagate_exit_code(supervisor):
+        prepare(supervisor)
 
-    # Check after we've paused the sim so that any errors won't be masked by
-    # subsequent console output from a robot.
-    check_required_libraries(REPO_ROOT / 'libraries.txt')
+        # Check after we've paused the sim so that any errors won't be masked by
+        # subsequent console output from a robot.
+        check_required_libraries(REPO_ROOT / 'libraries.txt')
 
-    remove_unused_robots(supervisor)
+        remove_unused_robots(supervisor)
 
-    recording_stem = get_recording_stem()
+        recording_stem = get_recording_stem()
 
-    with record_animation(supervisor, recording_stem.with_suffix('.html')):
-        with record_video(supervisor, recording_stem.with_suffix('.mp4')):
-            run_match(supervisor)
+        with record_animation(supervisor, recording_stem.with_suffix('.html')):
+            with record_video(supervisor, recording_stem.with_suffix('.mp4')):
+                run_match(supervisor)
 
 
 if __name__ == '__main__':

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-A script to prepare for a competition match.
+A script to run a competition match.
 """
 
 import sys
 import shutil
 import argparse
+import subprocess
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -15,6 +16,8 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
 from controller_utils import NUM_ZONES  # isort:skip
+
+NUM_CONTROLLERS = NUM_ZONES + 2
 
 
 def get_zone_path(zone_id: int) -> Path:
@@ -55,6 +58,36 @@ def prepare_match(archives_dir: Path, match_data: controller_utils.MatchData) ->
             zipfile.extractall(zone_path)
 
 
+def run_match() -> None:
+    subprocess.check_call([
+        'webots',
+        '--batch',
+        '--stdout',
+        '--stderr',
+        '--minimize',
+        str(REPO_ROOT / 'worlds' / 'Arena.wbt'),
+    ])
+
+
+def collate_logs(archives_dir: Path, match_data: controller_utils.MatchData) -> None:
+    """
+    Copy the teams' logs into directories next to their original code archives.
+    """
+
+    for zone_id, tla in enumerate(match_data.teams):
+        if tla is None:
+            # no team in this zone
+            continue
+
+        log_filname = controller_utils.get_robot_log_filename(zone_id)
+        log_path = get_zone_path(zone_id) / log_filname
+
+        team_dir = archives_dir / tla
+        team_dir.mkdir()
+
+        shutil.copy(log_path, team_dir)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -62,7 +95,7 @@ def parse_args() -> argparse.Namespace:
         help="The directory containing the user's robot code",
         type=Path,
     )
-    parser.add_argument('match_num', help="The match number to prepare for.")
+    parser.add_argument('match_num', help="The match number to run.")
     parser.add_argument(
         'tla',
         nargs=NUM_ZONES,
@@ -83,6 +116,10 @@ def parse_args() -> argparse.Namespace:
 def main(args: argparse.Namespace) -> None:
     match_data = construct_match_data(args)
     prepare_match(args.archives_dir, match_data)
+
+    run_match()
+
+    collate_logs(args.archives_dir, match_data)
 
 
 if __name__ == '__main__':
