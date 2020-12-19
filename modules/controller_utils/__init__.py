@@ -68,6 +68,9 @@ class SimpleTee:
         self.prefix = prefix
 
     def _insert_prefix(self, data: str) -> str:
+        if not self.prefix:
+            return data
+
         # Append our prefix just after all inner newlines. Don't append to a
         # trailing newline as we don't know if the next line in the log will be
         # from this zone.
