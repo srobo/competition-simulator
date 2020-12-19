@@ -96,7 +96,6 @@ class TestSimpleTee(unittest.TestCase):
         )
 
 
-@mock_match_file()
 class TestMatchDataIO(unittest.TestCase):
     def fake_match_data(self) -> Tuple[int, List[Optional[str]]]:
         number = 42
@@ -104,6 +103,12 @@ class TestMatchDataIO(unittest.TestCase):
         random.shuffle(teams)
 
         return number, teams
+
+    def setUp(self) -> None:
+        super().setUp()
+        ctx = mock_match_file()
+        self.match_file = ctx.__enter__()
+        self.addCleanup(lambda: ctx.__exit__(None, None, None))
 
     def test_round_trip(self) -> None:
         number, teams = self.fake_match_data()
@@ -117,14 +122,14 @@ class TestMatchDataIO(unittest.TestCase):
             "Wrong data read back out",
         )
 
-    def test_record_arena_data(self, match_file: IO[str]) -> None:
+    def test_record_arena_data(self) -> None:
         number, teams = self.fake_match_data()
 
         record_match_data(number, teams)
 
         record_arena_data({'foop': ['spam']})
 
-        raw_data = json.load(match_file)
+        raw_data = json.load(self.match_file)
         self.assertEqual(
             {'foop': ['spam']},
             raw_data['other'],
