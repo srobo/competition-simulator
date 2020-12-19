@@ -1,4 +1,5 @@
 import os
+import sys
 import datetime
 from typing import IO, Optional
 from pathlib import Path
@@ -94,3 +95,26 @@ class SimpleTee:
     def flush(self) -> None:
         for stream in self.streams:
             stream.flush()
+
+
+def tee_streams(name: Path, prefix: str = '') -> None:
+    """
+    Tee stdout and stderr also to the named log file.
+
+    Note: we intentionally don't provide a way to clean up the stream
+    replacement so that any error handling from Python which causes us to exit
+    is also captured by the log file.
+    """
+
+    log_file = name.open(mode='w')
+
+    sys.stdout = SimpleTee(  # type: ignore[assignment]
+        sys.stdout,
+        log_file,
+        prefix=prefix,
+    )
+    sys.stderr = SimpleTee(  # type: ignore[assignment]
+        sys.stderr,
+        log_file,
+        prefix=prefix,
+    )

@@ -1,7 +1,12 @@
 import io
+import sys
+import tempfile
 import unittest
+import contextlib
+from pathlib import Path
+from unittest import mock
 
-from . import SimpleTee
+from . import SimpleTee, tee_streams
 
 
 class TestSimpleTee(unittest.TestCase):
@@ -69,3 +74,37 @@ class TestSimpleTee(unittest.TestCase):
             out.getvalue(),
             "Stream has wrong content after adding content containing newlines",
         )
+
+    def test_tee_streams(self) -> None:
+        # 'tee_streams' is designed to be used as part of one-shot processes, so
+        # it does some otherwise slightly unusual things. As a result we need to
+        # also do some slightly odd things to test it.
+        with tempfile.NamedTemporaryFile(mode='w+t') as f:
+            with contextlib.redirect_stdout(io.StringIO()) as new_stdout:
+                with contextlib.redirect_stderr(io.StringIO()) as new_stderr:
+                    # Fake the opening of the log file to avoid a leaked file
+                    # reference (and associated warning).
+                    with mock.patch('pathlib.Path.open', return_value=f):
+                        tee_streams(Path(f.name), prefix='prefix:')
+
+                    print('To Stdout')  # noqa:T001
+                    print('To Stderr', file=sys.stderr)  # noqa:T001
+
+            self.assertEqual(
+                'prefix:To Stdout\n',
+                new_stdout.getvalue(),
+                "Should have still sent the output to the 'real' stdout",
+            )
+
+            self.assertEqual(
+                'prefix:To Stderr\n',
+                new_stderr.getvalue(),
+                "Should have still sent the output to the 'real' stderr",
+            )
+
+            f.seek(0)
+            self.assertEqual(
+                'prefix:To Stdout\nprefix:To Stderr\n',
+                f.read(),
+                "Should have sent all to the log file",
+            )
