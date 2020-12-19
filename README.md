@@ -69,10 +69,13 @@ In order to run competition matches you'll need to:
    install or a virtual environment.
 
 2. Launch webots go to "Tools" > "Preferences" > "OpenGL" and set:
+
     - Ambient Occlusion to Disabled,
     - Texture Quality to High,
     - Disable shadows to false, and
     - Disable anti-aliasing to false
+
+   Then close webots.
 
 3. To put the competitors' code into the right places for each of the corner zones, run
 
