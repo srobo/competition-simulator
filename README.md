@@ -68,16 +68,9 @@ In order to run competition matches you'll need to:
    We are using Python 3.7, though it shouldn't matter whether it's a system
    install or a virtual environment.
 
-2. Create a file `robot_mode.txt` in the parent directory of the git repo, which
-   contains just the text `comp`:
+2. Launch webots go to "Tools" > "Preferences" > "OpenGL" and set Ambient Occlusion to Disabled, Texture Quality to High, Disable shadows to false and Disable anti-aliasing to false
 
-    ``` bash
-    echo comp > robot_mode.txt
-    ```
-
-3. Launch webots go to "Tools" > "Preferences" > "OpenGL" and set Ambient Occlusion to Disabled, Texture Quality to High, Disable shadows to false and Disable anti-aliasing to false
-
-4. To put the competitors' code into the right places for each of the corner zones, run
+3. To put the competitors' code into the right places for each of the corner zones, run
 
     ```bash
     competition-simulator/script/prepare-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>
@@ -100,7 +93,7 @@ In order to run competition matches you'll need to:
         └── robot.py
     ```
 
-5. Run webots from the command line using:
+4. Run webots from the command line using:
 
     ```bash
     webots --batch worlds/Arena.wbt
@@ -109,7 +102,7 @@ In order to run competition matches you'll need to:
    This runs a single match, including capturing the video and animation, and
    then pauses the simulation at the end.
 
-6. After the match completes the robots will stop moving. Wait for the video to
+5. After the match completes the robots will stop moving. Wait for the video to
    complete its rendering (check in the output console) and then quit Webots.
 
-7. Copy logs into `competition-simulator/recordings/yyy-mm-dd/match-<match number>/logs`
+6. Copy logs into `competition-simulator/recordings/yyy-mm-dd/match-<match number>/logs`
