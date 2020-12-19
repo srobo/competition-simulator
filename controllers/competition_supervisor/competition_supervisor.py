@@ -16,8 +16,6 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
 
-GAME_DURATION_SECONDS = 120
-
 
 def get_recording_path() -> Path:
     now = datetime.datetime.now()
@@ -148,7 +146,8 @@ def run_match(supervisor: Supervisor) -> None:
     supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_RUN)
 
     time_step = int(supervisor.getBasicTimeStep())
-    duration_ms = time_step * int(1000 * GAME_DURATION_SECONDS // time_step)
+    duration = controller_utils.get_match_duration_seconds()
+    duration_ms = time_step * int(1000 * duration // time_step)
     supervisor.step(duration_ms)
 
     print("==================")

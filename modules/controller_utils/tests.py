@@ -10,6 +10,7 @@ from pathlib import Path
 from unittest import mock
 
 from . import (
+    MatchData,
     NUM_ZONES,
     SimpleTee,
     read_match_data,
@@ -98,29 +99,29 @@ class TestSimpleTee(unittest.TestCase):
 
 @mock_match_file()
 class TestMatchDataIO(unittest.TestCase):
-    def fake_match_data(self) -> Tuple[int, List[Optional[str]]]:
+    def fake_match_data(self) -> MatchData:
         number = 42
         teams = [None, *(fake_tla() for _ in range(NUM_ZONES - 1))]
         random.shuffle(teams)
 
-        return number, teams
+        return MatchData(number, teams, duration=180)
 
     def test_round_trip(self) -> None:
-        number, teams = self.fake_match_data()
+        match_data = self.fake_match_data()
 
-        record_match_data(number, teams)
+        record_match_data(match_data)
         read_data = read_match_data()
 
         self.assertEqual(
-            (number, teams),
+            match_data,
             read_data,
             "Wrong data read back out",
         )
 
     def test_record_arena_data(self, match_file: IO[str]) -> None:
-        number, teams = self.fake_match_data()
+        match_data = self.fake_match_data()
 
-        record_match_data(number, teams)
+        record_match_data(match_data)
 
         record_arena_data({'foop': ['spam']})
 
@@ -134,7 +135,7 @@ class TestMatchDataIO(unittest.TestCase):
         read_data = read_match_data()
 
         self.assertEqual(
-            (number, teams),
+            match_data,
             read_data,
             "Should not have modified match data already present in file",
         )
