@@ -119,20 +119,14 @@ def reconfigure_environment(robot_file: Path) -> None:
     os.chdir(str(robot_file.parent))
 
 
-def log_filename(zone_id: int) -> str:
-    return 'log-zone-{}-{}.txt'.format(
-        zone_id,
-        controller_utils.get_filename_safe_identifier(),
-    )
-
-
 def main() -> None:
     robot_mode = controller_utils.get_robot_mode()
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode).resolve()
+    log_filename = controller_utils.get_robot_log_filename(robot_zone)
 
     controller_utils.tee_streams(
-        robot_file.parent / log_filename(robot_zone),
+        robot_file.parent / log_filename,
         prefix=f'{robot_zone}| ',
     )
 

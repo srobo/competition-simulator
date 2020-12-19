@@ -144,6 +144,11 @@ def get_zone_robot_file_path(zone_id: int) -> Path:
     return ARENA_ROOT / "zone-{}".format(zone_id) / "robot.py"
 
 
+def get_robot_log_filename(zone_id: int) -> str:
+    identifier = get_filename_safe_identifier()
+    return f'log-zone-{zone_id}-{identifier}.txt'
+
+
 def get_robot_mode() -> str:
     if not MODE_FILE.exists():
         return "dev"
