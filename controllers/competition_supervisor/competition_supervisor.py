@@ -40,11 +40,13 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
 def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
     print("Saving video to {}".format(file_path))
+
+    config = controller_utils.get_recording_config()
     supervisor.movieStartRecording(
         str(file_path),
-        width=1920,
-        height=1080,
-        quality=100,
+        width=config.resolution.width,
+        height=config.resolution.height,
+        quality=config.quality,
         codec=0,
         acceleration=1,
         caption=False,

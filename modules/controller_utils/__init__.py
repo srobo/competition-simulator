@@ -23,15 +23,26 @@ NUM_ZONES = len(ROBOT_IDS_TO_CORNERS)
 GAME_DURATION_SECONDS = 120
 
 
+class Resolution(NamedTuple):
+    width: int
+    height: int
+
+
+class RecordingConfig(NamedTuple):
+    resolution: Resolution
+    quality: int
+
+
 class MatchData(NamedTuple):
     match_number: int
     teams: List[Optional[str]]
     duration: int
+    recording_config: Optional[RecordingConfig]
 
 
 def record_match_data(match_data: MatchData) -> None:
     # Use Proton format because it covers everything we need and already has a spec.
-    MATCH_FILE.write_text(json.dumps({
+    data = {
         'match_number': match_data.match_number,
         'arena_id': 'Simulator',
         'teams': {
@@ -40,7 +51,15 @@ def record_match_data(match_data: MatchData) -> None:
             if tla is not None
         },
         'duration': match_data.duration,
-    }, indent=4))
+    }
+
+    if match_data.recording_config:
+        data['recording_config'] = {
+            'resolution': match_data.recording_config.resolution._asdict(),
+            'quality': match_data.recording_config.quality,
+        }
+
+    MATCH_FILE.write_text(json.dumps(data, indent=4))
 
 
 def record_arena_data(other_data: Dict[str, List[object]]) -> None:
@@ -55,10 +74,19 @@ def read_match_data() -> MatchData:
     tla_by_zone = {x['zone']: tla for tla, x in data['teams'].items()}
     tlas = [tla_by_zone.get(i) for i in range(NUM_ZONES)]
 
+    if 'recording_config' in data:
+        recording_config: Optional[RecordingConfig] = RecordingConfig(
+            Resolution(**data['recording_config']['resolution']),
+            data['recording_config']['quality'],
+        )
+    else:
+        recording_config = None
+
     return MatchData(
         data['match_number'],
         tlas,
         data.get('duration', GAME_DURATION_SECONDS),
+        recording_config,
     )
 
 
@@ -72,6 +100,20 @@ def get_match_num() -> Optional[int]:
     if MATCH_FILE.exists():
         return read_match_data().match_number
     return None
+
+
+def get_recording_config() -> RecordingConfig:
+    config = (
+        read_match_data().recording_config
+        if MATCH_FILE.exists()
+        else None
+    )
+    if config is None:
+        config = RecordingConfig(
+            Resolution(1920, 1080),
+            quality=100,
+        )
+    return config
 
 
 def get_filename_safe_identifier() -> str:

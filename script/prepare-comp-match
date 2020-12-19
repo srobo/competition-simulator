@@ -57,6 +57,7 @@ def main(args: argparse.Namespace) -> None:
         args.match_num,
         tlas,
         args.duration,
+        recording_config=None,  # use the default
     ))
 
     for zone_id, tla in enumerate(tlas):
