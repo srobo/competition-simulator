@@ -90,3 +90,14 @@ In order to run competition matches you'll need to:
     - The teams' logs will be next to their code archives.
     - The match file (suitable for SRComp) will be TODO: where? (currently still in ARENA_ROOT)
     - The recording will be TODO: where? (currently still in REPO_ROOT/recordings/...)
+
+    Note: you may see an error like the following regarding the video creation:
+    ``` plain
+    [libx264 @ 0x562cf1ba9840] Error: 2pass curve failed to converge
+    [libx264 @ 0x562cf1ba9840] target: 20250.00 kbit/s, expected: 3339.51 kbit/s, avg QP: 0.0252
+    [libx264 @ 0x562cf1ba9840] try reducing target bitrate
+    ```
+    This warns that we have requested a higher bit-rate from the video than is
+    possible given the images the simulation generates. It does not appear to
+    create any issues with the rendered videos, though you are encouraged to
+    check that your setup is recording the videos correctly.
