@@ -68,7 +68,11 @@ In order to run competition matches you'll need to:
    We are using Python 3.7, though it shouldn't matter whether it's a system
    install or a virtual environment.
 
-2. Launch webots go to "Tools" > "Preferences" > "OpenGL" and set Ambient Occlusion to Disabled, Texture Quality to High, Disable shadows to false and Disable anti-aliasing to false
+2. Launch webots go to "Tools" > "Preferences" > "OpenGL" and set:
+    - Ambient Occlusion to Disabled,
+    - Texture Quality to High,
+    - Disable shadows to false, and
+    - Disable anti-aliasing to false
 
 3. To put the competitors' code into the right places for each of the corner zones, run
 
