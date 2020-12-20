@@ -14,9 +14,6 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 from sr.robot.utils import get_robot_device  # isort:skip
 
-# Updating? Update `Arena.wbt` too
-ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
-
 RECEIVE_TICKS = 1
 
 # Updating? Update radio.py too.
@@ -45,6 +42,10 @@ class StationCode(str, enum.Enum):
     SW = 'SW'
     BN = 'BN'
     HV = 'HV'
+
+
+# Updating? Update `Arena.wbt` too
+ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
 
 
 class TerritoryController:
