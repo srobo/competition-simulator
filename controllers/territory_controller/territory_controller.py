@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple
 from pathlib import Path
 
 # Webots specific library
-from controller import Emitter, Receiver, Supervisor  # isort:skip
+from controller import Emitter, Receiver, Supervisor
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 

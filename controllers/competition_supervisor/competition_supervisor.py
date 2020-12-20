@@ -6,9 +6,8 @@ from typing import List, Tuple, Iterator
 from pathlib import Path
 
 import pkg_resources
-
 # Webots specific library
-from controller import Node, Supervisor  # isort:skip
+from controller import Node, Supervisor
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
