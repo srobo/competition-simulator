@@ -164,7 +164,7 @@ Solid {
         }
       ]
       name "MovingWalls"
-      boundingObject USE SHAPE
+      boundingObject NULL
     }
     Solid {
       rotation -1 0 0 1.5707965
@@ -297,7 +297,7 @@ Solid {
         }
       ]
       name "Arena"
-      boundingObject USE SHAPE
+      boundingObject NULL
     }
   ]
   name "RootNode"
@@ -321,7 +321,7 @@ Solid {
 Solid {
   translation -5.075 0.15 0
   children [
-    Shape {
+    DEF SHAPE Shape {
       appearance PBRAppearance {
         baseColor 0.095395215 0.22841774 0.8000001
         roughness 1
@@ -332,12 +332,13 @@ Solid {
       }
     }
   ]
+  boundingObject USE SHAPE
   name "West Wall"
 }
 Solid {
   translation 5.075 0.15 0
   children [
-    Shape {
+    DEF SHAPE Shape {
       appearance PBRAppearance {
         baseColor 0.095395215 0.22841774 0.8000001
         roughness 1
@@ -348,12 +349,13 @@ Solid {
       }
     }
   ]
+  boundingObject USE SHAPE
   name "East Wall"
 }
 Solid {
   translation 0 0.15 2.575
   children [
-    Shape {
+    DEF SHAPE Shape {
       appearance PBRAppearance {
         baseColor 0.095395215 0.22841774 0.8000001
         roughness 1
@@ -364,12 +366,13 @@ Solid {
       }
     }
   ]
+  boundingObject USE SHAPE
   name "North Wall"
 }
 Solid {
   translation 0 0.15 -2.575
   children [
-    Shape {
+    DEF SHAPE Shape {
       appearance PBRAppearance {
         baseColor 0.095395215 0.22841774 0.8000001
         roughness 1
@@ -380,13 +383,14 @@ Solid {
       }
     }
   ]
+  boundingObject USE SHAPE
   name "South Wall"
 }
 Solid {
   translation -2.9 0.15 -0.333
   rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
   children [
-    Shape {
+    DEF SHAPE Shape {
       appearance PBRAppearance {
         baseColor 0.095395215 0.22841774 0.8000001
         roughness 1
@@ -398,6 +402,7 @@ Solid {
       }
     }
   ]
+  boundingObject USE SHAPE
   name "West Inner Wall"
   radarCrossSection 1
   rotationStep 0.261799
@@ -406,7 +411,7 @@ Solid {
   translation 2.9 0.15 -0.333
   rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
   children [
-    Shape {
+    DEF SHAPE Shape {
       appearance PBRAppearance {
         baseColor 0.095395215 0.22841774 0.8000001
         roughness 1
@@ -418,6 +423,7 @@ Solid {
       }
     }
   ]
+  boundingObject USE SHAPE
   name "East Inner Wall"
   radarCrossSection 1
   rotationStep 0.261799
