@@ -163,7 +163,7 @@ Solid {
         }
       ]
       name "Arena"
-      boundingObject NULL
+      boundingObject USE SHAPE
     }
   ]
   name "RootNode"
