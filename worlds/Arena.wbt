@@ -135,7 +135,8 @@ Solid {
       children [
         DEF SHAPE Shape {
           appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
+            baseColor 0.988235 0.913725 0.309804
+            transparency 0.5
             roughness 1
             metalness 0
             name "GreenWall"
@@ -316,4 +317,108 @@ Solid {
   boundingObject Plane {
     size 10 5
   }
+}
+Solid {
+  translation -5.075 0.15 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.095395215 0.22841774 0.8000001
+        roughness 1
+        metalness 0
+      }
+      geometry TexturedBox {
+        size 0.15 0.4 5.3
+      }
+    }
+  ]
+  name "West Wall"
+}
+Solid {
+  translation 5.075 0.15 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.095395215 0.22841774 0.8000001
+        roughness 1
+        metalness 0
+      }
+      geometry TexturedBox {
+        size 0.15 0.4 5.3
+      }
+    }
+  ]
+  name "East Wall"
+}
+Solid {
+  translation 0 0.15 2.575
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.095395215 0.22841774 0.8000001
+        roughness 1
+        metalness 0
+      }
+      geometry TexturedBox {
+        size 10.3 0.4 0.15
+      }
+    }
+  ]
+  name "North Wall"
+}
+Solid {
+  translation 0 0.15 -2.575
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.095395215 0.22841774 0.8000001
+        roughness 1
+        metalness 0
+      }
+      geometry TexturedBox {
+        size 10.3 0.4 0.15
+      }
+    }
+  ]
+  name "South Wall"
+}
+Solid {
+  translation -2.9 0.15 -0.333
+  rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.095395215 0.22841774 0.8000001
+        roughness 1
+        metalness 0
+      }
+      geometry TexturedParallelepiped {
+        size 0.28 4.89 0.3
+        angles -1.085 0 0
+      }
+    }
+  ]
+  name "West Inner Wall"
+  radarCrossSection 1
+  rotationStep 0.261799
+}
+Solid {
+  translation 2.9 0.15 -0.333
+  rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.095395215 0.22841774 0.8000001
+        roughness 1
+        metalness 0
+      }
+      geometry TexturedParallelepiped {
+        size 0.28 4.89 0.3
+        angles 1.085 0 0
+      }
+    }
+  ]
+  name "East Inner Wall"
+  radarCrossSection 1
+  rotationStep 0.261799
 }
