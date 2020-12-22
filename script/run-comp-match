@@ -83,7 +83,7 @@ def collate_logs(archives_dir: Path, match_data: controller_utils.MatchData) -> 
         log_path = get_zone_path(zone_id) / log_filname
 
         team_dir = archives_dir / tla
-        team_dir.mkdir()
+        team_dir.mkdir(exist_ok=True)
 
         shutil.copy(log_path, team_dir)
 
