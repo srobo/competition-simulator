@@ -135,19 +135,10 @@ def remove_unused_robots(supervisor: Supervisor) -> None:
         robot.remove()
 
 
-def run_match(supervisor: Supervisor) -> None:
-    print("===========")
-    print("Match start")
-    print("===========")
-
-    # First signal the robot controllers that they're able to start ...
-    for _, robot in get_robots(supervisor):
-        robot.getField('customData').setSFString('start')
-
-    # ... then un-pause the simulation, so they all start together
+def get_simulation_run_mode(supervisor: Supervisor):
     if supervisor.getDevice("2021a-compatibility") is None:
         # we are running version 2020b so the old command is used
-        supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_RUN)
+        return Supervisor.SIMULATION_MODE_RUN
     else:
         # webots-2021a removed the RUN mode and now uses FAST
         print(
@@ -161,7 +152,20 @@ def run_match(supervisor: Supervisor) -> None:
             "that of the official competition matches",
             file=sys.stderr,
         )
-        supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_FAST)
+        return Supervisor.SIMULATION_MODE_FAST
+
+
+def run_match(supervisor: Supervisor) -> None:
+    print("===========")
+    print("Match start")
+    print("===========")
+
+    # First signal the robot controllers that they're able to start ...
+    for _, robot in get_robots(supervisor):
+        robot.getField('customData').setSFString('start')
+
+    # ... then un-pause the simulation, so they all start together
+    supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
 
     time_step = int(supervisor.getBasicTimeStep())
     duration_ms = time_step * int(1000 * GAME_DURATION_SECONDS // time_step)
