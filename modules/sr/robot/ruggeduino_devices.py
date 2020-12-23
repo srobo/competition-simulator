@@ -1,7 +1,12 @@
 import logging
 
-from controller import Robot
-from sr.robot.utils import map_to_range
+from controller import (
+    LED,
+    Robot,
+    TouchSensor,
+    DistanceSensor as WebotsDistanceSensor,
+)
+from sr.robot.utils import map_to_range, get_robot_device
 from sr.robot.randomizer import add_jitter
 from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
 
@@ -17,7 +22,7 @@ class DistanceSensor:
     UPPER_BOUND = 2
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
-        self.webot_sensor = webot.getDistanceSensor(sensor_name)
+        self.webot_sensor = get_robot_device(webot, sensor_name, WebotsDistanceSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
     def __get_scaled_distance(self) -> float:
@@ -46,7 +51,7 @@ class Microswitch:
     """
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
-        self.webot_sensor = webot.getTouchSensor(sensor_name)
+        self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
     def read_value(self) -> bool:
@@ -69,7 +74,7 @@ class Led:
         limiter: OutputFrequencyLimiter,
     ) -> None:
         self._name = device_name
-        self.webot_sensor = webot.getLED(device_name)
+        self.webot_sensor = get_robot_device(webot, device_name, LED)
         self._limiter = limiter
 
     def write_value(self, value: bool) -> None:

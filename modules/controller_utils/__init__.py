@@ -1,10 +1,11 @@
 import os
+import sys
 import datetime
 from typing import IO, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Root directory of the specification of the Arena (and match)
 ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
@@ -68,6 +69,9 @@ class SimpleTee:
         self.prefix = prefix
 
     def _insert_prefix(self, data: str) -> str:
+        if not self.prefix:
+            return data
+
         # Append our prefix just after all inner newlines. Don't append to a
         # trailing newline as we don't know if the next line in the log will be
         # from this zone.
@@ -91,3 +95,26 @@ class SimpleTee:
     def flush(self) -> None:
         for stream in self.streams:
             stream.flush()
+
+
+def tee_streams(name: Path, prefix: str = '') -> None:
+    """
+    Tee stdout and stderr also to the named log file.
+
+    Note: we intentionally don't provide a way to clean up the stream
+    replacement so that any error handling from Python which causes us to exit
+    is also captured by the log file.
+    """
+
+    log_file = name.open(mode='w')
+
+    sys.stdout = SimpleTee(  # type: ignore[assignment]
+        sys.stdout,
+        log_file,
+        prefix=prefix,
+    )
+    sys.stderr = SimpleTee(  # type: ignore[assignment]
+        sys.stderr,
+        log_file,
+        prefix=prefix,
+    )

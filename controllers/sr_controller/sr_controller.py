@@ -126,37 +126,15 @@ def log_filename(zone_id: int) -> str:
     )
 
 
-def tee_streams(name: Path, zone_id: int) -> None:
-    """
-    Tee stdout and stderr also to the named log file.
-
-    Note: we intentionally don't provide a way to clean up the stream
-    replacement so that any error handling from Python which causes us to exit
-    is also captured by the log file.
-    """
-
-    log_file = name.open(mode='w')
-
-    prefix = '{}| '.format(zone_id)
-
-    sys.stdout = controller_utils.SimpleTee(  # type: ignore[assignment]
-        sys.stdout,
-        log_file,
-        prefix=prefix,
-    )
-    sys.stderr = controller_utils.SimpleTee(  # type: ignore[assignment]
-        sys.stderr,
-        log_file,
-        prefix=prefix,
-    )
-
-
 def main() -> None:
     robot_mode = controller_utils.get_robot_mode()
     robot_zone = get_robot_zone()
     robot_file = get_robot_file(robot_zone, robot_mode).resolve()
 
-    tee_streams(robot_file.parent / log_filename(robot_zone), robot_zone)
+    controller_utils.tee_streams(
+        robot_file.parent / log_filename(robot_zone),
+        prefix=f'{robot_zone}| ',
+    )
 
     if robot_zone == 0:
         # Only print once, but rely on Zone 0 always being run to ensure this is
