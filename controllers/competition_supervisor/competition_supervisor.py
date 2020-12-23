@@ -151,13 +151,13 @@ def run_match(supervisor: Supervisor) -> None:
     else:
         # webots-2021a removed the RUN mode and now uses FAST
         print(
-            "All official competition matches will be run on"
+            "All official competition matches will be run on "
             "Webots version 2020b-rev1 unless otherwise stated",
             file=sys.stderr,
         )
         print(
-            "Since this simulator is running a different version"
-            "it is possible that some behaviour may not match"
+            "Since this simulator is running a different version "
+            "it is possible that some behaviour may not match "
             "that of the official competition matches",
             file=sys.stderr,
         )
