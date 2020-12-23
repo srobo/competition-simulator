@@ -43,6 +43,48 @@ pip install -r script/typing/requirements.txt
 
 You can then run all linting/type checking/tests in one go using `script/check`.
 
+### Running Webots
+
+While the default location that our controllers look for `robot.py` files is the
+directory above the repo, that is not particularly convenient for development.
+Instead you may wish to run Webots having set the `ARENA_ROOT` environment
+variable to a suitable location.
+
+For example, you may find it convenient to have a `robots` directory within the
+repo and then have a number of code and arena directories within that:
+
+```
+robots
+├── arena  # A development arena with a single (symlinked) robot
+│   └── robot.py -> ../ultrasounds/robot.py
+├── brakes-arena  # A competition style arena with two robots
+│   ├── zone-0
+│   │   └── robot.py
+│   └── zone-1
+│       └── robot.py
+├── dancer  # Some robot code for a robot which dances
+│   └── robot.py
+├── single-arena  # A competition style arena with a single (symlinked) robot
+│   └── zone-0 -> ../dancer/
+└── ultrasounds  # Some robot code for testing ultrasound sensors
+    └── robot.py
+```
+
+Given a setup like the above, running Webots such that it picks up on one of the
+arena directories is possible through setting the `ARENA_ROOT` when launching
+the webots process:
+
+```
+$ ARENA_ROOT=robots/brakes-arena webots --mode=pause worlds/Arena.wbt
+```
+
+This will launch Webots using our world file, with the simulation paused and the
+controllers (when started) will use the robots within `brakes-arena`.
+
+Note: `webots` has a number of useful command line flags which are quite useful.
+We won't document them here, though you are encouraged to run `webots --help` to
+explore them yourself.
+
 ## Doing a release
 
 1. Create a new tag & push
