@@ -142,14 +142,14 @@ def get_simulation_run_mode(supervisor: Supervisor):
     else:
         # webots-2021a removed the RUN mode and now uses FAST
         print(
-            "All official competition matches will be run on "
-            "Webots version 2020b-rev1 unless otherwise stated",
+            "This simulator is running a different version of Webots to the "
+            "one that will be used for the next official competition matches "
+            "(You can check the docs to see which version will be used)",
             file=sys.stderr,
         )
         print(
-            "Since this simulator is running a different version "
-            "it is possible that some behaviour may not match "
-            "that of the official competition matches",
+            "As such it is possible that some behaviour may not "
+            "match that of the official competition matches",
             file=sys.stderr,
         )
         return Supervisor.SIMULATION_MODE_FAST
