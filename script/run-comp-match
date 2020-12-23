@@ -3,10 +3,14 @@
 A script to run a competition match.
 """
 
+import os
 import sys
 import shutil
 import argparse
+import tempfile
+import contextlib
 import subprocess
+from typing import Iterator
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -35,6 +39,20 @@ def construct_match_data(args: argparse.Namespace) -> controller_utils.MatchData
         args.duration,
         recording_config=None,  # use the default
     )
+
+
+@contextlib.contextmanager
+def temporary_arena_root(suffix: str) -> Iterator[None]:
+    arena_root = controller_utils.ARENA_ROOT
+    with tempfile.TemporaryDirectory(suffix=suffix) as tmpdir_name:
+        print(f"Using {tmpdir_name!r} as the arena")  # noqa:T001
+        os.environ['ARENA_ROOT'] = tmpdir_name
+        controller_utils.ARENA_ROOT = Path(tmpdir_name)
+        try:
+            yield
+        finally:
+            os.environ['ARENA_ROOT'] = str(arena_root)
+            controller_utils.ARENA_ROOT = arena_root
 
 
 def prepare_match(archives_dir: Path, match_data: controller_utils.MatchData) -> None:
@@ -153,13 +171,15 @@ def parse_args() -> argparse.Namespace:
 
 def main(args: argparse.Namespace) -> None:
     match_data = construct_match_data(args)
-    prepare_match(args.archives_dir, match_data)
 
-    run_match()
+    with temporary_arena_root(f'match-{match_data.match_number}'):
+        prepare_match(args.archives_dir, match_data)
 
-    collate_logs(args.archives_dir, match_data)
-    archive_match_file(args.archives_dir, match_data)
-    archive_match_recordings(args.archives_dir)
+        run_match()
+
+        collate_logs(args.archives_dir, match_data)
+        archive_match_file(args.archives_dir, match_data)
+        archive_match_recordings(args.archives_dir)
 
 
 if __name__ == '__main__':
