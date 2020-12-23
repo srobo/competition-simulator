@@ -213,7 +213,7 @@ Solid {
         roughness 1
         metalness 0
       }
-      geometry TexturedBox {
+      geometry Box {
         size 0.15 0.4 5.3
       }
     }
@@ -230,7 +230,7 @@ Solid {
         roughness 1
         metalness 0
       }
-      geometry TexturedBox {
+      geometry Box {
         size 0.15 0.4 5.3
       }
     }
@@ -247,7 +247,7 @@ Solid {
         roughness 1
         metalness 0
       }
-      geometry TexturedBox {
+      geometry Box {
         size 10.3 0.4 0.15
       }
     }
@@ -264,7 +264,7 @@ Solid {
         roughness 1
         metalness 0
       }
-      geometry TexturedBox {
+      geometry Box {
         size 10.3 0.4 0.15
       }
     }
