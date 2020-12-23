@@ -87,6 +87,13 @@ def collate_logs(archives_dir: Path, match_data: controller_utils.MatchData) -> 
 
         shutil.copy(log_path, team_dir)
 
+    matches_dir = archives_dir / "matches"
+    matches_dir.mkdir(exist_ok=True)
+
+    completed_match_file = matches_dir / f"match-{match_data.match_number}.json"
+
+    shutil.copy(controller_utils.MATCH_FILE, completed_match_file)
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
