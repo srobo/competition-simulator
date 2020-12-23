@@ -1,4 +1,5 @@
 import io
+import sys
 import json
 import random
 import string
@@ -12,8 +13,10 @@ from unittest import mock
 from . import (
     MatchData,
     NUM_ZONES,
+    REPO_ROOT,
     SimpleTee,
     Resolution,
+    tee_streams,
     read_match_data,
     RecordingConfig,
     record_arena_data,
@@ -30,6 +33,18 @@ def mock_match_file() -> Iterator[IO[str]]:
     with tempfile.NamedTemporaryFile(suffix='.json', mode='r+t') as f:
         with mock.patch('controller_utils.MATCH_FILE', new=Path(f.name)):
             yield f
+
+
+class TestRepoRoot(unittest.TestCase):
+    def test_repo_root_contains_git_dir(self) -> None:
+        # A really simple test case to catch silly errors we've hit multiple
+        # times where moving the file which computes REPO_ROOT is not paired
+        # with an update to it. We therefore use a separate mechanism to
+        # validate that our computation is correct -- that the directory
+        # contains a `.git` directory.
+        git_dir = REPO_ROOT / '.git'
+        self.assertTrue(git_dir.exists(), f"{git_dir} should exist")
+        self.assertTrue(git_dir.is_dir(), f"{git_dir} should be a directory")
 
 
 class TestSimpleTee(unittest.TestCase):
@@ -98,8 +113,41 @@ class TestSimpleTee(unittest.TestCase):
             "Stream has wrong content after adding content containing newlines",
         )
 
+    def test_tee_streams(self) -> None:
+        # 'tee_streams' is designed to be used as part of one-shot processes, so
+        # it does some otherwise slightly unusual things. As a result we need to
+        # also do some slightly odd things to test it.
+        with tempfile.NamedTemporaryFile(mode='w+t') as f:
+            with contextlib.redirect_stdout(io.StringIO()) as new_stdout:
+                with contextlib.redirect_stderr(io.StringIO()) as new_stderr:
+                    # Fake the opening of the log file to avoid a leaked file
+                    # reference (and associated warning).
+                    with mock.patch('pathlib.Path.open', return_value=f):
+                        tee_streams(Path(f.name), prefix='prefix:')
 
-@mock_match_file()
+                    print('To Stdout')  # noqa:T001
+                    print('To Stderr', file=sys.stderr)  # noqa:T001
+
+            self.assertEqual(
+                'prefix:To Stdout\n',
+                new_stdout.getvalue(),
+                "Should have still sent the output to the 'real' stdout",
+            )
+
+            self.assertEqual(
+                'prefix:To Stderr\n',
+                new_stderr.getvalue(),
+                "Should have still sent the output to the 'real' stderr",
+            )
+
+            f.seek(0)
+            self.assertEqual(
+                'prefix:To Stdout\nprefix:To Stderr\n',
+                f.read(),
+                "Should have sent all to the log file",
+            )
+
+
 class TestMatchDataIO(unittest.TestCase):
     def fake_match_data(self) -> MatchData:
         number = 42
@@ -117,6 +165,12 @@ class TestMatchDataIO(unittest.TestCase):
             duration=180,
             recording_config=recording_config,
         )
+
+    def setUp(self) -> None:
+        super().setUp()
+        ctx = mock_match_file()
+        self.match_file = ctx.__enter__()
+        self.addCleanup(lambda: ctx.__exit__(None, None, None))
 
     def test_round_trip(self) -> None:
         match_data = self.fake_match_data()
@@ -145,17 +199,17 @@ class TestMatchDataIO(unittest.TestCase):
             "Wrong data read back out",
         )
 
-    def test_record_arena_data(self, match_file: IO[str]) -> None:
+    def test_record_arena_data(self) -> None:
         match_data = self.fake_match_data()
 
         record_match_data(match_data)
 
         record_arena_data({'foop': ['spam']})
 
-        raw_data = json.load(match_file)
+        raw_data = json.load(self.match_file)
         self.assertEqual(
             {'foop': ['spam']},
-            raw_data['other'],
+            raw_data['arena_zones']['other'],
             "Wrong data read back out",
         )
 

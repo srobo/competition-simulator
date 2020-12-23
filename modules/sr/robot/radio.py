@@ -4,7 +4,8 @@ from math import pi, atan2
 from typing import List, Optional, NamedTuple
 from threading import Lock
 
-from controller import Robot
+from controller import Robot, Emitter, Receiver
+from sr.robot.utils import get_robot_device
 from sr.robot.coordinates import Vector
 
 # Updating? Update territory_controller.py too.
@@ -92,9 +93,9 @@ class Radio:
 
     def __init__(self, webot: Robot, zone: int, step_lock: Lock) -> None:
         self._webot = webot
-        self._receiver = webot.getReceiver("robot receiver")
+        self._receiver = get_robot_device(webot, "robot receiver", Receiver)
         self._receiver.enable(1)
-        self._emitter = webot.getEmitter("robot emitter")
+        self._emitter = get_robot_device(webot, "robot emitter", Emitter)
         self._zone = zone
         self._step_lock = step_lock
 

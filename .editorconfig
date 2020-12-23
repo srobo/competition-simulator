@@ -5,6 +5,9 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+[*.wbt]
+indent_size = 2
+
 [*.yml]
 indent_size = 2
 

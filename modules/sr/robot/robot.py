@@ -4,9 +4,8 @@ from typing import Optional
 from threading import Lock
 
 from sr.robot import motor, radio, ruggeduino
-
 # Webots specific library
-from controller import Robot as WebotsRobot  # isort:skip
+from controller import Robot as WebotsRobot
 
 
 class Robot:

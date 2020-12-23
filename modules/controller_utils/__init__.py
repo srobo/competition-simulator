@@ -1,11 +1,12 @@
 import os
+import sys
 import json
 import datetime
 from typing import IO, Dict, List, Optional, NamedTuple
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
-REPO_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Root directory of the specification of the Arena (and match)
 ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
@@ -64,7 +65,8 @@ def record_match_data(match_data: MatchData) -> None:
 
 def record_arena_data(other_data: Dict[str, List[object]]) -> None:
     data = json.loads(MATCH_FILE.read_text())
-    data['other'] = other_data
+    arena_zones = data.setdefault('arena_zones', {})
+    arena_zones['other'] = other_data
     MATCH_FILE.write_text(json.dumps(data, indent=4))
 
 
@@ -185,3 +187,26 @@ class SimpleTee:
     def flush(self) -> None:
         for stream in self.streams:
             stream.flush()
+
+
+def tee_streams(name: Path, prefix: str = '') -> None:
+    """
+    Tee stdout and stderr also to the named log file.
+
+    Note: we intentionally don't provide a way to clean up the stream
+    replacement so that any error handling from Python which causes us to exit
+    is also captured by the log file.
+    """
+
+    log_file = name.open(mode='w')
+
+    sys.stdout = SimpleTee(  # type: ignore[assignment]
+        sys.stdout,
+        log_file,
+        prefix=prefix,
+    )
+    sys.stderr = SimpleTee(  # type: ignore[assignment]
+        sys.stderr,
+        log_file,
+        prefix=prefix,
+    )

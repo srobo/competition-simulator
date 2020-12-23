@@ -13,7 +13,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
-import controller_utils  # noqa:E402 # isort:skip
+import controller_utils  # isort:skip
 from controller_utils import NUM_ZONES  # isort:skip
 
 
