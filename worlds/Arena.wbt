@@ -214,7 +214,7 @@ Solid {
         metalness 0
       }
       geometry Box {
-        size 0.15 0.4 5.3
+        size 0.15 0.4 5
       }
     }
   ]
@@ -231,7 +231,7 @@ Solid {
         metalness 0
       }
       geometry Box {
-        size 0.15 0.4 5.3
+        size 0.15 0.4 5
       }
     }
   ]
