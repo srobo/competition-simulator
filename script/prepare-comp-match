@@ -41,6 +41,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--duration',
         help="The duration of the match (in seconds).",
+        type=int,
         default=controller_utils.GAME_DURATION_SECONDS,
     )
     return parser.parse_args()
