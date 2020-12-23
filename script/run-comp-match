@@ -17,8 +17,6 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 import controller_utils  # isort:skip
 from controller_utils import NUM_ZONES  # isort:skip
 
-NUM_CONTROLLERS = NUM_ZONES + 2
-
 
 def get_zone_path(zone_id: int) -> Path:
     robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id)
