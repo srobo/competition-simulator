@@ -12,6 +12,7 @@ from unittest import mock
 
 from . import (
     NUM_ZONES,
+    REPO_ROOT,
     SimpleTee,
     tee_streams,
     read_match_data,
@@ -29,6 +30,18 @@ def mock_match_file() -> Iterator[IO[str]]:
     with tempfile.NamedTemporaryFile(suffix='.json', mode='r+t') as f:
         with mock.patch('controller_utils.MATCH_FILE', new=Path(f.name)):
             yield f
+
+
+class TestRepoRoot(unittest.TestCase):
+    def test_repo_root_contains_git_dir(self) -> None:
+        # A really simple test case to catch silly errors we've hit multiple
+        # times where moving the file which computes REPO_ROOT is not paired
+        # with an update to it. We therefore use a separate mechanism to
+        # validate that our computation is correct -- that the directory
+        # contains a `.git` directory.
+        git_dir = REPO_ROOT / '.git'
+        self.assertTrue(git_dir.exists(), f"{git_dir} should exist")
+        self.assertTrue(git_dir.is_dir(), f"{git_dir} should be a directory")
 
 
 class TestSimpleTee(unittest.TestCase):

@@ -7,11 +7,13 @@ from pathlib import Path
 # Webots specific library
 from controller import Emitter, Receiver, Supervisor
 
+# Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
+from sr.robot.utils import get_robot_device  # isort:skip
 
 RECEIVE_TICKS = 1
 
@@ -94,11 +96,15 @@ class TerritoryController:
         self._robot = Supervisor()
         self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
 
-        self._emitters = {station_code: self._robot.getEmitter(station_code + "Emitter")
-                          for station_code in StationCode}
+        self._emitters = {
+            station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)
+            for station_code in StationCode
+        }
 
-        self._receivers = {station_code: self._robot.getReceiver(station_code + "Receiver")
-                           for station_code in StationCode}
+        self._receivers = {
+            station_code: get_robot_device(self._robot, station_code + "Receiver", Receiver)
+            for station_code in StationCode
+        }
 
         for receiver in self._receivers.values():
             receiver.enable(RECEIVE_TICKS)
