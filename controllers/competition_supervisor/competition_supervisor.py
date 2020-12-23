@@ -161,6 +161,10 @@ def run_match(supervisor: Supervisor) -> None:
 def main() -> None:
     quit_if_development_mode()
 
+    controller_utils.tee_streams(
+        controller_utils.get_competition_supervisor_log_filepath(),
+    )
+
     supervisor = Supervisor()
 
     with propagate_exit_code(supervisor):

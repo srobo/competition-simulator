@@ -75,14 +75,28 @@ def prepare_match(archives_dir: Path, match_data: controller_utils.MatchData) ->
 
 
 def run_match() -> None:
-    subprocess.check_call([
-        'webots',
-        '--batch',
-        '--stdout',
-        '--stderr',
-        '--minimize',
-        str(REPO_ROOT / 'worlds' / 'Arena.wbt'),
-    ])
+    try:
+        subprocess.check_call([
+            'webots',
+            '--batch',
+            '--stdout',
+            '--stderr',
+            '--minimize',
+            str(REPO_ROOT / 'worlds' / 'Arena.wbt'),
+        ])
+    except subprocess.CalledProcessError as e:
+        BOLD = '\033[1m'
+        FAIL = '\033[91m'
+        ENDC = '\033[0m'
+
+        log_text = controller_utils.get_competition_supervisor_log_filepath().read_text()
+
+        print("\n" + FAIL + log_text + ENDC)  # noqa:T001
+        print(  # noqa:T001
+            f"{BOLD}{FAIL}Simulation errored (exit code {e.returncode}). "
+            f"Competition supervisor logs are above.{ENDC}",
+        )
+        exit(1)
 
 
 def collate_logs(archives_dir: Path, match_data: controller_utils.MatchData) -> None:

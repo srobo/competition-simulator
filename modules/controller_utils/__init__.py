@@ -177,6 +177,11 @@ def get_robot_log_filename(zone_id: int) -> str:
     return f'log-zone-{zone_id}-{identifier}.txt'
 
 
+def get_competition_supervisor_log_filepath() -> Path:
+    identifier = get_filename_safe_identifier()
+    return ARENA_ROOT / f'supervisor-log-{identifier}.txt'
+
+
 def get_robot_mode() -> str:
     mode_file = get_mode_file()
     if not mode_file.exists():
