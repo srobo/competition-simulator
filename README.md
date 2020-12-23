@@ -85,6 +85,31 @@ Note: `webots` has a number of useful command line flags which are quite useful.
 We won't document them here, though you are encouraged to run `webots --help` to
 explore them yourself.
 
+### Competition Mode
+
+In Competition Mode the simulation behaves slightly differently:
+- the simulation exits after the game completes
+- an animation recording is made of the simulation
+- a video recording is made of the simulation
+
+If a match is being run, then the log of score-impacting events is also output
+into the match file.
+
+Competition mode is enabled when a `robot_mode.txt` marker file is found in the
+arena directory and that file contains only the text `comp`:
+
+``` bash
+echo comp > robot_mode.txt
+```
+
+The match file is a separate `match.json` file, also in the arena directory.
+This file conforms to the [Proton](https://github.com/PeterJCLaw/proton) spec
+and is used to enable integration with [SRComp][srcomp]. Primarily this file
+captures score-relevant data for SRComp, however it also supports some other
+keys which are useful in development. See the `MatchData` structure for details.
+
+[srcomp]: https://github.com/PeterJCLaw/srcomp/wiki
+
 ## Doing a release
 
 1. Create a new tag & push
