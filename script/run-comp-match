@@ -87,6 +87,12 @@ def collate_logs(archives_dir: Path, match_data: controller_utils.MatchData) -> 
 
         shutil.copy(log_path, team_dir)
 
+
+def archive_match_file(archives_dir: Path, match_data: controller_utils.MatchData) -> None:
+    """
+    Copy the match file (which contains the scoring data) to the archives directory.
+    """
+
     matches_dir = archives_dir / "matches"
     matches_dir.mkdir(exist_ok=True)
 
@@ -127,6 +133,7 @@ def main(args: argparse.Namespace) -> None:
     run_match()
 
     collate_logs(args.archives_dir, match_data)
+    archive_match_file(args.archives_dir, match_data)
 
 
 if __name__ == '__main__':
