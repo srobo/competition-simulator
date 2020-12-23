@@ -2,13 +2,16 @@ import sys
 import time
 import datetime
 import contextlib
-from typing import List, Tuple, Iterator
+from typing import List, Tuple, Iterator, TYPE_CHECKING
 from pathlib import Path
 
 import pkg_resources
 
 # Webots specific library
 from controller import Node, Supervisor  # isort:skip
+
+if TYPE_CHECKING:
+    from controller import SimulationMode
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -135,7 +138,7 @@ def remove_unused_robots(supervisor: Supervisor) -> None:
         robot.remove()
 
 
-def get_simulation_run_mode(supervisor: Supervisor):
+def get_simulation_run_mode(supervisor: Supervisor) -> 'SimulationMode':
     if supervisor.getDevice("2021a-compatibility") is None:
         # we are running version 2020b so the old command is used
         return Supervisor.SIMULATION_MODE_RUN
