@@ -216,7 +216,7 @@ class TerritoryController:
 
 if __name__ == "__main__":
     claim_log = ClaimLog(record_arena_actions=(
-        controller_utils.MATCH_FILE.exists() and
+        controller_utils.get_match_file().exists() and
         controller_utils.get_robot_mode() == 'comp'
     ))
     territory_controller = TerritoryController(claim_log)

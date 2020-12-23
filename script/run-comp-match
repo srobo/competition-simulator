@@ -38,7 +38,7 @@ def construct_match_data(args: argparse.Namespace) -> controller_utils.MatchData
 
 
 def prepare_match(archives_dir: Path, match_data: controller_utils.MatchData) -> None:
-    controller_utils.MODE_FILE.write_text('comp\n')
+    controller_utils.get_mode_file().write_text('comp\n')
     controller_utils.record_match_data(match_data)
 
     for zone_id, tla in enumerate(match_data.teams):
@@ -100,7 +100,7 @@ def archive_match_file(archives_dir: Path, match_data: controller_utils.MatchDat
     # strict subset of YAML.
     completed_match_file = matches_dir / f'{match_data.match_number:0>3}.yaml'
 
-    shutil.copy(controller_utils.MATCH_FILE, completed_match_file)
+    shutil.copy(controller_utils.get_match_file(), completed_match_file)
 
 
 def archive_match_recordings(archives_dir: Path) -> None:

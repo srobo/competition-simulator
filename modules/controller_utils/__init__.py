@@ -11,9 +11,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 # Root directory of the specification of the Arena (and match)
 ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
 
-MODE_FILE = ARENA_ROOT / 'robot_mode.txt'
-MATCH_FILE = ARENA_ROOT / 'match.json'
-
 
 ROBOT_IDS_TO_CORNERS = {
     "5": 0,
@@ -41,6 +38,26 @@ class MatchData(NamedTuple):
     recording_config: Optional[RecordingConfig]
 
 
+def get_mode_file() -> Path:
+    """
+    Returns the path to the mode file.
+
+    Note: most consumers should not use this function, but rather should use
+    other functions which return structure data which this file encodes.
+    """
+    return ARENA_ROOT / 'robot_mode.txt'
+
+
+def get_match_file() -> Path:
+    """
+    Returns the path to the match file.
+
+    Note: most consumers should not use this function, but rather should use
+    other functions which return structure data which this file encodes.
+    """
+    return ARENA_ROOT / 'match.json'
+
+
 def record_match_data(match_data: MatchData) -> None:
     # Use Proton format because it covers everything we need and already has a spec.
     data = {
@@ -60,18 +77,19 @@ def record_match_data(match_data: MatchData) -> None:
             'quality': match_data.recording_config.quality,
         }
 
-    MATCH_FILE.write_text(json.dumps(data, indent=4))
+    get_match_file().write_text(json.dumps(data, indent=4))
 
 
 def record_arena_data(other_data: Dict[str, List[object]]) -> None:
-    data = json.loads(MATCH_FILE.read_text())
+    match_file = get_match_file()
+    data = json.loads(match_file.read_text())
     arena_zones = data.setdefault('arena_zones', {})
     arena_zones['other'] = other_data
-    MATCH_FILE.write_text(json.dumps(data, indent=4))
+    match_file.write_text(json.dumps(data, indent=4))
 
 
 def read_match_data() -> MatchData:
-    data = json.loads(MATCH_FILE.read_text())
+    data = json.loads(get_match_file().read_text())
 
     tla_by_zone = {x['zone']: tla for tla, x in data['teams'].items()}
     tlas = [tla_by_zone.get(i) for i in range(NUM_ZONES)]
@@ -93,13 +111,13 @@ def read_match_data() -> MatchData:
 
 
 def get_match_duration_seconds() -> int:
-    if MATCH_FILE.exists():
+    if get_match_file().exists():
         return read_match_data().duration
     return GAME_DURATION_SECONDS
 
 
 def get_match_num() -> Optional[int]:
-    if MATCH_FILE.exists():
+    if get_match_file().exists():
         return read_match_data().match_number
     return None
 
@@ -107,7 +125,7 @@ def get_match_num() -> Optional[int]:
 def get_recording_config() -> RecordingConfig:
     config = (
         read_match_data().recording_config
-        if MATCH_FILE.exists()
+        if get_match_file().exists()
         else None
     )
     if config is None:
@@ -160,9 +178,10 @@ def get_robot_log_filename(zone_id: int) -> str:
 
 
 def get_robot_mode() -> str:
-    if not MODE_FILE.exists():
+    mode_file = get_mode_file()
+    if not mode_file.exists():
         return "dev"
-    return MODE_FILE.read_text().strip()
+    return mode_file.read_text().strip()
 
 
 class SimpleTee:
