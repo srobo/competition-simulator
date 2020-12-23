@@ -1,6 +1,5 @@
 import sys
 import time
-import datetime
 import contextlib
 from typing import List, Tuple, Iterator
 from pathlib import Path
@@ -14,16 +13,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
-
-
-def get_recording_stem() -> Path:
-    now = datetime.datetime.now()
-
-    date = now.date().isoformat()
-
-    name: str = controller_utils.get_filename_safe_identifier()
-
-    return REPO_ROOT / 'recordings' / date / name
 
 
 @contextlib.contextmanager
@@ -183,7 +172,7 @@ def main() -> None:
 
         remove_unused_robots(supervisor)
 
-        recording_stem = get_recording_stem()
+        recording_stem = controller_utils.get_recording_stem()
 
         with record_animation(supervisor, recording_stem.with_suffix('.html')):
             with record_video(supervisor, recording_stem.with_suffix('.mp4')):

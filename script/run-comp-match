@@ -105,6 +105,25 @@ def archive_match_file(archives_dir: Path, match_data: controller_utils.MatchDat
     shutil.copy(controller_utils.MATCH_FILE, completed_match_file)
 
 
+def archive_match_recordings(archives_dir: Path) -> None:
+    """
+    Copy the recordings to the archives directory.
+    """
+
+    recordings_dir = archives_dir / 'recordings'
+    recordings_dir.mkdir(exist_ok=True)
+
+    recording_stem = controller_utils.get_recording_stem()
+
+    for path in recording_stem.parent.glob(f'{recording_stem.name}.*'):
+        shutil.copy(path, recordings_dir)
+
+    try:
+        shutil.copytree(recording_stem.parent / 'textures', recordings_dir / 'textures')
+    except FileExistsError:
+        pass
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -138,6 +157,7 @@ def main(args: argparse.Namespace) -> None:
 
     collate_logs(args.archives_dir, match_data)
     archive_match_file(args.archives_dir, match_data)
+    archive_match_recordings(args.archives_dir)
 
 
 if __name__ == '__main__':

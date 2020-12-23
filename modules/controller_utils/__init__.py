@@ -118,6 +118,16 @@ def get_recording_config() -> RecordingConfig:
     return config
 
 
+def get_recording_stem() -> Path:
+    now = datetime.datetime.now()
+
+    date = now.date().isoformat()
+
+    name: str = get_filename_safe_identifier()
+
+    return REPO_ROOT / 'recordings' / date / name
+
+
 def get_filename_safe_identifier() -> str:
     """
     Return an identifier for the current run which is safe to use in filenames.
