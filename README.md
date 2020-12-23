@@ -86,10 +86,11 @@ In order to run competition matches you'll need to:
     Using a dash instead of a TLA if a robot is not present.
 
     This will orchestrate everything to run the match, including running webots
-    and collecting together the logs and recordings.
-    - The teams' logs will be next to their code archives.
-    - The match file (suitable for SRComp) will be TODO: where? (currently still in ARENA_ROOT)
-    - The recording will be TODO: where? (currently still in REPO_ROOT/recordings/...)
+    and collecting together the logs and recordings. The logs & recordings will
+    be within the directory which contains the team code, as follows:
+    - The teams' logs will be in a directory named for their TLA
+    - The match file (suitable for SRComp) will be within a `matches` directory
+    - The recordings will be within a `recordings` directory
 
     Note: you may see an error like the following regarding the video creation:
     ``` plain
