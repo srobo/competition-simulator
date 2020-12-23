@@ -137,13 +137,8 @@ def get_recording_config() -> RecordingConfig:
 
 
 def get_recording_stem() -> Path:
-    now = datetime.datetime.now()
-
-    date = now.date().isoformat()
-
     name: str = get_filename_safe_identifier()
-
-    return REPO_ROOT / 'recordings' / date / name
+    return ARENA_ROOT / 'recordings' / name
 
 
 def get_filename_safe_identifier() -> str:
