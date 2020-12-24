@@ -2,12 +2,15 @@ import sys
 import time
 import datetime
 import contextlib
-from typing import List, Tuple, Iterator
+from typing import List, Tuple, Iterator, TYPE_CHECKING
 from pathlib import Path
 
 import pkg_resources
 # Webots specific library
 from controller import Node, Supervisor
+
+if TYPE_CHECKING:
+    from controller import SimulationMode
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -134,6 +137,27 @@ def remove_unused_robots(supervisor: Supervisor) -> None:
         robot.remove()
 
 
+def get_simulation_run_mode(supervisor: Supervisor) -> 'SimulationMode':
+    # webots 2020b is buggy and can raise TypeError when getDevice is passed a str
+    if supervisor.getDevice("2021a-compatibility") is None:
+        # we are running version 2020b so the old command is used
+        return Supervisor.SIMULATION_MODE_RUN
+    else:
+        # webots-2021a removed the RUN mode and now uses FAST
+        print(
+            "This simulator is running a different version of Webots to the "
+            "one that will be used for the next official competition matches "
+            "(You can check the docs to see which version will be used)",
+            file=sys.stderr,
+        )
+        print(
+            "As such it is possible that some behaviour may not "
+            "match that of the official competition matches",
+            file=sys.stderr,
+        )
+        return Supervisor.SIMULATION_MODE_FAST
+
+
 def run_match(supervisor: Supervisor) -> None:
     print("===========")
     print("Match start")
@@ -144,7 +168,7 @@ def run_match(supervisor: Supervisor) -> None:
         robot.getField('customData').setSFString('start')
 
     # ... then un-pause the simulation, so they all start together
-    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_RUN)
+    supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
 
     time_step = int(supervisor.getBasicTimeStep())
     duration_ms = time_step * int(1000 * GAME_DURATION_SECONDS // time_step)

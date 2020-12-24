@@ -41,6 +41,13 @@ Robot {
   description "A supervisor 'robot' to help run the competition."
   controller "competition_supervisor"
   supervisor TRUE
+  children [
+    # this is a hack to detect if we are running on version 2020b
+    Connector {
+      name "2021a-compatibility"
+      type "passive"
+    }
+  ]
 }
 Robot {
   translation 0 0 0
