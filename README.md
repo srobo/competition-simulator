@@ -108,6 +108,15 @@ and is used to enable integration with [SRComp][srcomp]. Primarily this file
 captures score-relevant data for SRComp, however it also supports some other
 keys which are useful in development. See the `MatchData` structure for details.
 
+During an actual competition, matches will be run using the `run-comp-match`
+script, which is documented below. Note however that it consumes robot code from
+a Zip archive rather than a directory. Suitable archives contain a `robot.py` at
+their root and thus can be created (for some team `ABC`) using:
+
+```
+zip ABC.zip robot.py
+```
+
 [srcomp]: https://github.com/PeterJCLaw/srcomp/wiki
 
 ## Doing a release
