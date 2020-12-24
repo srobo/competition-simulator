@@ -30,7 +30,7 @@ On first run, the robot will execute an example program. On first run, this will
 └── robot.py
 ```
 
-## Development setup
+## Development
 
 In addition to the basic setup for running the simulator, if you are intending
 to work on our wrapper API, our controllers or other helper scripts then you
