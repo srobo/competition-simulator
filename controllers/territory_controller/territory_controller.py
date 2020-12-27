@@ -58,6 +58,8 @@ class ClaimLog:
         }
 
         self._log: List[Tuple[StationCode, Claimant, float]] = []
+        # use < 0 so that the log format is written at least once
+        self._saved_log_length: int = -1
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
         return self._station_statuses[station_code]
@@ -76,6 +78,10 @@ class ClaimLog:
         if not self._record_arena_actions:
             return
 
+        if self._saved_log_length == len(self._log):
+            # don't write the log if nothing new has happened
+            return
+
         controller_utils.record_arena_data({'territory_claims': [
             {
                 'zone': claimed_by.value,
@@ -84,6 +90,8 @@ class ClaimLog:
             }
             for station_code, claimed_by, claim_time in self._log
         ]})
+
+        self._saved_log_length = len(self._log)
 
 
 class TerritoryController:
