@@ -79,7 +79,7 @@ class ClaimLog:
         if not self._record_arena_actions:
             return
 
-        if self._log_is_dirty:
+        if not self._log_is_dirty:
             # don't write the log if nothing new has happened
             return
 
