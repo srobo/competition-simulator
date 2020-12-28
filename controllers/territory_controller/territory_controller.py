@@ -58,7 +58,7 @@ class ClaimLog:
         }
 
         self._log: List[Tuple[StationCode, Claimant, float]] = []
-        # starting with a dirty log ensures the structure is written for every match
+        # Starting with a dirty log ensures the structure is written for every match.
         self._log_is_dirty = True
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
@@ -80,7 +80,7 @@ class ClaimLog:
             return
 
         if not self._log_is_dirty:
-            # don't write the log if nothing new has happened
+            # Don't write the log if nothing new has happened.
             return
 
         controller_utils.record_arena_data({'territory_claims': [
