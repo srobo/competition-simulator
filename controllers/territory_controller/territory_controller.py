@@ -58,7 +58,7 @@ class ClaimLog:
         }
 
         self._log: List[Tuple[StationCode, Claimant, float]] = []
-        # starting with a dirty log ensure the structure is written for every match
+        # starting with a dirty log ensures the structure is written for every match
         self._log_is_dirty = True
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
