@@ -74,7 +74,6 @@ class Led:
         limiter: OutputFrequencyLimiter,
         pin_num: int,
     ) -> None:
-        self._name = device_name
         self.webot_sensor = get_robot_device(webot, device_name, LED)
         self._limiter = limiter
         self._pin_num = pin_num
