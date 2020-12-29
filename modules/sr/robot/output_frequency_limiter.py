@@ -14,7 +14,6 @@ class OutputFrequencyLimiter:
     def can_change(self) -> bool:
         now = self._webot.getTime()
         diff = now - self._last_change
-        print(diff)
 
         # allow infinite changes within a timestep
         if diff == 0:
