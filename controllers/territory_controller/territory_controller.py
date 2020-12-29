@@ -58,6 +58,8 @@ class ClaimLog:
         }
 
         self._log: List[Tuple[StationCode, Claimant, float]] = []
+        # Starting with a dirty log ensures the structure is written for every match.
+        self._log_is_dirty = True
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
         return self._station_statuses[station_code]
@@ -69,11 +71,16 @@ class ClaimLog:
         claim_time: float,
     ) -> None:
         self._log.append((station_code, claimed_by, claim_time))
+        self._log_is_dirty = True
         print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
         self._station_statuses[station_code] = claimed_by
 
     def record_captures(self) -> None:
         if not self._record_arena_actions:
+            return
+
+        if not self._log_is_dirty:
+            # Don't write the log if nothing new has happened.
             return
 
         controller_utils.record_arena_data({'territory_claims': [
@@ -84,6 +91,8 @@ class ClaimLog:
             }
             for station_code, claimed_by, claim_time in self._log
         ]})
+
+        self._log_is_dirty = False
 
 
 class TerritoryController:
