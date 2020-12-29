@@ -9,7 +9,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Root directory of the specification of the Arena (and match)
-ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
+ARENA_ROOT = (REPO_ROOT / os.environ.get('ARENA_ROOT', '..')).resolve()
 
 
 ROBOT_IDS_TO_CORNERS = {
