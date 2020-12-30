@@ -54,6 +54,13 @@ def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
 
 @contextlib.contextmanager
 def propagate_exit_code(supervisor: Supervisor) -> Iterator[None]:
+    """
+    Quit the simulation at the end of a block, with an exit code indicating
+    whether or not an error happened.
+
+    This ensures that any errors in the supervisor are propagated outwards to
+    the caller, which is useful during automated running of matches.
+    """
     try:
         yield
     except Exception:
