@@ -72,16 +72,17 @@ class Led:
         webot: Robot,
         device_name: str,
         limiter: OutputFrequencyLimiter,
+        pin_num: int,
     ) -> None:
-        self._name = device_name
         self.webot_sensor = get_robot_device(webot, device_name, LED)
         self._limiter = limiter
+        self._pin_num = pin_num
 
     def write_value(self, value: bool) -> None:
         if not self._limiter.can_change():
             LOGGER.warning(
-                "Rate limited change to LED output (requested setting %s to %r)",
-                self._name,
+                "Rate limited change to LED output (requested setting LED on pin %d to %r)",
+                self._pin_num,
                 value,
             )
             return
