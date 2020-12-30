@@ -48,7 +48,8 @@ You can then run all linting/type checking/tests in one go using `script/check`.
 While the default location that our controllers look for `robot.py` files is the
 directory above the repo, that is not particularly convenient for development.
 Instead you may wish to run Webots having set the `ARENA_ROOT` environment
-variable to a suitable location.
+variable to a suitable location. This is also how `run-comp-match` configures
+the arena to use when it runs matches.
 
 For example, you may find it convenient to have a `robots` directory within the
 repo and then have a number of code and arena directories within that:
