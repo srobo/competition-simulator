@@ -91,12 +91,30 @@ def check_required_libraries(path: Path) -> None:
         )
 
 
-def get_robots(supervisor: Supervisor) -> List[Tuple[int, Node]]:
+def get_robots(
+    supervisor: Supervisor,
+    *,
+    skip_missing: bool = False
+) -> List[Tuple[int, Node]]:
+    """
+    Get a list of (zone id, robot node) tuples.
+
+    By default this raises a `ValueError` if it fails to fetch a robot node for
+    a given zone, however this behaviour can be altered if the caller wishes to
+    instead skip the missing nodes. This should only be done if the caller has
+    already validated that the node ids being used for the lookups are
+    definitely valid (and that therefore missing nodes are expected rather than
+    a signal of an internal error).
+    """
+
     robots = []  # List[Tuple[int, Supervisor]]
 
     for webots_id_str, zone_id in controller_utils.ROBOT_IDS_TO_CORNERS.items():
         robot = supervisor.getFromId(int(webots_id_str))
         if robot is None:
+            if skip_missing:
+                continue
+
             msg = "Failed to get Webots node for zone {} (id: {})".format(
                 zone_id,
                 webots_id_str,
@@ -164,7 +182,7 @@ def run_match(supervisor: Supervisor) -> None:
     print("===========")
 
     # First signal the robot controllers that they're able to start ...
-    for _, robot in get_robots(supervisor):
+    for _, robot in get_robots(supervisor, skip_missing=True):
         robot.getField('customData').setSFString('start')
 
     # ... then un-pause the simulation, so they all start together
