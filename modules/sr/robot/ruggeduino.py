@@ -39,9 +39,12 @@ def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
             webot,
             name,
             limiter,
-            index + Ruggeduino.DIGITAL_PIN_START + len(digital_input_array),
+            pin,
         )
-        for index, name in enumerate(led_names)
+        for pin, name in enumerate(
+            led_names,
+            start=Ruggeduino.DIGITAL_PIN_START + len(digital_input_array),
+        )
     ]
 
     return [Ruggeduino(analogue_input_array, digital_input_array, digital_output_array)]
