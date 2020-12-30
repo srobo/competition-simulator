@@ -1,7 +1,7 @@
 import sys
 import enum
 import struct
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 from pathlib import Path
 
 # Webots specific library
@@ -12,6 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
+import controller_utils  # isort:skip
 from sr.robot.utils import get_robot_device  # isort:skip
 
 RECEIVE_TICKS = 1
@@ -48,16 +49,60 @@ class StationCode(str, enum.Enum):
 ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
 
 
+class ClaimLog:
+    def __init__(self, record_arena_actions: bool) -> None:
+        self._record_arena_actions = record_arena_actions
+
+        self._station_statuses: Dict[StationCode, Claimant] = {
+            code: Claimant.UNCLAIMED for code in StationCode
+        }
+
+        self._log: List[Tuple[StationCode, Claimant, float]] = []
+        # Starting with a dirty log ensures the structure is written for every match.
+        self._log_is_dirty = True
+
+    def get_claimant(self, station_code: StationCode) -> Claimant:
+        return self._station_statuses[station_code]
+
+    def log_territory_claim(
+        self,
+        station_code: StationCode,
+        claimed_by: Claimant,
+        claim_time: float,
+    ) -> None:
+        self._log.append((station_code, claimed_by, claim_time))
+        self._log_is_dirty = True
+        print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
+        self._station_statuses[station_code] = claimed_by
+
+    def record_captures(self) -> None:
+        if not self._record_arena_actions:
+            return
+
+        if not self._log_is_dirty:
+            # Don't write the log if nothing new has happened.
+            return
+
+        controller_utils.record_arena_data({'territory_claims': [
+            {
+                'zone': claimed_by.value,
+                'station_code': station_code.value,
+                'time': claim_time,
+            }
+            for station_code, claimed_by, claim_time in self._log
+        ]})
+
+        self._log_is_dirty = False
+
+
 class TerritoryController:
 
     _emitters: Dict[StationCode, Emitter]
     _receivers: Dict[StationCode, Receiver]
 
-    def __init__(self) -> None:
+    def __init__(self, claim_log: ClaimLog) -> None:
+        self._claim_log = claim_log
         self._robot = Supervisor()
-        self._station_statuses: Dict[StationCode, Claimant] = {
-            code: Claimant.UNCLAIMED for code in StationCode
-        }
         self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
 
         self._emitters = {
@@ -72,18 +117,6 @@ class TerritoryController:
 
         for receiver in self._receivers.values():
             receiver.enable(RECEIVE_TICKS)
-
-    def get_claimant(self, station_code: StationCode) -> Claimant:
-        return self._station_statuses[station_code]
-
-    def _log_territory_claim(
-        self,
-        station_code: StationCode,
-        claimed_by: Claimant,
-        claim_time: float,
-    ) -> None:
-        # TODO add better logging so we can score
-        print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
 
     def begin_claim(
         self,
@@ -112,7 +145,7 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self.get_claimant(station_code) == claimed_by:
+        if self._claim_log.get_claimant(station_code) == claimed_by:
             # This territory is already claimed by this claimant.
             return
 
@@ -121,8 +154,7 @@ class TerritoryController:
             list(new_colour),
         )
 
-        self._log_territory_claim(station_code, claimed_by, self._robot.getTime())
-        self._station_statuses[station_code] = claimed_by
+        self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
 
     def process_packet(
         self,
@@ -131,22 +163,23 @@ class TerritoryController:
         receive_time: float,
     ) -> None:
         try:
-            robot_id, is_conclude = struct.unpack("!BB", packet)
+            robot_id, is_conclude = struct.unpack("!BB", packet)  # type: Tuple[int, int]
+            claimant = Claimant(robot_id)
             if is_conclude:
                 if self.has_begun_claim_in_time_window(
                     station_code,
-                    robot_id,
+                    claimant,
                     receive_time,
                 ):
                     self.claim_territory(
                         station_code,
-                        robot_id,
+                        claimant,
                         receive_time,
                     )
             else:
                 self.begin_claim(
                     station_code,
-                    robot_id,
+                    claimant,
                     receive_time,
                 )
         except ValueError:
@@ -170,10 +203,12 @@ class TerritoryController:
         for station_code, receiver in self._receivers.items():
             self.receive_territory(station_code, receiver)
 
+        self._claim_log.record_captures()
+
     def transmit_pulses(self) -> None:
         for station_code, emitter in self._emitters.items():
             emitter.send(struct.pack("!2sb", station_code.encode('ASCII'),
-                         int(self.get_claimant(station_code))))
+                         int(self._claim_log.get_claimant(station_code))))
 
     def main(self) -> None:
         timestep = self._robot.getBasicTimeStep()
@@ -189,5 +224,9 @@ class TerritoryController:
 
 
 if __name__ == "__main__":
-    territory_controller = TerritoryController()
+    claim_log = ClaimLog(record_arena_actions=(
+        controller_utils.MATCH_FILE.exists() and
+        controller_utils.get_robot_mode() == 'comp'
+    ))
+    territory_controller = TerritoryController(claim_log)
     territory_controller.main()

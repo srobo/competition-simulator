@@ -15,8 +15,6 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
 
-NUM_ZONES = 2
-
 
 def get_zone_path(zone_id: int) -> Path:
     robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id)
@@ -33,26 +31,32 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('match_num', help="The match number to prepare for.")
     parser.add_argument(
         'tla',
-        nargs=NUM_ZONES,
+        nargs=controller_utils.NUM_ZONES,
         help=(
-            f"TLA of the team in each zone, in order from zone 0 to {NUM_ZONES - 1}. "
-            "Use dash (-) for an empty zone. Must specify all zones."
+            "TLA of the team in each zone, in order from zone 0 to "
+            f"{controller_utils.NUM_ZONES - 1}. Use dash (-) for an empty zone. "
+            "Must specify all zones."
         ),
     )
     return parser.parse_args()
 
 
 def main(args: argparse.Namespace) -> None:
-    controller_utils.MODE_FILE.write_text('comp\n')
-    controller_utils.MATCH_FILE.write_text(f'{args.match_num}\n')
+    tlas = [
+        tla if tla != '-' else None
+        for tla in args.tla
+    ]
 
-    for zone_id, tla in enumerate(args.tla):
+    controller_utils.MODE_FILE.write_text('comp\n')
+    controller_utils.record_match_data(args.match_num, tlas)
+
+    for zone_id, tla in enumerate(tlas):
         zone_path = get_zone_path(zone_id)
 
         if zone_path.exists():
             shutil.rmtree(zone_path)
 
-        if tla == '-':
+        if tla is None:
             # no team in this zone
             continue
 

@@ -1,7 +1,8 @@
 import os
 import sys
+import json
 import datetime
-from typing import IO, Optional
+from typing import IO, Dict, List, Tuple, Optional
 from pathlib import Path
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -11,18 +12,49 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
 
 MODE_FILE = ARENA_ROOT / 'robot_mode.txt'
-MATCH_FILE = ARENA_ROOT / 'match.txt'
+MATCH_FILE = ARENA_ROOT / 'match.json'
 
 
 ROBOT_IDS_TO_CORNERS = {
     "5": 0,
     "225": 1,
 }
+NUM_ZONES = len(ROBOT_IDS_TO_CORNERS)
+
+
+def record_match_data(number: int, teams: List[Optional[str]]) -> None:
+    # Use Proton format because it covers everything we need and already has a spec.
+    MATCH_FILE.write_text(json.dumps({
+        'match_number': number,
+        'arena_id': 'Simulator',
+        'teams': {
+            tla: {'zone': idx}
+            for idx, tla in enumerate(teams)
+            if tla is not None
+        },
+    }, indent=4))
+
+
+def record_arena_data(other_data: Dict[str, List[object]]) -> None:
+    data = json.loads(MATCH_FILE.read_text())
+    arena_zones = data.setdefault('arena_zones', {})
+    arena_zones['other'] = other_data
+    MATCH_FILE.write_text(json.dumps(data, indent=4))
+
+
+def read_match_data() -> Tuple[int, List[Optional[str]]]:
+    data = json.loads(MATCH_FILE.read_text())
+
+    tla_by_zone = {x['zone']: tla for tla, x in data['teams'].items()}
+    tlas = [tla_by_zone.get(i) for i in range(NUM_ZONES)]
+
+    return data['match_number'], tlas
 
 
 def get_match_num() -> Optional[int]:
     if MATCH_FILE.exists():
-        return int(MATCH_FILE.read_text().strip())
+        match_number, _ = read_match_data()
+        return match_number
     return None
 
 

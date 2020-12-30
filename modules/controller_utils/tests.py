@@ -1,12 +1,35 @@
 import io
 import sys
+import json
+import random
+import string
 import tempfile
 import unittest
 import contextlib
+from typing import IO, List, Tuple, Iterator, Optional
 from pathlib import Path
 from unittest import mock
 
-from . import REPO_ROOT, SimpleTee, tee_streams
+from . import (
+    NUM_ZONES,
+    REPO_ROOT,
+    SimpleTee,
+    tee_streams,
+    read_match_data,
+    record_arena_data,
+    record_match_data,
+)
+
+
+def fake_tla() -> str:
+    return ''.join(random.choices(string.ascii_uppercase, k=3))
+
+
+@contextlib.contextmanager
+def mock_match_file() -> Iterator[IO[str]]:
+    with tempfile.NamedTemporaryFile(suffix='.json', mode='r+t') as f:
+        with mock.patch('controller_utils.MATCH_FILE', new=Path(f.name)):
+            yield f
 
 
 class TestRepoRoot(unittest.TestCase):
@@ -120,3 +143,52 @@ class TestSimpleTee(unittest.TestCase):
                 f.read(),
                 "Should have sent all to the log file",
             )
+
+
+class TestMatchDataIO(unittest.TestCase):
+    def fake_match_data(self) -> Tuple[int, List[Optional[str]]]:
+        number = 42
+        teams = [None, *(fake_tla() for _ in range(NUM_ZONES - 1))]
+        random.shuffle(teams)
+
+        return number, teams
+
+    def setUp(self) -> None:
+        super().setUp()
+        ctx = mock_match_file()
+        self.match_file = ctx.__enter__()
+        self.addCleanup(lambda: ctx.__exit__(None, None, None))
+
+    def test_round_trip(self) -> None:
+        number, teams = self.fake_match_data()
+
+        record_match_data(number, teams)
+        read_data = read_match_data()
+
+        self.assertEqual(
+            (number, teams),
+            read_data,
+            "Wrong data read back out",
+        )
+
+    def test_record_arena_data(self) -> None:
+        number, teams = self.fake_match_data()
+
+        record_match_data(number, teams)
+
+        record_arena_data({'foop': ['spam']})
+
+        raw_data = json.load(self.match_file)
+        self.assertEqual(
+            {'foop': ['spam']},
+            raw_data['arena_zones']['other'],
+            "Wrong data read back out",
+        )
+
+        read_data = read_match_data()
+
+        self.assertEqual(
+            (number, teams),
+            read_data,
+            "Should not have modified match data already present in file",
+        )
