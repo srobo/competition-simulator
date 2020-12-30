@@ -42,7 +42,7 @@ def construct_match_data(args: argparse.Namespace) -> controller_utils.MatchData
 
 @contextlib.contextmanager
 def temporary_arena_root(suffix: str) -> Iterator[None]:
-    arena_root = controller_utils.ARENA_ROOT
+    original_arena_root = controller_utils.ARENA_ROOT
     with tempfile.TemporaryDirectory(suffix=suffix) as tmpdir_name:
         print(f"Using {tmpdir_name!r} as the arena")  # noqa:T001
         os.environ['ARENA_ROOT'] = tmpdir_name
@@ -50,8 +50,8 @@ def temporary_arena_root(suffix: str) -> Iterator[None]:
         try:
             yield
         finally:
-            os.environ['ARENA_ROOT'] = str(arena_root)
-            controller_utils.ARENA_ROOT = arena_root
+            os.environ['ARENA_ROOT'] = str(original_arena_root)
+            controller_utils.ARENA_ROOT = original_arena_root
 
 
 def prepare_match(archives_dir: Path, match_data: controller_utils.MatchData) -> None:
