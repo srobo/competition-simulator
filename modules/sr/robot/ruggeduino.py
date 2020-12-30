@@ -35,12 +35,7 @@ def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
 
     limiter = OutputFrequencyLimiter(webot)
     digital_output_array = [
-        Led(
-            webot,
-            name,
-            limiter,
-            pin,
-        )
+        Led(webot, name, limiter, pin)
         for pin, name in enumerate(
             led_names,
             start=Ruggeduino.DIGITAL_PIN_START + len(digital_input_array),
