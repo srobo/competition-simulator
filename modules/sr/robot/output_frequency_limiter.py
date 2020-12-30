@@ -15,6 +15,12 @@ class OutputFrequencyLimiter:
         now = self._webot.getTime()
         diff = now - self._last_change
 
+        # Changes within a timestep will happen during the same
+        # render cycle and therefore cannot contribute to additional strobing.
+        # It's therefore safe to allow several changes within the same timestep.
+        if diff == 0:
+            return True
+
         if diff < MIN_TIME_BETWEEN_CHANGES:
             return False
 
