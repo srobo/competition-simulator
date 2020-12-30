@@ -149,12 +149,18 @@ def archive_match_recordings(archives_dir: Path) -> None:
 
     recording_stem = controller_utils.get_recording_stem()
 
+    # We don't want to rely on the recordings going into a directory which only
+    # contains recording data, so instead we copy explicitly the things which we
+    # know will have been output.
+
     for path in recording_stem.parent.glob(f'{recording_stem.name}.*'):
         shutil.copy(path, recordings_dir)
 
     try:
         shutil.copytree(recording_stem.parent / 'textures', recordings_dir / 'textures')
     except FileExistsError:
+        # The textures are always the same, so we don't really care if they're
+        # already there.
         pass
 
 
