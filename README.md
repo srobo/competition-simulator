@@ -71,11 +71,11 @@ robots
 ```
 
 Given a setup like the above, running Webots such that it picks up on one of the
-arena directories is possible through setting the `ARENA_ROOT` when launching
-the webots process:
+arena directories is possible through setting the `ARENA_ROOT` to an absolute
+path when launching the webots process:
 
 ```
-$ ARENA_ROOT=robots/brakes-arena webots --mode=pause worlds/Arena.wbt
+$ ARENA_ROOT=$PWD/robots/brakes-arena webots --mode=pause worlds/Arena.wbt
 ```
 
 This will launch Webots using our world file, with the simulation paused and the
