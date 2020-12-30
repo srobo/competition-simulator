@@ -11,6 +11,14 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 # Root directory of the specification of the Arena (and match)
 ARENA_ROOT = Path(os.environ.get('ARENA_ROOT', REPO_ROOT.parent))
 
+if not ARENA_ROOT.is_absolute():
+    # It turns out that Webots sets the current directory of each controller to
+    # the directory which contains the controller file. Since those are all
+    # different, relative paths aren't meaningful.
+    # Hint: `$PWD` or `%CD%` may be useful to construct an absolute path from
+    # your relative path.
+    raise ValueError(f"'ARENA_ROOT' must be an absolute path, got '{ARENA_ROOT}'")
+
 
 ROBOT_IDS_TO_CORNERS = {
     "5": 0,

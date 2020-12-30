@@ -68,16 +68,20 @@ In order to run competition matches you'll need to:
    We are using Python 3.7, though it shouldn't matter whether it's a system
    install or a virtual environment.
 
-2. Create a file `robot_mode.txt` in the parent directory of the git repo, which
-   contains just the text `comp`:
+2. Launch webots and configure it for recordings:
 
-    ``` bash
-    echo comp > robot_mode.txt
-    ```
+    - close the robot-camera overlays which appear on top of the main view
 
-3. Launch webots go to "Tools" > "Preferences" > "OpenGL" and set Ambient Occlusion to Disabled, Texture Quality to High, Disable shadows to false and Disable anti-aliasing to false
+    - in "Tools" > "Preferences" > "OpenGL" set:
 
-4. Run the match:
+        - Ambient Occlusion to Disabled,
+        - Texture Quality to High,
+        - Disable shadows to false, and
+        - Disable anti-aliasing to false
+
+   Then close webots.
+
+3. Run the match:
 
     ```bash
     competition-simulator/script/run-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>

@@ -19,7 +19,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
-from controller_utils import NUM_ZONES  # isort:skip
 
 
 def get_zone_path(zone_id: int) -> Path:
@@ -168,10 +167,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('match_num', help="The number of the match to run.")
     parser.add_argument(
         'tla',
-        nargs=NUM_ZONES,
+        nargs=controller_utils.NUM_ZONES,
         help=(
-            f"TLA of the team in each zone, in order from zone 0 to {NUM_ZONES - 1}. "
-            "Use dash (-) for an empty zone. Must specify all zones."
+            "TLA of the team in each zone, in order from zone 0 to "
+            f"{controller_utils.NUM_ZONES - 1}. Use dash (-) for an empty zone. "
+            "Must specify all zones."
         ),
     )
     parser.add_argument(

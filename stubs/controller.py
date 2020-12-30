@@ -1,5 +1,4 @@
-import enum
-from typing import List, Tuple, Optional, Sequence
+from typing import List, Tuple, NewType, Optional, Sequence
 
 
 class Device:
@@ -225,20 +224,16 @@ class Robot:
     def getDevice(self, name: str) -> Optional[Device]: ...
 
 
-class _SimulationMode(enum.Enum):
-    # These are probably `int` really, though as the values should be treated
-    # only as opaque identifiers that doesn't matter.
-    PAUSE = 'pause'
-    REAL_TIME = 'real_time'
-    RUN = 'run'
-    FAST = 'fast'
+# Beware: this type doesn't actually exist in Webots. It's just here for type
+# safety.
+SimulationMode = NewType('SimulationMode', int)
 
 
 class Supervisor(Robot):
-    SIMULATION_MODE_PAUSE = _SimulationMode.PAUSE
-    SIMULATION_MODE_REAL_TIME = _SimulationMode.REAL_TIME
-    SIMULATION_MODE_RUN = _SimulationMode.RUN
-    SIMULATION_MODE_FAST = _SimulationMode.FAST
+    SIMULATION_MODE_PAUSE: SimulationMode
+    SIMULATION_MODE_REAL_TIME: SimulationMode
+    SIMULATION_MODE_RUN: SimulationMode
+    SIMULATION_MODE_FAST: SimulationMode
 
     def getRoot(self) -> Node: ...
     def getSelf(self) -> Node: ...
@@ -265,8 +260,8 @@ class Supervisor(Robot):
 
     def simulationQuit(self, status: int) -> None: ...
     def simulationReset(self) -> None: ...
-    def simulationGetMode(self) -> _SimulationMode: ...
-    def simulationSetMode(self, mode: _SimulationMode) -> None: ...
+    def simulationGetMode(self) -> SimulationMode: ...
+    def simulationSetMode(self, mode: SimulationMode) -> None: ...
 
     def worldLoad(self, file: str) -> None: ...
     def worldSave(self, file: Optional[str] = None) -> bool: ...
