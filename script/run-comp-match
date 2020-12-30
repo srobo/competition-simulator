@@ -175,7 +175,11 @@ def parse_args() -> argparse.Namespace:
         ),
         type=Path,
     )
-    parser.add_argument('match_num', help="The number of the match to run.")
+    parser.add_argument(
+        'match_num',
+        type=int,
+        help="The number of the match to run.",
+    )
     parser.add_argument(
         'tla',
         nargs=controller_utils.NUM_ZONES,
