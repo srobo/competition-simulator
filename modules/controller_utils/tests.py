@@ -6,16 +6,19 @@ import string
 import tempfile
 import unittest
 import contextlib
-from typing import IO, List, Tuple, Iterator, Optional
+from typing import IO, Iterator
 from pathlib import Path
 from unittest import mock
 
 from . import (
+    MatchData,
     NUM_ZONES,
     REPO_ROOT,
     SimpleTee,
+    Resolution,
     tee_streams,
     read_match_data,
+    RecordingConfig,
     record_arena_data,
     record_match_data,
 )
@@ -146,12 +149,22 @@ class TestSimpleTee(unittest.TestCase):
 
 
 class TestMatchDataIO(unittest.TestCase):
-    def fake_match_data(self) -> Tuple[int, List[Optional[str]]]:
+    def fake_match_data(self) -> MatchData:
         number = 42
         teams = [None, *(fake_tla() for _ in range(NUM_ZONES - 1))]
         random.shuffle(teams)
 
-        return number, teams
+        recording_config = RecordingConfig(
+            Resolution(random.randint(0, 1920), random.randint(0, 1080)),
+            quality=random.randint(0, 100),
+        )
+
+        return MatchData(
+            number,
+            teams,
+            duration=180,
+            recording_config=recording_config,
+        )
 
     def setUp(self) -> None:
         super().setUp()
@@ -160,21 +173,36 @@ class TestMatchDataIO(unittest.TestCase):
         self.addCleanup(lambda: ctx.__exit__(None, None, None))
 
     def test_round_trip(self) -> None:
-        number, teams = self.fake_match_data()
+        match_data = self.fake_match_data()
 
-        record_match_data(number, teams)
+        record_match_data(match_data)
         read_data = read_match_data()
 
         self.assertEqual(
-            (number, teams),
+            match_data,
+            read_data,
+            "Wrong data read back out",
+        )
+
+    def test_no_recording_config(self) -> None:
+        match_data = self.fake_match_data()
+        match_data_dict = match_data._asdict()
+        match_data_dict['recording_config'] = None
+        match_data = MatchData(**match_data_dict)
+
+        record_match_data(match_data)
+        read_data = read_match_data()
+
+        self.assertEqual(
+            match_data,
             read_data,
             "Wrong data read back out",
         )
 
     def test_record_arena_data(self) -> None:
-        number, teams = self.fake_match_data()
+        match_data = self.fake_match_data()
 
-        record_match_data(number, teams)
+        record_match_data(match_data)
 
         record_arena_data({'foop': ['spam']})
 
@@ -188,7 +216,7 @@ class TestMatchDataIO(unittest.TestCase):
         read_data = read_match_data()
 
         self.assertEqual(
-            (number, teams),
+            match_data,
             read_data,
             "Should not have modified match data already present in file",
         )

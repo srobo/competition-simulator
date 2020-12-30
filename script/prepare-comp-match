@@ -38,6 +38,12 @@ def parse_args() -> argparse.Namespace:
             "Must specify all zones."
         ),
     )
+    parser.add_argument(
+        '--duration',
+        help="The duration of the match (in seconds).",
+        type=int,
+        default=controller_utils.GAME_DURATION_SECONDS,
+    )
     return parser.parse_args()
 
 
@@ -48,7 +54,12 @@ def main(args: argparse.Namespace) -> None:
     ]
 
     controller_utils.MODE_FILE.write_text('comp\n')
-    controller_utils.record_match_data(args.match_num, tlas)
+    controller_utils.record_match_data(controller_utils.MatchData(
+        args.match_num,
+        tlas,
+        args.duration,
+        recording_config=None,  # use the default
+    ))
 
     for zone_id, tla in enumerate(tlas):
         zone_path = get_zone_path(zone_id)

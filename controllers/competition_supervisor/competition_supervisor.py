@@ -18,8 +18,6 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
 
-GAME_DURATION_SECONDS = 120
-
 
 def get_recording_stem() -> Path:
     now = datetime.datetime.now()
@@ -44,11 +42,13 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
 def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
     print("Saving video to {}".format(file_path))
+
+    config = controller_utils.get_recording_config()
     supervisor.movieStartRecording(
         str(file_path),
-        width=1920,
-        height=1080,
-        quality=100,
+        width=config.resolution.width,
+        height=config.resolution.height,
+        quality=config.quality,
         codec=0,
         acceleration=1,
         caption=False,
@@ -171,7 +171,8 @@ def run_match(supervisor: Supervisor) -> None:
     supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
 
     time_step = int(supervisor.getBasicTimeStep())
-    duration_ms = time_step * int(1000 * GAME_DURATION_SECONDS // time_step)
+    duration = controller_utils.get_match_duration_seconds()
+    duration_ms = time_step * int(1000 * duration // time_step)
     supervisor.step(duration_ms)
 
     print("==================")
