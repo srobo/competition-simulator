@@ -213,6 +213,7 @@ workflows:
             - test
             - lint
             - typecheck
+            - run-comp-match
           filters:
             branches:
               only: /.*/
