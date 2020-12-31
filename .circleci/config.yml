@@ -124,9 +124,14 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            # Use deadsnakes to get Python 3.7
+            echo deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal main > /etc/apt/sources.list.d/deadsnakes.list
+            echo deb-src http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal main >> /etc/apt/sources.list.d/deadsnakes.list
+            apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F23C5A6CF475977595C89F51BA6932366A755776
+
             export DEBIAN_FRONTEND=noninteractive
             apt-get update
-            apt-get install --yes zip
+            apt-get install --yes zip python3.7{,-dev,-venv}
 
       - run:
           name: Prepare team code archive
