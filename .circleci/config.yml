@@ -139,6 +139,10 @@ jobs:
             mkdir archives
             cd archives
             sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_controller.py > robot.py
+
+            # Have the robot code print success at the end, along with a unique identifier.
+            echo "print('Success: $CIRCLE_SHA1')" >> robot.py
+
             zip ABC.zip robot.py
 
       - run:
@@ -158,6 +162,13 @@ jobs:
       - store_artifacts:
           path: archives
           destination: .
+
+      - run:
+          name: Validate success
+          command: |
+            LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-1-match-42.txt)
+            set -x
+            test "$LAST_LINE" == "1| Success: $CIRCLE_SHA1"
 
   build:
     docker:
