@@ -81,39 +81,28 @@ In order to run competition matches you'll need to:
 
    Then close webots.
 
-3. To put the competitors' code into the right places for each of the corner zones, run
+3. Run the match:
 
     ```bash
-    competition-simulator/script/prepare-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>
+    competition-simulator/script/run-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>
     ```
 
-    Using a dash instead of a TLA if a robot is not present. This provides filenames and sets up the directory structure:
+    Using a dash instead of a TLA if a robot is not present.
 
+    This will orchestrate everything to run the match, including running webots
+    and collecting together the logs and recordings. The logs & recordings will
+    be within the directory which contains the team code, as follows:
+    - The teams' logs will be in a directory named for their TLA
+    - The match file (suitable for SRComp) will be within a `matches` directory
+    - The recordings will be within a `recordings` directory
+
+    Note: you may see an error like the following regarding the video creation:
     ``` plain
-    .
-    ├── competition-simulator
-    │   ├── controllers
-    │   ├── ...
-    │   └── worlds
-    ├── robot_mode.txt
-    ├── zone-0
-    |   ├── log-zone-0-match-<match number>.txt
-    │   └── robot.py
-    └── zone-2
-        ├── log-zone-2-match-<match number>.txt
-        └── robot.py
+    [libx264 @ 0x562cf1ba9840] Error: 2pass curve failed to converge
+    [libx264 @ 0x562cf1ba9840] target: 20250.00 kbit/s, expected: 3339.51 kbit/s, avg QP: 0.0252
+    [libx264 @ 0x562cf1ba9840] try reducing target bitrate
     ```
-
-4. Run webots from the command line using:
-
-    ```bash
-    webots --batch worlds/Arena.wbt
-    ```
-
-   This runs a single match, including capturing the video and animation, and
-   then pauses the simulation at the end.
-
-5. After the match completes the robots will stop moving. Wait for the video to
-   complete its rendering (check in the output console) and then quit Webots.
-
-6. Copy logs into `competition-simulator/recordings/yyy-mm-dd/match-<match number>/logs`
+    This warns that we have requested a higher bit-rate from the video than is
+    possible given the images the simulation generates. It does not appear to
+    create any issues with the rendered videos, though you are encouraged to
+    check that your setup is recording the videos correctly.

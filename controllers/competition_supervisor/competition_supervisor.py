@@ -1,6 +1,5 @@
 import sys
 import time
-import datetime
 import contextlib
 from typing import List, Tuple, Iterator, TYPE_CHECKING
 from pathlib import Path
@@ -17,16 +16,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
-
-
-def get_recording_stem() -> Path:
-    now = datetime.datetime.now()
-
-    date = now.date().isoformat()
-
-    name: str = controller_utils.get_filename_safe_identifier()
-
-    return REPO_ROOT / 'recordings' / date / name
 
 
 @contextlib.contextmanager
@@ -61,6 +50,24 @@ def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
 
     if supervisor.movieFailed():
         print("Movie failed to record")
+
+
+@contextlib.contextmanager
+def propagate_exit_code(supervisor: Supervisor) -> Iterator[None]:
+    """
+    Quit the simulation at the end of a block, with an exit code indicating
+    whether or not an error happened.
+
+    This ensures that any errors in the supervisor are propagated outwards to
+    the caller, which is useful during automated running of matches.
+    """
+    try:
+        yield
+    except Exception:
+        supervisor.simulationQuit(1)
+        raise
+    else:
+        supervisor.simulationQuit(0)
 
 
 def quit_if_development_mode() -> None:
@@ -203,21 +210,26 @@ def run_match(supervisor: Supervisor) -> None:
 def main() -> None:
     quit_if_development_mode()
 
+    controller_utils.tee_streams(
+        controller_utils.get_competition_supervisor_log_filepath(),
+    )
+
     supervisor = Supervisor()
 
-    prepare(supervisor)
+    with propagate_exit_code(supervisor):
+        prepare(supervisor)
 
-    # Check after we've paused the sim so that any errors won't be masked by
-    # subsequent console output from a robot.
-    check_required_libraries(REPO_ROOT / 'libraries.txt')
+        # Check after we've paused the sim so that any errors won't be masked by
+        # subsequent console output from a robot.
+        check_required_libraries(REPO_ROOT / 'libraries.txt')
 
-    remove_unused_robots(supervisor)
+        remove_unused_robots(supervisor)
 
-    recording_stem = get_recording_stem()
+        recording_stem = controller_utils.get_recording_stem()
 
-    with record_animation(supervisor, recording_stem.with_suffix('.html')):
-        with record_video(supervisor, recording_stem.with_suffix('.mp4')):
-            run_match(supervisor)
+        with record_animation(supervisor, recording_stem.with_suffix('.html')):
+            with record_video(supervisor, recording_stem.with_suffix('.mp4')):
+                run_match(supervisor)
 
 
 if __name__ == '__main__':
