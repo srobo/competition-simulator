@@ -123,7 +123,7 @@ jobs:
 
       - run:
           name: Install dependencies
-          command: sudo apt install zip
+          command: apt install zip
 
       - run:
           name: Prepare team code archive
