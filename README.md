@@ -30,7 +30,7 @@ On first run, the robot will execute an example program. On first run, this will
 └── robot.py
 ```
 
-## Development setup
+## Development
 
 In addition to the basic setup for running the simulator, if you are intending
 to work on our wrapper API, our controllers or other helper scripts then you
@@ -42,6 +42,83 @@ pip install -r script/typing/requirements.txt
 ```
 
 You can then run all linting/type checking/tests in one go using `script/check`.
+
+### Running Webots
+
+While the default location that our controllers look for `robot.py` files is the
+directory above the repo, that is not particularly convenient for development.
+Instead you may wish to run Webots having set the `ARENA_ROOT` environment
+variable to a suitable location. This is also how `run-comp-match` configures
+the arena to use when it runs matches.
+
+For example, you may find it convenient to have a `robots` directory within the
+repo and then have a number of code and arena directories within that:
+
+```
+robots
+├── arena  # A development arena with a single (symlinked) robot
+│   └── robot.py -> ../ultrasounds/robot.py
+├── brakes-arena  # A competition style arena with two robots
+│   ├── zone-0
+│   │   └── robot.py
+│   └── zone-1
+│       └── robot.py
+├── dancer  # Some robot code for a robot which dances
+│   └── robot.py
+├── single-arena  # A competition style arena with a single (symlinked) robot
+│   └── zone-0 -> ../dancer/
+└── ultrasounds  # Some robot code for testing ultrasound sensors
+    └── robot.py
+```
+
+Given a setup like the above, running Webots such that it picks up on one of the
+arena directories is possible through setting the `ARENA_ROOT` to an absolute
+path when launching the webots process:
+
+```
+$ ARENA_ROOT=$PWD/robots/brakes-arena webots --mode=pause worlds/Arena.wbt
+```
+
+This will launch Webots using our world file, with the simulation paused and the
+controllers (when started) will use the robots within `brakes-arena`.
+
+Note: `webots` has a number of useful command line flags which are quite useful.
+We won't document them here, though you are encouraged to run `webots --help` to
+explore them yourself.
+
+### Competition Mode
+
+In Competition Mode the simulation behaves slightly differently:
+- the simulation exits after the game completes
+- an animation recording is made of the simulation
+- a video recording is made of the simulation
+
+If a match is being run, then the log of score-impacting events is also output
+into the match file.
+
+Competition mode is enabled when a `robot_mode.txt` marker file is found in the
+arena directory and that file contains only the text `comp`:
+
+``` bash
+echo comp > robot_mode.txt
+```
+
+The match file is a separate `match.json` file, also in the arena directory.
+This file conforms to the [Proton](https://github.com/PeterJCLaw/proton) spec
+and is used to enable integration with [SRComp][srcomp]. Primarily this file
+captures score-relevant data for SRComp, however it also supports some other
+keys which are useful in development. See the `MatchData` structure for details.
+
+During an actual competition, matches will be run using the `run-comp-match`
+script, which is documented below. Note however that it consumes robot code from
+a Zip archive rather than a directory. Suitable archives contain a `robot.py` at
+their root and thus can be created (for some team `ABC`) using:
+
+```
+zip ABC.zip robot.py
+```
+
+[srcomp]: https://github.com/PeterJCLaw/srcomp/wiki
 
 ## Doing a release
 

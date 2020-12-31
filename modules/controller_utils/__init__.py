@@ -42,7 +42,7 @@ class RecordingConfig(NamedTuple):
 class MatchData(NamedTuple):
     match_number: int
     teams: List[Optional[str]]
-    duration: int
+    duration: int  # in seconds
     recording_config: Optional[RecordingConfig]
 
 
