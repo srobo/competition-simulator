@@ -81,6 +81,7 @@ def run_match() -> None:
             '--stdout',
             '--stderr',
             '--minimize',
+            '--mode=realtime',
             str(REPO_ROOT / 'worlds' / 'Arena.wbt'),
         ])
     except subprocess.CalledProcessError as e:
