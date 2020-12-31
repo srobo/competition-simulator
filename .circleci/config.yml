@@ -115,6 +115,38 @@ jobs:
             source venv/bin/activate
             ./script/typing/check $SCRIPTS
 
+  run-comp-match:
+    docker:
+      - image: cyberbotics/webots:R2020b-rev1-ubuntu20.04
+    steps:
+      - checkout
+
+      - run:
+          name: Prepare team code archive
+          command: |
+            mkdir archives
+            cd archives
+            sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_controller.py > robot.py
+            zip ABC.zip robot.py
+
+      - run:
+          # TODO: caching of these?
+          name: Install libraries
+          command: |
+            python3.7 -m venv venv
+            source venv/bin/activate
+            pip install -r libraries.txt
+
+      - run:
+          name: Run match
+          command: |
+            source venv/bin/activate
+            script/run-comp-match archives - ABC --duration 5
+
+      - store_artifacts:
+          path: archives
+          destination: .
+
   build:
     docker:
       - image: circleci/python:3.7
@@ -152,6 +184,7 @@ workflows:
           <<: *python-top-and-bottom-version-matrix
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
+      - run-comp-match
       - build:
           requires:
             - test
