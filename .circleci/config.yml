@@ -17,7 +17,7 @@ references:
   restore-dependencies-cache: &restore-dependencies-cache
     restore_cache:
       keys:
-        - deps-1-py<< parameters.version >>-{{ checksum "all-requirements.txt" }}
+        - deps-1-py<< parameters.python-version >>-{{ checksum "all-requirements.txt" }}
   install-dependencies: &install-dependencies
     run:
       name: Install Dependencies
@@ -26,24 +26,24 @@ references:
         venv/bin/pip install -r all-requirements.txt
   save-dependencies-cache: &save-dependencies-cache
     save_cache:
-      key: deps-1-py<< parameters.version >>-{{ checksum "all-requirements.txt" }}
+      key: deps-1-py<< parameters.python-version >>-{{ checksum "all-requirements.txt" }}
       paths:
         - venv
   parametrised-python-executor: &parametrised-python-executor
     parameters:
-      version:
+      python-version:
         type: string
     executor:
       name: python
-      version: << parameters.version >>
+      python-version: << parameters.python-version >>
   python-full-version-matrix: &python-full-version-matrix
     matrix:
       parameters:
-        version: ["3.7", "3.8", "3.9"]
+        python-version: ["3.7", "3.8", "3.9"]
   python-top-and-bottom-version-matrix: &python-top-and-bottom-version-matrix
     matrix:
       parameters:
-        version: ["3.7", "3.9"]
+        python-version: ["3.7", "3.9"]
   filter-tags: &filter-tags
     filters:
       branches:
@@ -55,10 +55,10 @@ references:
 executors:
   python:
     parameters:
-      version:
+      python-version:
         type: string
     docker:
-      - image: circleci/python:<< parameters.version >>
+      - image: circleci/python:<< parameters.python-version >>
 
 jobs:
   test:
