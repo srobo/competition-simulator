@@ -164,7 +164,7 @@ In order to run competition matches you'll need to:
     competition-simulator/script/run-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>
     ```
 
-    Using a dash instead of a TLA if a robot is not present.
+    Note: use a dash instead of a TLA if a robot is not present.
 
     This will orchestrate everything to run the match, including running webots
     and collecting together the logs and recordings. The logs & recordings will
