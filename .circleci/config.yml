@@ -44,6 +44,21 @@ references:
     matrix:
       parameters:
         python-version: ["3.7", "3.9"]
+  restore-libraries-cache: &restore-libraries-cache
+    restore_cache:
+      keys:
+        - libraries-1-py3.7-{{ checksum "libraries.txt" }}
+  install-libraries: &install-libraries
+    run:
+      name: Install Libraries
+      command: |
+        python3.7 -m venv venv
+        venv/bin/pip install -r libraries.txt
+  save-libraries-cache: &save-libraries-cache
+    save_cache:
+      key: libraries-1-py3.7-{{ checksum "libraries.txt" }}
+      paths:
+        - venv
   parametrised-webots-executor: &parametrised-webots-executor
     parameters:
       webots-version:
@@ -162,13 +177,9 @@ jobs:
 
             zip ABC.zip robot.py
 
-      - run:
-          # TODO: caching of these?
-          name: Install libraries
-          command: |
-            python3.7 -m venv venv
-            source venv/bin/activate
-            pip install -r libraries.txt
+      - *restore-libraries-cache
+      - *install-libraries
+      - *save-libraries-cache
 
       - run:
           name: Run match
