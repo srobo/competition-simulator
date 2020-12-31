@@ -44,12 +44,6 @@ references:
     matrix:
       parameters:
         version: ["3.7", "3.9"]
-  filter-tags: &filter-tags
-    filters:
-      branches:
-        ignore: /.*/
-      tags:
-        only: /.*/
 
 
 executors:
@@ -158,7 +152,5 @@ workflows:
             - lint
             - typecheck
           filters:
-            branches:
-              only: /.*/
             tags:
               only: /.*/
