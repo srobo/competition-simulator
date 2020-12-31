@@ -153,7 +153,7 @@ jobs:
           name: Run match
           command: |
             source venv/bin/activate
-            script/run-comp-match archives 42 - ABC --duration 5
+            xvfb-run script/run-comp-match archives 42 - ABC --duration 5
 
       - store_artifacts:
           path: archives
