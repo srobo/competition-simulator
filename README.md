@@ -161,7 +161,7 @@ In order to run competition matches you'll need to:
 3. Run the match:
 
     ```bash
-    competition-simulator/script/run-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA> <Zone 2 TLA> <Zone 3 TLA>
+    competition-simulator/script/run-comp-match <directory containing team code> <match number> <Zone 0 TLA> <Zone 1 TLA>
     ```
 
     Note: use a dash instead of a TLA if a robot is not present.
