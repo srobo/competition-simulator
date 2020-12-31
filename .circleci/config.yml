@@ -124,8 +124,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt update
-            apt install zip
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install --yes zip
 
       - run:
           name: Prepare team code archive
