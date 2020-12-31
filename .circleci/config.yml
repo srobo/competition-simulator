@@ -44,6 +44,10 @@ references:
     matrix:
       parameters:
         version: ["3.7", "3.9"]
+  run-on-tags-too: &run-on-tags-too
+    filters:
+      tags:
+        only: /.*/
 
 
 executors:
@@ -142,15 +146,16 @@ workflows:
     jobs:
       - test:
           <<: *python-full-version-matrix
+          <<: *run-on-tags-too
       - lint:
           <<: *python-top-and-bottom-version-matrix
+          <<: *run-on-tags-too
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
+          <<: *run-on-tags-too
       - build:
+          <<: *run-on-tags-too
           requires:
             - test
             - lint
             - typecheck
-          filters:
-            tags:
-              only: /.*/
