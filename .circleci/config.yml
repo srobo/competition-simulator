@@ -44,6 +44,17 @@ references:
     matrix:
       parameters:
         python-version: ["3.7", "3.9"]
+  parametrised-webots-executor: &parametrised-webots-executor
+    parameters:
+      webots-version:
+        type: string
+    executor:
+      name: webots
+      webots-version: << parameters.webots-version >>
+  webots-full-version-matrix: &webots-full-version-matrix
+    matrix:
+      parameters:
+        webots-version: ["R2020b-rev1", "R2021a"]
   filter-tags: &filter-tags
     filters:
       branches:
@@ -59,6 +70,12 @@ executors:
         type: string
     docker:
       - image: circleci/python:<< parameters.python-version >>
+  webots:
+    parameters:
+      webots-version:
+        type: string
+    docker:
+      - image: cyberbotics/webots:<< parameters.webots-version >>-ubuntu20.04
 
 jobs:
   test:
@@ -116,8 +133,8 @@ jobs:
             ./script/typing/check $SCRIPTS
 
   run-comp-match:
-    docker:
-      - image: cyberbotics/webots:R2020b-rev1-ubuntu20.04
+    <<: *parametrised-webots-executor
+
     steps:
       - checkout
 
@@ -207,7 +224,8 @@ workflows:
           <<: *python-top-and-bottom-version-matrix
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
-      - run-comp-match
+      - run-comp-match:
+          <<: *webots-full-version-matrix
       - build:
           requires:
             - test
