@@ -122,6 +122,10 @@ jobs:
       - checkout
 
       - run:
+          name: Install dependencies
+          command: sudo apt install zip
+
+      - run:
           name: Prepare team code archive
           command: |
             mkdir archives
