@@ -89,18 +89,25 @@ def run_match() -> None:
         FAIL = '\033[91m'
         ENDC = '\033[0m'
 
-        log_text = controller_utils.get_competition_supervisor_log_filepath().read_text()
+        try:
+            log_text = controller_utils.get_competition_supervisor_log_filepath().read_text()
+        except FileNotFoundError:
+            print(  # noqa:T001
+                f"{BOLD}{FAIL}Simulation errored (exit code {e.returncode}). "
+                f"No supervisor logs were found - Webots may have crashed.{ENDC}",
+            )
+        else:
+            # There are potentially a large number of lines in the logs and any
+            # errors are likely to be at the end of the logs. Additionally, the
+            # user's focus is initially likely to be at the end of the ouptput.
+            # To ensure that failures are clear we therefore put the message that
+            # there was a failure last in the output (and in bold).
+            print("\n" + FAIL + log_text + ENDC)  # noqa:T001
+            print(  # noqa:T001
+                f"{BOLD}{FAIL}Simulation errored (exit code {e.returncode}). "
+                f"Competition supervisor logs are above.{ENDC}",
+            )
 
-        # There are potentially a large number of lines in the logs and any
-        # errors are likely to be at the end of the logs. Additionally, the
-        # user's focus is initially likely to be at the end of the ouptput.
-        # To ensure that failures are clear we therefore put the message that
-        # there was a failure last in the output (and in bold).
-        print("\n" + FAIL + log_text + ENDC)  # noqa:T001
-        print(  # noqa:T001
-            f"{BOLD}{FAIL}Simulation errored (exit code {e.returncode}). "
-            f"Competition supervisor logs are above.{ENDC}",
-        )
         exit(1)
 
 
