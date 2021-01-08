@@ -95,6 +95,11 @@ def run_match() -> None:
             '--mode=realtime',
             str(REPO_ROOT / 'worlds' / 'Arena.wbt'),
         ])
+    except FileNotFoundError:
+        print_fatal(
+            "Could not find webots. Check that you have it installed and on your PATH",
+        )
+        exit(1)
     except subprocess.CalledProcessError as e:
         try:
             log_text = controller_utils.get_competition_supervisor_log_filepath().read_text()
