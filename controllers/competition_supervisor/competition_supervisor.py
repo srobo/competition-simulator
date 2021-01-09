@@ -143,7 +143,7 @@ def wait_until_robots_ready(supervisor: Supervisor) -> None:
 
         if field.getSFString() != 'ready':
             print("Waiting for {}".format(zone_id))
-            while field.getSFString():
+            while field.getSFString() != 'ready':
                 supervisor.step(time_step)
 
         print("Zone {} ready".format(zone_id))
