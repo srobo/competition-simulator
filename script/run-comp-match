@@ -73,6 +73,17 @@ def prepare_match(archives_dir: Path, match_data: controller_utils.MatchData) ->
             zipfile.extractall(zone_path)
 
 
+def print_error(message: str, *, strong: bool = False) -> None:
+    BOLD = '\033[1m' if strong else ''
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    return print(f"{BOLD}{FAIL}{message}{ENDC}")  # noqa:T001
+
+
+def print_fatal(message: str) -> None:
+    return print_error(message, strong=True)
+
+
 def run_match() -> None:
     try:
         subprocess.check_call([
@@ -84,17 +95,18 @@ def run_match() -> None:
             '--mode=realtime',
             str(REPO_ROOT / 'worlds' / 'Arena.wbt'),
         ])
+    except FileNotFoundError:
+        print_fatal(
+            "Could not find webots. Check that you have it installed and on your PATH",
+        )
+        exit(1)
     except subprocess.CalledProcessError as e:
-        BOLD = '\033[1m'
-        FAIL = '\033[91m'
-        ENDC = '\033[0m'
-
         try:
             log_text = controller_utils.get_competition_supervisor_log_filepath().read_text()
         except FileNotFoundError:
-            print(  # noqa:T001
-                f"{BOLD}{FAIL}Simulation errored (exit code {e.returncode}). "
-                f"No supervisor logs were found - Webots may have crashed.{ENDC}",
+            print_fatal(
+                f"Simulation errored (exit code {e.returncode}). "
+                "No supervisor logs were found - Webots may have crashed.",
             )
         else:
             # There are potentially a large number of lines in the logs and any
@@ -102,10 +114,10 @@ def run_match() -> None:
             # user's focus is initially likely to be at the end of the ouptput.
             # To ensure that failures are clear we therefore put the message that
             # there was a failure last in the output (and in bold).
-            print("\n" + FAIL + log_text + ENDC)  # noqa:T001
-            print(  # noqa:T001
-                f"{BOLD}{FAIL}Simulation errored (exit code {e.returncode}). "
-                f"Competition supervisor logs are above.{ENDC}",
+            print_error(log_text)
+            print_fatal(
+                f"Simulation errored (exit code {e.returncode}). "
+                f"Competition supervisor logs are above.",
             )
 
         exit(1)
