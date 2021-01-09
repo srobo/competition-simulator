@@ -70,10 +70,8 @@ references:
     matrix:
       parameters:
         webots-version: ["R2020b-rev1", "R2021a"]
-  filter-tags: &filter-tags
+  run-on-tags-too: &run-on-tags-too
     filters:
-      branches:
-        ignore: /.*/
       tags:
         only: /.*/
 
@@ -231,20 +229,20 @@ workflows:
     jobs:
       - test:
           <<: *python-full-version-matrix
+          <<: *run-on-tags-too
       - lint:
           <<: *python-top-and-bottom-version-matrix
+          <<: *run-on-tags-too
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
+          <<: *run-on-tags-too
       - run-comp-match:
           <<: *webots-full-version-matrix
+          <<: *run-on-tags-too
       - build:
+          <<: *run-on-tags-too
           requires:
             - test
             - lint
             - typecheck
             - run-comp-match
-          filters:
-            branches:
-              only: /.*/
-            tags:
-              only: /.*/

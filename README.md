@@ -1,5 +1,7 @@
 # competition-simulator
 
+[![CircleCI](https://circleci.com/gh/srobo/competition-simulator.svg?style=svg)](https://circleci.com/gh/srobo/competition-simulator)
+
 A simulator to be used for the Student Robotics Virtual Competition
 
 ## Installation instructions
