@@ -137,7 +137,7 @@ def get_robots(
 def wait_until_robots_ready(supervisor: Supervisor) -> None:
     time_step = int(supervisor.getBasicTimeStep())
 
-    for zone_id, robot in get_robots(supervisor):
+    for zone_id, robot in get_robots(supervisor, skip_missing=True):
         # Robot.wait_start sets this to 'ready', then waits to see 'start'
         field = robot.getField('customData')
 
@@ -147,11 +147,6 @@ def wait_until_robots_ready(supervisor: Supervisor) -> None:
                 supervisor.step(time_step)
 
         print("Zone {} ready".format(zone_id))
-
-
-def prepare(supervisor: Supervisor) -> None:
-    wait_until_robots_ready(supervisor)
-    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
 
 
 def remove_unused_robots(supervisor: Supervisor) -> None:
@@ -217,13 +212,14 @@ def main() -> None:
     supervisor = Supervisor()
 
     with propagate_exit_code(supervisor):
-        prepare(supervisor)
+        remove_unused_robots(supervisor)
+        wait_until_robots_ready(supervisor)
+
+        supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
 
         # Check after we've paused the sim so that any errors won't be masked by
         # subsequent console output from a robot.
         check_required_libraries(REPO_ROOT / 'libraries.txt')
-
-        remove_unused_robots(supervisor)
 
         recording_stem = controller_utils.get_recording_stem()
 
