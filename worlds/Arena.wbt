@@ -280,7 +280,7 @@ Solid {
   name "South Wall"
 }
 Solid {
-  translation -2.9 0.15 -0.333
+  translation -2.4 0.15 -0.1
   rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
   children [
     DEF SHAPE Shape {
@@ -290,7 +290,7 @@ Solid {
         metalness 0
       }
       geometry TexturedParallelepiped {
-        size 0.28 4.89 0.3
+        size 0.28 3.89 0.3
         angles -1.085 0 0
       }
     }
@@ -301,7 +301,7 @@ Solid {
   rotationStep 0.261799
 }
 Solid {
-  translation 2.9 0.15 -0.333
+  translation 2.4 0.15 -0.1
   rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
   children [
     DEF SHAPE Shape {
@@ -311,13 +311,55 @@ Solid {
         metalness 0
       }
       geometry TexturedParallelepiped {
-        size 0.28 4.89 0.3
+        size 0.28 3.89 0.3
         angles 1.085 0 0
       }
     }
   ]
-  boundingObject USE SHAPE
   name "East Inner Wall"
+  boundingObject USE SHAPE
+  radarCrossSection 1
+  rotationStep 0.261799
+}
+Solid {
+  translation 0.8 0.15 -0.405
+  rotation 0.5773559358404592 0.577348935841237 0.5773459358415705 -2.094395307179586
+  children [
+    DEF SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.095395215 0.22841774 0.8000001
+        roughness 1
+        metalness 0
+      }
+      geometry TexturedParallelepiped {
+        size 2.025 0.28 0.3
+        angles -1.085 0 0
+    }
+      }
+  ]
+  name "West Center Wall"
+  boundingObject USE SHAPE
+  radarCrossSection 1
+  rotationStep 0.261799
+}
+Solid {
+  translation -0.8 0.15 -0.405
+  rotation -0.5773462691785233 -0.5773502691803881 0.5773542691822531 -2.0944
+  children [
+    DEF SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.095395215 0.22841774 0.8000001
+        roughness 1
+        metalness 0
+      }
+      geometry TexturedParallelepiped {
+        size 2.025 0.28 0.3
+        angles -1.085 0 0
+      }
+      }
+  ]
+  name "East Center Wall"
+  boundingObject USE SHAPE
   radarCrossSection 1
   rotationStep 0.261799
 }
