@@ -135,6 +135,13 @@ Robot {
     }
   ]
 }
+Robot {
+  translation 0 0 0
+  name "wall_controller"
+  description "A supervisor 'robot' to handle moving walls"
+  controller "wall_controller"
+  supervisor TRUE
+}
 Solid {
   children [
     DEF SHAPE Shape {
@@ -279,7 +286,7 @@ Solid {
   boundingObject USE SHAPE
   name "South Wall"
 }
-Solid {
+DEF moving_wall1 Solid {
   translation -2.4 0.15 -0.1
   rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
   children [
@@ -300,7 +307,7 @@ Solid {
   radarCrossSection 1
   rotationStep 0.261799
 }
-Solid {
+DEF moving_wall2 Solid {
   translation 2.4 0.15 -0.1
   rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
   children [
@@ -334,8 +341,8 @@ Solid {
       geometry TexturedParallelepiped {
         size 2.025 0.28 0.3
         angles -1.085 0 0
-    }
       }
+    }
   ]
   name "West Center Wall"
   boundingObject USE SHAPE
@@ -356,7 +363,7 @@ Solid {
         size 2.025 0.28 0.3
         angles -1.085 0 0
       }
-      }
+    }
   ]
   name "East Center Wall"
   boundingObject USE SHAPE
