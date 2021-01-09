@@ -4,8 +4,8 @@ WorldInfo {
   basicTimeStep 8
 }
 Viewpoint {
-  orientation -0.9999095454609961 -0.012169594624247947 0.0057272910407683165 0.8997040656177113
-  position -0.0740834062582873 11.38415056636386 9.204115444229977
+  orientation -1 0 0 0.8997040656177113
+  position 0 11.3842 9.20412
 }
 TexturedBackgroundLight {
   texture "noon_park_empty"
