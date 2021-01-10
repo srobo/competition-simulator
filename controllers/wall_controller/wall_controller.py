@@ -31,5 +31,5 @@ class WallController:
 
 
 if __name__ == "__main__":
-    wall_controller = WallController(0)
+    wall_controller = WallController(0)  # TODO decide the time that the walls should move
     wall_controller.main()
