@@ -2,6 +2,9 @@ from typing import List
 
 from controller import Node, Supervisor
 
+# Velocity matrices contain linear and rotational velocities [x, y, z, rot_x, rot_y, rot_z]
+linear_downwards = [0, -0.3, 0, 0, 0, 0]
+
 
 class WallController:
     def __init__(self, wall_time: int) -> None:
@@ -18,7 +21,7 @@ class WallController:
 
         print('Moving arena walls')  # noqa: T001
         for wall in self.walls:
-            wall.setVelocity([0, -0.3, 0, 0, 0, 0])
+            wall.setVelocity(linear_downwards)
 
         # wait for the walls to reach their final location
         self._robot.step(1000)
