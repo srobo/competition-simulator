@@ -5,6 +5,7 @@ from controller import Node, Supervisor
 # Velocity matrices contain linear and rotational velocities [x, y, z, rot_x, rot_y, rot_z]
 linear_downwards = [0, -0.3, 0, 0, 0, 0]
 
+
 def main(wall_time: int) -> None:
     robot = Supervisor()
     walls: List[Node] = [
