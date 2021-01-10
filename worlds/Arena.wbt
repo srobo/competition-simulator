@@ -280,43 +280,149 @@ Solid {
   name "South Wall"
 }
 Solid {
-  translation -2.9 0.15 -0.333
-  rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
+  # An issue with the DistanceSensor in webots-2020b-r1 
+  # causes certain faces to not be detected
+  # It appears that the issue does not occur in IndexedFaceSet
+  # when all faces have a common vertex with all others
   children [
-    DEF SHAPE Shape {
-      appearance PBRAppearance {
-        baseColor 0.095395215 0.22841774 0.8000001
-        roughness 1
-        metalness 0
-      }
-      geometry TexturedParallelepiped {
-        size 0.28 4.89 0.3
-        angles -1.085 0 0
-      }
+    Solid {
+      children [
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry IndexedFaceSet {
+            coord Coordinate {
+              point [
+                -0.74 0.3 0.67
+                -5.00 0.3 -1.58
+                -5.00 0.0 -1.58
+                -0.74 0.0 0.67
+
+                -0.74 0.0 0.95
+                -0.74 0.3 0.95
+                -5.00 0.0 -1.3
+                -5.00 0.3 -1.3
+              ]
+            }
+            coordIndex [
+              3 2 1 0 -1 # back
+              5 4 3 0 # left
+            ]
+          }
+        }
+      ]
+      boundingObject USE SHAPE
+      name "North Side"
+    }
+    Solid {
+      children [
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry IndexedFaceSet {
+            coord Coordinate {
+              point [
+                -0.74 0.3 0.67
+                -5.00 0.3 -1.58
+                -5.00 0.0 -1.58
+                -0.74 0.0 0.67
+
+                -0.74 0.0 0.95
+                -0.74 0.3 0.95
+                -5.00 0.0 -1.3
+                -5.00 0.3 -1.3
+              ]
+            }
+            coordIndex [
+              7 5 0 1 -1 # top
+              7 6 4 5 # front
+            ]
+          }
+        }
+      ]
+      boundingObject USE SHAPE
+      name "South Side"
     }
   ]
-  boundingObject USE SHAPE
   name "West Inner Wall"
   radarCrossSection 1
   rotationStep 0.261799
 }
 Solid {
-  translation 2.9 0.15 -0.333
-  rotation 0.5773499358549823 -0.5773489358550934 0.5773519358547601 2.09439
+  # An issue with the DistanceSensor in webots-2020b-r1 
+  # causes certain faces to not be detected
+  # It appears that the issue does not occur in IndexedFaceSet
+  # when all faces have a common vertex with all others
   children [
-    DEF SHAPE Shape {
-      appearance PBRAppearance {
-        baseColor 0.095395215 0.22841774 0.8000001
-        roughness 1
-        metalness 0
-      }
-      geometry TexturedParallelepiped {
-        size 0.28 4.89 0.3
-        angles 1.085 0 0
-      }
+    Solid {
+      children [
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry IndexedFaceSet {
+            coord Coordinate {
+              point [
+                0.74 0.3 0.67
+                5.00 0.3 -1.58
+                5.00 0.0 -1.58
+                0.74 0.0 0.67
+
+                0.74 0.0 0.95
+                0.74 0.3 0.95
+              ]
+            }
+            coordIndex [
+              0 1 2 3 -1 # back
+              0 3 4 5 # left
+            ]
+          }
+        }
+      ]
+      boundingObject USE SHAPE
+      name "North Side"
+    }
+    Solid {
+      children [
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry IndexedFaceSet {
+            coord Coordinate {
+              point [
+                0.74 0.3 0.67
+                5.00 0.3 -1.58
+                5.00 0.0 -1.58
+                0.74 0.0 0.67
+
+                0.74 0.0 0.95
+                0.74 0.3 0.95
+                5.00 0.0 -1.3
+                5.00 0.3 -1.3
+              ]
+            }
+            coordIndex [
+              1 0 5 7 -1 # top
+              5 4 6 7 # front
+            ]
+          }
+        }
+      ]
+      boundingObject USE SHAPE
+      name "South Side"
     }
   ]
-  boundingObject USE SHAPE
   name "East Inner Wall"
   radarCrossSection 1
   rotationStep 0.261799
