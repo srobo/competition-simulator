@@ -3,6 +3,8 @@ from typing import List
 from controller import Node, Supervisor
 
 # Velocity matrices contain linear and rotational velocities [x, y, z, rot_x, rot_y, rot_z]
+# -0.3m/s is used since the wall is 0.3m tall
+# so the wall will have fully retracted after 1 second
 LINEAR_DOWNWARDS = [0, -0.3, 0, 0, 0, 0]
 
 
