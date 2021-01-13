@@ -133,6 +133,125 @@ Robot {
       emitterName "SZEmitter"
       receiverName "SZReceiver"
     }
+    Transform {
+      translation 0 -0.0005 0
+      children [
+        DEF PN-EY SRLink {
+          translation -2.25 0 -1.125
+          rotation 0 1 0 1.1071
+          size 0.2 1.7
+          linkName "link PN-EY"
+        }
+        DEF BG-OX SRLink {
+          translation -4.1 0 0.9
+          rotation 0 1 0 0
+          size 0.2 1.6
+          linkName "link BG-OX"
+        }
+        DEF OX-TS SRLink {
+          translation -3.375 0 1.3
+          rotation 0 1 0 -1.067
+          size 0.2 1.7
+          linkName "link OX-TS"
+        }
+        DEF TS-VB SRLink {
+          translation -1.875 0 1.3
+          rotation 0 1 0 1.094
+          size 0.2 1.7
+          linkName "link TS-VB"
+        }
+        DEF EY-BE SRLink {
+          translation -0.75 0 -0.375
+          rotation 0 1 0 1.107
+          size 0.2 1.7
+          linkName "link EY-BE"
+        }
+        DEF VB-BE SRLink {
+          translation -0.55 0 0.85
+          rotation 0 1 0 -0.574
+          size 0.2 2
+          linkName "link VB-BE"
+        }
+        DEF VB-SZ SRLink {
+          translation 0 0 1.7
+          rotation 0 1 0 1.571
+          size 0.2 2.2
+          linkName "link VB-SZ"
+        }
+        DEF BE-SZ SRLink {
+          translation 0.55 0 0.85
+          rotation 0 1 0 0.574
+          size 0.2 2
+          linkName "link BE-SZ"
+        }
+        DEF BE-PO SRLink {
+          translation 0.75 0 -0.375
+          rotation 0 1 0 -1.107
+          size 0.2 1.7
+          linkName "link BE-PO"
+        }
+        DEF SZ-SW SRLink {
+          translation 1.875 0 1.3
+          rotation 0 1 0 -1.094
+          size 0.2 1.7
+          linkName "link SZ-SW"
+        }
+        DEF PO-YL SRLink {
+          translation 2.25 0 -1.125
+          rotation 0 1 0 -1.107
+          size 0.2 1.7
+          linkName "link PO-YL"
+        }
+        DEF SW-BN SRLink {
+          translation 3.375 0 1.3
+          rotation 0 1 0 1.067
+          size 0.2 1.7
+          linkName "link SW-BN"
+        }
+        DEF HV-BN SRLink {
+          translation 4.1 0 0.9
+          rotation 0 1 0 0
+          size 0.2 1.6
+          linkName "link HV-BN"
+        }
+        DEF z0-PN SRLink {
+          translation -3.75 0 -1.75
+          rotation 0 1 0 1.249
+          size 0.2 1.6
+          linkName "link z0-PN"
+        }
+        DEF z0-TS SRLink {
+          translation -3.575 0 -0.55
+          rotation 0 1 0 0.568
+          size 0.2 3.4
+          linkName "link z0-TS"
+        }
+        DEF z0-BG SRLink {
+          translation -4.3 0 -0.95
+          rotation 0 1 0 0.188
+          size 0.2 2.1
+          linkName "link z0-BG"
+        }
+        DEF z1-YL SRLink {
+          translation 3.75 0 -1.75
+          rotation 0 1 0 -1.249
+          size 0.2 1.6
+          linkName "link z1-YL"
+        }
+        DEF z1-SW SRLink {
+          translation 3.575 0 -0.55
+          rotation 0 1 0 -0.568
+          size 0.2 3.4
+          linkName "link z1-SW"
+        }
+        DEF z1-HV SRLink {
+          translation 4.3 0 -0.95
+          rotation 0 1 0 -0.188
+          size 0.2 2.1
+          linkName "link z1-HV"
+        }
+      ]
+    }
   ]
 }
 DEF WALL_CTRL Robot {
