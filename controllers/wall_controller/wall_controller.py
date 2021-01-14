@@ -20,8 +20,8 @@ def main(wall_time: int) -> None:
     robot = Supervisor()
     timestep = robot.getBasicTimeStep()
     walls: List[Node] = [
-        robot.getFromDef('moving_wall1'),
-        robot.getFromDef('moving_wall2'),
+        robot.getFromDef('west_moving_wall'),
+        robot.getFromDef('east_moving_wall'),
     ]
 
     if controller_utils.get_robot_mode() == 'comp':
