@@ -4,16 +4,16 @@ from pathlib import Path
 
 from controller import Node, Supervisor
 
+# Velocity matrices contain linear and rotational velocities [x, y, z, rot_x, rot_y, rot_z]
+# -0.3m/s is used since the wall is 0.3m tall
+# so the wall will have fully retracted after 1 second
+LINEAR_DOWNWARDS = [0, -0.3, 0, 0, 0, 0]
+
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
-
-# Velocity matrices contain linear and rotational velocities [x, y, z, rot_x, rot_y, rot_z]
-# -0.3m/s is used since the wall is 0.3m tall
-# so the wall will have fully retracted after 1 second
-LINEAR_DOWNWARDS = [0, -0.3, 0, 0, 0, 0]
 
 
 def main(wall_time: int) -> None:
