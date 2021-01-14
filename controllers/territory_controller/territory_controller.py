@@ -241,7 +241,7 @@ class TerritoryController:
             if link.startswith('z'):  # starting zone connection
                 link_zones = link.split('-')
                 zone_claimant = self._claim_log.get_claimant(
-                    StationCode(link_zones[1])
+                    StationCode(link_zones[1]),
                 )
 
                 # if the zone is owned by the starting zone
