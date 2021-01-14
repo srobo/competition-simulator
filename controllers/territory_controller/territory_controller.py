@@ -175,6 +175,18 @@ class TerritoryController:
         time_delta = current_time - start_time
         return 1.8 <= time_delta <= 2.1
 
+    def can_capture_zone(
+        self,
+        station_code: StationCode,
+        attempting_claim: Claimant,
+    ) -> bool:
+        # TODO figure out if this territory has a connection back to their corner
+        return True
+
+    def prune_detached_zones(self) -> None:
+        # TODO find zones which lack connections back to their clainant's corner
+        pass
+
     def claim_territory(
         self,
         station_code: StationCode,
@@ -185,12 +197,18 @@ class TerritoryController:
             # This territory is already claimed by this claimant.
             return
 
+        if not self.can_capture_zone(station_code, claimed_by):
+            # This claimant doesn't have a connection back to their starting zone
+            return
+
         new_colour = ZONE_COLOURS[claimed_by]
         self._robot.getFromDef(station_code).getField("zoneColour").setSFColor(
             list(new_colour),
         )
 
         self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
+
+        self.prune_detached_zones()
 
     def process_packet(
         self,
