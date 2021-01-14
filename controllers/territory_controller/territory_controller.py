@@ -46,7 +46,40 @@ class StationCode(str, enum.Enum):
 
 
 # Updating? Update `Arena.wbt` too
-ZONE_COLOURS = ((1, 0, 1), (1, 1, 0))
+ZONE_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
+    Claimant.ZONE_0: (1, 0, 1),
+    Claimant.ZONE_1: (1, 1, 0),
+    Claimant.UNCLAIMED: (0.34191456, 0.34191436, 0.34191447),
+}
+
+TERRITORY_LINKS: Tuple[str, ...] = (
+    'PN-EY',
+    'BG-OX',
+    'OX-TS',
+    'TS-VB',
+    'EY-BE',
+    'VB-BE',
+    'VB-SZ',
+    'BE-SZ',
+    'BE-PO',
+    'SZ-SW',
+    'PO-YL',
+    'SW-BN',
+    'HV-BN',
+    # These links are between territories and the starting zones
+    'z0-PN',
+    'z0-TS',
+    'z0-BG',
+    'z1-YL',
+    'z1-SW',
+    'z1-HV',
+)
+
+LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
+    Claimant.ZONE_0: (0.5, 0, 0.5),
+    Claimant.ZONE_1: (0.6, 0.6, 0),
+    Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
+}
 
 
 class ClaimLog:
@@ -93,6 +126,9 @@ class ClaimLog:
         ]})
 
         self._log_is_dirty = False
+
+    def is_dirty(self) -> bool:
+        return self._log_is_dirty
 
 
 class TerritoryController:
@@ -199,9 +235,40 @@ class TerritoryController:
                 # it is safer to advance to the next.
                 receiver.nextPacket()
 
+    def update_territory_links(self) -> None:
+        for link in TERRITORY_LINKS:
+            claimed_by = Claimant.UNCLAIMED
+            if link.startswith('z'):  # starting zone connection
+                link_zones = link.split('-')
+                zone_claimant = self._claim_log.get_claimant(
+                    StationCode(link_zones[1])
+                )
+
+                # if the zone is owned by the starting zone
+                if (int(link_zones[0][-1]) == zone_claimant):
+                    claimed_by = zone_claimant
+            else:
+                link_zones = link.split('-')
+                zone_claimants = [
+                    self._claim_log.get_claimant(StationCode(zone))
+                    for zone in link_zones
+                ]
+
+                # if both ends are owned by the same Claimant
+                if (zone_claimants[0] == zone_claimants[1]):
+                    claimed_by = zone_claimants[0]
+
+            new_colour = LINK_COLOURS[claimed_by]
+            self._robot.getFromDef(link).getField("zoneColour").setSFColor(
+                list(new_colour),
+            )
+
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
             self.receive_territory(station_code, receiver)
+
+        if self._claim_log.is_dirty():
+            self.update_territory_links()
 
         self._claim_log.record_captures()
 
