@@ -6,12 +6,14 @@ PROTO SRRobot [
   field SFString model ""
   field SFString customData ""
   field SFColor flagColour 1 1 1
+  field MFString controllerArgs []
 ]
 {
   Robot {
     selfCollision FALSE
     translation IS translation
     rotation IS rotation
+    controllerArgs IS controllerArgs
       children [
         Camera {
           translation 0 0.24 -0.023

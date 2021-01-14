@@ -18,19 +18,21 @@ TexturedBackground {
 }
 
 # Updating colours? Update `territory_controller.py`
-SRRobot {
+DEF ROBOT-0 SRRobot {
   translation -4.5 0 -2
   rotation 0 1 0 3.926
   controller "sr_controller"
   model "Robot0"
   flagColour 1 0 1
+  controllerArgs "0"
 }
-SRRobot {
+DEF ROBOT-1 SRRobot {
   translation 4.4 0 -2
   rotation 0 1 0 2.266
   controller "sr_controller"
   model "Robot1"
   flagColour 1 1 0
+  controllerArgs "1"
 }
 
 
