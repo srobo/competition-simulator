@@ -1,6 +1,14 @@
+import sys
 from typing import List
+from pathlib import Path
 
 from controller import Node, Supervisor
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
+
+import controller_utils  # isort:skip
 
 # Velocity matrices contain linear and rotational velocities [x, y, z, rot_x, rot_y, rot_z]
 # -0.3m/s is used since the wall is 0.3m tall
@@ -10,10 +18,16 @@ LINEAR_DOWNWARDS = [0, -0.3, 0, 0, 0, 0]
 
 def main(wall_time: int) -> None:
     robot = Supervisor()
+    timestep = robot.getBasicTimeStep()
     walls: List[Node] = [
         robot.getFromDef('moving_wall1'),
         robot.getFromDef('moving_wall2'),
     ]
+
+    if controller_utils.get_robot_mode() == 'comp':
+        # Interact with the supervisor "robot" to wait for the start of the match.
+        while robot.getCustomData() != 'start':
+            robot.step(int(timestep))
 
     # wait for the walls to start moving in ms
     robot.step(wall_time * 1000)

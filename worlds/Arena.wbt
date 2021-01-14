@@ -135,7 +135,7 @@ Robot {
     }
   ]
 }
-Robot {
+DEF WALL_CTRL Robot {
   translation 0 0 0
   name "wall_controller"
   description "A supervisor 'robot' to handle moving walls"
