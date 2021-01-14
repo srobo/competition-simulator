@@ -150,9 +150,11 @@ class TerritoryController:
             return
 
         new_colour = ZONE_COLOURS[claimed_by]
-        self._robot.getFromDef(station_code).getField("zoneColour").setSFColor(
-            list(new_colour),
-        )
+        station = self._robot.getFromDef(station_code)
+        if station is not None:
+            station.getField("zoneColour").setSFColor(
+                list(new_colour),
+            )
 
         self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
 
