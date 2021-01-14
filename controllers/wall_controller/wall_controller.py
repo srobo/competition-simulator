@@ -44,4 +44,4 @@ def main(wall_time: int) -> None:
 
 
 if __name__ == "__main__":
-    main(0)  # TODO decide the time that the walls should move
+    main(60)
