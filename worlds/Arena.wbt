@@ -309,30 +309,35 @@ Solid {
 }
 Solid {
   children [
-    Shape {
-      appearance PBRAppearance {
-        baseColor 0.095395215 0.22841774 0.8000001
-        roughness 1
-        metalness 0
-      }
-      geometry IndexedFaceSet {
-        coord Coordinate {
-          point [
-            -5 0 -1.5
-            -4 0 -1.5
-            -4 0 -2.5
-            -5 0 -2.5
-            4 0 -1.5
-            5 0 -1.5
-            5 0 -2.5
-            4 0 -2.5
-          ]
+    Transform {
+      translation -4.5 0.001 -2
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 0 1
+            roughness 1
+            metalness 0
+          }
+          geometry Plane {
+            size 1 1
+          }
         }
-        coordIndex [
-          0, 1, 2, 3, -1,
-          4, 5, 6, 7,
-        ]
-      }
+      ]
+    }
+    Transform {
+      translation 4.5 0.001 -2
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Plane {
+            size 1 1
+          }
+        }
+      ]
     }
   ]
   name "Robot Corners"
