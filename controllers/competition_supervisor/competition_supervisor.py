@@ -143,10 +143,10 @@ def wait_until_robots_ready(supervisor: Supervisor) -> None:
 
         if field.getSFString() != 'ready':
             print("Waiting for {}".format(zone_id))
-            start_time = supervisor.getTime()
+            end_time = supervisor.getTime() + 5
             while field.getSFString() != 'ready':
                 # 5 second initialisation timeout
-                if (supervisor.getTime() - start_time) > 5:
+                if supervisor.getTime() > end_time:
                     raise RuntimeError(
                         "Robot in zone {} failed to initialise".format(zone_id),
                     )
