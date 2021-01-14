@@ -148,7 +148,9 @@ def wait_until_robots_ready(supervisor: Supervisor) -> None:
                 # 5 second initialisation timeout
                 if supervisor.getTime() > end_time:
                     raise RuntimeError(
-                        f"Robot in zone {zone_id} failed to initialise",
+                        f"Robot in zone {zone_id} failed to initialise. "
+                        "Check whether the robot code is correctly reaching and "
+                        "calling `wait_start`.",
                     )
                 supervisor.step(time_step)
 
