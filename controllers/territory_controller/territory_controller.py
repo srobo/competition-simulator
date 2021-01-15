@@ -81,6 +81,26 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
+# TODO this could be generated from territory links
+ADJACENT_ZONES = {
+    # links back to starting zones are omitted since starting zones cannot be captured
+    'z0': ['PN', 'TS', 'BG'],
+    'z1': ['YL', 'SW', 'HV'],
+    'PN': ['EY'],
+    'EY': ['PN', 'BE'],
+    'BE': ['EY', 'VB', 'SZ', 'PO'],
+    'PO': ['BE', 'YL'],
+    'YL': ['PO'],
+    'BG': ['OX'],
+    'TS': ['OX', 'VB'],
+    'OX': ['BG', 'TS'],
+    'VB': ['TS', 'BE', 'SZ'],
+    'SZ': ['VB', 'BE', 'SW'],
+    'SW': ['SZ', 'BN'],
+    'BN': ['SW', 'HV'],
+    'HV': ['BN'],
+}
+
 
 class ClaimLog:
     def __init__(self, record_arena_actions: bool) -> None:
@@ -175,17 +195,89 @@ class TerritoryController:
         time_delta = current_time - start_time
         return 1.8 <= time_delta <= 2.1
 
-    def can_capture_zone(
+    def get_attached_territories(
+        self,
+        station_str: str,
+        claimant: Claimant,
+        claimed_stations: List[str],
+    ) -> None:
+        for station in ADJACENT_ZONES[station_str]:
+            if self._claim_log.get_claimant(StationCode(station)) != claimant:
+                # adjacent territory has different owner
+                continue
+            if station in claimed_stations:
+                # another path already connects this station
+                continue
+            # add this station before recursing to prevent
+            # looping through mutually connected nodes
+            claimed_stations.append(station)
+            self.get_attached_territories(station, claimant, claimed_stations)
+
+    def build_attached_capture_trees(self) -> Tuple[List[str], List[str]]:
+        zone_0_territories: List[str] = []
+        zone_1_territories: List[str] = []
+
+        # the territory lists are passed by reference and populated by the functions
+        self.get_attached_territories('z0', Claimant.ZONE_0, zone_0_territories)
+        self.get_attached_territories('z1', Claimant.ZONE_1, zone_1_territories)
+        return (zone_0_territories, zone_1_territories)
+
+    def can_capture_station(
         self,
         station_code: StationCode,
         attempting_claim: Claimant,
+        connected_territories: Tuple[List[str], List[str]],
     ) -> bool:
-        # TODO figure out if this territory has a connection back to their corner
-        return True
+        if attempting_claim == Claimant.UNCLAIMED:
+            # This condition shouldn't occur and
+            # we don't track adjacency for unclaimed territories
+            return True
 
-    def prune_detached_zones(self) -> None:
-        # TODO find zones which lack connections back to their clainant's corner
-        pass
+        for station in ADJACENT_ZONES[station_code.value]:
+            if station in connected_territories[attempting_claim]:
+                # an adjacent territory has a connection back to the robot's starting zone
+                return True
+
+        if station_code.value in ADJACENT_ZONES[f'z{attempting_claim.value}']:
+            # robot is capturing a zone directly connected to it's starting zone
+            return True
+
+        return False
+
+    def set_territory_ownership(
+        self,
+        station_code: StationCode,
+        claimed_by: Claimant,
+        claim_time: float,
+    ) -> None:
+        new_colour = ZONE_COLOURS[claimed_by]
+        self._robot.getFromDef(station_code).getField("zoneColour").setSFColor(
+            list(new_colour),
+        )
+
+        self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
+
+    def prune_detached_stations(
+        self,
+        connected_territories: Tuple[List[str], List[str]],
+        claim_time: float,
+    ) -> None:
+        # find territories which lack connections back to their claimant's corner
+        for station in StationCode:  # for territory in station_codes
+            if self._claim_log.get_claimant(station) == Claimant.UNCLAIMED:
+                # unclaimed territories can't be pruned
+                continue
+
+            if station.value in connected_territories[0]:
+                # territory is linked back to zone 0's starting corner
+                continue
+
+            if station.value in connected_territories[1]:
+                # territory is linked back to zone 1's starting corner
+                continue
+
+            # all disconnected territory is unclaimed
+            self.set_territory_ownership(station, Claimant.UNCLAIMED, claim_time)
 
     def claim_territory(
         self,
@@ -197,18 +289,21 @@ class TerritoryController:
             # This territory is already claimed by this claimant.
             return
 
-        if not self.can_capture_zone(station_code, claimed_by):
+        connected_territories = self.build_attached_capture_trees()
+
+        if not self.can_capture_station(station_code, claimed_by, connected_territories):
             # This claimant doesn't have a connection back to their starting zone
+            print(f"Robot in zone {claimed_by} failed to capture {station_code}")
             return
 
-        new_colour = ZONE_COLOURS[claimed_by]
-        self._robot.getFromDef(station_code).getField("zoneColour").setSFColor(
-            list(new_colour),
-        )
+        self.set_territory_ownership(station_code, claimed_by, claim_time)
 
-        self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
+        # recalculate connected territories to account for
+        # the new capture and newly created islands
+        connected_territories = self.build_attached_capture_trees()
+        print(connected_territories)
 
-        self.prune_detached_zones()
+        self.prune_detached_stations(connected_territories, claim_time)
 
     def process_packet(
         self,
