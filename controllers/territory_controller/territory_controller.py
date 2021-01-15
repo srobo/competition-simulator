@@ -153,7 +153,7 @@ class TerritoryController:
         station = self._robot.getFromDef(station_code)
         if station is None:
             raise RuntimeError(
-                f"Failed to fetch territory node {station_code}"
+                f"Failed to fetch territory node {station_code}",
             )
         station.getField("zoneColour").setSFColor(
             list(new_colour),
