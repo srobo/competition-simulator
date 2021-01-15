@@ -1,6 +1,7 @@
 import sys
 import enum
 import struct
+import logging
 from typing import Dict, List, Tuple
 from pathlib import Path
 
@@ -152,12 +153,13 @@ class TerritoryController:
         new_colour = ZONE_COLOURS[claimed_by]
         station = self._robot.getFromDef(station_code)
         if station is None:
-            raise RuntimeError(
+            logging.error(
                 f"Failed to fetch territory node {station_code}",
             )
-        station.getField("zoneColour").setSFColor(
-            list(new_colour),
-        )
+        else:
+            station.getField("zoneColour").setSFColor(
+                list(new_colour),
+            )
 
         self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
 
