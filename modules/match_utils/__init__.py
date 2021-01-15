@@ -12,6 +12,19 @@ import controller_utils  # isort:skip
 
 
 class Match:
+    def __init__(self, argv: Optional[List[str]] = None) -> None:
+        args = self.parse_args(argv)
+        match_data = self.construct_match_data(args)
+
+        with self.temporary_arena_root(f'match-{match_data.match_number}'):
+            self.prepare_match(args.archives_dir, match_data)
+
+            self.run_match()
+
+            self.collate_logs(args.archives_dir, match_data)
+            self.archive_match_file(args.archives_dir, match_data)
+            self.archive_match_recordings(args.archives_dir)
+
     def get_zone_path(self, zone_id: int) -> Path:
         robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id)
         return robot_file.parent
@@ -210,15 +223,3 @@ class Match:
         )
         # setting args to None uses the command line arguments
         return parser.parse_args(args)
-
-    def main(self, args: argparse.Namespace) -> None:
-        match_data = self.construct_match_data(args)
-
-        with self.temporary_arena_root(f'match-{match_data.match_number}'):
-            self.prepare_match(args.archives_dir, match_data)
-
-            self.run_match()
-
-            self.collate_logs(args.archives_dir, match_data)
-            self.archive_match_file(args.archives_dir, match_data)
-            self.archive_match_recordings(args.archives_dir)

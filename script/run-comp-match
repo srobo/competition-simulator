@@ -12,5 +12,4 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 import match_utils  # isort:skip
 
 if __name__ == '__main__':
-    match = match_utils.Match()
-    match.main(match.parse_args())
+    match_utils.Match()
