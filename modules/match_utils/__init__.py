@@ -4,7 +4,7 @@ import argparse
 import tempfile
 import contextlib
 import subprocess
-from typing import Iterator
+from typing import List, Iterator, Optional
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -177,7 +177,7 @@ class Match:
             # already there.
             pass
 
-    def parse_args(self) -> argparse.Namespace:
+    def parse_args(self, args: Optional[List[str]] = None) -> argparse.Namespace:
         parser = argparse.ArgumentParser()
         parser.add_argument(
             'archives_dir',
@@ -208,7 +208,8 @@ class Match:
             type=int,
             default=controller_utils.GAME_DURATION_SECONDS,
         )
-        return parser.parse_args()
+        # setting args to None uses the command line arguments
+        return parser.parse_args(args)
 
     def main(self, args: argparse.Namespace) -> None:
         match_data = self.construct_match_data(args)
