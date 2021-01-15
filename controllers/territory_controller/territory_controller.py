@@ -293,7 +293,7 @@ class TerritoryController:
 
         if not self.can_capture_station(station_code, claimed_by, connected_territories):
             # This claimant doesn't have a connection back to their starting zone
-            print(f"Robot in zone {claimed_by} failed to capture {station_code}")
+            print(f"Robot in zone {claimed_by} failed to capture {station_code}")  # noqa: T001
             return
 
         self.set_territory_ownership(station_code, claimed_by, claim_time)
@@ -301,7 +301,6 @@ class TerritoryController:
         # recalculate connected territories to account for
         # the new capture and newly created islands
         connected_territories = self.build_attached_capture_trees()
-        print(connected_territories)
 
         self.prune_detached_stations(connected_territories, claim_time)
 
