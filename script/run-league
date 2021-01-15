@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+"""
+A script to run a competition league specified in a compstate league file
+"""
+import sys
+import argparse
+from typing import TextIO
+from pathlib import Path
+
+import yaml
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
+
+import match_utils  # isort:skip
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'archives_dir',
+        help=(
+            "The directory containing the teams' robot code, as Zip archives "
+            "named for the teams' TLAs. This directory will also be used as the "
+            "root for storing the resulting logs and recordings."
+        ),
+        type=Path,
+    )
+    parser.add_argument(
+        'league_file',
+        help=(
+            "The file containing a list of matches to run "
+            "as used by the compstate."
+        ),
+        type=argparse.FileType('r'),
+    )
+    parser.add_argument(
+        '--arena',
+        help="The name of the arena from the compstate to run matches for.",
+        default='main',
+    )
+    parser.add_argument(
+        '--start',
+        help=(
+            "The match number to to start on, "
+            "all matches below this number will be skipped."
+        ),
+        type=int,
+        default=0,
+    )
+    return parser.parse_args()
+
+
+def main(f: TextIO) -> bool:
+    success = True
+    try:
+        league = yaml.safe_load(f)
+        matches = league['matches']
+
+        for match_num, match in matches.items():
+            if match_num < args.start:
+                # match is before starting match
+                continue
+
+            if args.arena not in match.keys():
+                print(f"Arena '{args.arena}' not used for match {match_num}")
+                continue
+
+            match_args = [
+                str(args.archives_dir),
+                str(match_num),
+            ]
+            tlas = [
+                tla if tla is not None else '-'
+                for tla in match[args.arena]
+            ]
+            match_args += tlas
+
+            print(f"Running match {match_num} between {', '.join( tlas)}")
+            match_utils.Match(match_args)
+            print(f"Completed match {match_num}")
+    except RuntimeError:
+        print(f"Failed on match {match_num}")
+        success = False
+    finally:
+        f.close()
+        return success
+
+
+if __name__ == '__main__':
+    args = parse_args()
+    f = args.league_file
+
+    if not main(f):
+        exit(1)
