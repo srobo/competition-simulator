@@ -12,4 +12,7 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 import match_utils  # isort:skip
 
 if __name__ == '__main__':
-    match_utils.Match()
+    try:
+        match_utils.Match()
+    except RuntimeError:
+        exit(1)

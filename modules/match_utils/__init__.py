@@ -101,7 +101,7 @@ class Match:
             self.print_fatal(
                 "Could not find webots. Check that you have it installed and on your PATH",
             )
-            exit(1)
+            raise RuntimeError
         except subprocess.CalledProcessError as e:
             try:
                 log_text = controller_utils.get_competition_supervisor_log_filepath().read_text()  # noqa: E501
@@ -122,7 +122,7 @@ class Match:
                     f"Competition supervisor logs are above.",
                 )
 
-            exit(1)
+            raise RuntimeError
 
     def collate_logs(
         self,
