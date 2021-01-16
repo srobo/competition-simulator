@@ -1,7 +1,7 @@
 import sys
 import enum
 import struct
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 from pathlib import Path
 
 # Webots specific library
@@ -75,6 +75,12 @@ TERRITORY_LINKS: Tuple[str, ...] = (
     'z1-HV',
 )
 
+
+class TerritoryRoot(str, enum.Enum):
+    z0 = 'z0'
+    z1 = 'z1'
+
+
 LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.ZONE_0: (0.5, 0, 0.5),
     Claimant.ZONE_1: (0.6, 0.6, 0),
@@ -82,23 +88,23 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
 }
 
 # TODO this could be generated from territory links
-ADJACENT_ZONES = {
+ADJACENT_ZONES: Dict[Union[StationCode, TerritoryRoot], List[StationCode]] = {
     # links back to starting zones are omitted since starting zones cannot be captured
-    'z0': ['PN', 'TS', 'BG'],
-    'z1': ['YL', 'SW', 'HV'],
-    'PN': ['EY'],
-    'EY': ['PN', 'BE'],
-    'BE': ['EY', 'VB', 'SZ', 'PO'],
-    'PO': ['BE', 'YL'],
-    'YL': ['PO'],
-    'BG': ['OX'],
-    'TS': ['OX', 'VB'],
-    'OX': ['BG', 'TS'],
-    'VB': ['TS', 'BE', 'SZ'],
-    'SZ': ['VB', 'BE', 'SW'],
-    'SW': ['SZ', 'BN'],
-    'BN': ['SW', 'HV'],
-    'HV': ['BN'],
+    TerritoryRoot.z0: [StationCode.PN, StationCode.TS, StationCode.BG],
+    TerritoryRoot.z1: [StationCode.YL, StationCode.SW, StationCode.HV],
+    StationCode.PN: [StationCode.EY],
+    StationCode.EY: [StationCode.PN, StationCode.BE],
+    StationCode.BE: [StationCode.EY, StationCode.VB, StationCode.SZ, StationCode.PO],
+    StationCode.PO: [StationCode.BE, StationCode.YL],
+    StationCode.YL: [StationCode.PO],
+    StationCode.BG: [StationCode.OX],
+    StationCode.TS: [StationCode.OX, StationCode.VB],
+    StationCode.OX: [StationCode.BG, StationCode.TS],
+    StationCode.VB: [StationCode.TS, StationCode.BE, StationCode.SZ],
+    StationCode.SZ: [StationCode.VB, StationCode.BE, StationCode.SW],
+    StationCode.SW: [StationCode.SZ, StationCode.BN],
+    StationCode.BN: [StationCode.SW, StationCode.HV],
+    StationCode.HV: [StationCode.BN],
 }
 
 
@@ -197,12 +203,12 @@ class TerritoryController:
 
     def get_attached_territories(
         self,
-        station_str: str,
+        station_code: Union[StationCode, TerritoryRoot],
         claimant: Claimant,
-        claimed_stations: List[str],
+        claimed_stations: List[StationCode],
     ) -> None:
-        for station in ADJACENT_ZONES[station_str]:
-            if self._claim_log.get_claimant(StationCode(station)) != claimant:
+        for station in ADJACENT_ZONES[station_code]:
+            if self._claim_log.get_claimant(station) != claimant:
                 # adjacent territory has different owner
                 continue
             if station in claimed_stations:
@@ -213,32 +219,32 @@ class TerritoryController:
             claimed_stations.append(station)
             self.get_attached_territories(station, claimant, claimed_stations)
 
-    def build_attached_capture_trees(self) -> Tuple[List[str], List[str]]:
-        zone_0_territories: List[str] = []
-        zone_1_territories: List[str] = []
+    def build_attached_capture_trees(self) -> Tuple[List[StationCode], List[StationCode]]:
+        zone_0_territories: List[StationCode] = []
+        zone_1_territories: List[StationCode] = []
 
         # the territory lists are passed by reference and populated by the functions
-        self.get_attached_territories('z0', Claimant.ZONE_0, zone_0_territories)
-        self.get_attached_territories('z1', Claimant.ZONE_1, zone_1_territories)
+        self.get_attached_territories(TerritoryRoot.z0, Claimant.ZONE_0, zone_0_territories)
+        self.get_attached_territories(TerritoryRoot.z1, Claimant.ZONE_1, zone_1_territories)
         return (zone_0_territories, zone_1_territories)
 
     def can_capture_station(
         self,
         station_code: StationCode,
         attempting_claim: Claimant,
-        connected_territories: Tuple[List[str], List[str]],
+        connected_territories: Tuple[List[StationCode], List[StationCode]],
     ) -> bool:
         if attempting_claim == Claimant.UNCLAIMED:
             # This condition shouldn't occur and
             # we don't track adjacency for unclaimed territories
             return True
 
-        for station in ADJACENT_ZONES[station_code.value]:
+        for station in ADJACENT_ZONES[station_code]:
             if station in connected_territories[attempting_claim]:
                 # an adjacent territory has a connection back to the robot's starting zone
                 return True
 
-        if station_code.value in ADJACENT_ZONES[f'z{attempting_claim.value}']:
+        if station_code in ADJACENT_ZONES[TerritoryRoot(f'z{attempting_claim.value}')]:
             # robot is capturing a zone directly connected to it's starting zone
             return True
 
@@ -259,7 +265,7 @@ class TerritoryController:
 
     def prune_detached_stations(
         self,
-        connected_territories: Tuple[List[str], List[str]],
+        connected_territories: Tuple[List[StationCode], List[StationCode]],
         claim_time: float,
     ) -> None:
         # find territories which lack connections back to their claimant's corner
@@ -268,11 +274,11 @@ class TerritoryController:
                 # unclaimed territories can't be pruned
                 continue
 
-            if station.value in connected_territories[0]:
+            if station in connected_territories[0]:
                 # territory is linked back to zone 0's starting corner
                 continue
 
-            if station.value in connected_territories[1]:
+            if station in connected_territories[1]:
                 # territory is linked back to zone 1's starting corner
                 continue
 
