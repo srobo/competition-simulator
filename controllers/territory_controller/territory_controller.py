@@ -73,7 +73,7 @@ class ClaimLog:
     ) -> None:
         self._log.append((station_code, claimed_by, claim_time))
         self._log_is_dirty = True
-        print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
+        print(f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s")  # noqa:T001
         self._station_statuses[station_code] = claimed_by
 
     def record_captures(self) -> None:
