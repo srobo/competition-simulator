@@ -1,7 +1,7 @@
 import sys
 import enum
 import struct
-from typing import Dict, List, Tuple, Union
+from typing import cast, Dict, List, Tuple, Union
 from pathlib import Path
 
 # Webots specific library
@@ -87,26 +87,6 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
-# TODO this could be generated from territory links
-ADJACENT_ZONES: Dict[Union[StationCode, TerritoryRoot], List[StationCode]] = {
-    # links back to starting zones are omitted since starting zones cannot be captured
-    TerritoryRoot.z0: [StationCode.PN, StationCode.TS, StationCode.BG],
-    TerritoryRoot.z1: [StationCode.YL, StationCode.SW, StationCode.HV],
-    StationCode.PN: [StationCode.EY],
-    StationCode.EY: [StationCode.PN, StationCode.BE],
-    StationCode.BE: [StationCode.EY, StationCode.VB, StationCode.SZ, StationCode.PO],
-    StationCode.PO: [StationCode.BE, StationCode.YL],
-    StationCode.YL: [StationCode.PO],
-    StationCode.BG: [StationCode.OX],
-    StationCode.TS: [StationCode.OX, StationCode.VB],
-    StationCode.OX: [StationCode.BG, StationCode.TS],
-    StationCode.VB: [StationCode.TS, StationCode.BE, StationCode.SZ],
-    StationCode.SZ: [StationCode.VB, StationCode.BE, StationCode.SW],
-    StationCode.SW: [StationCode.SZ, StationCode.BN],
-    StationCode.BN: [StationCode.SW, StationCode.HV],
-    StationCode.HV: [StationCode.BN],
-}
-
 
 class ClaimLog:
     def __init__(self, record_arena_actions: bool) -> None:
@@ -160,6 +140,41 @@ class ClaimLog:
 class AttachedTerritories:
     def __init__(self, claim_log: ClaimLog):
         self._claim_log = claim_log
+        self.adjacent_zones = self.calculate_adjacent_territories()
+
+    def calculate_adjacent_territories(
+        self,
+    ) -> Dict[Union[StationCode, TerritoryRoot], List[StationCode]]:
+        adjacent_zones: Dict[Union[StationCode, TerritoryRoot], List[StationCode]] = {}
+
+        for link in TERRITORY_LINKS:
+            link_zones = link.split('-')
+            link_codes: Tuple[Union[StationCode, TerritoryRoot], StationCode]
+
+            try:
+                link_codes = (StationCode(link_zones[0]), StationCode(link_zones[1]))
+            except ValueError:
+                # one of the starting corners
+                link_codes = (TerritoryRoot(link_zones[0]), StationCode(link_zones[1]))
+
+            for index in range(2):
+                # links with stations at both ends are reversable
+                try:
+                    adjacent_zones[link_codes[index]].append(
+                        cast(StationCode, link_codes[1 - index]),
+                    )
+                except KeyError:
+                    # first link for this zone creates the dict
+                    adjacent_zones[link_codes[index]] = [
+                        cast(StationCode, link_codes[1 - index]),
+                    ]
+
+                if type(link_codes[0]) == TerritoryRoot:
+                    # links back to starting zones are omitted
+                    # since starting zones cannot be captured
+                    break
+
+        return adjacent_zones
 
     def get_attached_territories(
         self,
@@ -167,7 +182,7 @@ class AttachedTerritories:
         claimant: Claimant,
         claimed_stations: List[StationCode],
     ) -> None:
-        for station in ADJACENT_ZONES[station_code]:
+        for station in self.adjacent_zones[station_code]:
             if self._claim_log.get_claimant(station) != claimant:
                 # adjacent territory has different owner
                 continue
@@ -199,12 +214,12 @@ class AttachedTerritories:
             # we don't track adjacency for unclaimed territories
             return True
 
-        for station in ADJACENT_ZONES[station_code]:
+        for station in self.adjacent_zones[station_code]:
             if station in connected_territories[attempting_claim]:
                 # an adjacent territory has a connection back to the robot's starting zone
                 return True
 
-        if station_code in ADJACENT_ZONES[TerritoryRoot(f'z{attempting_claim.value}')]:
+        if station_code in self.adjacent_zones[TerritoryRoot(f'z{attempting_claim.value}')]:
             # robot is capturing a zone directly connected to it's starting zone
             return True
 
