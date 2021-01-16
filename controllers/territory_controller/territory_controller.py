@@ -45,11 +45,22 @@ class StationCode(str, enum.Enum):
     HV = 'HV'
 
 
+class TerritoryRoot(str, enum.Enum):
+    z0 = 'z0'
+    z1 = 'z1'
+
+
 # Updating? Update `Arena.wbt` too
 ZONE_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.ZONE_0: (1, 0, 1),
     Claimant.ZONE_1: (1, 1, 0),
     Claimant.UNCLAIMED: (0.34191456, 0.34191436, 0.34191447),
+}
+
+LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
+    Claimant.ZONE_0: (0.5, 0, 0.5),
+    Claimant.ZONE_1: (0.6, 0.6, 0),
+    Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
 TERRITORY_LINKS: Tuple[str, ...] = (
@@ -74,18 +85,6 @@ TERRITORY_LINKS: Tuple[str, ...] = (
     'z1-SW',
     'z1-HV',
 )
-
-
-class TerritoryRoot(str, enum.Enum):
-    z0 = 'z0'
-    z1 = 'z1'
-
-
-LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
-    Claimant.ZONE_0: (0.5, 0, 0.5),
-    Claimant.ZONE_1: (0.6, 0.6, 0),
-    Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
-}
 
 
 class ClaimLog:
