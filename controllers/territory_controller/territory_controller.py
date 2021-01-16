@@ -157,49 +157,9 @@ class ClaimLog:
         return self._log_is_dirty
 
 
-class TerritoryController:
-
-    _emitters: Dict[StationCode, Emitter]
-    _receivers: Dict[StationCode, Receiver]
-
-    def __init__(self, claim_log: ClaimLog) -> None:
+class AttachedTerritories:
+    def __init__(self, claim_log: ClaimLog):
         self._claim_log = claim_log
-        self._robot = Supervisor()
-        self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
-
-        self._emitters = {
-            station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)
-            for station_code in StationCode
-        }
-
-        self._receivers = {
-            station_code: get_robot_device(self._robot, station_code + "Receiver", Receiver)
-            for station_code in StationCode
-        }
-
-        for receiver in self._receivers.values():
-            receiver.enable(RECEIVE_TICKS)
-
-    def begin_claim(
-        self,
-        station_code: StationCode,
-        claimed_by: Claimant,
-        claim_time: float,
-    ) -> None:
-        self._claim_starts[station_code, claimed_by] = claim_time
-
-    def has_begun_claim_in_time_window(
-        self,
-        station_code: StationCode,
-        claimant: Claimant,
-        current_time: float,
-    ) -> bool:
-        try:
-            start_time = self._claim_starts[station_code, claimant]
-        except KeyError:
-            return False
-        time_delta = current_time - start_time
-        return 1.8 <= time_delta <= 2.1
 
     def get_attached_territories(
         self,
@@ -250,6 +210,52 @@ class TerritoryController:
 
         return False
 
+
+class TerritoryController:
+
+    _emitters: Dict[StationCode, Emitter]
+    _receivers: Dict[StationCode, Receiver]
+
+    def __init__(self, claim_log: ClaimLog, attached_territories: AttachedTerritories) -> None:
+        self._claim_log = claim_log
+        self._attached_territories = attached_territories
+        self._robot = Supervisor()
+        self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
+
+        self._emitters = {
+            station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)
+            for station_code in StationCode
+        }
+
+        self._receivers = {
+            station_code: get_robot_device(self._robot, station_code + "Receiver", Receiver)
+            for station_code in StationCode
+        }
+
+        for receiver in self._receivers.values():
+            receiver.enable(RECEIVE_TICKS)
+
+    def begin_claim(
+        self,
+        station_code: StationCode,
+        claimed_by: Claimant,
+        claim_time: float,
+    ) -> None:
+        self._claim_starts[station_code, claimed_by] = claim_time
+
+    def has_begun_claim_in_time_window(
+        self,
+        station_code: StationCode,
+        claimant: Claimant,
+        current_time: float,
+    ) -> bool:
+        try:
+            start_time = self._claim_starts[station_code, claimant]
+        except KeyError:
+            return False
+        time_delta = current_time - start_time
+        return 1.8 <= time_delta <= 2.1
+
     def set_territory_ownership(
         self,
         station_code: StationCode,
@@ -295,9 +301,13 @@ class TerritoryController:
             # This territory is already claimed by this claimant.
             return
 
-        connected_territories = self.build_attached_capture_trees()
+        connected_territories = self._attached_territories.build_attached_capture_trees()
 
-        if not self.can_capture_station(station_code, claimed_by, connected_territories):
+        if not self._attached_territories.can_capture_station(
+            station_code,
+            claimed_by,
+            connected_territories,
+        ):
             # This claimant doesn't have a connection back to their starting zone
             print(f"Robot in zone {claimed_by} failed to capture {station_code}")  # noqa: T001
             return
@@ -306,7 +316,7 @@ class TerritoryController:
 
         # recalculate connected territories to account for
         # the new capture and newly created islands
-        connected_territories = self.build_attached_capture_trees()
+        connected_territories = self._attached_territories.build_attached_capture_trees()
 
         self.prune_detached_stations(connected_territories, claim_time)
 
@@ -413,5 +423,6 @@ if __name__ == "__main__":
         controller_utils.get_match_file().exists() and
         controller_utils.get_robot_mode() == 'comp'
     ))
-    territory_controller = TerritoryController(claim_log)
+    attached_territories = AttachedTerritories(claim_log)
+    territory_controller = TerritoryController(claim_log, attached_territories)
     territory_controller.main()
