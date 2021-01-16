@@ -16,7 +16,7 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 import controller_utils  # isort:skip
 
 
-def main(wall_time: int) -> None:
+def move_walls_after(seconds: int) -> None:
     robot = Supervisor()
     timestep = robot.getBasicTimeStep()
     walls: List[Node] = [
@@ -44,4 +44,4 @@ def main(wall_time: int) -> None:
 
 
 if __name__ == "__main__":
-    main(60)
+    move_walls_after(seconds=60)
