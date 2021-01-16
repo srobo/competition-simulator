@@ -116,16 +116,13 @@ def get_robots(
 
     robots = []  # List[Tuple[int, Supervisor]]
 
-    for webots_id_str, zone_id in controller_utils.ROBOT_IDS_TO_CORNERS.items():
-        robot = supervisor.getFromId(int(webots_id_str))
+    for zone_id in range(controller_utils.NUM_ZONES):
+        robot = supervisor.getFromDef(f"ROBOT-{zone_id}")
         if robot is None:
             if skip_missing:
                 continue
 
-            msg = "Failed to get Webots node for zone {} (id: {})".format(
-                zone_id,
-                webots_id_str,
-            )
+            msg = "Failed to get Webots node for zone {}".format(zone_id)
             print(msg)
             raise ValueError(msg)
 
