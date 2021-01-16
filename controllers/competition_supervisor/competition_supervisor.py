@@ -191,6 +191,7 @@ def run_match(supervisor: Supervisor) -> None:
     # First signal the robot controllers that they're able to start ...
     for _, robot in get_robots(supervisor, skip_missing=True):
         robot.getField('customData').setSFString('start')
+    supervisor.getFromDef('WALL_CTRL').getField('customData').setSFString('start')
 
     # ... then un-pause the simulation, so they all start together
     supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
