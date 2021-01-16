@@ -30,7 +30,7 @@ def move_walls_after(seconds: int) -> None:
             robot.step(int(timestep))
 
     # wait for the walls to start moving in ms
-    robot.step(wall_time * 1000)
+    robot.step(seconds * 1000)
 
     print('Moving arena walls')  # noqa: T001
     for wall in walls:
