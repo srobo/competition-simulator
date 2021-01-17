@@ -1,7 +1,7 @@
 import sys
 import enum
 import struct
-from typing import Set, Dict, List, Tuple
+from typing import Set, cast, Dict, List, Tuple, Union
 from pathlib import Path
 
 # Webots specific library
@@ -45,6 +45,11 @@ class StationCode(str, enum.Enum):
     HV = 'HV'
 
 
+class TerritoryRoot(str, enum.Enum):
+    z0 = 'z0'
+    z1 = 'z1'
+
+
 # Updating? Update `Arena.wbt` too
 ZONE_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.ZONE_0: (1, 0, 1),
@@ -52,27 +57,27 @@ ZONE_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.34191456, 0.34191436, 0.34191447),
 }
 
-TERRITORY_LINKS: Set[str] = {
-    'PN-EY',
-    'BG-OX',
-    'OX-TS',
-    'TS-VB',
-    'EY-BE',
-    'VB-BE',
-    'VB-SZ',
-    'BE-SZ',
-    'BE-PO',
-    'SZ-SW',
-    'PO-YL',
-    'SW-BN',
-    'HV-BN',
+TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
+    (StationCode.PN, StationCode.EY),  # PN-EY
+    (StationCode.BG, StationCode.OX),  # BG-OX
+    (StationCode.OX, StationCode.TS),  # OX-TS
+    (StationCode.TS, StationCode.VB),  # TS-VB
+    (StationCode.EY, StationCode.BE),  # EY-BE
+    (StationCode.VB, StationCode.BE),  # VB-BE
+    (StationCode.VB, StationCode.SZ),  # VB-SZ
+    (StationCode.BE, StationCode.SZ),  # BE-SZ
+    (StationCode.BE, StationCode.PO),  # BE-PO
+    (StationCode.SZ, StationCode.SW),  # SZ-SW
+    (StationCode.PO, StationCode.YL),  # PO-YL
+    (StationCode.SW, StationCode.BN),  # SW-BN
+    (StationCode.HV, StationCode.BN),  # HV-BN
     # These links are between territories and the starting zones
-    'z0-PN',
-    'z0-TS',
-    'z0-BG',
-    'z1-YL',
-    'z1-SW',
-    'z1-HV',
+    (TerritoryRoot.z0, StationCode.PN),  # z0-PN
+    (TerritoryRoot.z0, StationCode.TS),  # z0-TS
+    (TerritoryRoot.z0, StationCode.BG),  # z0-BG
+    (TerritoryRoot.z1, StationCode.YL),  # z1-YL
+    (TerritoryRoot.z1, StationCode.SW),  # z1-SW
+    (TerritoryRoot.z1, StationCode.HV),  # z1-HV
 }
 
 LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
@@ -236,32 +241,27 @@ class TerritoryController:
                 receiver.nextPacket()
 
     def update_territory_links(self) -> None:
-        for link in TERRITORY_LINKS:
-            claimed_by = Claimant.UNCLAIMED
-            if link.startswith('z'):  # starting zone connection
-                link_zones = link.split('-')
-                zone_claimant = self._claim_log.get_claimant(
-                    StationCode(link_zones[1]),
-                )
-
-                # if the zone is owned by the starting zone
-                if (int(link_zones[0][-1]) == zone_claimant):
-                    claimed_by = zone_claimant
+        for stn_a, stn_b in TERRITORY_LINKS:
+            if type(stn_a) == TerritoryRoot:  # strating zone is implicitly owned
+                if stn_a == TerritoryRoot.z0:
+                    stn_a_claimant = Claimant.ZONE_0
+                else:
+                    stn_a_claimant = Claimant.ZONE_1
             else:
-                link_zones = link.split('-')
-                zone_claimants = [
-                    self._claim_log.get_claimant(StationCode(zone))
-                    for zone in link_zones
-                ]
+                stn_a_claimant = self._claim_log.get_claimant(cast(StationCode, stn_a))
 
-                # if both ends are owned by the same Claimant
-                if (zone_claimants[0] == zone_claimants[1]):
-                    claimed_by = zone_claimants[0]
+            stn_b_claimant = self._claim_log.get_claimant(stn_b)
+
+            # if both ends are owned by the same Claimant
+            if stn_a_claimant == stn_b_claimant:
+                claimed_by = stn_a_claimant
+            else:
+                claimed_by = Claimant.UNCLAIMED
 
             new_colour = LINK_COLOURS[claimed_by]
-            self._robot.getFromDef(link).getField("zoneColour").setSFColor(
-                list(new_colour),
-            )
+            self._robot.getFromDef(
+                '-'.join((stn_a, stn_b)),
+            ).getField("zoneColour").setSFColor(list(new_colour))
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
