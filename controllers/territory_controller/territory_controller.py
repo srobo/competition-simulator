@@ -266,9 +266,15 @@ class TerritoryController:
                 claimed_by = Claimant.UNCLAIMED
 
             new_colour = LINK_COLOURS[claimed_by]
-            self._robot.getFromDef(
-                '-'.join((stn_a, stn_b)),
-            ).getField("zoneColour").setSFColor(list(new_colour))
+            visual_link = self._robot.getFromDef('-'.join((stn_a, stn_b)))
+            if visual_link is None:
+                logging.error(
+                    f"Failed to fetch territory link {visual_link}",
+                )
+            else:
+                visual_link.getField("zoneColour").setSFColor(
+                    list(new_colour),
+                )
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
