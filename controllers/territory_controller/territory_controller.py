@@ -170,7 +170,7 @@ class AttachedTerritories:
         self,
         station_code: Union[StationCode, TerritoryRoot],
         claimant: Claimant,
-        claimed_stations: List[StationCode],
+        claimed_stations: Set[StationCode],
     ) -> None:
         for station in self.adjacent_zones[station_code]:
             if self._claim_log.get_claimant(station) != claimant:
@@ -181,12 +181,12 @@ class AttachedTerritories:
                 continue
             # add this station before recursing to prevent
             # looping through mutually connected nodes
-            claimed_stations.append(station)
+            claimed_stations.add(station)
             self.get_attached_territories(station, claimant, claimed_stations)
 
-    def build_attached_capture_trees(self) -> Tuple[List[StationCode], List[StationCode]]:
-        zone_0_territories: List[StationCode] = []
-        zone_1_territories: List[StationCode] = []
+    def build_attached_capture_trees(self) -> Tuple[Set[StationCode], Set[StationCode]]:
+        zone_0_territories: Set[StationCode] = set()
+        zone_1_territories: Set[StationCode] = set()
 
         # the territory lists are passed by reference and populated by the functions
         self.get_attached_territories(TerritoryRoot.z0, Claimant.ZONE_0, zone_0_territories)
@@ -197,7 +197,7 @@ class AttachedTerritories:
         self,
         station_code: StationCode,
         attempting_claim: Claimant,
-        connected_territories: Tuple[List[StationCode], List[StationCode]],
+        connected_territories: Tuple[Set[StationCode], Set[StationCode]],
     ) -> bool:
         if attempting_claim == Claimant.UNCLAIMED:
             # This condition shouldn't occur and
@@ -276,7 +276,7 @@ class TerritoryController:
 
     def prune_detached_stations(
         self,
-        connected_territories: Tuple[List[StationCode], List[StationCode]],
+        connected_territories: Tuple[Set[StationCode], Set[StationCode]],
         claim_time: float,
     ) -> None:
         # find territories which lack connections back to their claimant's corner

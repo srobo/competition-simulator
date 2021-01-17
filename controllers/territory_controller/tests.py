@@ -20,10 +20,10 @@ from territory_controller import (  # isort:skip
 
 class TestAttachedTerritories(unittest.TestCase):
     'Test build_attached_capture_trees/get_attached_territories'
-    _zone_0_territories = [StationCode.BG, StationCode.TS, StationCode.OX,
-                           StationCode.VB, StationCode.BE, StationCode.SZ]
-    _zone_1_territories = [StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL]
-    _zone_1_disconnected = [StationCode.PN, StationCode.EY]
+    _zone_0_territories = {StationCode.BG, StationCode.TS, StationCode.OX,
+                           StationCode.VB, StationCode.BE, StationCode.SZ}
+    _zone_1_territories = {StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL}
+    _zone_1_disconnected = {StationCode.PN, StationCode.EY}
 
     def load_territory_owners(self, claim_log: ClaimLog) -> None:
         # territories BG, TS, OX, VB, BE, SZ owned by zone 0
@@ -43,9 +43,6 @@ class TestAttachedTerritories(unittest.TestCase):
 
     def test_connected_zone_0_territories(self) -> None:
         "test multiple paths and loops don't cause a double entry"
-        # sort both lists before comparing
-        self.connected_territories[0].sort()
-        self._zone_0_territories.sort()
 
         self.assertEqual(
             self.connected_territories[0],
@@ -55,15 +52,11 @@ class TestAttachedTerritories(unittest.TestCase):
 
     def test_connected_zone_1_territories(self) -> None:
         'test cut-off zones are not included'
-        zone_1_attached = [
+        zone_1_attached = {
             station
             for station in self._zone_1_territories
             if station not in self._zone_1_disconnected
-        ]
-
-        # sort both lists before comparing
-        zone_1_attached.sort()
-        self.connected_territories[1].sort()
+        }
 
         self.assertEqual(
             self.connected_territories[1],
@@ -96,13 +89,9 @@ class TestAdjacentTerritories(unittest.TestCase):
 
     def test_all_territories_linked(self) -> None:
         'test every territory exists in keys'
-        station_codes = [station.value for station in StationCode]
-        station_codes += [zone.value for zone in TerritoryRoot]
-        adjacent_stations = list(self.attached_territories.adjacent_zones.keys())
-
-        # sort both lists before comparing
-        station_codes.sort()
-        adjacent_stations.sort()
+        station_codes = {station.value for station in StationCode}
+        station_codes.update({zone.value for zone in TerritoryRoot})
+        adjacent_stations = set(self.attached_territories.adjacent_zones.keys())
 
         self.assertEqual(
             station_codes,
