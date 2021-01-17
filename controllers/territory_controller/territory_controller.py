@@ -1,7 +1,7 @@
 import sys
 import enum
 import struct
-from typing import cast, Dict, List, Tuple, Union
+from typing import Set, cast, Dict, List, Tuple, Union
 from pathlib import Path
 
 # Webots specific library
@@ -63,7 +63,7 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
-TERRITORY_LINKS: Tuple[Tuple[Union[StationCode, TerritoryRoot], StationCode], ...] = (
+TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
     (StationCode.BG, StationCode.OX),  # BG-OX
     (StationCode.OX, StationCode.TS),  # OX-TS
@@ -84,7 +84,7 @@ TERRITORY_LINKS: Tuple[Tuple[Union[StationCode, TerritoryRoot], StationCode], ..
     (TerritoryRoot.z1, StationCode.YL),  # z1-YL
     (TerritoryRoot.z1, StationCode.SW),  # z1-SW
     (TerritoryRoot.z1, StationCode.HV),  # z1-HV
-)
+}
 
 
 class ClaimLog:
