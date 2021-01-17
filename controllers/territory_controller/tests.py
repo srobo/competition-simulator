@@ -1,3 +1,4 @@
+import re
 import sys
 import unittest
 from pathlib import Path
@@ -12,6 +13,7 @@ from territory_controller import (  # isort:skip
     ClaimLog,
     StationCode,
     TerritoryRoot,
+    TERRITORY_LINKS,
     AttachedTerritories,
 )
 
@@ -76,6 +78,21 @@ class TestAdjacentTerritories(unittest.TestCase):
         super().setUp()
         claim_log = ClaimLog(record_arena_actions=False)
         self.attached_territories = AttachedTerritories(claim_log)
+
+    def test_all_links_in_set(self) -> None:
+        'test all territory links from Arena.wbt are in TERRITORY_LINKS'
+        arena_links = set()
+        for line in (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r'):
+            if re.search(r'SRLink', line):
+                arena_links.add(re.sub(r'.*DEF (.*) SRLink .*\n', r'\1', line))
+
+        territory_links_strs = {'-'.join(link) for link in TERRITORY_LINKS}
+
+        self.assertEqual(
+            arena_links,
+            territory_links_strs,
+            'TERRITORY_LINKS differs from links in Arena.wbt',
+        )
 
     def test_all_territories_linked(self) -> None:
         'test every territory exists in keys'
