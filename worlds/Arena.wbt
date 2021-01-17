@@ -18,19 +18,21 @@ TexturedBackground {
 }
 
 # Updating colours? Update `territory_controller.py`
-SRRobot {
+DEF ROBOT-0 SRRobot {
   translation -4.5 0 -2
   rotation 0 1 0 3.926
   controller "sr_controller"
   model "Robot0"
   flagColour 1 0 1
+  controllerArgs "0"
 }
-SRRobot {
+DEF ROBOT-1 SRRobot {
   translation 4.4 0 -2
   rotation 0 1 0 2.266
   controller "sr_controller"
   model "Robot1"
   flagColour 1 1 0
+  controllerArgs "1"
 }
 
 
@@ -444,7 +446,7 @@ Solid {
   boundingObject USE SHAPE
   name "South Wall"
 }
-DEF moving_wall1 Solid {
+DEF west_moving_wall Solid {
   # An issue with the DistanceSensor in webots-2020b-r1 
   # causes certain faces to not be detected
   # It appears that the issue does not occur in IndexedFaceSet
@@ -466,8 +468,8 @@ DEF moving_wall1 Solid {
                 -4.00 0.0 -1.08
                 -0.74 0.0 0.67
 
-                -0.74 0.0 0.95
-                -0.74 0.3 0.95
+                -0.79 0.0 0.92
+                -0.79 0.3 0.92
                 -4.00 0.0 -0.8
                 -4.00 0.3 -0.8
               ]
@@ -498,8 +500,8 @@ DEF moving_wall1 Solid {
                 -4.00 0.0 -1.08
                 -0.74 0.0 0.67
 
-                -0.74 0.0 0.95
-                -0.74 0.3 0.95
+                -0.79 0.0 0.92
+                -0.79 0.3 0.92
                 -4.00 0.0 -0.8
                 -4.00 0.3 -0.8
               ]
@@ -520,7 +522,7 @@ DEF moving_wall1 Solid {
   radarCrossSection 1
   rotationStep 0.261799
 }
-DEF moving_wall2 Solid {
+DEF east_moving_wall Solid {
   # An issue with the DistanceSensor in webots-2020b-r1 
   # causes certain faces to not be detected
   # It appears that the issue does not occur in IndexedFaceSet
@@ -542,8 +544,8 @@ DEF moving_wall2 Solid {
                 4.00 0.0 -1.08
                 0.74 0.0 0.67
 
-                0.74 0.0 0.95
-                0.74 0.3 0.95
+                0.79 0.0 0.92
+                0.79 0.3 0.92
               ]
             }
             coordIndex [
@@ -572,8 +574,8 @@ DEF moving_wall2 Solid {
                 4.00 0.0 -1.08
                 0.74 0.0 0.67
 
-                0.74 0.0 0.95
-                0.74 0.3 0.95
+                0.79 0.0 0.92
+                0.79 0.3 0.92
                 4.00 0.0 -0.8
                 4.00 0.3 -0.8
               ]
@@ -611,10 +613,10 @@ Solid {
           geometry IndexedFaceSet {
             coord Coordinate {
               point [
-                -0.74 0.3 -1.385
-                -1.02 0.3 -1.53
-                -1.02 0.0 -1.53
-                -0.74 0.0 -1.385
+                -0.35 0.3 -1.18
+                -0.63 0.3 -1.33
+                -0.63 0.0 -1.33
+                -0.35 0.0 -1.18
 
                 -0.74 0.0 0.67
                 -0.74 0.3 0.67
@@ -643,10 +645,10 @@ Solid {
           geometry IndexedFaceSet {
             coord Coordinate {
               point [
-                -0.74 0.3 -1.385
-                -1.02 0.3 -1.53
-                -1.02 0.0 -1.53
-                -0.74 0.0 -1.385
+                -0.35 0.3 -1.18
+                -0.63 0.3 -1.33
+                -0.63 0.0 -1.33
+                -0.35 0.0 -1.18
 
                 -0.74 0.0 0.67
                 -0.74 0.3 0.67
@@ -688,10 +690,10 @@ Solid {
           geometry IndexedFaceSet {
             coord Coordinate {
               point [
-                0.74 0.3 -1.385
-                1.02 0.3 -1.53
-                1.02 0.0 -1.53
-                0.74 0.0 -1.385
+                0.35 0.3 -1.18
+                0.63 0.3 -1.33
+                0.63 0.0 -1.33
+                0.35 0.0 -1.18
 
                 0.74 0.0 0.67
                 0.74 0.3 0.67
@@ -720,10 +722,10 @@ Solid {
           geometry IndexedFaceSet {
             coord Coordinate {
               point [
-                0.74 0.3 -1.385
-                1.02 0.3 -1.53
-                1.02 0.0 -1.53
-                0.74 0.0 -1.385
+                0.35 0.3 -1.18
+                0.63 0.3 -1.33
+                0.63 0.0 -1.33
+                0.35 0.0 -1.18
 
                 0.74 0.0 0.67
                 0.74 0.3 0.67

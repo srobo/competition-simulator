@@ -16,12 +16,12 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 import controller_utils  # isort:skip
 
 
-def main(wall_time: int) -> None:
+def move_walls_after(seconds: int) -> None:
     robot = Supervisor()
     timestep = robot.getBasicTimeStep()
     walls: List[Node] = [
-        robot.getFromDef('moving_wall1'),
-        robot.getFromDef('moving_wall2'),
+        robot.getFromDef('west_moving_wall'),
+        robot.getFromDef('east_moving_wall'),
     ]
 
     if controller_utils.get_robot_mode() == 'comp':
@@ -30,7 +30,7 @@ def main(wall_time: int) -> None:
             robot.step(int(timestep))
 
     # wait for the walls to start moving in ms
-    robot.step(wall_time * 1000)
+    robot.step(seconds * 1000)
 
     print('Moving arena walls')  # noqa: T001
     for wall in walls:
@@ -44,4 +44,4 @@ def main(wall_time: int) -> None:
 
 
 if __name__ == "__main__":
-    main(0)  # TODO decide the time that the walls should move
+    move_walls_after(seconds=60)

@@ -21,7 +21,7 @@ STRICT_ZONES = {
 
 
 def get_robot_zone() -> int:
-    return controller_utils.ROBOT_IDS_TO_CORNERS[os.environ['WEBOTS_ROBOT_ID']]
+    return int(sys.argv[1])
 
 
 def get_robot_file(zone_id: int, mode: str) -> Path:
