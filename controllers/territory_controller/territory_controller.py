@@ -2,8 +2,9 @@ import sys
 import enum
 import struct
 import logging
-from typing import Set, Dict, List, Tuple, Union
+from typing import Set, cast, Dict, List, Tuple, Union
 from pathlib import Path
+from collections import defaultdict
 
 # Webots specific library
 from controller import Emitter, Receiver, Supervisor
@@ -58,6 +59,12 @@ ZONE_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.34191456, 0.34191436, 0.34191447),
 }
 
+LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
+    Claimant.ZONE_0: (0.5, 0, 0.5),
+    Claimant.ZONE_1: (0.6, 0.6, 0),
+    Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
+}
+
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
     (StationCode.BG, StationCode.OX),  # BG-OX
@@ -79,12 +86,6 @@ TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (TerritoryRoot.z1, StationCode.YL),  # z1-YL
     (TerritoryRoot.z1, StationCode.SW),  # z1-SW
     (TerritoryRoot.z1, StationCode.HV),  # z1-HV
-}
-
-LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
-    Claimant.ZONE_0: (0.5, 0, 0.5),
-    Claimant.ZONE_1: (0.6, 0.6, 0),
-    Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
 
@@ -137,13 +138,90 @@ class ClaimLog:
         return self._log_is_dirty
 
 
+class AttachedTerritories:
+    def __init__(self, claim_log: ClaimLog):
+        self._claim_log = claim_log
+        self.adjacent_zones = self.calculate_adjacent_territories()
+
+    def calculate_adjacent_territories(
+        self,
+    ) -> Dict[Union[StationCode, TerritoryRoot], Set[StationCode]]:
+        adjacent_zones: Dict[
+            Union[StationCode, TerritoryRoot], Set[StationCode],
+        ] = defaultdict(set)
+
+        for link_codes in TERRITORY_LINKS:
+            for index in range(2):
+                # links with stations at both ends are reversable
+                adjacent_zones[link_codes[index]].add(
+                    cast(StationCode, link_codes[1 - index]),
+                )
+
+                if isinstance(link_codes[0], TerritoryRoot):
+                    # links back to starting zones are omitted
+                    # since starting zones cannot be captured
+                    break
+
+        return adjacent_zones
+
+    def get_attached_territories(
+        self,
+        station_code: Union[StationCode, TerritoryRoot],
+        claimant: Claimant,
+        claimed_stations: Set[StationCode],
+    ) -> None:
+        for station in self.adjacent_zones[station_code]:
+            if self._claim_log.get_claimant(station) != claimant:
+                # adjacent territory has different owner
+                continue
+            if station in claimed_stations:
+                # another path already connects this station
+                continue
+            # add this station before recursing to prevent
+            # looping through mutually connected nodes
+            claimed_stations.add(station)
+            self.get_attached_territories(station, claimant, claimed_stations)
+
+    def build_attached_capture_trees(self) -> Tuple[Set[StationCode], Set[StationCode]]:
+        zone_0_territories: Set[StationCode] = set()
+        zone_1_territories: Set[StationCode] = set()
+
+        # the territory lists are passed by reference and populated by the functions
+        self.get_attached_territories(TerritoryRoot.z0, Claimant.ZONE_0, zone_0_territories)
+        self.get_attached_territories(TerritoryRoot.z1, Claimant.ZONE_1, zone_1_territories)
+        return (zone_0_territories, zone_1_territories)
+
+    def can_capture_station(
+        self,
+        station_code: StationCode,
+        attempting_claim: Claimant,
+        connected_territories: Tuple[Set[StationCode], Set[StationCode]],
+    ) -> bool:
+        if attempting_claim == Claimant.UNCLAIMED:
+            # This condition shouldn't occur and
+            # we don't track adjacency for unclaimed territories
+            return True
+
+        for station in self.adjacent_zones[station_code]:
+            if station in connected_territories[attempting_claim]:
+                # an adjacent territory has a connection back to the robot's starting zone
+                return True
+
+        if station_code in self.adjacent_zones[TerritoryRoot(f'z{attempting_claim.value}')]:
+            # robot is capturing a zone directly connected to it's starting zone
+            return True
+
+        return False
+
+
 class TerritoryController:
 
     _emitters: Dict[StationCode, Emitter]
     _receivers: Dict[StationCode, Receiver]
 
-    def __init__(self, claim_log: ClaimLog) -> None:
+    def __init__(self, claim_log: ClaimLog, attached_territories: AttachedTerritories) -> None:
         self._claim_log = claim_log
+        self._attached_territories = attached_territories
         self._robot = Supervisor()
         self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
 
@@ -181,16 +259,12 @@ class TerritoryController:
         time_delta = current_time - start_time
         return 1.8 <= time_delta <= 2.1
 
-    def claim_territory(
+    def set_territory_ownership(
         self,
         station_code: StationCode,
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self._claim_log.get_claimant(station_code) == claimed_by:
-            # This territory is already claimed by this claimant.
-            return
-
         new_colour = ZONE_COLOURS[claimed_by]
         station = self._robot.getFromDef(station_code)
         if station is None:
@@ -203,6 +277,57 @@ class TerritoryController:
             )
 
         self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
+
+    def prune_detached_stations(
+        self,
+        connected_territories: Tuple[Set[StationCode], Set[StationCode]],
+        claim_time: float,
+    ) -> None:
+        # find territories which lack connections back to their claimant's corner
+        for station in StationCode:  # for territory in station_codes
+            if self._claim_log.get_claimant(station) == Claimant.UNCLAIMED:
+                # unclaimed territories can't be pruned
+                continue
+
+            if station in connected_territories[0]:
+                # territory is linked back to zone 0's starting corner
+                continue
+
+            if station in connected_territories[1]:
+                # territory is linked back to zone 1's starting corner
+                continue
+
+            # all disconnected territory is unclaimed
+            self.set_territory_ownership(station, Claimant.UNCLAIMED, claim_time)
+
+    def claim_territory(
+        self,
+        station_code: StationCode,
+        claimed_by: Claimant,
+        claim_time: float,
+    ) -> None:
+        if self._claim_log.get_claimant(station_code) == claimed_by:
+            # This territory is already claimed by this claimant.
+            return
+
+        connected_territories = self._attached_territories.build_attached_capture_trees()
+
+        if not self._attached_territories.can_capture_station(
+            station_code,
+            claimed_by,
+            connected_territories,
+        ):
+            # This claimant doesn't have a connection back to their starting zone
+            print(f"Robot in zone {claimed_by} failed to capture {station_code}")  # noqa: T001
+            return
+
+        self.set_territory_ownership(station_code, claimed_by, claim_time)
+
+        # recalculate connected territories to account for
+        # the new capture and newly created islands
+        connected_territories = self._attached_territories.build_attached_capture_trees()
+
+        self.prune_detached_stations(connected_territories, claim_time)
 
     def process_packet(
         self,
@@ -308,5 +433,6 @@ if __name__ == "__main__":
         controller_utils.get_match_file().exists() and
         controller_utils.get_robot_mode() == 'comp'
     ))
-    territory_controller = TerritoryController(claim_log)
+    attached_territories = AttachedTerritories(claim_log)
+    territory_controller = TerritoryController(claim_log, attached_territories)
     territory_controller.main()
