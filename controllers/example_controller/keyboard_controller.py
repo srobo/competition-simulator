@@ -7,6 +7,7 @@ timestep = 16
 
 keyboard=Keyboard()
 keyboard.enable(timestep)
+#Need to click on 3D viewport for keyboard events to be picked up by webots
 
 while True:
     key=keyboard.getKey()
