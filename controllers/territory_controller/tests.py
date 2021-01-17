@@ -64,6 +64,47 @@ class TestAttachedTerritories(unittest.TestCase):
             'Zone 1 has incorrectly detected connected territories',
         )
 
+    def test_stations_can_capture(self) -> None:
+        for station in {StationCode.PN, StationCode.EY, StationCode.SW, StationCode.PO}:
+            capturable = self.attached_territories.can_capture_station(
+                station, Claimant.ZONE_0, self.connected_territories,
+            )
+            self.assertEqual(
+                capturable,
+                True,
+                f'Zone 0 should be able to capture {station}',
+            )
+        for station in {StationCode.BE, StationCode.SW, StationCode.HV}:
+            capturable = self.attached_territories.can_capture_station(
+                station, Claimant.ZONE_1, self.connected_territories,
+            )
+            self.assertEqual(
+                capturable,
+                True,
+                f'Zone 1 should be able to capture {station}',
+            )
+
+    def test_stations_cant_capture(self) -> None:
+        for station in {StationCode.YL, StationCode.BN, StationCode.HV}:
+            capturable = self.attached_territories.can_capture_station(
+                station, Claimant.ZONE_0, self.connected_territories,
+            )
+            self.assertEqual(
+                capturable,
+                False,
+                f'Zone 0 should not be able to capture {station}',
+            )
+        for station in {StationCode.PN, StationCode.EY, StationCode.SZ,
+                        StationCode.BN, StationCode.VB}:
+            capturable = self.attached_territories.can_capture_station(
+                station, Claimant.ZONE_1, self.connected_territories,
+            )
+            self.assertEqual(
+                capturable,
+                False,
+                f'Zone 1 should not be able to capture {station}',
+            )
+
 
 class TestAdjacentTerritories(unittest.TestCase):
     'Test the AttachedTerritories initialisation of adjacent_zones'
