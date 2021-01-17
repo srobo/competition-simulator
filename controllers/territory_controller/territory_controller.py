@@ -156,7 +156,7 @@ class AttachedTerritories:
                     cast(StationCode, link_codes[1 - index]),
                 )
 
-                if type(link_codes[0]) == TerritoryRoot:
+                if isinstance(link_codes[0], TerritoryRoot):
                     # links back to starting zones are omitted
                     # since starting zones cannot be captured
                     break
