@@ -116,9 +116,10 @@ class TestAdjacentTerritories(unittest.TestCase):
     def test_all_links_in_set(self) -> None:
         'test all territory links from Arena.wbt are in TERRITORY_LINKS'
         arena_links = set()
-        for line in (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r'):
-            if re.search(r'SRLink', line):
-                arena_links.add(re.sub(r'.*DEF (.*) SRLink .*\n', r'\1', line))
+        with (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r') as f:
+            for line in f.readlines():
+                if re.search(r'SRLink', line):
+                    arena_links.add(re.sub(r'.*DEF (.*) SRLink .*\n', r'\1', line))
 
         territory_links_strs = {'-'.join(link) for link in TERRITORY_LINKS}
 
