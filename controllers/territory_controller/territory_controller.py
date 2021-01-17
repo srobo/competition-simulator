@@ -3,6 +3,7 @@ import enum
 import struct
 from typing import Set, cast, Dict, List, Tuple, Union
 from pathlib import Path
+from collections import defaultdict
 
 # Webots specific library
 from controller import Emitter, Receiver, Supervisor
@@ -143,21 +144,17 @@ class AttachedTerritories:
 
     def calculate_adjacent_territories(
         self,
-    ) -> Dict[Union[StationCode, TerritoryRoot], List[StationCode]]:
-        adjacent_zones: Dict[Union[StationCode, TerritoryRoot], List[StationCode]] = {}
+    ) -> Dict[Union[StationCode, TerritoryRoot], Set[StationCode]]:
+        adjacent_zones: Dict[
+            Union[StationCode, TerritoryRoot], Set[StationCode],
+        ] = defaultdict(set)
 
         for link_codes in TERRITORY_LINKS:
             for index in range(2):
                 # links with stations at both ends are reversable
-                try:
-                    adjacent_zones[link_codes[index]].append(
-                        cast(StationCode, link_codes[1 - index]),
-                    )
-                except KeyError:
-                    # first link for this zone creates the dict
-                    adjacent_zones[link_codes[index]] = [
-                        cast(StationCode, link_codes[1 - index]),
-                    ]
+                adjacent_zones[link_codes[index]].add(
+                    cast(StationCode, link_codes[1 - index]),
+                )
 
                 if type(link_codes[0]) == TerritoryRoot:
                     # links back to starting zones are omitted

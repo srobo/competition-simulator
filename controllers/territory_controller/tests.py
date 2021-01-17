@@ -119,6 +119,6 @@ class TestAdjacentTerritories(unittest.TestCase):
         'test BE for correct links'
         self.assertEqual(
             self.attached_territories.adjacent_zones[StationCode.BE],
-            [StationCode.EY, StationCode.VB, StationCode.SZ, StationCode.PO],
+            {StationCode.EY, StationCode.VB, StationCode.SZ, StationCode.PO},
             'Territory BE has incorrect territory links',
         )
