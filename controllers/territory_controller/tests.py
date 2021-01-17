@@ -118,7 +118,7 @@ class TestAdjacentTerritories(unittest.TestCase):
         arena_links = set()
         with (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r') as f:
             for line in f.readlines():
-                if re.search(r'SRLink', line):
+                if 'SRLink' in line:
                     arena_links.add(re.sub(r'.*DEF (.*) SRLink .*\n', r'\1', line))
 
         territory_links_strs = {'-'.join(link) for link in TERRITORY_LINKS}
