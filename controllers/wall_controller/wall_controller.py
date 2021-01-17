@@ -1,5 +1,5 @@
 import sys
-from typing import List
+from typing import cast, List
 from pathlib import Path
 
 from controller import Node, Supervisor
@@ -20,8 +20,8 @@ def move_walls_after(seconds: int) -> None:
     robot = Supervisor()
     timestep = robot.getBasicTimeStep()
     walls: List[Node] = [
-        robot.getFromDef('west_moving_wall'),
-        robot.getFromDef('east_moving_wall'),
+        cast(Node, robot.getFromDef('west_moving_wall')),
+        cast(Node, robot.getFromDef('east_moving_wall')),
     ]
 
     if controller_utils.get_robot_mode() == 'comp':
