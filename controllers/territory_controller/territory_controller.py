@@ -2,7 +2,7 @@ import sys
 import enum
 import struct
 import logging
-from typing import Set, cast, Dict, List, Tuple, Union
+from typing import Set, Dict, List, Tuple, Union
 from pathlib import Path
 
 # Webots specific library
@@ -255,7 +255,7 @@ class TerritoryController:
                 else:
                     stn_a_claimant = Claimant.ZONE_1
             else:
-                stn_a_claimant = self._claim_log.get_claimant(cast(StationCode, stn_a))
+                stn_a_claimant = self._claim_log.get_claimant(stn_a)
 
             stn_b_claimant = self._claim_log.get_claimant(stn_b)
 
