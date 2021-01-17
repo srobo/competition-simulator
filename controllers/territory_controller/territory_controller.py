@@ -1,6 +1,7 @@
 import sys
 import enum
 import struct
+import logging
 from typing import Set, cast, Dict, List, Tuple, Union
 from pathlib import Path
 from collections import defaultdict
@@ -111,7 +112,7 @@ class ClaimLog:
     ) -> None:
         self._log.append((station_code, claimed_by, claim_time))
         self._log_is_dirty = True
-        print(f"{station_code} CLAIMED BY {claimed_by} AT {claim_time}s")  # noqa:T001
+        print(f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s")  # noqa:T001
         self._station_statuses[station_code] = claimed_by
 
     def record_captures(self) -> None:
@@ -265,9 +266,15 @@ class TerritoryController:
         claim_time: float,
     ) -> None:
         new_colour = ZONE_COLOURS[claimed_by]
-        self._robot.getFromDef(station_code).getField("zoneColour").setSFColor(
-            list(new_colour),
-        )
+        station = self._robot.getFromDef(station_code)
+        if station is None:
+            logging.error(
+                f"Failed to fetch territory node {station_code}",
+            )
+        else:
+            station.getField("zoneColour").setSFColor(
+                list(new_colour),
+            )
 
         self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
 
@@ -384,9 +391,15 @@ class TerritoryController:
                 claimed_by = Claimant.UNCLAIMED
 
             new_colour = LINK_COLOURS[claimed_by]
-            self._robot.getFromDef(
-                '-'.join((stn_a, stn_b)),
-            ).getField("zoneColour").setSFColor(list(new_colour))
+            visual_link = self._robot.getFromDef('-'.join((stn_a, stn_b)))
+            if visual_link is None:
+                logging.error(
+                    f"Failed to fetch territory link {visual_link}",
+                )
+            else:
+                visual_link.getField("zoneColour").setSFColor(
+                    list(new_colour),
+                )
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():

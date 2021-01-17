@@ -20,11 +20,7 @@ if not ARENA_ROOT.is_absolute():
     raise ValueError(f"'ARENA_ROOT' must be an absolute path, got '{ARENA_ROOT}'")
 
 
-ROBOT_IDS_TO_CORNERS = {
-    "5": 0,
-    "225": 1,
-}
-NUM_ZONES = len(ROBOT_IDS_TO_CORNERS)
+NUM_ZONES = 2
 
 GAME_DURATION_SECONDS = 120
 

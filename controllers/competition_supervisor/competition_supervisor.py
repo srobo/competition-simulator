@@ -1,7 +1,7 @@
 import sys
 import time
 import contextlib
-from typing import List, Tuple, Iterator, TYPE_CHECKING
+from typing import cast, List, Tuple, Iterator, TYPE_CHECKING
 from pathlib import Path
 
 import pkg_resources
@@ -116,16 +116,13 @@ def get_robots(
 
     robots = []  # List[Tuple[int, Supervisor]]
 
-    for webots_id_str, zone_id in controller_utils.ROBOT_IDS_TO_CORNERS.items():
-        robot = supervisor.getFromId(int(webots_id_str))
+    for zone_id in range(controller_utils.NUM_ZONES):
+        robot = supervisor.getFromDef(f"ROBOT-{zone_id}")
         if robot is None:
             if skip_missing:
                 continue
 
-            msg = "Failed to get Webots node for zone {} (id: {})".format(
-                zone_id,
-                webots_id_str,
-            )
+            msg = "Failed to get Webots node for zone {}".format(zone_id)
             print(msg)
             raise ValueError(msg)
 
@@ -143,7 +140,15 @@ def wait_until_robots_ready(supervisor: Supervisor) -> None:
 
         if field.getSFString() != 'ready':
             print("Waiting for {}".format(zone_id))
+            end_time = supervisor.getTime() + 5
             while field.getSFString() != 'ready':
+                # 5 second initialisation timeout
+                if supervisor.getTime() > end_time:
+                    raise RuntimeError(
+                        f"Robot in zone {zone_id} failed to initialise. "
+                        "Check whether the robot code is correctly reaching and "
+                        "calling `wait_start`.",
+                    )
                 supervisor.step(time_step)
 
         print("Zone {} ready".format(zone_id))
@@ -186,7 +191,7 @@ def run_match(supervisor: Supervisor) -> None:
     # First signal the robot controllers that they're able to start ...
     for _, robot in get_robots(supervisor, skip_missing=True):
         robot.getField('customData').setSFString('start')
-    supervisor.getFromDef('WALL_CTRL').getField('customData').setSFString('start')
+    cast(Node, supervisor.getFromDef('WALL_CTRL')).getField('customData').setSFString('start')
 
     # ... then un-pause the simulation, so they all start together
     supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
