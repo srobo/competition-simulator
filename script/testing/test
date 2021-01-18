@@ -1,7 +1,15 @@
 #!/bin/bash
 
+set -e
+
 cd $(dirname $(dirname  $(dirname $0)))
 
 export PYTHONPATH=$(realpath ./stubs):$(realpath ./modules)
 
 python3 -m unittest discover --start-directory modules "$@"
+
+for dir in ./controllers/*/
+do
+    echo -e "\nTesting $dir"
+    python3 -m unittest discover --start-directory "$dir" "$@"
+done
