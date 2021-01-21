@@ -1,5 +1,5 @@
-from controller import Keyboard
 from sr.robot import *
+from controller import Keyboard
 
 R = Robot()
 
