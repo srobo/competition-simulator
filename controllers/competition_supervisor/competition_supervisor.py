@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 import contextlib
@@ -33,6 +34,11 @@ def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     print("Saving video to {}".format(file_path))
 
     config = controller_utils.get_recording_config()
+    if 'SR_COMP_NO_RECORD' in os.environ:
+        print('Not recording movie')
+        yield
+        return
+
     supervisor.movieStartRecording(
         str(file_path),
         width=config.resolution.width,
