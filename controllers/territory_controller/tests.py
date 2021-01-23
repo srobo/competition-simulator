@@ -1,14 +1,8 @@
 import re
-import sys
 import unittest
 from pathlib import Path
 
-# Root directory of the SR webots simulator (equivalent to the root of the git repo)
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-
-sys.path.insert(1, str(REPO_ROOT / 'stubs'))
-
-from territory_controller import (  # isort:skip
+from territory_controller import (
     Claimant,
     ClaimLog,
     StationCode,
@@ -16,6 +10,9 @@ from territory_controller import (  # isort:skip
     TERRITORY_LINKS,
     AttachedTerritories,
 )
+
+# Root directory of the SR webots simulator (equivalent to the root of the git repo)
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 class TestAttachedTerritories(unittest.TestCase):
