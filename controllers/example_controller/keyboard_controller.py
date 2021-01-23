@@ -32,4 +32,4 @@ while True:
                 R.radio.claim_territory()
             key = keyboard.getKey()
 
-    R.sleep(timestep / 1000.)
+    R.sleep(timestep / 1000)
