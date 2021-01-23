@@ -1,7 +1,7 @@
 import sys
 import time
 import contextlib
-from typing import cast, List, Tuple, Iterator, TYPE_CHECKING
+from typing import List, Tuple, Iterator, TYPE_CHECKING
 from pathlib import Path
 
 import pkg_resources
@@ -195,7 +195,7 @@ def run_match(supervisor: Supervisor) -> None:
     # First signal the robot controllers that they're able to start ...
     for _, robot in get_robots(supervisor, skip_missing=True):
         inform_start(robot)
-    inform_start(cast(Node, supervisor.getFromDef('WALL_CTRL')))
+    inform_start(controller_utils.node_from_def(supervisor, 'WALL_CTRL'))
 
     # ... then un-pause the simulation, so they all start together
     supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
