@@ -1,4 +1,4 @@
-from sr.robot import *
+from sr.robot import Robot
 from controller import Keyboard
 
 R = Robot()
