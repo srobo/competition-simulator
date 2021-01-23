@@ -8,7 +8,7 @@ import shutil
 import argparse
 import datetime
 import contextlib
-from typing import Union, Iterator
+from typing import Iterator, Optional
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -47,7 +47,7 @@ def is_team_logs_folder(folder: Path) -> bool:
 
 
 @contextlib.contextmanager
-def optional_zip(filename: Path, create_archive: bool) -> Iterator[Union[None, ZipFile]]:
+def optional_zip(filename: Path, create_archive: bool) -> Iterator[Optional[ZipFile]]:
     if create_archive:
         with ZipFile(filename, 'w') as zipfile:
             yield zipfile
