@@ -18,8 +18,14 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 class TestAttachedTerritories(unittest.TestCase):
     'Test build_attached_capture_trees/get_attached_territories'
 
-    _zone_0_territories = {StationCode.BG, StationCode.TS, StationCode.OX,
-                           StationCode.VB, StationCode.BE, StationCode.SZ}
+    _zone_0_territories = {
+        StationCode.BG,
+        StationCode.TS,
+        StationCode.OX,
+        StationCode.VB,
+        StationCode.BE,
+        StationCode.SZ,
+    }
     _zone_1_territories = {StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL}
     _zone_1_disconnected = {StationCode.PN, StationCode.EY}
 
@@ -65,7 +71,9 @@ class TestAttachedTerritories(unittest.TestCase):
     def test_stations_can_capture(self) -> None:
         for station in {StationCode.PN, StationCode.EY, StationCode.SW, StationCode.PO}:
             capturable = self.attached_territories.can_capture_station(
-                station, Claimant.ZONE_0, self.connected_territories,
+                station,
+                Claimant.ZONE_0,
+                self.connected_territories,
             )
             self.assertEqual(
                 capturable,
@@ -75,7 +83,9 @@ class TestAttachedTerritories(unittest.TestCase):
 
         for station in {StationCode.BE, StationCode.SW, StationCode.HV}:
             capturable = self.attached_territories.can_capture_station(
-                station, Claimant.ZONE_1, self.connected_territories,
+                station,
+                Claimant.ZONE_1,
+                self.connected_territories,
             )
             self.assertEqual(
                 capturable,
@@ -86,7 +96,9 @@ class TestAttachedTerritories(unittest.TestCase):
     def test_stations_cant_capture(self) -> None:
         for station in {StationCode.YL, StationCode.BN, StationCode.HV}:
             capturable = self.attached_territories.can_capture_station(
-                station, Claimant.ZONE_0, self.connected_territories,
+                station,
+                Claimant.ZONE_0,
+                self.connected_territories,
             )
             self.assertEqual(
                 capturable,
@@ -94,10 +106,17 @@ class TestAttachedTerritories(unittest.TestCase):
                 f'Zone 0 should not be able to capture {station}',
             )
 
-        for station in {StationCode.PN, StationCode.EY, StationCode.SZ,
-                        StationCode.BN, StationCode.VB}:
+        for station in {
+            StationCode.PN,
+            StationCode.EY,
+            StationCode.SZ,
+            StationCode.BN,
+            StationCode.VB,
+        }:
             capturable = self.attached_territories.can_capture_station(
-                station, Claimant.ZONE_1, self.connected_territories,
+                station,
+                Claimant.ZONE_1,
+                self.connected_territories,
             )
             self.assertEqual(
                 capturable,
