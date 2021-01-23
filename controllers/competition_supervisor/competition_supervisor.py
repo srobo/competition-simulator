@@ -30,13 +30,14 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
 @contextlib.contextmanager
 def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    print("Saving video to {}".format(file_path))
 
     config = controller_utils.get_recording_config()
     if config.quality == 0:
         print('Not recording movie')
         yield
         return
+    else:
+        print("Saving video to {}".format(file_path))
 
     supervisor.movieStartRecording(
         str(file_path),
