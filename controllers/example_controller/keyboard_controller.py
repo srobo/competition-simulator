@@ -20,19 +20,19 @@ while True:
         R.motors[0].m1.power = 0
     else:
         while key != -1:
-            if (key == ord('W')):
+            if key == ord('W'):
                 R.motors[0].m0.power = 50
                 R.motors[0].m1.power = 50
-            elif (key == ord('S')):
+            elif key == ord('S'):
                 R.motors[0].m0.power = -50
                 R.motors[0].m1.power = -50
-            elif (key == ord('A')):
+            elif key == ord('A'):
                 R.motors[0].m0.power = -25
                 R.motors[0].m1.power = 25
-            elif (key == ord('D')):
+            elif key == ord('D'):
                 R.motors[0].m0.power = 25
                 R.motors[0].m1.power = -25
-            elif (key == ord('E')):
+            elif key == ord('E'):
                 R.radio.claim_territory()
             key = keyboard.getKey()
 
