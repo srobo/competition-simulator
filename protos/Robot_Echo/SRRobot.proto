@@ -484,7 +484,7 @@ PROTO SRRobot [
                   rotation 0 0 1 1.5708
                   children [
                     Cylinder {
-                      height 0.05
+                      height 0.01
                       radius 0.1
                       subdivision 32
                     }
@@ -495,6 +495,28 @@ PROTO SRRobot [
             physics Physics {
               density 20000
             }
+          }
+        }
+        Solid {
+          translation 0.19999998777297837 0.00026863610916181684 -0.00036030151878293246
+          rotation -0.9999999953968224 4.284946735166644e-05 8.585032564057752e-05 0.9344151591877564
+          boundingObject DEF BOUNDING_WHEEL Group {
+            children [
+              Transform {
+                rotation 0 0 1 1.5708
+                children [
+                  Cylinder {
+                    height 0.045
+                    radius 0.085
+                    subdivision 32
+                  }
+                ]
+              }
+            ]
+          }
+          name "right wheel spacer"
+          physics Physics {
+            density 0.1
           }
         }
         DEF LEFT_WHEEL HingeJoint {
@@ -657,7 +679,7 @@ PROTO SRRobot [
                   rotation 0 0 1 1.5708
                   children [
                     Cylinder {
-                      height 0.05
+                      height 0.01
                       radius 0.1
                       subdivision 32
                     }
@@ -668,6 +690,28 @@ PROTO SRRobot [
             physics Physics {
               density 20000
             }
+          }
+        }
+        Solid {
+          translation -0.19999998767113233 0.00026863721059561843 -0.00036030299207660306
+          rotation -0.999999995396832 -4.284942171371578e-05 -8.585023441169805e-05 0.9344151521635337
+          boundingObject DEF BOUNDING_WHEEL Group {
+            children [
+              Transform {
+                rotation 0 0 1 1.5708
+                children [
+                  Cylinder {
+                    height 0.045
+                    radius 0.085
+                    subdivision 32
+                  }
+                ]
+              }
+            ]
+          }
+          name "left wheel spacer"
+          physics Physics {
+            density 0.1
           }
         }
       ]
