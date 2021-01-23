@@ -7,11 +7,13 @@ import re
 import shutil
 import argparse
 import datetime
-import tempfile
+import contextlib
+from typing import Union, Iterator
 from pathlib import Path
+from zipfile import ZipFile
 
 
-def zip_folder(folder: Path, args: argparse.Namespace) -> None:
+def zip_folder(folder: Path, args: argparse.Namespace) -> str:
     tla = folder.name
     zip_name = f'team-{tla}'
 
@@ -26,6 +28,7 @@ def zip_folder(folder: Path, args: argparse.Namespace) -> None:
         root_dir=folder,
         base_dir='.',
     )
+    return f'{zip_name}.zip'
 
 
 def is_team_logs_folder(folder: Path) -> bool:
@@ -41,6 +44,15 @@ def is_team_logs_folder(folder: Path) -> bool:
         return True
 
     return False
+
+
+@contextlib.contextmanager
+def optional_zip(filename: Path, create_archive: bool) -> Iterator[Union[None, ZipFile]]:
+    if create_archive:
+        with ZipFile(filename, 'w') as zipfile:
+            yield zipfile
+    else:
+        yield None
 
 
 def parse_args() -> argparse.Namespace:
@@ -81,8 +93,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--combined',
         help=(
-            "Create a combined archive which contains all the other log archives. "
-            "This is achieved by creating an archive of the contents of the output directory."
+            "Create a combined archive which contains all the other log archives."
         ),
         action='store_true',
     )
@@ -93,30 +104,20 @@ def main(args: argparse.Namespace) -> None:
     # make sure output directory exists
     args.output_dir.mkdir(exist_ok=True)
 
-    for folder in args.archives_dir.iterdir():
-        if not folder.is_dir():
-            # skip files in the archive directory
-            continue
+    with optional_zip(args.output_dir / 'combined2.zip', args.combined) as zipfile:
+        for folder in args.archives_dir.iterdir():
+            if not folder.is_dir():
+                # skip files in the archive directory
+                continue
 
-        if not is_team_logs_folder(folder):
-            # skip unrelated directories
-            continue
+            if not is_team_logs_folder(folder):
+                # skip unrelated directories
+                continue
 
-        zip_folder(folder, args)
+            logs_archive = zip_folder(folder, args)
 
-    if args.combined:
-        # a temporary directory is used since the zip file
-        # can't be created in the directory being archived
-        with tempfile.TemporaryDirectory() as tmpdir_name:
-            # create a combined archive
-            tmpdir_path = Path(tmpdir_name)
-            shutil.make_archive(
-                str(tmpdir_path / 'combined'),
-                'zip',
-                root_dir=args.output_dir,
-                base_dir='.',
-            )
-            shutil.copy(tmpdir_path / 'combined.zip', args.output_dir)
+            if args.combined and isinstance(zipfile, ZipFile):
+                zipfile.write(args.output_dir / logs_archive, logs_archive)
 
 
 if __name__ == '__main__':
