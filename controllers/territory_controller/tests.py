@@ -17,6 +17,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 class TestAttachedTerritories(unittest.TestCase):
     'Test build_attached_capture_trees/get_attached_territories'
+
     _zone_0_territories = {StationCode.BG, StationCode.TS, StationCode.OX,
                            StationCode.VB, StationCode.BE, StationCode.SZ}
     _zone_1_territories = {StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL}
@@ -71,6 +72,7 @@ class TestAttachedTerritories(unittest.TestCase):
                 True,
                 f'Zone 0 should be able to capture {station}',
             )
+
         for station in {StationCode.BE, StationCode.SW, StationCode.HV}:
             capturable = self.attached_territories.can_capture_station(
                 station, Claimant.ZONE_1, self.connected_territories,
@@ -91,6 +93,7 @@ class TestAttachedTerritories(unittest.TestCase):
                 False,
                 f'Zone 0 should not be able to capture {station}',
             )
+
         for station in {StationCode.PN, StationCode.EY, StationCode.SZ,
                         StationCode.BN, StationCode.VB}:
             capturable = self.attached_territories.can_capture_station(
@@ -105,6 +108,7 @@ class TestAttachedTerritories(unittest.TestCase):
 
 class TestAdjacentTerritories(unittest.TestCase):
     'Test the AttachedTerritories initialisation of adjacent_zones'
+
     def setUp(self) -> None:
         super().setUp()
         claim_log = ClaimLog(record_arena_actions=False)
