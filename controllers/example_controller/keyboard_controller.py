@@ -2,6 +2,7 @@ from sr.robot import Robot
 from controller import Keyboard
 
 TIMESTEP = 16
+NO_KEY_PRESSED = -1
 
 R = Robot()
 
@@ -15,11 +16,11 @@ print(
 
 while True:
     key = keyboard.getKey()
-    if key == -1:
+    if key == NO_KEY_PRESSED:
         R.motors[0].m0.power = 0
         R.motors[0].m1.power = 0
     else:
-        while key != -1:
+        while key != NO_KEY_PRESSED:
             if key == ord('W'):
                 R.motors[0].m0.power = 50
                 R.motors[0].m1.power = 50
