@@ -17,7 +17,7 @@ def zip_folder(folder: Path, args: argparse.Namespace) -> None:
 
     if args.suffix:
         zip_name += f'-{args.suffix}'
-    if not args.no_date:
+    if args.include_date:
         zip_name += f'-{datetime.date.today()}'
 
     shutil.make_archive(
@@ -75,7 +75,8 @@ def parse_args() -> argparse.Namespace:
         help=(
             "Remove the date from the archive name."
         ),
-        action='store_true',
+        dest='include_date',
+        action='store_false',
     )
     parser.add_argument(
         '--combined',
