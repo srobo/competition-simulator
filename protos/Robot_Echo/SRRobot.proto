@@ -484,7 +484,7 @@ PROTO SRRobot [
                   rotation 0 0 1 1.5708
                   children [
                     Cylinder {
-                      height 0.01
+                      height 0.05
                       radius 0.1
                       subdivision 32
                     }
@@ -657,7 +657,7 @@ PROTO SRRobot [
                   rotation 0 0 1 1.5708
                   children [
                     Cylinder {
-                      height 0.01
+                      height 0.05
                       radius 0.1
                       subdivision 32
                     }
