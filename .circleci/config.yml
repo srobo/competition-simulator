@@ -17,7 +17,7 @@ references:
   restore-dependencies-cache: &restore-dependencies-cache
     restore_cache:
       keys:
-        - deps-1-py<< parameters.version >>-{{ checksum "all-requirements.txt" }}
+        - deps-1-py<< parameters.python-version >>-{{ checksum "all-requirements.txt" }}
   install-dependencies: &install-dependencies
     run:
       name: Install Dependencies
@@ -26,24 +26,50 @@ references:
         venv/bin/pip install -r all-requirements.txt
   save-dependencies-cache: &save-dependencies-cache
     save_cache:
-      key: deps-1-py<< parameters.version >>-{{ checksum "all-requirements.txt" }}
+      key: deps-1-py<< parameters.python-version >>-{{ checksum "all-requirements.txt" }}
       paths:
         - venv
   parametrised-python-executor: &parametrised-python-executor
     parameters:
-      version:
+      python-version:
         type: string
     executor:
       name: python
-      version: << parameters.version >>
+      python-version: << parameters.python-version >>
   python-full-version-matrix: &python-full-version-matrix
     matrix:
       parameters:
-        version: ["3.7", "3.8", "3.9"]
+        python-version: ["3.7", "3.8", "3.9"]
   python-top-and-bottom-version-matrix: &python-top-and-bottom-version-matrix
     matrix:
       parameters:
-        version: ["3.7", "3.9"]
+        python-version: ["3.7", "3.9"]
+  restore-libraries-cache: &restore-libraries-cache
+    restore_cache:
+      keys:
+        - libraries-1-py3.7-{{ checksum "libraries.txt" }}
+  install-libraries: &install-libraries
+    run:
+      name: Install Libraries
+      command: |
+        python3.7 -m venv venv
+        venv/bin/pip install -r libraries.txt
+  save-libraries-cache: &save-libraries-cache
+    save_cache:
+      key: libraries-1-py3.7-{{ checksum "libraries.txt" }}
+      paths:
+        - venv
+  parametrised-webots-executor: &parametrised-webots-executor
+    parameters:
+      webots-version:
+        type: string
+    executor:
+      name: webots
+      webots-version: << parameters.webots-version >>
+  webots-full-version-matrix: &webots-full-version-matrix
+    matrix:
+      parameters:
+        webots-version: ["R2020b-rev1", "R2021a"]
   run-on-tags-too: &run-on-tags-too
     filters:
       tags:
@@ -53,10 +79,16 @@ references:
 executors:
   python:
     parameters:
-      version:
+      python-version:
         type: string
     docker:
-      - image: circleci/python:<< parameters.version >>
+      - image: circleci/python:<< parameters.python-version >>
+  webots:
+    parameters:
+      webots-version:
+        type: string
+    docker:
+      - image: cyberbotics/webots:<< parameters.webots-version >>-ubuntu20.04
 
 jobs:
   test:
@@ -113,6 +145,61 @@ jobs:
             source venv/bin/activate
             ./script/typing/check $SCRIPTS
 
+  run-comp-match:
+    <<: *parametrised-webots-executor
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install dependencies
+          command: |
+            # Use deadsnakes to get Python 3.7
+            echo deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal main > /etc/apt/sources.list.d/deadsnakes.list
+            echo deb-src http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal main >> /etc/apt/sources.list.d/deadsnakes.list
+            apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F23C5A6CF475977595C89F51BA6932366A755776
+
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install --yes zip python3.7{,-dev,-venv}
+
+      - run:
+          name: Prepare team code archive
+          command: |
+            mkdir archives
+            cd archives
+
+            # Convert the sleep comments to print statement so there's a way to
+            # guage progress and so that Circle doesn't shut things down due to
+            # lack of output (the latter is a theoretical concern).
+            sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_controller.py > robot.py
+
+            # Have the robot code print success at the end, along with a unique identifier.
+            echo "print('Success: $CIRCLE_SHA1')" >> robot.py
+
+            zip ABC.zip robot.py
+
+      - *restore-libraries-cache
+      - *install-libraries
+      - *save-libraries-cache
+
+      - run:
+          name: Run match
+          command: |
+            source venv/bin/activate
+            xvfb-run script/run-comp-match archives 42 - ABC --duration 5
+
+      - store_artifacts:
+          path: archives
+          destination: .
+
+      - run:
+          name: Validate success
+          command: |
+            LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-1-match-42.txt)
+            set -x
+            test "$LAST_LINE" == "1| Success: $CIRCLE_SHA1"
+
   build:
     docker:
       - image: circleci/python:3.7
@@ -153,9 +240,13 @@ workflows:
       - typecheck:
           <<: *python-top-and-bottom-version-matrix
           <<: *run-on-tags-too
+      - run-comp-match:
+          <<: *webots-full-version-matrix
+          <<: *run-on-tags-too
       - build:
           <<: *run-on-tags-too
           requires:
             - test
             - lint
             - typecheck
+            - run-comp-match
