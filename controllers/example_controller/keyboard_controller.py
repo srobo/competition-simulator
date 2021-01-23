@@ -1,12 +1,12 @@
 from sr.robot import Robot
 from controller import Keyboard
 
+TIMESTEP = 16
+
 R = Robot()
 
-timestep = 16
-
 keyboard = Keyboard()
-keyboard.enable(timestep)
+keyboard.enable(TIMESTEP)
 # Need to click on 3D viewport for keyboard events to be picked up by webots
 
 while True:
@@ -32,4 +32,4 @@ while True:
                 R.radio.claim_territory()
             key = keyboard.getKey()
 
-    R.sleep(timestep / 1000)
+    R.sleep(TIMESTEP / 1000)
