@@ -1,4 +1,4 @@
-from typing import cast, Type, TypeVar, Optional
+from typing import Type, TypeVar, Optional
 
 from controller import (
     LED,
@@ -48,4 +48,4 @@ def get_robot_device(robot: Robot, name: str, kind: Type[TDevice]) -> TDevice:
             device = robot.getTouchSensor(name)
     if not isinstance(device, kind):
         raise TypeError
-    return cast(TDevice, device)
+    return device
