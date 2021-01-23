@@ -104,7 +104,7 @@ def main(args: argparse.Namespace) -> None:
     # make sure output directory exists
     args.output_dir.mkdir(exist_ok=True)
 
-    with optional_zip(args.output_dir / 'combined2.zip', args.combined) as zipfile:
+    with optional_zip(args.output_dir / 'combined.zip', args.combined) as zipfile:
         for folder in args.archives_dir.iterdir():
             if not folder.is_dir():
                 # skip files in the archive directory
