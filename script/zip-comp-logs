@@ -13,17 +13,17 @@ from pathlib import Path
 from zipfile import ZipFile
 
 
-def zip_folder(folder: Path, args: argparse.Namespace) -> str:
+def zip_folder(folder: Path, output_dir: Path, suffix: str, include_date: bool) -> str:
     tla = folder.name
     zip_name = f'team-{tla}'
 
-    if args.suffix:
-        zip_name += f'-{args.suffix}'
-    if args.include_date:
+    if suffix:
+        zip_name += f'-{suffix}'
+    if include_date:
         zip_name += f'-{datetime.date.today()}'
 
     shutil.make_archive(
-        f'{args.output_dir / zip_name}',
+        f'{output_dir / zip_name}',
         'zip',
         root_dir=folder,
         base_dir='.',
@@ -111,7 +111,7 @@ def main(args: argparse.Namespace) -> None:
                 # skip unrelated directories
                 continue
 
-            logs_archive = zip_folder(folder, args)
+            logs_archive = zip_folder(folder, args.output_dir, args.suffix, args.include_date)
 
             if args.combined and isinstance(zipfile, ZipFile):
                 zipfile.write(args.output_dir / logs_archive, logs_archive)
