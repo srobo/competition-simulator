@@ -147,7 +147,8 @@ class AttachedTerritories:
         self,
     ) -> Dict[Union[StationCode, TerritoryRoot], Set[StationCode]]:
         adjacent_zones: Dict[
-            Union[StationCode, TerritoryRoot], Set[StationCode],
+            Union[StationCode, TerritoryRoot],
+            Set[StationCode],
         ] = defaultdict(set)
 
         for link_codes in TERRITORY_LINKS:
