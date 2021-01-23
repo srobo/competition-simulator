@@ -7,7 +7,11 @@ R = Robot()
 
 keyboard = Keyboard()
 keyboard.enable(TIMESTEP)
-# Need to click on 3D viewport for keyboard events to be picked up by webots
+
+print(
+    "Note: you need to click on 3D viewport for keyboard events to be picked "
+    "up by webots",
+)
 
 while True:
     key = keyboard.getKey()
