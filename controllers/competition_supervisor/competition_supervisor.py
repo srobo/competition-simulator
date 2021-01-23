@@ -34,7 +34,7 @@ def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     print("Saving video to {}".format(file_path))
 
     config = controller_utils.get_recording_config()
-    if 'SR_COMP_NO_RECORD' in os.environ:
+    if config.quality == 0:
         print('Not recording movie')
         yield
         return
