@@ -183,6 +183,10 @@ def get_simulation_run_mode(supervisor: Supervisor) -> 'SimulationMode':
         return Supervisor.SIMULATION_MODE_FAST
 
 
+def inform_start(node: Node) -> None:
+    node.getField('customData').setSFString('start')
+
+
 def run_match(supervisor: Supervisor) -> None:
     print("===========")
     print("Match start")
@@ -190,8 +194,8 @@ def run_match(supervisor: Supervisor) -> None:
 
     # First signal the robot controllers that they're able to start ...
     for _, robot in get_robots(supervisor, skip_missing=True):
-        robot.getField('customData').setSFString('start')
-    cast(Node, supervisor.getFromDef('WALL_CTRL')).getField('customData').setSFString('start')
+        inform_start(robot)
+    inform_start(cast(Node, supervisor.getFromDef('WALL_CTRL')))
 
     # ... then un-pause the simulation, so they all start together
     supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
