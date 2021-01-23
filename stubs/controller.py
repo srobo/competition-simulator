@@ -158,10 +158,24 @@ class TouchSensor(Device):
 
 class Keyboard(Device):
     (
-        END, HOME, LEFT, UP, RIGHT, DOWN, PAGEUP,
-        PAGEDOWN, NUMPAD_HOME, NUMPAD_LEFT, NUMPAD_UP,
-        NUMPAD_RIGHT, NUMPAD_DOWN, NUMPAD_END, KEY, SHIFT,
-        CONTROL, ALT,
+        END, 
+        HOME, 
+        LEFT, 
+        UP, 
+        RIGHT, 
+        DOWN, 
+        PAGEUP,
+        PAGEDOWN, 
+        NUMPAD_HOME, 
+        NUMPAD_LEFT, 
+        NUMPAD_UP,
+        NUMPAD_RIGHT, 
+        NUMPAD_DOWN, 
+        NUMPAD_END, 
+        KEY, 
+        SHIFT,
+        CONTROL, 
+        ALT,
     ) = range(18)
 
     def enable(self, samplingPeriod: int) -> None: ...
