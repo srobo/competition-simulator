@@ -4,6 +4,25 @@ from controller import Keyboard
 TIMESTEP = 16
 NO_KEY_PRESSED = -1
 
+
+def print_distance_sensors(robot: Robot) -> None:
+    distance_sensor_names = [
+        "Front Left",
+        "Front Right",
+        "Left",
+        "Right",
+        "Back Left",
+        "Back Right",
+    ]
+
+    print(f"Distance sensor readings at {robot.time():.2f}s:")
+    for pin, name in enumerate(distance_sensor_names):
+        dist = R.ruggeduinos[0].analogue_read(pin)
+        print(f"{pin} {name: <12}: {dist:.2f}")
+
+    print()
+
+
 R = Robot()
 
 keyboard = Keyboard()
@@ -42,6 +61,9 @@ while True:
 
             elif key == ord('E'):
                 R.radio.claim_territory()
+
+            elif key == ord('Q'):
+                print_distance_sensors(R)
 
             # Work our way through all the enqueued key presses before dropping
             # out to the timestep
