@@ -35,6 +35,9 @@ while True:
                 R.motors[0].m1.power = -25
             elif key == ord('E'):
                 R.radio.claim_territory()
+
+            # Work our way through all the enqueued key presses before dropping
+            # out to the timestep
             key = keyboard.getKey()
 
     R.sleep(TIMESTEP / 1000)
