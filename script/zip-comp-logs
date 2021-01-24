@@ -7,8 +7,7 @@ import re
 import shutil
 import argparse
 import datetime
-import contextlib
-from typing import Iterator, Optional
+from typing import List
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -41,15 +40,6 @@ def is_team_logs_folder(folder: Path) -> bool:
     # Using option 3
     # folder names are three uppercase letters and an optional number
     return bool(re.search(r'^[A-Z]{3}[0-9]?$', folder.name))
-
-
-@contextlib.contextmanager
-def optional_zip(filename: Path, create_archive: bool) -> Iterator[Optional[ZipFile]]:
-    if create_archive:
-        with ZipFile(filename, 'w') as zipfile:
-            yield zipfile
-    else:
-        yield None
 
 
 def parse_args() -> argparse.Namespace:
@@ -101,19 +91,27 @@ def main(args: argparse.Namespace) -> None:
     # make sure output directory exists
     args.output_dir.mkdir(exist_ok=True)
 
-    with optional_zip(args.output_dir / 'combined.zip', args.combined) as zipfile:
-        for folder in args.archives_dir.iterdir():
-            if not folder.is_dir():
-                # skip files in the archive directory
-                continue
+    logs_archives: List[str] = []
 
-            if not is_team_logs_folder(folder):
-                # skip unrelated directories
-                continue
+    for folder in args.archives_dir.iterdir():
+        if not folder.is_dir():
+            # skip files in the archive directory
+            continue
 
-            logs_archive = zip_folder(folder, args.output_dir, args.suffix, args.include_date)
+        if not is_team_logs_folder(folder):
+            # skip unrelated directories
+            continue
 
-            if args.combined and isinstance(zipfile, ZipFile):
+        logs_archives.append(zip_folder(
+            folder,
+            args.output_dir,
+            args.suffix,
+            args.include_date,
+        ))
+
+    if args.combined:
+        with ZipFile(args.output_dir / 'combined.zip', 'w') as zipfile:
+            for logs_archive in logs_archives:
                 zipfile.write(args.output_dir / logs_archive, logs_archive)
 
 
