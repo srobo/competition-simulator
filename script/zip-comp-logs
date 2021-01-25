@@ -9,7 +9,7 @@ import argparse
 import datetime
 from typing import List
 from pathlib import Path
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 
 
 def zip_folder(folder: Path, output_dir: Path, suffix: str, include_date: bool) -> str:
@@ -83,6 +83,17 @@ def parse_args() -> argparse.Namespace:
         action='store_true',
         dest='combined',
     )
+    parser.add_argument(
+        '--animations',
+        help=(
+            "Include the match animation files. "
+            "'all' creates a separate archive of all matches, "
+            "'separate' does the same as 'all' but excludes "
+            "the archive from the combined archive."
+        ),
+        choices=('all', 'separate'),
+        default=None,
+    )
     return parser.parse_args()
 
 
@@ -113,10 +124,32 @@ def main(args: argparse.Namespace) -> None:
             args.include_date,
         ))
 
+    if args.animations in ('all', 'separate'):
+        with ZipFile(
+            args.output_dir / f'animations{suffix_str}.zip',
+            'w',
+            compression=ZIP_DEFLATED,
+        ) as zipfile:
+            for rec_file in (args.archives_dir / 'recordings').iterdir():
+                if rec_file.suffix == '.mp4':
+                    continue
+                zipfile.write(rec_file.resolve(), rec_file.name)
+
+            # save animation textures
+            for texture in (args.archives_dir / 'recordings/textures').glob('**/*'):
+                zipfile.write(
+                    texture.resolve(),
+                    texture.relative_to(args.archives_dir / 'recordings'),
+                )
+
     if args.combined:
         with ZipFile(args.output_dir / f'combined{suffix_str}.zip', 'w') as zipfile:
             for logs_archive in logs_archives:
                 zipfile.write(args.output_dir / logs_archive, logs_archive)
+
+            if args.animations == 'all':
+                animation_zip = f'animations{suffix_str}.zip'
+                zipfile.write(args.output_dir / animation_zip, animation_zip)
 
 
 if __name__ == '__main__':
