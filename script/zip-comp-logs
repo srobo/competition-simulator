@@ -14,10 +14,8 @@ from zipfile import ZipFile
 
 def zip_folder(folder: Path, output_dir: Path, suffix: str, include_date: bool) -> str:
     tla = folder.name
-    zip_name = f'team-{tla}'
+    zip_name = f'team-{tla}{suffix}'
 
-    if suffix:
-        zip_name += f'-{suffix}'
     if include_date:
         zip_name += f'-{datetime.date.today()}'
 
@@ -94,6 +92,11 @@ def main(args: argparse.Namespace) -> None:
 
     logs_archives: List[str] = []
 
+    if args.suffix:
+        suffix_str = f'-{args.suffix}'
+    else:
+        suffix_str = ""
+
     for folder in args.archives_dir.iterdir():
         if not folder.is_dir():
             # skip files in the archive directory
@@ -106,12 +109,12 @@ def main(args: argparse.Namespace) -> None:
         logs_archives.append(zip_folder(
             folder,
             args.output_dir,
-            args.suffix,
+            suffix_str,
             args.include_date,
         ))
 
     if args.combined:
-        with ZipFile(args.output_dir / 'combined.zip', 'w') as zipfile:
+        with ZipFile(args.output_dir / f'combined{suffix_str}.zip', 'w') as zipfile:
             for logs_archive in logs_archives:
                 zipfile.write(args.output_dir / logs_archive, logs_archive)
 
