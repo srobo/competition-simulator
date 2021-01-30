@@ -147,7 +147,8 @@ class AttachedTerritories:
         self,
     ) -> Dict[Union[StationCode, TerritoryRoot], Set[StationCode]]:
         adjacent_zones: Dict[
-            Union[StationCode, TerritoryRoot], Set[StationCode],
+            Union[StationCode, TerritoryRoot],
+            Set[StationCode],
         ] = defaultdict(set)
 
         for source, dest in TERRITORY_LINKS:
@@ -408,8 +409,10 @@ class TerritoryController:
 
     def transmit_pulses(self) -> None:
         for station_code, emitter in self._emitters.items():
-            emitter.send(struct.pack("!2sb", station_code.encode('ASCII'),
-                         int(self._claim_log.get_claimant(station_code))))
+            emitter.send(
+                struct.pack("!2sb", station_code.encode('ASCII'),
+                int(self._claim_log.get_claimant(station_code))),
+            )
 
     def main(self) -> None:
         timestep = self._robot.getBasicTimeStep()
