@@ -1,7 +1,7 @@
 from sr.robot import Robot
 from controller import Keyboard
 
-TIMESTEP = 16
+KEYBOARD_SAMPLING_FREQUENCY = 16
 NO_KEY_PRESSED = -1
 
 
@@ -26,7 +26,7 @@ def print_distance_sensors(robot: Robot) -> None:
 R = Robot()
 
 keyboard = Keyboard()
-keyboard.enable(TIMESTEP)
+keyboard.enable(KEYBOARD_SAMPLING_FREQUENCY)
 
 print(
     "Note: you need to click on 3D viewport for keyboard events to be picked "
@@ -69,4 +69,4 @@ while True:
             # out to the timestep
             key = keyboard.getKey()
 
-    R.sleep(TIMESTEP / 1000)
+    R.sleep(KEYBOARD_SAMPLING_FREQUENCY / 1000)
