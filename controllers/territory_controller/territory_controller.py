@@ -2,7 +2,7 @@ import sys
 import enum
 import struct
 import logging
-from typing import Set, cast, Dict, List, Tuple, Union
+from typing import Set, Dict, List, Tuple, Union
 from pathlib import Path
 from collections import defaultdict
 
@@ -150,17 +150,13 @@ class AttachedTerritories:
             Union[StationCode, TerritoryRoot], Set[StationCode],
         ] = defaultdict(set)
 
-        for link_codes in TERRITORY_LINKS:
-            for index in range(2):
-                # links with stations at both ends are reversable
-                adjacent_zones[link_codes[index]].add(
-                    cast(StationCode, link_codes[1 - index]),
-                )
+        for source, dest in TERRITORY_LINKS:
+            adjacent_zones[source].add(dest)
 
-                if isinstance(link_codes[0], TerritoryRoot):
-                    # links back to starting zones are omitted
-                    # since starting zones cannot be captured
-                    break
+            # Links with stations at both ends are reversable, but links from
+            # starting zones are only usefully considered in one direction.
+            if isinstance(source, StationCode):
+                adjacent_zones[dest].add(source)
 
         return adjacent_zones
 

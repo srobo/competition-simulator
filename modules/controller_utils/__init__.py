@@ -5,6 +5,8 @@ import datetime
 from typing import IO, Dict, List, Optional, NamedTuple
 from pathlib import Path
 
+from controller import Node, Supervisor
+
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -248,3 +250,10 @@ def tee_streams(name: Path, prefix: str = '') -> None:
         log_file,
         prefix=prefix,
     )
+
+
+def node_from_def(supervisor: Supervisor, name: str) -> Node:
+    node = supervisor.getFromDef(name)
+    if node is None:
+        raise ValueError(f"Unable to fetch node {name!r} from Webots")
+    return node
