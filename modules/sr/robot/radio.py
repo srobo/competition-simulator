@@ -142,7 +142,6 @@ class Radio:
         The radio has a limited transmission power, so will only be able to
         claim a territory if you're inside its receiving range.
         """
-        # Send the begin-claim message
         self._emitter.send(struct.pack("!BB", self._zone, 0))
 
     def complete_territory_claim(self) -> None:
@@ -157,7 +156,6 @@ class Radio:
         The radio has a limited transmission power, so will only be able to
         claim a territory if you're inside its receiving range.
         """
-        # Send the conclude-claim message
         self._emitter.send(struct.pack("!BB", self._zone, 1))
 
     def claim_territory(self) -> None:
