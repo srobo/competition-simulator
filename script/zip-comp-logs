@@ -29,14 +29,7 @@ def zip_folder(folder: Path, output_dir: Path, suffix: str, include_date: bool) 
 
 
 def is_team_logs_folder(folder: Path) -> bool:
-    # Options for detecting which folders are logs:
-    # 1. everthing except recordings, matches
-    # 2. folders w/ matching zip file names
-    # 3. regex of folder name
-    # 4. regex of folder contents names
-
-    # Using option 3
-    # folder names are three uppercase letters and an optional number
+    # team folder names are three uppercase letters and an optional number
     return bool(re.search(r'^[A-Z]{3}[0-9]?$', folder.name))
 
 
