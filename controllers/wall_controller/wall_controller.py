@@ -13,14 +13,15 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
+import webots_utils  # isort:skip
 
 
 def move_walls_after(seconds: int) -> None:
     robot = Supervisor()
     timestep = robot.getBasicTimeStep()
     walls = [
-        controller_utils.node_from_def(robot, 'west_moving_wall'),
-        controller_utils.node_from_def(robot, 'east_moving_wall'),
+        webots_utils.node_from_def(robot, 'west_moving_wall'),
+        webots_utils.node_from_def(robot, 'east_moving_wall'),
     ]
 
     if controller_utils.get_robot_mode() == 'comp':
