@@ -136,7 +136,7 @@ def main(args: argparse.Namespace) -> None:
                 zipfile.write(rec_file.resolve(), rec_file.name)
 
             # save animation textures
-            for texture in (args.archives_dir / 'recordings/textures').glob('**/*'):
+            for texture in (args.archives_dir / 'recordings' / 'textures').glob('**/*'):
                 zipfile.write(
                     texture.resolve(),
                     texture.relative_to(args.archives_dir / 'recordings'),
