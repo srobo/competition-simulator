@@ -32,11 +32,18 @@ def construct_match_data(args: argparse.Namespace) -> controller_utils.MatchData
         for tla in args.tla
     ]
 
+    recording_config = None  # use the default
+    if args.no_record:
+        recording_config = controller_utils.RecordingConfig(
+            resolution=controller_utils.Resolution(0, 0),  # the resolution is unused
+            quality=0,  # signal to the competition_supervisor to not generate a video
+        )
+
     return controller_utils.MatchData(
         args.match_num,
         tlas,
         args.duration,
-        recording_config=None,  # use the default
+        recording_config=recording_config,
     )
 
 
@@ -214,6 +221,16 @@ def parse_args() -> argparse.Namespace:
         help="The duration of the match (in seconds).",
         type=int,
         default=controller_utils.GAME_DURATION_SECONDS,
+    )
+    parser.add_argument(
+        '--no-record',
+        help=(
+            "Inhibit creation of the MPEG video, the animation is unaffected. "
+            "This can greatly increase the execution speed on GPU limited systems "
+            "when the video is not required."
+        ),
+        action='store_true',
+        dest='no_record',
     )
     return parser.parse_args()
 
