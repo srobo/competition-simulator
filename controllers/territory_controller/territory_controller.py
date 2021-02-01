@@ -130,9 +130,7 @@ class ClaimLog:
         claim_time: float,
     ) -> None:
         self._record_log_entry((station_code, claimed_by, claim_time, False))
-        print(
-            f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s"
-        )  # noqa:T001
+        print(f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s")  # noqa:T001
         self._station_statuses[station_code] = claimed_by
 
     def log_lock(
