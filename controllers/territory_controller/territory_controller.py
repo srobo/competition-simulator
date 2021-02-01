@@ -319,9 +319,7 @@ class TerritoryController:
                     list(new_colour),
                 )
 
-            self._claim_log.log_territory_claim(
-                station_code, claimed_by, self._robot.getTime()
-            )
+            self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
 
     def prune_detached_stations(
         self,
