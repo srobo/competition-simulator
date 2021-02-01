@@ -371,7 +371,7 @@ class TerritoryController:
 
     def update_territory_links(self) -> None:
         for stn_a, stn_b in TERRITORY_LINKS:
-            if isinstance(stn_a, TerritoryRoot):  # strating zone is implicitly owned
+            if isinstance(stn_a, TerritoryRoot):  # starting zone is implicitly owned
                 if stn_a == TerritoryRoot.z0:
                     stn_a_claimant = Claimant.ZONE_0
                 else:
