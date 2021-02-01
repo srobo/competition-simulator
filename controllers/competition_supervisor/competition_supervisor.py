@@ -1,7 +1,7 @@
 import sys
 import time
 import contextlib
-from typing import cast, List, Tuple, Iterator, TYPE_CHECKING
+from typing import List, Tuple, Iterator, TYPE_CHECKING
 from pathlib import Path
 
 import pkg_resources
@@ -16,6 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
+import webots_utils  # isort:skip
 
 
 @contextlib.contextmanager
@@ -30,9 +31,15 @@ def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
 @contextlib.contextmanager
 def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    print("Saving video to {}".format(file_path))
 
     config = controller_utils.get_recording_config()
+    if config.quality == 0:
+        print('Not recording movie')
+        yield
+        return
+    else:
+        print("Saving video to {}".format(file_path))
+
     supervisor.movieStartRecording(
         str(file_path),
         width=config.resolution.width,
@@ -183,6 +190,10 @@ def get_simulation_run_mode(supervisor: Supervisor) -> 'SimulationMode':
         return Supervisor.SIMULATION_MODE_FAST
 
 
+def inform_start(node: Node) -> None:
+    node.getField('customData').setSFString('start')
+
+
 def run_match(supervisor: Supervisor) -> None:
     print("===========")
     print("Match start")
@@ -190,8 +201,8 @@ def run_match(supervisor: Supervisor) -> None:
 
     # First signal the robot controllers that they're able to start ...
     for _, robot in get_robots(supervisor, skip_missing=True):
-        robot.getField('customData').setSFString('start')
-    cast(Node, supervisor.getFromDef('WALL_CTRL')).getField('customData').setSFString('start')
+        inform_start(robot)
+    inform_start(webots_utils.node_from_def(supervisor, 'WALL_CTRL'))
 
     # ... then un-pause the simulation, so they all start together
     supervisor.simulationSetMode(get_simulation_run_mode(supervisor))

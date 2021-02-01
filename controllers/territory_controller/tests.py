@@ -1,14 +1,8 @@
 import re
-import sys
 import unittest
 from pathlib import Path
 
-# Root directory of the SR webots simulator (equivalent to the root of the git repo)
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-
-sys.path.insert(1, str(REPO_ROOT / 'stubs'))
-
-from territory_controller import (  # isort:skip
+from territory_controller import (
     Claimant,
     ClaimLog,
     StationCode,
@@ -17,11 +11,21 @@ from territory_controller import (  # isort:skip
     AttachedTerritories,
 )
 
+# Root directory of the SR webots simulator (equivalent to the root of the git repo)
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
 
 class TestAttachedTerritories(unittest.TestCase):
     'Test build_attached_capture_trees/get_attached_territories'
-    _zone_0_territories = {StationCode.BG, StationCode.TS, StationCode.OX,
-                           StationCode.VB, StationCode.BE, StationCode.SZ}
+
+    _zone_0_territories = {
+        StationCode.BG,
+        StationCode.TS,
+        StationCode.OX,
+        StationCode.VB,
+        StationCode.BE,
+        StationCode.SZ,
+    }
     _zone_1_territories = {StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL}
     _zone_1_disconnected = {StationCode.PN, StationCode.EY}
 
@@ -67,16 +71,21 @@ class TestAttachedTerritories(unittest.TestCase):
     def test_stations_can_capture(self) -> None:
         for station in {StationCode.PN, StationCode.EY, StationCode.SW, StationCode.PO}:
             capturable = self.attached_territories.can_capture_station(
-                station, Claimant.ZONE_0, self.connected_territories,
+                station,
+                Claimant.ZONE_0,
+                self.connected_territories,
             )
             self.assertEqual(
                 capturable,
                 True,
                 f'Zone 0 should be able to capture {station}',
             )
+
         for station in {StationCode.BE, StationCode.SW, StationCode.HV}:
             capturable = self.attached_territories.can_capture_station(
-                station, Claimant.ZONE_1, self.connected_territories,
+                station,
+                Claimant.ZONE_1,
+                self.connected_territories,
             )
             self.assertEqual(
                 capturable,
@@ -87,17 +96,27 @@ class TestAttachedTerritories(unittest.TestCase):
     def test_stations_cant_capture(self) -> None:
         for station in {StationCode.YL, StationCode.BN, StationCode.HV}:
             capturable = self.attached_territories.can_capture_station(
-                station, Claimant.ZONE_0, self.connected_territories,
+                station,
+                Claimant.ZONE_0,
+                self.connected_territories,
             )
             self.assertEqual(
                 capturable,
                 False,
                 f'Zone 0 should not be able to capture {station}',
             )
-        for station in {StationCode.PN, StationCode.EY, StationCode.SZ,
-                        StationCode.BN, StationCode.VB}:
+
+        for station in {
+            StationCode.PN,
+            StationCode.EY,
+            StationCode.SZ,
+            StationCode.BN,
+            StationCode.VB,
+        }:
             capturable = self.attached_territories.can_capture_station(
-                station, Claimant.ZONE_1, self.connected_territories,
+                station,
+                Claimant.ZONE_1,
+                self.connected_territories,
             )
             self.assertEqual(
                 capturable,
@@ -108,6 +127,7 @@ class TestAttachedTerritories(unittest.TestCase):
 
 class TestAdjacentTerritories(unittest.TestCase):
     'Test the AttachedTerritories initialisation of adjacent_zones'
+
     def setUp(self) -> None:
         super().setUp()
         claim_log = ClaimLog(record_arena_actions=False)

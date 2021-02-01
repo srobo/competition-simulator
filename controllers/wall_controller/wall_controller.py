@@ -1,8 +1,7 @@
 import sys
-from typing import cast, List
 from pathlib import Path
 
-from controller import Node, Supervisor
+from controller import Supervisor
 
 # Velocity matrices contain linear and rotational velocities [x, y, z, rot_x, rot_y, rot_z]
 # -0.3m/s is used since the wall is 0.3m tall
@@ -14,14 +13,15 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
+import webots_utils  # isort:skip
 
 
 def move_walls_after(seconds: int) -> None:
     robot = Supervisor()
     timestep = robot.getBasicTimeStep()
-    walls: List[Node] = [
-        cast(Node, robot.getFromDef('west_moving_wall')),
-        cast(Node, robot.getFromDef('east_moving_wall')),
+    walls = [
+        webots_utils.node_from_def(robot, 'west_moving_wall'),
+        webots_utils.node_from_def(robot, 'east_moving_wall'),
     ]
 
     if controller_utils.get_robot_mode() == 'comp':

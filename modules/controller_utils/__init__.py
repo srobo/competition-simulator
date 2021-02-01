@@ -1,3 +1,7 @@
+"""
+Utilities for our controllers which relate to the running of matches.
+"""
+
 import os
 import sys
 import json
