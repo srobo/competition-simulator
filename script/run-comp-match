@@ -224,9 +224,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         '--no-record',
-        "Inhibit creation of the MPEG video, the animation is unaffected. "
-        "This can greatly increase the execution speed on GPU limited systems "
-        "when the video is not required.",
+        help=(
+            "Inhibit creation of the MPEG video, the animation is unaffected. "
+            "This can greatly increase the execution speed on GPU limited systems "
+            "when the video is not required."
+        ),
         action='store_true',
         dest='no_record',
     )
