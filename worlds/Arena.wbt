@@ -4,8 +4,8 @@ WorldInfo {
   basicTimeStep 8
 }
 Viewpoint {
-  orientation -1 0 0 0.8997040656177113
-  position 0 11.3842 9.20412
+  orientation -0.418 -0.808 -0.414 1.78
+  position -10 14 0
 }
 TexturedBackgroundLight {
   texture "noon_park_empty"
@@ -19,16 +19,16 @@ TexturedBackground {
 
 # Updating colours? Update `territory_controller.py`
 DEF ROBOT-0 SRRobot {
-  translation -4.5 0 -2
-  rotation 0 1 0 3.926
+  translation 2 0 -4.5
+  rotation 0 1 0 2.266
   controller "sr_controller"
   model "Robot0"
   flagColour 1 0 1
   controllerArgs "0"
 }
 DEF ROBOT-1 SRRobot {
-  translation 4.4 0 -2
-  rotation 0 1 0 2.266
+  translation 2 0 4.5
+  rotation 0 1 0 0.785
   controller "sr_controller"
   model "Robot1"
   flagColour 1 1 0
@@ -52,7 +52,7 @@ Robot {
   ]
 }
 Robot {
-  translation 0 0 0
+  rotation 0 1 0 -1.57
   name "territory_controller"
   description "A supervisor 'robot' to handle claiming of territories"
   controller "territory_controller"
@@ -265,6 +265,8 @@ DEF WALL_CTRL Robot {
 }
 
 Transform {
+  rotation 0 1 0 -1.57
+
   children [
     Solid {
       children [
