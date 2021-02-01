@@ -350,10 +350,6 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self._claim_log.get_claimant(station_code) == claimed_by:
-            # This territory is already claimed by this claimant.
-            return
-
         connected_territories = self._attached_territories.build_attached_capture_trees()
 
         if not self._attached_territories.can_capture_station(
