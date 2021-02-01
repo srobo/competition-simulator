@@ -68,7 +68,7 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
-LOCKED_COLOUR = (0.1, 0.1, 0.1)
+LOCKED_COLOUR = (0.5, 0, 0)
 
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
