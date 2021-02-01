@@ -30,7 +30,7 @@ class Claimant(enum.IntEnum):
     ZONE_1 = 1
 
 
-LOCKED_OUT_AFTER_CLAIM = 3
+LOCKED_OUT_AFTER_CLAIM = 4
 
 
 # Updating? Update radio.py too.
