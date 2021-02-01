@@ -9,7 +9,7 @@ class Compass:
         self._compass = get_robot_device(webot, "robot compass", WebotsCompass)
         self._compass.enable(1)
 
-    def get_value(self) -> float:
+    def get_heading(self) -> float:
         """
         Return the heading from the compass in the range 0 - 2pi
         """
