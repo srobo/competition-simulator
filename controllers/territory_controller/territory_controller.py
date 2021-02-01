@@ -104,6 +104,7 @@ class ClaimLog:
         self._station_statuses: Dict[StationCode, Claimant] = {
             code: Claimant.UNCLAIMED for code in StationCode
         }
+        self._locked_territories: Set[StationCode] = set()
 
         self._log: List[ClaimLogEntry] = []
         # Starting with a dirty log ensures the structure is written for every match.
@@ -111,6 +112,12 @@ class ClaimLog:
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
         return self._station_statuses[station_code]
+
+    def is_locked(self, station_code: StationCode) -> bool:
+        return station_code in self._locked_territories
+
+    def get_claim_count(self, station_code: StationCode) -> int:
+        return len([x for x, _, _, _ in self._log if x == station_code])
 
     def _record_log_entry(self, entry: ClaimLogEntry) -> None:
         self._log.append(entry)
@@ -134,6 +141,7 @@ class ClaimLog:
         self._record_log_entry((station_code, locked_by, claim_time, True))
         print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")
         self._station_statuses[station_code] = Claimant.UNCLAIMED
+        self._locked_territories.add(station_code)
 
     def record_captures(self) -> None:
         if not self._record_arena_actions:
@@ -255,12 +263,6 @@ class TerritoryController:
         for receiver in self._receivers.values():
             receiver.enable(RECEIVE_TICKS)
 
-        self._times_claimed = 0
-
-    @property
-    def locked(self) -> bool:
-        return self._times_claimed >= LOCKED_OUT_AFTER_CLAIM
-
     def begin_claim(
         self,
         station_code: StationCode,
@@ -288,13 +290,11 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self.locked:
+        if self._claim_log.is_locked(station_code):
             logging.error(
                 f"Territory {station_code} is locked",
             )
             return
-
-        self._times_claimed += 1
 
         station = self._robot.getFromDef(station_code)
         if station is None:
@@ -302,7 +302,9 @@ class TerritoryController:
                 f"Failed to fetch territory node {station_code}",
             )
 
-        if self.locked:
+        if self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1:
+            # This next claim would trigger the "locked out" condition, so rather than
+            # making the claim, instead cause a lock-out.
             if station is not None:
                 station.getField("zoneColour").setSFColor(list(LOCKED_COLOUR))
 
@@ -459,7 +461,7 @@ class TerritoryController:
                     "!2sbb",
                     station_code.encode("ASCII"),
                     int(self._claim_log.get_claimant(station_code)),
-                    int(self.locked),
+                    int(self._claim_log.is_locked(station_code)),
                 )
             )
 
