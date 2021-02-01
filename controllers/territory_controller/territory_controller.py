@@ -134,7 +134,10 @@ class ClaimLog:
         self._station_statuses[station_code] = claimed_by
 
     def log_lock(
-        self, station_code: StationCode, locked_by: Claimant, claim_time: float
+        self,
+        station_code: StationCode,
+        locked_by: Claimant,
+        claim_time: float,
     ) -> None:
         self._record_log_entry((station_code, Claimant.UNCLAIMED, claim_time, True))
         print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")
