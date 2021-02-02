@@ -1,4 +1,4 @@
-from math import atan2
+from math import tau, atan2
 
 from controller import Robot, Compass as WebotsCompass
 from sr.robot.utils import get_robot_device
@@ -14,4 +14,4 @@ class Compass:
         Return the heading from the compass in the range 0 - 2pi
         """
         x, _, z = self._compass.getValues()
-        return atan2(x, z)
+        return atan2(x, z) % tau
