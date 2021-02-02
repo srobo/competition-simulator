@@ -748,7 +748,6 @@ PROTO SRRobot [
                 Compass {
                     name "robot compass"
                     rotation 0 1 0 3.14
-                    resolution 0.1
                 }
                 LED {
                   translation 0 0.1 0.085
