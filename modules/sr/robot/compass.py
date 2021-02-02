@@ -7,7 +7,7 @@ from sr.robot.utils import get_robot_device
 class Compass:
     def __init__(self, webot: Robot):
         self._compass = get_robot_device(webot, "robot compass", WebotsCompass)
-        self._compass.enable(1)
+        self._compass.enable(int(webot.getBasicTimeStep()))
 
     def get_heading(self) -> float:
         """
