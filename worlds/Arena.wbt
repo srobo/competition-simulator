@@ -4,8 +4,9 @@ WorldInfo {
   basicTimeStep 8
 }
 Viewpoint {
-  orientation -0.418 -0.808 -0.414 1.78
-  position -10 14 0
+  # the combined rotation of 0, -1, 0, 1.5708 & -1, 0, 0, 0.9
+  orientation -0.398871 -0.825714 -0.398871 1.76114
+  position -9.2 11.4 0
   near 0.1
 }
 TexturedBackgroundLight {
