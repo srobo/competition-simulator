@@ -54,7 +54,7 @@ Robot {
   ]
 }
 Robot {
-  rotation 0 1 0 -1.57
+  rotation 0 1 0 -1.5708
   name "territory_controller"
   description "A supervisor 'robot' to handle claiming of territories"
   controller "territory_controller"
@@ -267,7 +267,7 @@ DEF WALL_CTRL Robot {
 }
 
 Transform {
-  rotation 0 1 0 -1.57
+  rotation 0 1 0 -1.5708
 
   children [
     Solid {
