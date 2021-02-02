@@ -172,10 +172,6 @@ def remove_unused_robots(supervisor: Supervisor) -> None:
 def get_simulation_run_mode(supervisor: Supervisor) -> 'SimulationMode':
     # webots 2020b is buggy and can raise TypeError when getDevice is passed a str
     if supervisor.getDevice("2021a-compatibility") is None:
-        # we are running version 2020b so the old command is used
-        return Supervisor.SIMULATION_MODE_RUN
-    else:
-        # webots-2021a removed the RUN mode and now uses FAST
         print(
             "This simulator is running a different version of Webots to the "
             "one that will be used for the next official competition matches "
@@ -187,6 +183,10 @@ def get_simulation_run_mode(supervisor: Supervisor) -> 'SimulationMode':
             "match that of the official competition matches",
             file=sys.stderr,
         )
+        # we are running version 2020b so the old command is used
+        return Supervisor.SIMULATION_MODE_RUN
+    else:
+        # webots-2021a removed the RUN mode and now uses FAST
         return Supervisor.SIMULATION_MODE_FAST
 
 
