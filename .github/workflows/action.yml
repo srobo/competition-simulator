@@ -183,7 +183,7 @@ jobs:
       - name: Run match
         run: |
           source ./venv/bin/activate
-          xvfb-run script/run-comp-match archives 42 - ABC --duration 5
+          xvfb-run script/run-comp-match archives 42 - ABC --duration 5 --no-record
       - name: Store archives
         uses: actions/upload-artifact@v2
         with:
