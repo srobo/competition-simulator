@@ -187,7 +187,7 @@ jobs:
       - name: Store archives
         uses: actions/upload-artifact@v2
         with:
-          name: archives
+          name: archives-${{ matrix.webots-version }}
           path: archives
       - name: Validate success
         run: |
