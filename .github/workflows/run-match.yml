@@ -14,9 +14,7 @@ jobs:
         working-directory: ${{ github.workspace }}
     strategy:
       matrix:
-        webots-version: ["R2020b-rev1", "R2021a"]
-    container:
-      image: cyberbotics/webots:${{ matrix.webots-version }}-ubuntu20.04
+        webots-version: ["2020b-rev1", "2021a"]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
@@ -26,8 +24,15 @@ jobs:
       - name: Install dependencies
         run: |
           export DEBIAN_FRONTEND=noninteractive
-          apt-get update
-          apt-get install --yes zip
+          sudo apt-get update
+          sudo apt-get install --yes wget zip
+      - name: Download Webots
+        run: |
+          wget -O ./webots.deb \
+          https://github.com/cyberbotics/webots/releases/download/R${{ matrix.webots-version }}/webots_${{ matrix.webots-version }}_amd64.deb
+      - name: Install Webots & Xvfb
+        run: |
+          sudo apt-get install --yes xvfb ./webots.deb
       - name: Prepare team code archive
         run: |
           mkdir archives
