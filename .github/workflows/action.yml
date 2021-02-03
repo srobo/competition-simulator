@@ -1,4 +1,4 @@
-name: Test, lint, run and build simulator
+name: Simulator tests
 
 on:
   push: {}

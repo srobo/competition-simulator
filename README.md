@@ -1,6 +1,6 @@
 # competition-simulator
 
-![Github Actions](https://github.com/srobo/competition-simulator/workflows/Test%2C%20lint%2C%20run%20and%20build%20simulator/badge.svg)
+[![Github Actions](https://github.com/srobo/competition-simulator/workflows/Simulator%20tests/badge.svg)](https://github.com/srobo/competition-simulator/actions?query=workflow%3A%22Simulator+tests%22)
 
 A simulator to be used for the Student Robotics Virtual Competition
 
