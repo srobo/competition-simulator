@@ -1,6 +1,6 @@
 # competition-simulator
 
-[![CircleCI](https://circleci.com/gh/srobo/competition-simulator.svg?style=svg)](https://circleci.com/gh/srobo/competition-simulator)
+![Github Actions](https://github.com/srobo/competition-simulator/workflows/Test%2C%20lint%2C%20run%20and%20build%20simulator/badge.svg)
 
 A simulator to be used for the Student Robotics Virtual Competition
 
