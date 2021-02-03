@@ -1,0 +1,216 @@
+name: Test, lint, run and build simulator
+
+on:
+  push: {}
+  release:
+    types: [ created ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Build checksum file
+      run: |
+        declare -a FILES=(
+          "script/linting/requirements.txt"
+          "script/typing/requirements.txt"
+        )
+        for f in ${FILES[@]}
+        do
+          echo "# $f" >> all-requirements.txt
+          cat $f >> all-requirements.txt
+        done
+    - name: Cache dependencies
+      id: cache-dep
+      uses: actions/cache@v2
+      with:
+        path: venv
+        key: deps-py${{ matrix.python-version }}-${{ hashfiles('all-requirements.txt') }}
+    - name: Install Dependencies
+      if: steps.cache-dep.outputs.cache-hit != 'true'
+      run: |
+        python3 -m venv venv
+        venv/bin/pip install -U pip
+        venv/bin/pip install -r all-requirements.txt
+    - name: Test with unittest
+      run: |
+        source venv/bin/activate
+        ./script/testing/test
+
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Build checksum file
+      run: |
+        declare -a FILES=(
+          "script/linting/requirements.txt"
+          "script/typing/requirements.txt"
+        )
+        for f in ${FILES[@]}
+        do
+          echo "# $f" >> all-requirements.txt
+          cat $f >> all-requirements.txt
+        done
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      id: cache-dep
+      with:
+        path: venv
+        key: deps-py${{ matrix.python-version }}-${{ hashfiles('all-requirements.txt') }}
+    - name: Install Dependencies
+      if: steps.cache-dep.outputs.cache-hit != 'true'
+      run: |
+        python3 -m venv venv
+        venv/bin/pip install -U pip
+        venv/bin/pip install -r all-requirements.txt
+    - name: Lint with flake8
+      run: |
+        source venv/bin/activate
+
+        # Ignore TODOs on CI, for now, even though we do want them
+        # highlighted in development.
+        ./script/linting/lint --extend-ignore=T000
+
+  typecheck:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.7, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Build checksum file
+      run: |
+        declare -a FILES=(
+          "script/linting/requirements.txt"
+          "script/typing/requirements.txt"
+        )
+        for f in ${FILES[@]}
+        do
+          echo "# $f" >> all-requirements.txt
+          cat $f >> all-requirements.txt
+        done
+    - name: Cache dependencies
+      id: cache-dep
+      uses: actions/cache@v2
+      with:
+        path: venv
+        key: deps-py${{ matrix.python-version }}-${{ hashfiles('all-requirements.txt') }}
+    - name: Install Dependencies
+      if: steps.cache-dep.outputs.cache-hit != 'true'
+      run: |
+        python3 -m venv venv
+        venv/bin/pip install -U pip
+        venv/bin/pip install -r all-requirements.txt
+    - name: Typecheck with Mypy
+      run: |
+        source venv/bin/activate
+        ./script/typing/check
+
+  run-comp-match:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ github.workspace }}
+    strategy:
+      matrix:
+        webots-version: ["R2020b-rev1", "R2021a"]
+    container:
+      image: cyberbotics/webots:${{ matrix.webots-version }}-ubuntu20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install --yes zip
+      - name: Prepare team code archive
+        run: |
+          mkdir archives
+          cd archives
+
+          # Convert the sleep comments to print statement so there's a way to
+          # gauge progress and so that Circle doesn't shut things down due to
+          # lack of output (the latter is a theoretical concern).
+          sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_controller.py > robot.py
+
+          # Have the robot code print success at the end, along with a unique identifier.
+          echo "print('Success: $GITHUB_SHA')" >> robot.py
+
+          zip ABC.zip robot.py
+      - name: Cache libraries
+        id: cache-library
+        uses: actions/cache@v2
+        with:
+          path: venv
+          key: deps-library-${{ hashfiles('libraries.txt') }}
+      - name: Install Libraries
+        if: steps.cache-library.outputs.cache-hit != 'true'
+        run: |
+          python3 -m venv venv
+          venv/bin/pip install -U pip
+          venv/bin/pip install -r libraries.txt
+      - name: Run match
+        run: |
+          source ./venv/bin/activate
+          xvfb-run script/run-comp-match archives 42 - ABC --duration 5
+      - name: Store archives
+        uses: actions/upload-artifact@v2
+        with:
+          name: archives
+          path: archives
+      - name: Validate success
+        run: |
+          LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-1-match-42.txt)
+          set -x
+          test "$LAST_LINE" == "1| Success: $GITHUB_SHA"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [test, lint, typecheck, run-comp-match]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Build archive
+      run: |
+        mkdir archive
+        NAME="competition-simulator-$(git describe --always --tags).zip"
+        ./script/create-archive --output archive/$NAME
+    - name: Store archives
+      uses: actions/upload-artifact@v2
+      with:
+        name: archive
+        path: archive/*.zip
