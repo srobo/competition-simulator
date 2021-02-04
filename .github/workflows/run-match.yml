@@ -8,10 +8,6 @@ on:
 jobs:
   run-comp-match:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-        working-directory: ${{ github.workspace }}
     strategy:
       matrix:
         webots-version: ["2020b-rev1", "2021a"]
