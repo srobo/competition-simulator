@@ -92,6 +92,7 @@ jobs:
         # highlighted in development.
         ./script/linting/lint --extend-ignore=T000
     - name: Typecheck with Mypy
+      if: ${{ always() }}
       run: |
         source venv/bin/activate
         ./script/typing/check
