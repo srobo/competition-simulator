@@ -745,6 +745,10 @@ PROTO SRRobot [
                     maxRange 0.5
                     channel 2
                 }
+                Compass {
+                    name "robot compass"
+                    rotation 0 1 0 3.14
+                }
                 LED {
                   translation 0 0.1 0.085
                   children [
