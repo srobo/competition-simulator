@@ -38,13 +38,17 @@ jobs:
       id: cache-dep
       with:
         path: venv
-        key: deps-py${{ matrix.python-version }}-${{ hashfiles('all-requirements.txt') }}
-    - name: Install Dependencies
+        key: deps-py${{ matrix.python-version }}-${{ matrix.test-os }}-${{ hashfiles('all-requirements.txt') }}
+    - name: Install Dependencies - Posix
       if: steps.cache-dep.outputs.cache-hit != 'true'
+      if: matrix.test-os != 'windows-latest'
       run: |
         python3 -m venv venv
         venv/bin/pip install -U pip
         venv/bin/pip install -r all-requirements.txt
+    - name: Install Dependencies - Windows
+      if: steps.cache-dep.outputs.cache-hit != 'true'
+      if: matrix.test-os == 'windows-latest'
     - name: Define scripts to test
       id: define_scripts
       run: |
@@ -54,7 +58,7 @@ jobs:
       env:
         SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
       run: |
-        source venv/bin/activate
+        source venv/bin/activate || source ./venv/Scripts/activate
 
         # Ignore TODOs on CI, for now, even though we do want them
         # highlighted in development.
@@ -64,10 +68,10 @@ jobs:
         SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
       if: ${{ always() }}
       run: |
-        source venv/bin/activate
+        source venv/bin/activate || source ./venv/Scripts/activate
         ./script/typing/check $SCRIPTS
     - name: Test with unittest
       if: ${{ always() }}
       run: |
-        source venv/bin/activate
+        source venv/bin/activate || source ./venv/Scripts/activate
         ./script/testing/test
