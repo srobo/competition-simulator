@@ -368,7 +368,9 @@ class PolarTests(unittest.TestCase):
 
         for cartesian, expected in cases:
             with self.subTest(cartesian):
-                self.assertEqual(expected, polar_from_cartesian(cartesian))
+                self.assertAlmostEqual(expected.length, polar_from_cartesian(cartesian).length)
+                self.assertAlmostEqual(expected.rot_x, polar_from_cartesian(cartesian).rot_x)
+                self.assertAlmostEqual(expected.rot_y, polar_from_cartesian(cartesian).rot_y)
 
 
 if __name__ == '__main__':

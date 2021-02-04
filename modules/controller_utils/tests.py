@@ -30,7 +30,7 @@ def fake_tla() -> str:
 
 @contextlib.contextmanager
 def mock_match_file() -> Iterator[IO[str]]:
-    with tempfile.NamedTemporaryFile(suffix='.json', mode='r+t') as f:
+    with tempfile.NamedTemporaryFile(suffix='.json', mode='r+t', delete=False) as f:
         with mock.patch('controller_utils.get_match_file', return_value=Path(f.name)):
             yield f
 
