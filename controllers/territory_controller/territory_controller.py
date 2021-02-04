@@ -302,6 +302,7 @@ class TerritoryController:
             logging.error(
                 f"Failed to fetch territory node {station_code}",
             )
+            return
 
         if self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1:
             # This next claim would trigger the "locked out" condition, so rather than
