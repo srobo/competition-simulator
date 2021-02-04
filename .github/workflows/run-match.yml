@@ -25,14 +25,14 @@ jobs:
         run: |
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
-          sudo apt-get install --yes wget zip pulseaudio
+          sudo apt-get install --yes wget zip pulseaudio xvfb
       - name: Download Webots
         run: |
           wget -O ./webots.deb \
           https://github.com/cyberbotics/webots/releases/download/R${{ matrix.webots-version }}/webots_${{ matrix.webots-version }}_amd64.deb
-      - name: Install Webots & Xvfb
+      - name: Install Webots
         run: |
-          sudo apt-get install --yes xvfb ./webots.deb
+          sudo apt-get install --yes ./webots.deb
       - name: Prepare team code archive
         run: |
           mkdir archives
