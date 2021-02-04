@@ -40,15 +40,13 @@ jobs:
         path: venv
         key: deps-py${{ matrix.python-version }}-${{ matrix.test-os }}-${{ hashfiles('all-requirements.txt') }}
     - name: Install Dependencies - Posix
-      if: steps.cache-dep.outputs.cache-hit != 'true'
-      if: matrix.test-os != 'windows-latest'
+      if: steps.cache-dep.outputs.cache-hit != 'true' && matrix.test-os != 'windows-latest'
       run: |
         python3 -m venv venv
         venv/bin/pip install -U pip
         venv/bin/pip install -r all-requirements.txt
     - name: Install Dependencies - Windows
-      if: steps.cache-dep.outputs.cache-hit != 'true'
-      if: matrix.test-os == 'windows-latest'
+      if: steps.cache-dep.outputs.cache-hit != 'true' && matrix.test-os == 'windows-latest'
       run: |
         python3 -m venv venv
         venv/Scripts/pip install -U pip
