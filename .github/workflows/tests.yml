@@ -5,11 +5,16 @@ on:
 
 jobs:
   run-checks:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.7, 3.8, 3.9]
+        test-os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.test-os }}
+     defaults:
+      run:
+        shell: bash
 
     steps:
     - uses: actions/checkout@v2
