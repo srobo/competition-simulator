@@ -4,7 +4,7 @@ set -e
 
 cd $(dirname $(dirname  $(dirname $0)))
 
-export PYTHONPATH=$(realpath ./stubs):$(realpath ./modules)
+export PYTHONPATH=$($PWD/stubs):$($PWD/modules)
 
 python3 -m unittest discover --start-directory modules "$@"
 
