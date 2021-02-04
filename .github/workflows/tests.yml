@@ -45,7 +45,7 @@ jobs:
         source venv/bin/activate
         ./script/testing/test
 
-  lint & type:
+  lint-and-type:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
