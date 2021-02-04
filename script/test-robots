@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+"""
+A script to run a test competition match on every robot in an submissions directory.
+"""
+import sys
+import shutil
+import argparse
+import tempfile
+import subprocess
+from typing import List
+from pathlib import Path
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'archives_dir',
+        help=(
+            "The directory containing the teams' robot code, as Zip archives "
+            "named for the teams' TLAs."
+        ),
+        type=Path,
+    )
+    return parser.parse_args()
+
+
+def main(args: argparse.Namespace) -> None:
+    failed_tlas: List[str] = []
+
+    run_comp_match = str(Path(__file__).parent / 'run-comp-match')
+
+    with tempfile.TemporaryDirectory() as tempdir_name:
+
+        tempdir = Path(tempdir_name)
+        # Make a temporary copy of the archives to receive the logs
+        archives = shutil.copytree(args.archives_dir.resolve(), tempdir / 'archives')
+
+        for team in archives.glob('*.zip'):
+            tla = team.stem
+
+            try:
+                print(f"Running match for {tla}")  # noqa:T001
+                subprocess.run(
+                    [
+                        sys.executable,
+                        run_comp_match,
+                        str(archives),
+                        '0',  # no logs will be retained so a fixed match number is used
+                        tla,
+                        '-',
+                        '--duration', '1',
+                        '--no-record',
+                    ],
+                    check=True,
+                    stdout=subprocess.PIPE,  # we only want to print output from failing robots
+                    stderr=subprocess.STDOUT,
+                )
+
+                print(f"Completed match for {tla}")  # noqa:T001
+
+            except subprocess.CalledProcessError as match_errors:
+                print(match_errors.output.decode())  # noqa: T001
+                print(f"Failed on team {tla}")  # noqa:T001
+                failed_tlas.append(tla)
+
+    print(f"Failing TLAs: {', '.join(failed_tlas)}")  # noqa: T001
+
+
+if __name__ == '__main__':
+    main(parse_args())
