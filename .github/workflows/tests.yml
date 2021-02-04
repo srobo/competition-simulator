@@ -48,7 +48,7 @@ jobs:
     - name: Install Dependencies - Windows
       if: steps.cache-dep.outputs.cache-hit != 'true' && matrix.test-os == 'windows-latest'
       run: |
-        python3 -m venv venv
+        py -m venv venv
         venv/Scripts/pip install -U pip
         venv/Scripts/pip install -r all-requirements.txt
     - name: Define scripts to test
@@ -60,6 +60,7 @@ jobs:
       env:
         SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
       run: |
+        [ -f venv/bin/activate ] ||
         source venv/bin/activate || source ./venv/Scripts/activate
 
         # Ignore TODOs on CI, for now, even though we do want them
