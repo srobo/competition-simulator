@@ -40,19 +40,28 @@ jobs:
         python3 -m venv venv
         venv/bin/pip install -U pip
         venv/bin/pip install -r all-requirements.txt
-
+    - name: Define scripts to test
+      id: define_scripts
+      run: |
+        SCRIPTS=$(find script -type f | grep -vP "/(linting/|testing/|typing/|check$)")
+        echo "##[set-output name=SCRIPTS;]$SCRIPTS"
     - name: Lint with flake8
+      env:
+        SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
       run: |
         source venv/bin/activate
 
+        echo Also including: $SCRIPTS
         # Ignore TODOs on CI, for now, even though we do want them
         # highlighted in development.
-        ./script/linting/lint --extend-ignore=T000
+        ./script/linting/lint $SCRIPTS --extend-ignore=T000
     - name: Typecheck with Mypy
+      env:
+        SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
       if: ${{ always() }}
       run: |
         source venv/bin/activate
-        ./script/typing/check
+        ./script/typing/check $SCRIPTS
     - name: Test with unittest
       if: ${{ always() }}
       run: |
