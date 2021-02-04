@@ -49,6 +49,10 @@ jobs:
     - name: Install Dependencies - Windows
       if: steps.cache-dep.outputs.cache-hit != 'true'
       if: matrix.test-os == 'windows-latest'
+      run: |
+        python3 -m venv venv
+        venv/Scripts/pip install -U pip
+        venv/Scripts/pip install -r all-requirements.txt
     - name: Define scripts to test
       id: define_scripts
       run: |
