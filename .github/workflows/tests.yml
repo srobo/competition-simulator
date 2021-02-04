@@ -49,8 +49,9 @@ jobs:
       if: steps.cache-dep.outputs.cache-hit != 'true' && matrix.test-os == 'windows-latest'
       run: |
         py -m venv venv
-        venv/Scripts/pip install -U pip
-        venv/Scripts/pip install -r all-requirements.txt
+        source venv/bin/activate
+        py -m pip install -U pip
+        pip install -r all-requirements.txt
     - name: Define scripts to test
       id: define_scripts
       run: |
