@@ -28,7 +28,7 @@ jobs:
           https://github.com/cyberbotics/webots/releases/download/R${{ matrix.webots-version }}/webots_${{ matrix.webots-version }}_amd64.deb
       - name: Install Webots
         run: |
-          sudo apt-get install --yes ./webots.deb
+          sudo dpkg -i ./webots.deb
       - name: Prepare team code archive
         run: |
           mkdir archives
