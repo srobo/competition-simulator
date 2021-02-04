@@ -60,8 +60,8 @@ jobs:
       env:
         SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
       run: |
-        [ -f venv/bin/activate ] ||
-        source venv/bin/activate || source ./venv/Scripts/activate
+        [ -f venv/bin/activate ] && source venv/bin/activate
+        [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
 
         # Ignore TODOs on CI, for now, even though we do want them
         # highlighted in development.
@@ -71,10 +71,12 @@ jobs:
         SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
       if: ${{ always() }}
       run: |
-        source venv/bin/activate || source ./venv/Scripts/activate
+        [ -f venv/bin/activate ] && source venv/bin/activate
+        [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
         ./script/typing/check $SCRIPTS
     - name: Test with unittest
       if: ${{ always() }}
       run: |
-        source venv/bin/activate || source ./venv/Scripts/activate
+        [ -f venv/bin/activate ] && source venv/bin/activate
+        [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
         ./script/testing/test
