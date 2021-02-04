@@ -126,7 +126,8 @@ zip ABC.zip robot.py
 ## Doing a release
 
 1. Create a new tag & push
-2. Wait for CI to build a zip archive and upload it to the tag
+2. Create a release for the tag
+3. Wait for CI to build a zip archive and upload it to the release
 4. Update the [docs](https://github.com/srobo/docs) to point to the new archive
 5. Announce the update to teams via the forums and [email](https://github.com/srobo/team-emails)
 
