@@ -2,8 +2,6 @@ name: Simulator tests
 
 on:
   push: {}
-  release:
-    types: [ created ]
 
 jobs:
   test:
@@ -96,23 +94,3 @@ jobs:
       run: |
         source venv/bin/activate
         ./script/typing/check
-
-  build:
-    runs-on: ubuntu-latest
-    needs: [test, lint, typecheck]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.7
-    - name: Build archive
-      run: |
-        mkdir archive
-        NAME="competition-simulator-$(git describe --always --tags).zip"
-        ./script/create-archive --output archive/$NAME
-    - name: Store archives
-      uses: actions/upload-artifact@v2
-      with:
-        name: simulator-archive
-        path: archive/*.zip
