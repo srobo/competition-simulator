@@ -4,53 +4,12 @@ on:
   push: {}
 
 jobs:
-  test:
+  run-checks:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: [3.7, 3.8, 3.9]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Build checksum file
-      run: |
-        declare -a FILES=(
-          "script/linting/requirements.txt"
-          "script/typing/requirements.txt"
-        )
-        for f in ${FILES[@]}
-        do
-          echo "# $f" >> all-requirements.txt
-          cat $f >> all-requirements.txt
-        done
-    - name: Cache dependencies
-      id: cache-dep
-      uses: actions/cache@v2
-      with:
-        path: venv
-        key: deps-py${{ matrix.python-version }}-${{ hashfiles('all-requirements.txt') }}
-    - name: Install Dependencies
-      if: steps.cache-dep.outputs.cache-hit != 'true'
-      run: |
-        python3 -m venv venv
-        venv/bin/pip install -U pip
-        venv/bin/pip install -r all-requirements.txt
-    - name: Test with unittest
-      run: |
-        source venv/bin/activate
-        ./script/testing/test
-
-  lint-and-type:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: [3.7, 3.9]
 
     steps:
     - uses: actions/checkout@v2
@@ -94,3 +53,8 @@ jobs:
       run: |
         source venv/bin/activate
         ./script/typing/check
+    - name: Test with unittest
+      if: ${{ always() }}
+      run: |
+        source venv/bin/activate
+        ./script/testing/test
