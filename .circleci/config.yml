@@ -1,97 +1,17 @@
 version: 2.1
 
-references:
-  build-checksum-file: &build-checksum-file
-    run:
-      name: Build checksum file
-      command: |
-        declare -a FILES=(
-          "script/linting/requirements.txt"
-          "script/typing/requirements.txt"
-        )
-        for f in ${FILES[@]}
-        do
-          echo "# $f" >> all-requirements.txt
-          cat $f >> all-requirements.txt
-        done
-  restore-dependencies-cache: &restore-dependencies-cache
-    restore_cache:
-      keys:
-        - deps-1-py<< parameters.python-version >>-{{ checksum "all-requirements.txt" }}
-  install-dependencies: &install-dependencies
-    run:
-      name: Install Dependencies
-      command: |
-        python3 -m venv venv
-        venv/bin/pip install -r all-requirements.txt
-  save-dependencies-cache: &save-dependencies-cache
-    save_cache:
-      key: deps-1-py<< parameters.python-version >>-{{ checksum "all-requirements.txt" }}
-      paths:
-        - venv
-  parametrised-python-executor: &parametrised-python-executor
-    parameters:
-      python-version:
-        type: string
-    executor:
-      name: python
-      python-version: << parameters.python-version >>
-  python-full-version-matrix: &python-full-version-matrix
-    matrix:
-      parameters:
-        python-version: ["3.7", "3.8", "3.9"]
-  run-on-tags-too: &run-on-tags-too
-    filters:
-      tags:
-        only: /.*/
-
-
-executors:
-  python:
-    parameters:
-      python-version:
-        type: string
-    docker:
-      - image: circleci/python:<< parameters.python-version >>
-
 jobs:
-  check:
-    <<: *parametrised-python-executor
-
+  hello-world:
+    docker:
+      - image: circleci/python:3.7
     steps:
-      - checkout
-
-      - *build-checksum-file
-      - *restore-dependencies-cache
-      - *install-dependencies
-      - *save-dependencies-cache
-
       - run:
-          name: Run Mypy
-          command: |
-            source venv/bin/activate
-            ./script/typing/check $SCRIPTS
-
-      - run:
-          name: Run Flake8
-          command: |
-            source venv/bin/activate
-
-            # Ignore TODOs on CI, for now, even though we do want them
-            # highlighted in development.
-            ./script/linting/lint $SCRIPTS --extend-ignore=T000
-
-      - run:
-          name: Run Tests
-          command: |
-            source venv/bin/activate
-            ./script/testing/test
+          name: Hello world
+          command: echo "Hello World"
 
 workflows:
   version: 2.1
 
   build:
     jobs:
-      - check:
-          <<: *python-full-version-matrix
-          <<: *run-on-tags-too
+      - hello-world
