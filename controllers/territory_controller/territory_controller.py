@@ -247,6 +247,15 @@ class TerritoryController:
             display.setFont('Arial Black', 48, True)
             display.drawText(station_code.value, 80, 160)
 
+        for station_code in StationCode:
+            station = self._robot.getFromDef(station_code)
+            if station is None:
+                logging.error(f"Failed to fetch territory node {station_code}")
+            else:
+                station.getField("zoneColour").setSFColor(
+                    list(ZONE_COLOURS[Claimant.UNCLAIMED]),
+                )
+
     def begin_claim(
         self,
         station_code: StationCode,
