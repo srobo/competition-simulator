@@ -13,7 +13,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 def match_animation_files(log_name: str, archives_dir: Path) -> List[Path]:
     match_num_search = re.search(r'match-([0-9]+)', log_name)
-    if not isinstance(match_num_search, re.Match):
+    if match_num_search is None:
         print(f'Invalid match name: {log_name}')
         return []
     match_num = match_num_search[1]
@@ -45,7 +45,7 @@ def zip_folder(
 
         if animations == 'team':
             # save animation textures
-            for texture in (archives_dir / 'recordings/textures').glob('**/*'):
+            for texture in (archives_dir / 'recordings' / 'textures').glob('**/*'):
                 zipfile.write(
                     texture.resolve(),
                     texture.relative_to(archives_dir / 'recordings/'),
