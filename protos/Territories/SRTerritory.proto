@@ -86,25 +86,6 @@ PROTO SRTerritory [
                 }
               ]
             }
-            #Display {
-            #  translation 0 0.01 0.35
-            #  name IS territoryName
-            #  height 128
-            #  width 128
-            #  children [
-            #    Shape {
-            #      appearance Appearance {
-            #        material Material {
-            #          emissiveColor 1 1 1
-            #        }
-            #        texture ImageTexture {}
-            #      }
-            #      geometry Plane {
-            #        size 0.25 0.25
-            #      }
-            #    }
-            #  ]
-            #}
           ]
         }
       ]
