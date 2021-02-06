@@ -361,14 +361,18 @@ class PolarTests(unittest.TestCase):
     def test_polar(self) -> None:
         cases = [
             (Vector((0, 0, 1)), PolarCoord(1, 0, 0)),
-            (Vector((1, 0, 1)), PolarCoord(2 ** 0.5, 0, 45)),
-            (Vector((0, 1, 1)), PolarCoord(2 ** 0.5, 44.99999999999999, 0)),
-            (Vector((1, 1, 1)), PolarCoord(3 ** 0.5, 35.26438968275466, 45)),
+            (Vector((1, 0, 1)), PolarCoord(round(2 ** 0.5, 7), 0, 45)),
+            (Vector((0, 1, 1)), PolarCoord(round(2 ** 0.5, 7), 45, 0)),
+            (Vector((1, 1, 1)), PolarCoord(round(3 ** 0.5, 7), 35.2643897, 45)),
         ]
 
         for cartesian, expected in cases:
             with self.subTest(cartesian):
-                self.assertEqual(expected, polar_from_cartesian(cartesian))
+                actual = polar_from_cartesian(cartesian)
+                # Cope with floating point differences
+                rounded = PolarCoord(*(round(x, 7) for x in actual))
+
+                self.assertEqual(expected, rounded)
 
 
 if __name__ == '__main__':

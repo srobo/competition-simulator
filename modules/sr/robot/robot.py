@@ -3,7 +3,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, radio, ruggeduino
+from sr.robot import motor, radio, compass, ruggeduino
 # Webots specific library
 from controller import Robot as WebotsRobot
 
@@ -129,6 +129,9 @@ class Robot:
         # Radio
         self._init_radio()
 
+        # Compass
+        self._init_compass()
+
     def _init_motors(self) -> None:
         self.motors = motor.init_motor_array(self.webot)
 
@@ -137,6 +140,9 @@ class Robot:
 
     def _init_radio(self) -> None:
         self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
+
+    def _init_compass(self) -> None:
+        self.compass = compass.Compass(self.webot)
 
     def time(self) -> float:
         """

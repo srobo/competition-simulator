@@ -133,6 +133,33 @@ class Radio:
                 receiver.nextPacket()
         return targets
 
+    def begin_territory_claim(self) -> None:
+        """
+        Begin a claim on any nearby territories.
+
+        This transmits the first part of a territory claim, leaving the caller
+        the responsibility of transmiting the second part by calling
+        `complete_territory_claim` later.
+
+        The radio has a limited transmission power, so will only be able to
+        claim a territory if you're inside its receiving range.
+        """
+        self._emitter.send(struct.pack("!BB", self._zone, 0))
+
+    def complete_territory_claim(self) -> None:
+        """
+        Attempt to complete the claim on any nearby territories.
+
+        This is the counterpart to `begin_territory_claim` and should be called
+        at a suitable delay after the claim has begun. The caller is responsible
+        for ensuring that the correct time has elapsed between the start and end
+        of the claim.
+
+        The radio has a limited transmission power, so will only be able to
+        claim a territory if you're inside its receiving range.
+        """
+        self._emitter.send(struct.pack("!BB", self._zone, 1))
+
     def claim_territory(self) -> None:
         """
         Attempt to claim any nearby territories.
@@ -140,10 +167,8 @@ class Radio:
         The radio has a limited transmission power, so will only be able to claim a territory
         if you're inside its receiving range.
         """
-        # Send the begin-claim message
-        self._emitter.send(struct.pack("!BB", self._zone, 0))
+        self.begin_territory_claim()
         with self._step_lock:
             # Wait 1.9s
             self._webot.step(int(max(1, 1900)))
-        # Send the conclude-claim message
-        self._emitter.send(struct.pack("!BB", self._zone, 1))
+        self.complete_territory_claim()

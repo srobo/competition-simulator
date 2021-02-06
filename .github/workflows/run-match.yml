@@ -1,0 +1,71 @@
+name: Simulator match
+
+on:
+  push: {}
+  release:
+    types: [ created ]
+
+jobs:
+  run-comp-match:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        webots-version: ["2020b-rev1", "2021a"]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update
+          sudo apt-get install --yes wget zip pulseaudio xvfb
+      - name: Download Webots
+        run: |
+          wget -O ./webots.deb \
+          https://github.com/cyberbotics/webots/releases/download/R${{ matrix.webots-version }}/webots_${{ matrix.webots-version }}_amd64.deb
+      - name: Install Webots
+        run: |
+          sudo apt-get install --yes ./webots.deb
+      - name: Prepare team code archive
+        run: |
+          mkdir archives
+          cd archives
+
+          # Convert the sleep comments to print statement so there's a way to
+          # gauge progress and so that GitHub doesn't shut things down due to
+          # lack of output (the latter is a theoretical concern).
+          sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_controller.py > robot.py
+
+          # Have the robot code print success at the end, along with a unique identifier.
+          echo "print('Success: $GITHUB_SHA')" >> robot.py
+
+          zip ABC.zip robot.py
+      - name: Cache libraries
+        id: cache-library
+        uses: actions/cache@v2
+        with:
+          path: venv
+          key: deps-library-${{ hashfiles('libraries.txt') }}
+      - name: Install Libraries
+        if: steps.cache-library.outputs.cache-hit != 'true'
+        run: |
+          python3 -m venv venv
+          venv/bin/pip install -U pip
+          venv/bin/pip install -r libraries.txt
+      - name: Run match
+        run: |
+          source ./venv/bin/activate
+          xvfb-run script/run-comp-match archives 42 - ABC --duration 5 --no-record
+      - name: Store archives
+        uses: actions/upload-artifact@v2
+        with:
+          name: match-archives-${{ matrix.webots-version }}
+          path: archives
+      - name: Validate success
+        run: |
+          LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-1-match-42.txt)
+          set -x
+          test "$LAST_LINE" == "1| Success: $GITHUB_SHA"

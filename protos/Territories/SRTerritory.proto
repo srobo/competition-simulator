@@ -27,6 +27,26 @@ PROTO SRTerritory [
                       radius 0.5
                   }
                 }
+                Display {
+                  name IS territoryName
+                  translation 0 0.005 0
+                  height 256
+                  width 256
+                  children [
+                    Shape {
+                      appearance PBRAppearance {
+                        baseColor 0.34191456 0.34191436 0.34191447
+                        roughness 1
+                        metalness 0
+                        baseColorMap ImageTexture {}
+                      }
+                      geometry DEF TERRITORY Cylinder {
+                          height 0.001
+                          radius 0.5
+                      }
+                    }
+                  ]
+                }
               ]
             }
             Solid {
