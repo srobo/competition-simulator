@@ -4,7 +4,6 @@ A script to zip the logs produced by a series of competition matches.
 """
 
 import re
-import shutil
 import argparse
 import datetime
 from typing import List
@@ -12,19 +11,46 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
 
-def zip_folder(folder: Path, output_dir: Path, suffix: str, include_date: bool) -> str:
+def match_animation_files(log_name: str, archives_dir: Path) -> List[Path]:
+    match_num_search = re.search(r'match-([0-9]+)', log_name)
+    if match_num_search is None:
+        print(f'Invalid match name: {log_name}')  # noqa: T001
+        return []
+    match_num = match_num_search[1]
+    match_files = (archives_dir / 'recordings').glob(f'match-{match_num}.*')
+    return [data_file for data_file in match_files if data_file.suffix != '.mp4']
+
+
+def zip_folder(
+    folder: Path,
+    output_dir: Path,
+    archives_dir: Path,
+    suffix: str,
+    include_date: bool,
+    animations: str,
+) -> str:
     tla = folder.name
     zip_name = f'team-{tla}{suffix}'
 
     if include_date:
         zip_name += f'-{datetime.date.today()}'
 
-    shutil.make_archive(
-        f'{output_dir / zip_name}',
-        'zip',
-        root_dir=folder,
-        base_dir='.',
-    )
+    with ZipFile(output_dir / f'{zip_name}.zip', 'w', compression=ZIP_DEFLATED) as zipfile:
+        for log in folder.resolve().iterdir():
+            zipfile.write(log, log.name)
+
+            if animations == 'team':
+                for animation_file in match_animation_files(log.name, archives_dir):
+                    zipfile.write(animation_file.resolve(), animation_file.name)
+
+        if animations == 'team':
+            # save animation textures
+            for texture in (archives_dir / 'recordings' / 'textures').glob('**/*'):
+                zipfile.write(
+                    texture.resolve(),
+                    texture.relative_to(archives_dir / 'recordings'),
+                )
+
     return f'{zip_name}.zip'
 
 
@@ -80,11 +106,12 @@ def parse_args() -> argparse.Namespace:
         '--animations',
         help=(
             "Include the match animation files. "
+            "'team' includes each teams' matches in their archive, "
             "'all' creates a separate archive of all matches, "
             "'separate' does the same as 'all' but excludes "
             "the archive from the combined archive."
         ),
-        choices=('all', 'separate'),
+        choices=('team', 'all', 'separate'),
         default=None,
     )
     return parser.parse_args()
@@ -113,8 +140,10 @@ def main(args: argparse.Namespace) -> None:
         logs_archives.append(zip_folder(
             folder,
             args.output_dir,
+            args.archives_dir,
             suffix_str,
             args.include_date,
+            args.animations,
         ))
 
     if args.animations in ('all', 'separate'):
