@@ -7,7 +7,7 @@ from pathlib import Path
 from collections import defaultdict
 
 # Webots specific library
-from controller import Display, Emitter, Receiver, Supervisor
+from controller import Node, Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -257,6 +257,10 @@ def configure_territory_display(display: Display, station_code: StationCode) -> 
     display.drawText(station_code.value, 80, 160)
 
 
+def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
+    node.getField('zoneColour').setSFColor(list(colour))
+
+
 class TerritoryController:
 
     _emitters: Dict[StationCode, Emitter]
@@ -293,7 +297,7 @@ class TerritoryController:
         if node is None:
             logging.error(f"Failed to fetch node {node_id}")
         else:
-            node.getField('zoneColour').setSFColor(list(new_colour))
+            set_node_colour(node, new_colour)
 
     def begin_claim(
         self,
@@ -338,14 +342,14 @@ class TerritoryController:
         if self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1:
             # This next claim would trigger the "locked out" condition, so rather than
             # making the claim, instead cause a lock-out.
-            station.getField("zoneColour").setSFColor(list(LOCKED_COLOUR))
+            set_node_colour(station, LOCKED_COLOUR)
 
             self._claim_log.log_lock(station_code, claimed_by, self._robot.getTime())
 
         else:
             new_colour = ZONE_COLOURS[claimed_by]
 
-            station.getField("zoneColour").setSFColor(list(new_colour))
+            set_node_colour(station, new_colour)
 
             self._claim_log.log_territory_claim(
                 station_code,
