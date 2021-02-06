@@ -7,7 +7,7 @@ from pathlib import Path
 from collections import defaultdict
 
 # Webots specific library
-from controller import Emitter, Receiver, Supervisor
+from controller import Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -234,6 +234,27 @@ class TerritoryController:
 
         for receiver in self._receivers.values():
             receiver.enable(RECEIVE_TICKS)
+
+        for station_code in StationCode:
+            display = get_robot_device(self._robot, station_code + "Territory", Display)
+            # Give the text a tranparent backgorund
+            display.setAlpha(0)
+            display.fillRectangle(0, 0, display.getHeight(), display.getWidth())
+
+            # Add the label
+            display.setAlpha(1)
+            display.setColor(0x3270ed)
+            display.setFont('Arial Black', 48, True)
+            display.drawText(station_code.value, 80, 160)
+
+        for station_code in StationCode:
+            station = self._robot.getFromDef(station_code)
+            if station is None:
+                logging.error(f"Failed to fetch territory node {station_code}")
+            else:
+                station.getField("zoneColour").setSFColor(
+                    list(ZONE_COLOURS[Claimant.UNCLAIMED]),
+                )
 
     def begin_claim(
         self,

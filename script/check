@@ -2,7 +2,7 @@
 
 cd $(dirname $0)/..
 
-SCRIPTS=$(find script -type f | grep -vP "/(linting/|testing/|typing/|check$)")
+SCRIPTS=$(find script -type f | grep -vE "/(linting/|testing/|typing/|check$)")
 
 ./script/testing/test
 result=$?

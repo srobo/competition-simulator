@@ -13,6 +13,7 @@ TexturedBackgroundLight {
   texture "noon_park_empty"
 }
 TexturedBackground {
+  texture "noon_park_empty"
   skybox FALSE
   skyColor [
     0.960784 0.952941 0.956863
