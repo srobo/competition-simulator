@@ -100,8 +100,9 @@ def check_required_libraries(path: Path) -> None:
 
     if missing or incorrect:
         raise RuntimeError(
-            "Required packages are missing ({!r}) or incorrect ({!r}). Have you "
-            "installed {}?".format(missing, incorrect, path.relative_to(REPO_ROOT)),
+            f"Required packages are missing ({missing!r}) or incorrect ({incorrect!r}). "
+            f"Have you installed {path.relative_to(REPO_ROOT)}?\n"
+            f"Hint: maybe you need to run 'pip install -r {path.relative_to(REPO_ROOT)}'?",
         )
 
 
