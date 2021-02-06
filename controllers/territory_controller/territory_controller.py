@@ -140,7 +140,7 @@ class ClaimLog:
         claim_time: float,
     ) -> None:
         self._record_log_entry((station_code, Claimant.UNCLAIMED, claim_time, True))
-        print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")  #noqa:T001
+        print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")  # noqa:T001
         self._station_statuses[station_code] = Claimant.UNCLAIMED
         self._locked_territories.add(station_code)
 
@@ -157,8 +157,9 @@ class ClaimLog:
                 'zone': claimed_by.value,
                 'station_code': station_code.value,
                 'time': claim_time,
+                'locked': locked,
             }
-            for station_code, claimed_by, claim_time in self._log
+            for station_code, claimed_by, claim_time, locked in self._log
         ]})
 
         self._log_is_dirty = False
