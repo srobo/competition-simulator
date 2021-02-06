@@ -140,7 +140,7 @@ class ClaimLog:
         claim_time: float,
     ) -> None:
         self._record_log_entry((station_code, Claimant.UNCLAIMED, claim_time, True))
-        print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")
+        print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")  #noqa:T001
         self._station_statuses[station_code] = Claimant.UNCLAIMED
         self._locked_territories.add(station_code)
 
@@ -307,20 +307,20 @@ class TerritoryController:
         if self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1:
             # This next claim would trigger the "locked out" condition, so rather than
             # making the claim, instead cause a lock-out.
-            if station is not None:
-                station.getField("zoneColour").setSFColor(list(LOCKED_COLOUR))
+            station.getField("zoneColour").setSFColor(list(LOCKED_COLOUR))
 
             self._claim_log.log_lock(station_code, claimed_by, self._robot.getTime())
 
         else:
             new_colour = ZONE_COLOURS[claimed_by]
 
-            if station is not None:
-                station.getField("zoneColour").setSFColor(
-                    list(new_colour),
-                )
+            station.getField("zoneColour").setSFColor(list(new_colour))
 
-            self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
+            self._claim_log.log_territory_claim(
+                station_code,
+                claimed_by,
+                self._robot.getTime(),
+            )
 
     def prune_detached_stations(
         self,
@@ -458,7 +458,7 @@ class TerritoryController:
                     station_code.encode("ASCII"),
                     int(self._claim_log.get_claimant(station_code)),
                     int(self._claim_log.is_locked(station_code)),
-                )
+                ),
             )
 
     def main(self) -> None:
