@@ -248,13 +248,14 @@ class TerritoryController:
             display.drawText(station_code.value, 80, 160)
 
         for station_code in StationCode:
-            station = self._robot.getFromDef(station_code)
-            if station is None:
-                logging.error(f"Failed to fetch territory node {station_code}")
-            else:
-                station.getField("zoneColour").setSFColor(
-                    list(ZONE_COLOURS[Claimant.UNCLAIMED]),
-                )
+            self.set_node_colour(station_code, ZONE_COLOURS[Claimant.UNCLAIMED])
+
+    def set_node_colour(self, node_id: str, new_colour: Tuple[float, float, float]) -> None:
+        node = self._robot.getFromDef(node_id)
+        if node is None:
+            logging.error(f"Failed to fetch node {node_id}")
+        else:
+            node.getField('zoneColour').setSFColor(list(new_colour))
 
     def begin_claim(
         self,
@@ -283,17 +284,7 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        new_colour = ZONE_COLOURS[claimed_by]
-        station = self._robot.getFromDef(station_code)
-        if station is None:
-            logging.error(
-                f"Failed to fetch territory node {station_code}",
-            )
-        else:
-            station.getField("zoneColour").setSFColor(
-                list(new_colour),
-            )
-
+        self.set_node_colour(station_code, ZONE_COLOURS[claimed_by])
         self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
 
     def prune_detached_stations(
@@ -408,16 +399,7 @@ class TerritoryController:
             else:
                 claimed_by = Claimant.UNCLAIMED
 
-            new_colour = LINK_COLOURS[claimed_by]
-            visual_link = self._robot.getFromDef('-'.join((stn_a, stn_b)))
-            if visual_link is None:
-                logging.error(
-                    f"Failed to fetch territory link {visual_link}",
-                )
-            else:
-                visual_link.getField("zoneColour").setSFColor(
-                    list(new_colour),
-                )
+            self.set_node_colour(f'{stn_a}-{stn_b}', LINK_COLOURS[claimed_by])
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
