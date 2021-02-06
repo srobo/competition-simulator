@@ -1,4 +1,5 @@
 import math
+import random
 from os import path, environ
 from typing import Optional
 from threading import Lock
@@ -106,6 +107,13 @@ class Robot:
 
         print("Waiting for start signal.")  # noqa:T001
 
+        # Always advance time by a little bit. This simulates the real-world
+        # condition that the wait-start mechanism would always wait for the
+        # start button.
+        self.webots_step_and_should_continue(
+            self._timestep * random.randint(8, 20),
+        )
+
         if self.mode == 'comp':
             # Interact with the supervisor "robot" to wait for the start of the match.
             self.webot.setCustomData('ready')
@@ -114,6 +122,8 @@ class Robot:
                 self.webots_step_and_should_continue(self._timestep)
             ):
                 pass
+
+        print("Starting")  # noqa:T001
 
     def _init_devs(self) -> None:
         "Initialise the attributes for accessing devices"
