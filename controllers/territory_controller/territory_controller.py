@@ -7,7 +7,7 @@ from pathlib import Path
 from collections import defaultdict
 
 # Webots specific library
-from controller import Display, Emitter, Receiver, Supervisor
+from controller import Node, Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -241,6 +241,26 @@ class AttachedTerritories:
         return False
 
 
+def configure_territory_display(display: Display, station_code: StationCode) -> None:
+    """
+    Configure the display of information about a station.
+    """
+
+    # Give the text a tranparent backgorund
+    display.setAlpha(0)
+    display.fillRectangle(0, 0, display.getHeight(), display.getWidth())
+
+    # Add the label
+    display.setAlpha(1)
+    display.setColor(0x3270ed)
+    display.setFont('Arial Black', 48, True)
+    display.drawText(station_code.value, 80, 160)
+
+
+def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
+    node.getField('zoneColour').setSFColor(list(colour))
+
+
 class TerritoryController:
 
     _emitters: Dict[StationCode, Emitter]
@@ -267,24 +287,17 @@ class TerritoryController:
 
         for station_code in StationCode:
             display = get_robot_device(self._robot, station_code + "Territory", Display)
-            # Give the text a tranparent backgorund
-            display.setAlpha(0)
-            display.fillRectangle(0, 0, display.getHeight(), display.getWidth())
-
-            # Add the label
-            display.setAlpha(1)
-            display.setColor(0x3270ed)
-            display.setFont('Arial Black', 48, True)
-            display.drawText(station_code.value, 80, 160)
+            configure_territory_display(display, station_code)
 
         for station_code in StationCode:
-            station = self._robot.getFromDef(station_code)
-            if station is None:
-                logging.error(f"Failed to fetch territory node {station_code}")
-            else:
-                station.getField("zoneColour").setSFColor(
-                    list(ZONE_COLOURS[Claimant.UNCLAIMED]),
-                )
+            self.set_node_colour(station_code, ZONE_COLOURS[Claimant.UNCLAIMED])
+
+    def set_node_colour(self, node_id: str, new_colour: Tuple[float, float, float]) -> None:
+        node = self._robot.getFromDef(node_id)
+        if node is None:
+            logging.error(f"Failed to fetch node {node_id}")
+        else:
+            set_node_colour(node, new_colour)
 
     def begin_claim(
         self,
@@ -329,14 +342,14 @@ class TerritoryController:
         if self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1:
             # This next claim would trigger the "locked out" condition, so rather than
             # making the claim, instead cause a lock-out.
-            station.getField("zoneColour").setSFColor(list(LOCKED_COLOUR))
+            set_node_colour(station, LOCKED_COLOUR)
 
             self._claim_log.log_lock(station_code, claimed_by, self._robot.getTime())
 
         else:
             new_colour = ZONE_COLOURS[claimed_by]
 
-            station.getField("zoneColour").setSFColor(list(new_colour))
+            set_node_colour(station, new_colour)
 
             self._claim_log.log_territory_claim(
                 station_code,
@@ -452,16 +465,7 @@ class TerritoryController:
             else:
                 claimed_by = Claimant.UNCLAIMED
 
-            new_colour = LINK_COLOURS[claimed_by]
-            visual_link = self._robot.getFromDef('-'.join((stn_a, stn_b)))
-            if visual_link is None:
-                logging.error(
-                    f"Failed to fetch territory link {visual_link}",
-                )
-            else:
-                visual_link.getField("zoneColour").setSFColor(
-                    list(new_colour),
-                )
+            self.set_node_colour(f'{stn_a}-{stn_b}', LINK_COLOURS[claimed_by])
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
