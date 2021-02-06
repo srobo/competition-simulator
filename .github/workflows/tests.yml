@@ -55,7 +55,7 @@ jobs:
     - name: Define scripts to test
       id: define_scripts
       run: |
-        SCRIPTS=$(find script -type f | grep -vE "/(linting/|testing/|typing/|check$)"|tr "\n" " ")
+        SCRIPTS=$(find script -type f | grep -vE "/(linting/|testing/|typing/|check$)" | tr "\n" " ")
         echo "##[set-output name=SCRIPTS;]$SCRIPTS"
     - name: Lint with flake8
       env:
