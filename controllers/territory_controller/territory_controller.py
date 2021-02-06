@@ -30,6 +30,9 @@ class Claimant(enum.IntEnum):
     ZONE_1 = 1
 
 
+LOCKED_OUT_AFTER_CLAIM = 4
+
+
 # Updating? Update radio.py too.
 class StationCode(str, enum.Enum):
     PN = 'PN'
@@ -65,6 +68,8 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
+LOCKED_COLOUR = (0.5, 0, 0)
+
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
     (StationCode.BG, StationCode.OX),  # BG-OX
@@ -89,6 +94,9 @@ TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
 }
 
 
+ClaimLogEntry = Tuple[StationCode, Claimant, float, bool]
+
+
 class ClaimLog:
     def __init__(self, record_arena_actions: bool) -> None:
         self._record_arena_actions = record_arena_actions
@@ -96,13 +104,24 @@ class ClaimLog:
         self._station_statuses: Dict[StationCode, Claimant] = {
             code: Claimant.UNCLAIMED for code in StationCode
         }
+        self._locked_territories: Set[StationCode] = set()
 
-        self._log: List[Tuple[StationCode, Claimant, float]] = []
+        self._log: List[ClaimLogEntry] = []
         # Starting with a dirty log ensures the structure is written for every match.
         self._log_is_dirty = True
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
         return self._station_statuses[station_code]
+
+    def is_locked(self, station_code: StationCode) -> bool:
+        return station_code in self._locked_territories
+
+    def get_claim_count(self, station_code: StationCode) -> int:
+        return len([x for x, _, _, _ in self._log if x == station_code])
+
+    def _record_log_entry(self, entry: ClaimLogEntry) -> None:
+        self._log.append(entry)
+        self._log_is_dirty = True
 
     def log_territory_claim(
         self,
@@ -110,10 +129,20 @@ class ClaimLog:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        self._log.append((station_code, claimed_by, claim_time))
-        self._log_is_dirty = True
+        self._record_log_entry((station_code, claimed_by, claim_time, False))
         print(f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s")  # noqa:T001
         self._station_statuses[station_code] = claimed_by
+
+    def log_lock(
+        self,
+        station_code: StationCode,
+        locked_by: Claimant,
+        claim_time: float,
+    ) -> None:
+        self._record_log_entry((station_code, Claimant.UNCLAIMED, claim_time, True))
+        print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")  # noqa:T001
+        self._station_statuses[station_code] = Claimant.UNCLAIMED
+        self._locked_territories.add(station_code)
 
     def record_captures(self) -> None:
         if not self._record_arena_actions:
@@ -128,8 +157,9 @@ class ClaimLog:
                 'zone': claimed_by.value,
                 'station_code': station_code.value,
                 'time': claim_time,
+                'locked': locked,
             }
-            for station_code, claimed_by, claim_time in self._log
+            for station_code, claimed_by, claim_time, locked in self._log
         ]})
 
         self._log_is_dirty = False
@@ -283,18 +313,36 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        new_colour = ZONE_COLOURS[claimed_by]
+        if self._claim_log.is_locked(station_code):
+            logging.error(
+                f"Territory {station_code} is locked",
+            )
+            return
+
         station = self._robot.getFromDef(station_code)
         if station is None:
             logging.error(
                 f"Failed to fetch territory node {station_code}",
             )
-        else:
-            station.getField("zoneColour").setSFColor(
-                list(new_colour),
-            )
+            return
 
-        self._claim_log.log_territory_claim(station_code, claimed_by, self._robot.getTime())
+        if self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1:
+            # This next claim would trigger the "locked out" condition, so rather than
+            # making the claim, instead cause a lock-out.
+            station.getField("zoneColour").setSFColor(list(LOCKED_COLOUR))
+
+            self._claim_log.log_lock(station_code, claimed_by, self._robot.getTime())
+
+        else:
+            new_colour = ZONE_COLOURS[claimed_by]
+
+            station.getField("zoneColour").setSFColor(list(new_colour))
+
+            self._claim_log.log_territory_claim(
+                station_code,
+                claimed_by,
+                self._robot.getTime(),
+            )
 
     def prune_detached_stations(
         self,
@@ -324,10 +372,6 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self._claim_log.get_claimant(station_code) == claimed_by:
-            # This territory is already claimed by this claimant.
-            return
-
         connected_territories = self._attached_territories.build_attached_capture_trees()
 
         if not self._attached_territories.can_capture_station(
@@ -430,11 +474,14 @@ class TerritoryController:
 
     def transmit_pulses(self) -> None:
         for station_code, emitter in self._emitters.items():
-            emitter.send(struct.pack(
-                "!2sb",
-                station_code.encode('ASCII'),
-                int(self._claim_log.get_claimant(station_code)),
-            ))
+            emitter.send(
+                struct.pack(
+                    "!2sbb",
+                    station_code.encode("ASCII"),
+                    int(self._claim_log.get_claimant(station_code)),
+                    int(self._claim_log.is_locked(station_code)),
+                ),
+            )
 
     def main(self) -> None:
         timestep = self._robot.getBasicTimeStep()
