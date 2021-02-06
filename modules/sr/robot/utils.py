@@ -5,6 +5,7 @@ from controller import (
     Motor,
     Robot,
     Device,
+    Compass,
     Display,
     Emitter,
     Receiver,
@@ -47,6 +48,8 @@ def get_robot_device(robot: Robot, name: str, kind: Type[TDevice]) -> TDevice:
             device = robot.getDistanceSensor(name)
         elif kind is TouchSensor:
             device = robot.getTouchSensor(name)
+        elif kind is Compass:
+            device = robot.getCompass(name)
         elif kind is Display:
             device = robot.getDisplay(name)
     if not isinstance(device, kind):

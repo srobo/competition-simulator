@@ -735,6 +735,8 @@ PROTO SRRobot [
                   name "robot receiver"
                   bufferSize 30
                   channel 1
+                  directionNoise 0.05
+                  signalStrengthNoise 0.03
                 }
                 Emitter {
                     type "radio"
@@ -742,6 +744,10 @@ PROTO SRRobot [
                     range 0.5
                     maxRange 0.5
                     channel 2
+                }
+                Compass {
+                    name "robot compass"
+                    rotation 0 1 0 3.14
                 }
                 LED {
                   translation 0 0.1 0.085
