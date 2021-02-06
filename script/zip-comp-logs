@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""
+A script to zip the logs produced by a series of competition matches.
+"""
+
+import re
+import argparse
+import datetime
+from typing import List
+from pathlib import Path
+from zipfile import ZipFile, ZIP_DEFLATED
+
+
+def match_animation_files(log_name: str, archives_dir: Path) -> List[Path]:
+    match_num_search = re.search(r'match-([0-9]+)', log_name)
+    if match_num_search is None:
+        print(f'Invalid match name: {log_name}')  # noqa: T001
+        return []
+    match_num = match_num_search[1]
+    match_files = (archives_dir / 'recordings').glob(f'match-{match_num}.*')
+    return [data_file for data_file in match_files if data_file.suffix != '.mp4']
+
+
+def zip_folder(
+    folder: Path,
+    output_dir: Path,
+    archives_dir: Path,
+    suffix: str,
+    include_date: bool,
+    animations: str,
+) -> str:
+    tla = folder.name
+    zip_name = f'team-{tla}{suffix}'
+
+    if include_date:
+        zip_name += f'-{datetime.date.today()}'
+
+    with ZipFile(output_dir / f'{zip_name}.zip', 'w', compression=ZIP_DEFLATED) as zipfile:
+        for log in folder.resolve().iterdir():
+            zipfile.write(log, log.name)
+
+            if animations == 'team':
+                for animation_file in match_animation_files(log.name, archives_dir):
+                    zipfile.write(animation_file.resolve(), animation_file.name)
+
+        if animations == 'team':
+            # save animation textures
+            for texture in (archives_dir / 'recordings' / 'textures').glob('**/*'):
+                zipfile.write(
+                    texture.resolve(),
+                    texture.relative_to(archives_dir / 'recordings'),
+                )
+
+    return f'{zip_name}.zip'
+
+
+def is_team_logs_folder(folder: Path) -> bool:
+    # team folder names are three uppercase letters and an optional number
+    return bool(re.search(r'^[A-Z]{3}[0-9]?$', folder.name))
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'archives_dir',
+        help=(
+            "The directory containing folders of the teams' robot logs, "
+            "named for the teams' TLAs. This directory also contains the "
+            "teams' robot code, as Zip archives and the match recordings."
+        ),
+        type=Path,
+    )
+    parser.add_argument(
+        'output_dir',
+        help=(
+            "The directory to place the resulting log Zip archives. "
+            "This should be an empty directory."
+        ),
+        type=Path,
+    )
+    parser.add_argument(
+        '--suffix',
+        help=(
+            "Adds a suffix to the Zip archive name. "
+            "Archive names follow the format: team-<TLA>-<suffix>-<date>.zip"
+        ),
+        default="",
+    )
+    parser.add_argument(
+        '--no-date',
+        help=(
+            "Remove the date from the archive name."
+        ),
+        dest='include_date',
+        action='store_false',
+    )
+    parser.add_argument(
+        '--with-combined',
+        help=(
+            "Create an additional combined archive which contains all the other log archives."
+        ),
+        action='store_true',
+        dest='combined',
+    )
+    parser.add_argument(
+        '--animations',
+        help=(
+            "Include the match animation files. "
+            "'team' includes each teams' matches in their archive, "
+            "'all' creates a separate archive of all matches, "
+            "'separate' does the same as 'all' but excludes "
+            "the archive from the combined archive."
+        ),
+        choices=('team', 'all', 'separate'),
+        default=None,
+    )
+    return parser.parse_args()
+
+
+def main(args: argparse.Namespace) -> None:
+    # make sure output directory exists
+    args.output_dir.mkdir(exist_ok=True)
+
+    logs_archives: List[str] = []
+
+    if args.suffix:
+        suffix_str = f'-{args.suffix}'
+    else:
+        suffix_str = ""
+
+    for folder in args.archives_dir.iterdir():
+        if not folder.is_dir():
+            # skip files in the archive directory
+            continue
+
+        if not is_team_logs_folder(folder):
+            # skip unrelated directories
+            continue
+
+        logs_archives.append(zip_folder(
+            folder,
+            args.output_dir,
+            args.archives_dir,
+            suffix_str,
+            args.include_date,
+            args.animations,
+        ))
+
+    if args.animations in ('all', 'separate'):
+        with ZipFile(
+            args.output_dir / f'animations{suffix_str}.zip',
+            'w',
+            compression=ZIP_DEFLATED,
+        ) as zipfile:
+            for rec_file in (args.archives_dir / 'recordings').iterdir():
+                if rec_file.suffix == '.mp4':
+                    continue
+                zipfile.write(rec_file.resolve(), rec_file.name)
+
+            # save animation textures
+            for texture in (args.archives_dir / 'recordings' / 'textures').glob('**/*'):
+                zipfile.write(
+                    texture.resolve(),
+                    texture.relative_to(args.archives_dir / 'recordings'),
+                )
+
+    if args.combined:
+        with ZipFile(args.output_dir / f'combined{suffix_str}.zip', 'w') as zipfile:
+            for logs_archive in logs_archives:
+                zipfile.write(args.output_dir / logs_archive, logs_archive)
+
+            if args.animations == 'all':
+                animation_zip = f'animations{suffix_str}.zip'
+                zipfile.write(args.output_dir / animation_zip, animation_zip)
+
+
+if __name__ == '__main__':
+    main(parse_args())
