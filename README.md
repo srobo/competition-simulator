@@ -1,6 +1,7 @@
 # competition-simulator
 
-[![CircleCI](https://circleci.com/gh/srobo/competition-simulator.svg?style=svg)](https://circleci.com/gh/srobo/competition-simulator)
+[![Github Actions](https://github.com/srobo/competition-simulator/workflows/Simulator%20tests/badge.svg)](https://github.com/srobo/competition-simulator/actions?query=workflow%3A%22Simulator+tests%22)
+[![Github Actions](https://github.com/srobo/competition-simulator/workflows/Simulator%20match/badge.svg)](https://github.com/srobo/competition-simulator/actions?query=workflow%3A%22Simulator+match%22)
 
 A simulator to be used for the Student Robotics Virtual Competition
 
@@ -125,8 +126,8 @@ zip ABC.zip robot.py
 ## Doing a release
 
 1. Create a new tag & push
-2. Wait for CI to build a zip archive
-3. Upload the archive to the GitHub release for the tag
+2. Create a release for the tag
+3. Wait for CI to build a zip archive and upload it to the release
 4. Update the [docs](https://github.com/srobo/docs) to point to the new archive
 5. Announce the update to teams via the forums and [email](https://github.com/srobo/team-emails)
 

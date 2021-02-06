@@ -1,0 +1,31 @@
+name: Publish simulator archive
+
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Build archive
+      id: build_archive
+      run: |
+        mkdir archive
+        NAME="competition-simulator-$(git describe --always --tags).zip"
+        ./script/create-archive --output archive/$NAME
+        echo "##[set-output name=archive;]$NAME"
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: archive/${{ steps.build_archive.outputs.archive }}
+        asset_name: ${{ steps.build_archive.outputs.archive }}
+        tag: ${{ github.ref }}
+        overwrite: true
+
