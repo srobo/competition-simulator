@@ -211,6 +211,22 @@ class AttachedTerritories:
         return False
 
 
+def configure_territory_display(display: Display, station_code: StationCode) -> None:
+    """
+    Configure the display of information about a station.
+    """
+
+    # Give the text a tranparent backgorund
+    display.setAlpha(0)
+    display.fillRectangle(0, 0, display.getHeight(), display.getWidth())
+
+    # Add the label
+    display.setAlpha(1)
+    display.setColor(0x3270ed)
+    display.setFont('Arial Black', 48, True)
+    display.drawText(station_code.value, 80, 160)
+
+
 class TerritoryController:
 
     _emitters: Dict[StationCode, Emitter]
@@ -237,15 +253,7 @@ class TerritoryController:
 
         for station_code in StationCode:
             display = get_robot_device(self._robot, station_code + "Territory", Display)
-            # Give the text a tranparent backgorund
-            display.setAlpha(0)
-            display.fillRectangle(0, 0, display.getHeight(), display.getWidth())
-
-            # Add the label
-            display.setAlpha(1)
-            display.setColor(0x3270ed)
-            display.setFont('Arial Black', 48, True)
-            display.drawText(station_code.value, 80, 160)
+            configure_territory_display(display, station_code)
 
         for station_code in StationCode:
             self.set_node_colour(station_code, ZONE_COLOURS[Claimant.UNCLAIMED])
