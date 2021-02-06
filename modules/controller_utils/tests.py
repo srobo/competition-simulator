@@ -30,9 +30,13 @@ def fake_tla() -> str:
 
 @contextlib.contextmanager
 def mock_match_file() -> Iterator[IO[str]]:
-    with tempfile.NamedTemporaryFile(suffix='.json', mode='r+t', delete=False) as f:
-        with mock.patch('controller_utils.get_match_file', return_value=Path(f.name)):
-            yield f
+    # Note: NamedTemporaryFiles on Windows have a bad interaction with being
+    # reopened, so instead we use a temporary directory containing real files.
+    with tempfile.TemporaryDirectory() as temp_dir_name:
+        match_file_path = Path(temp_dir_name) / 'match.json'
+        with match_file_path.open(mode='w+t') as f:
+            with mock.patch('controller_utils.get_match_file', return_value=match_file_path):
+                yield f
 
 
 class TestRepoRoot(unittest.TestCase):
