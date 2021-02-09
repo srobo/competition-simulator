@@ -3,12 +3,46 @@
 A script to run a test competition match on every robot in an submissions directory.
 """
 import sys
+import time
 import shutil
 import argparse
 import tempfile
 import subprocess
 from typing import List
 from pathlib import Path
+
+EXCESS_SUBPROCESS_TIMEOUT = 10
+
+
+def test_webots_runtime(comp_match_script: str, temp_archives: Path) -> int:
+    "Run a empty webots match to determine the expected duration of a successful match"
+    try:
+        print("Running an empty match")  # noqa:T001
+        start_time = time.time()
+        subprocess.run(
+            [
+                sys.executable,
+                comp_match_script,
+                str(temp_archives),
+                '0',  # no logs will be retained so a fixed match number is used
+                '-',
+                '-',
+                '--duration', '1',
+                '--no-record',
+            ],
+            check=True,
+            stdout=subprocess.PIPE,  # we only want to print output if it fails
+            stderr=subprocess.STDOUT,
+        )
+
+        print("Completed an empty match")  # noqa:T001
+
+    except subprocess.CalledProcessError as match_errors:
+        print(match_errors.output.decode())  # noqa: T001
+        print("Webots failed on an empty match")  # noqa:T001
+        raise
+
+    return round(time.time() - start_time)
 
 
 def parse_args() -> argparse.Namespace:
@@ -35,6 +69,11 @@ def main(args: argparse.Namespace) -> None:
         # Make a temporary copy of the archives to receive the logs
         archives = shutil.copytree(args.archives_dir.resolve(), tempdir / 'archives')
 
+        subprocess_timeout = EXCESS_SUBPROCESS_TIMEOUT + test_webots_runtime(
+            run_comp_match,
+            archives,
+        )
+
         for team in archives.glob('*.zip'):
             tla = team.stem
 
@@ -54,6 +93,7 @@ def main(args: argparse.Namespace) -> None:
                     check=True,
                     stdout=subprocess.PIPE,  # we only want to print output from failing robots
                     stderr=subprocess.STDOUT,
+                    timeout=subprocess_timeout,
                 )
 
                 print(f"Completed match for {tla}")  # noqa:T001
@@ -61,6 +101,10 @@ def main(args: argparse.Namespace) -> None:
             except subprocess.CalledProcessError as match_errors:
                 print(match_errors.output.decode())  # noqa: T001
                 print(f"Failed on team {tla}")  # noqa:T001
+                failed_tlas.append(tla)
+            except subprocess.TimeoutExpired as match_timeout:
+                print(match_timeout.output.decode())  # noqa: T001
+                print(f"Timeout on team {tla}")  # noqa:T001
                 failed_tlas.append(tla)
 
     print(f"Failing TLAs: {', '.join(failed_tlas)}")  # noqa: T001
