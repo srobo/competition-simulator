@@ -19,6 +19,12 @@ import subprocess
 from typing import List
 from pathlib import Path
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
+
+from controller_utils import NUM_ZONES  # isort:skip
+
 EXCESS_SUBPROCESS_TIMEOUT = 10
 
 
@@ -29,18 +35,24 @@ def test_webots_runtime(comp_match_script: str, temp_archives: Path) -> int:
     """
     try:
         print("Running an empty match")  # noqa:T001
+
+        match_args = [
+            sys.executable,
+            comp_match_script,
+            str(temp_archives),
+            '0',  # no logs will be retained so a fixed match number is used
+        ]
+
+        match_args.extend(['-'] * NUM_ZONES)  # make all zones empty
+
+        match_args.extend([
+            '--duration', '1',
+            '--no-record',
+        ])
+
         start_time = time.time()
         subprocess.run(
-            [
-                sys.executable,
-                comp_match_script,
-                str(temp_archives),
-                '0',  # no logs will be retained so a fixed match number is used
-                '-',
-                '-',
-                '--duration', '1',
-                '--no-record',
-            ],
+            match_args,
             check=True,
             stdout=subprocess.PIPE,  # we only want to print output if it fails
             stderr=subprocess.STDOUT,
@@ -92,17 +104,25 @@ def main(args: argparse.Namespace) -> None:
 
             try:
                 print(f"Running match for {tla}")  # noqa:T001
+
+                match_args = [
+                    sys.executable,
+                    run_comp_match,
+                    str(archives),
+                    '0',  # no logs will be retained so a fixed match number is used
+                ]
+
+                match_args.append(tla)
+
+                match_args.extend(['-'] * (NUM_ZONES - 1))  # all other zones are empty
+
+                match_args.extend([
+                    '--duration', '1',
+                    '--no-record',
+                ])
+
                 subprocess.run(
-                    [
-                        sys.executable,
-                        run_comp_match,
-                        str(archives),
-                        '0',  # no logs will be retained so a fixed match number is used
-                        tla,
-                        '-',
-                        '--duration', '1',
-                        '--no-record',
-                    ],
+                    match_args,
                     check=True,
                     stdout=subprocess.PIPE,  # we only want to print output from failing robots
                     stderr=subprocess.STDOUT,
