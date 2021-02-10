@@ -23,7 +23,10 @@ EXCESS_SUBPROCESS_TIMEOUT = 10
 
 
 def test_webots_runtime(comp_match_script: str, temp_archives: Path) -> int:
-    "Run a empty webots match to determine the expected duration of a successful match"
+    """
+    Run a empty webots match to determine the expected duration of a successful match.
+    temp_archives are used to recieve the logs and animations.
+    """
     try:
         print("Running an empty match")  # noqa:T001
         start_time = time.time()
