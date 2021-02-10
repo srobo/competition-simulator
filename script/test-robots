@@ -85,6 +85,8 @@ def main(args: argparse.Namespace) -> None:
             archives,
         )
 
+        print(f"Timeout set to : {subprocess_timeout}")  # noqa:T001
+
         for team in archives.glob('*.zip'):
             tla = team.stem
 
