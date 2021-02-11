@@ -16,7 +16,7 @@ import shutil
 import argparse
 import tempfile
 import subprocess
-from typing import List
+from typing import List, Optional
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -28,22 +28,26 @@ from controller_utils import NUM_ZONES  # isort:skip
 EXCESS_SUBPROCESS_TIMEOUT = 10
 
 
-def test_webots_runtime(comp_match_script: str, temp_archives: Path) -> int:
-    """
-    Run a empty webots match to determine the expected duration of a successful match.
-    temp_archives are used to recieve the logs and animations.
-    """
+def run_robot_match(
+    comp_match_script: Path,
+    archives_dir: Path,
+    tla: str,
+    failed_tlas: Optional[List[str]],
+    subprocess_timeout: Optional[int],
+) -> int:
     try:
-        print("Running an empty match")  # noqa:T001
+        print(f"Running match for {tla}")  # noqa:T001
 
         match_args = [
             sys.executable,
-            comp_match_script,
-            str(temp_archives),
+            str(comp_match_script),
+            str(archives_dir),
             '0',  # no logs will be retained so a fixed match number is used
         ]
 
-        match_args.extend(['-'] * NUM_ZONES)  # make all zones empty
+        match_args.append(tla)
+
+        match_args.extend(['-'] * (NUM_ZONES - 1))  # all other zones are empty
 
         match_args.extend([
             '--duration', '1',
@@ -54,17 +58,25 @@ def test_webots_runtime(comp_match_script: str, temp_archives: Path) -> int:
         subprocess.run(
             match_args,
             check=True,
-            stdout=subprocess.PIPE,  # we only want to print output if it fails
+            stdout=subprocess.PIPE,  # we only want to print output from failing robots
             stderr=subprocess.STDOUT,
+            timeout=subprocess_timeout,
         )
 
-        print("Completed an empty match")  # noqa:T001
+        print(f"Completed match for {tla}")  # noqa:T001
 
     except subprocess.CalledProcessError as match_errors:
         print(match_errors.output.decode())  # noqa: T001
-        print("Webots failed on an empty match")  # noqa:T001
-        raise
-
+        print(f"Failed on team {tla}")  # noqa:T001
+        if failed_tlas is None:
+            raise match_errors
+        else:
+            failed_tlas.append(tla)
+    except subprocess.TimeoutExpired as match_timeout:
+        print(match_timeout.output.decode())  # noqa: T001
+        print(f"Timeout on team {tla}")  # noqa:T001
+        if failed_tlas is not None:
+            failed_tlas.append(tla)
     return round(time.time() - start_time)
 
 
@@ -84,7 +96,7 @@ def parse_args() -> argparse.Namespace:
 def main(args: argparse.Namespace) -> None:
     failed_tlas: List[str] = []
 
-    run_comp_match = str(Path(__file__).parent / 'run-comp-match')
+    run_comp_match = Path(__file__).parent / 'run-comp-match'
 
     with tempfile.TemporaryDirectory() as tempdir_name:
 
@@ -92,9 +104,9 @@ def main(args: argparse.Namespace) -> None:
         # Make a temporary copy of the archives to receive the logs
         archives = shutil.copytree(args.archives_dir.resolve(), tempdir / 'archives')
 
-        subprocess_timeout = EXCESS_SUBPROCESS_TIMEOUT + test_webots_runtime(
-            run_comp_match,
-            archives,
+        subprocess_timeout = (
+            EXCESS_SUBPROCESS_TIMEOUT +
+            run_robot_match(run_comp_match, archives, '-', None, None)
         )
 
         print(f"Timeout set to : {subprocess_timeout}")  # noqa:T001
@@ -102,43 +114,7 @@ def main(args: argparse.Namespace) -> None:
         for team in archives.glob('*.zip'):
             tla = team.stem
 
-            try:
-                print(f"Running match for {tla}")  # noqa:T001
-
-                match_args = [
-                    sys.executable,
-                    run_comp_match,
-                    str(archives),
-                    '0',  # no logs will be retained so a fixed match number is used
-                ]
-
-                match_args.append(tla)
-
-                match_args.extend(['-'] * (NUM_ZONES - 1))  # all other zones are empty
-
-                match_args.extend([
-                    '--duration', '1',
-                    '--no-record',
-                ])
-
-                subprocess.run(
-                    match_args,
-                    check=True,
-                    stdout=subprocess.PIPE,  # we only want to print output from failing robots
-                    stderr=subprocess.STDOUT,
-                    timeout=subprocess_timeout,
-                )
-
-                print(f"Completed match for {tla}")  # noqa:T001
-
-            except subprocess.CalledProcessError as match_errors:
-                print(match_errors.output.decode())  # noqa: T001
-                print(f"Failed on team {tla}")  # noqa:T001
-                failed_tlas.append(tla)
-            except subprocess.TimeoutExpired as match_timeout:
-                print(match_timeout.output.decode())  # noqa: T001
-                print(f"Timeout on team {tla}")  # noqa:T001
-                failed_tlas.append(tla)
+            run_robot_match(run_comp_match, archives, tla, failed_tlas, subprocess_timeout)
 
     print(f"Failing TLAs: {', '.join(failed_tlas)}")  # noqa: T001
 
