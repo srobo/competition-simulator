@@ -35,9 +35,7 @@ PROTO SRTerritory [
                   children [
                     Shape {
                       appearance PBRAppearance {
-                        baseColor 0.34191456 0.34191436 0.34191447
-                        roughness 1
-                        metalness 0
+                        baseColor 1 1 1
                         baseColorMap ImageTexture {}
                       }
                       geometry Plane {
