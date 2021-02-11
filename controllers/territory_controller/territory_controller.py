@@ -248,7 +248,7 @@ def configure_territory_display(display: Display, station_code: StationCode) -> 
 
     # Give the text a tranparent backgorund
     display.setAlpha(0)
-    display.fillRectangle(0, 0, display.getHeight(), display.getWidth())
+    display.fillRectangle(0, 0, display.getWidth(), display.getHeight())
 
     # Add the label
     display.setAlpha(1)
