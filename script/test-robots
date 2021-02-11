@@ -19,6 +19,7 @@ import tempfile
 import subprocess
 from typing import List, Optional
 from pathlib import Path
+from zipfile import ZipFile
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -92,8 +93,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         'archives_dir',
         help=(
-            "The directory containing the teams' robot code, as Zip archives "
-            "named for the teams' TLAs."
+            "The directory, or archive, containing the teams' robot code, "
+            "as Zip archives named for the teams' TLAs."
         ),
         type=Path,
     )
@@ -109,7 +110,13 @@ def main(args: argparse.Namespace) -> None:
 
         tempdir = Path(tempdir_name)
         # Make a temporary copy of the archives to receive the logs
-        archives = shutil.copytree(args.archives_dir.resolve(), tempdir / 'archives')
+        if args.archives_dir.is_dir():
+            archives = shutil.copytree(args.archives_dir.resolve(), tempdir / 'archives')
+        else:
+            archives = tempdir / 'archives'
+            archives.mkdir()
+            with ZipFile(args.archives_dir) as zipfile:
+                zipfile.extractall(archives)
 
         subprocess_timeout = (
             EXCESS_SUBPROCESS_TIMEOUT +
