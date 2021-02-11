@@ -61,12 +61,13 @@ def run_robot_match(
             stdout=subprocess.PIPE,  # we only want to print output from failing robots
             stderr=subprocess.STDOUT,
             timeout=subprocess_timeout,
+            text=True,
         )
 
         print(f"Completed match for {tla}")  # noqa:T001
 
     except subprocess.CalledProcessError as match_errors:
-        print(match_errors.output.decode())  # noqa: T001
+        print(match_errors.output)  # noqa: T001
         print(f"Failed on team {tla}")  # noqa:T001
         if failed_tlas is None:
             raise match_errors
