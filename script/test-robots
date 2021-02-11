@@ -10,6 +10,7 @@ A "broken" robot is any robot which:
 - Fails to complete a 1 second match within the subprocess timout
 - Causes the simulator to exit with a non-zero exit code
 """
+import re
 import sys
 import time
 import shutil
@@ -81,6 +82,11 @@ def run_robot_match(
     return round(time.time() - start_time)
 
 
+def is_team_archive(archive: str) -> bool:
+    # team archives are three uppercase letters and an optional number
+    return bool(re.search(r'^[A-Z]{3}[0-9]?$', archive))
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -114,6 +120,10 @@ def main(args: argparse.Namespace) -> None:
 
         for team in archives.glob('*.zip'):
             tla = team.stem
+
+            # skip non-robot archives
+            if not is_team_archive(tla):
+                continue
 
             run_robot_match(run_comp_match, archives, tla, failed_tlas, subprocess_timeout)
 
