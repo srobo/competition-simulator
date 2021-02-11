@@ -254,7 +254,7 @@ def configure_territory_display(display: Display, station_code: StationCode) -> 
     display.setAlpha(1)
     display.setColor(0x3270ed)
     display.setFont('Arial Black', 48, True)
-    display.drawText(station_code.value, 80, 160)
+    display.drawText(station_code.value, 5, 2)
 
 
 def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:

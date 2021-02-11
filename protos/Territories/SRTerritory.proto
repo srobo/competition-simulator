@@ -29,9 +29,9 @@ PROTO SRTerritory [
                 }
                 Display {
                   name IS territoryName
-                  translation 0 0.005 0
-                  height 256
-                  width 256
+                  translation 0 0.005 0.25
+                  height 55
+                  width 120
                   children [
                     Shape {
                       appearance PBRAppearance {
@@ -40,9 +40,8 @@ PROTO SRTerritory [
                         metalness 0
                         baseColorMap ImageTexture {}
                       }
-                      geometry DEF TERRITORY Cylinder {
-                          height 0.001
-                          radius 0.5
+                      geometry Plane {
+                        size 0.5 0.25
                       }
                     }
                   ]
