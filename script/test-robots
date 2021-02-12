@@ -40,21 +40,17 @@ def run_robot_match(
     try:
         print(f"Running match for {tla}")  # noqa:T001
 
+        num_empty_zones = NUM_ZONES - 1
         match_args = [
             sys.executable,
             str(comp_match_script),
             str(archives_dir),
-            '0',  # no logs will be retained so a fixed match number is used
-        ]
-
-        match_args.append(tla)
-
-        match_args.extend(['-'] * (NUM_ZONES - 1))  # all other zones are empty
-
-        match_args.extend([
             '--duration', '1',
             '--no-record',
-        ])
+            '--',
+            '0',  # no logs will be retained so a fixed match number is used
+            tla,
+        ] + (['-'] * num_empty_zones)
 
         start_time = time.time()
         subprocess.run(
