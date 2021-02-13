@@ -480,6 +480,8 @@ class TerritoryController:
             self.set_node_colour(f'{stn_a}-{stn_b}', LINK_COLOURS[claimed_by])
 
     def update_displayed_scores(self) -> None:
+        # the text is not strictly monospace
+        # but the subset of characters used roughly approximates this
         character_width = 40
         character_spacing = 4
         starting_spacing = 2
@@ -505,8 +507,9 @@ class TerritoryController:
             score_display.setColor(0xffffff)
             score_display.setFont('Arial Black', 48, True)
 
+            score_str = str(score)
             # Approx center value
-            if score < 10:
+            if len(score_str) == 1:
                 # single character
                 x_used = character_width
             else:
@@ -516,7 +519,7 @@ class TerritoryController:
             x_offset = int((score_display.getWidth() - x_used) / 2) - starting_spacing
 
             # Add the score value
-            score_display.drawText(str(score), x_offset, 8)
+            score_display.drawText(score_str, x_offset, 8)
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
