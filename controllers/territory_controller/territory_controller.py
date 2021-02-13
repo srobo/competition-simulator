@@ -167,6 +167,22 @@ class ClaimLog:
     def is_dirty(self) -> bool:
         return self._log_is_dirty
 
+    def get_scores(self) -> Tuple[int, ...]:
+        scores_list: List[int] = []
+
+        current_state = {zone: claimant for zone, claimant, _, _ in self._log}
+
+        for zone_num in range(controller_utils.NUM_ZONES):
+            scores_list.append(
+                # All territories worth 2 points
+                len([
+                    x for x in current_state.values()
+                    if x == Claimant(zone_num)
+                ]) * 2,
+            )
+
+        return tuple(scores_list)
+
 
 class AttachedTerritories:
     def __init__(self, claim_log: ClaimLog):
@@ -467,12 +483,38 @@ class TerritoryController:
 
             self.set_node_colour(f'{stn_a}-{stn_b}', LINK_COLOURS[claimed_by])
 
+    def update_displayed_scores(self) -> None:
+        scores = self._claim_log.get_scores()
+        for zone, score in enumerate(scores):
+            score_display = get_robot_device(self._robot, f'SCORE_DISPLAY_{zone}', Display)
+
+            # fill with background colour
+            score_display.setColor(0x183acc)
+            score_display.fillRectangle(
+                0, 0,
+                score_display.getWidth(),
+                score_display.getHeight(),
+            )
+
+            # Add the score value
+            score_display.setColor(0xffffff)
+            score_display.setFont('Arial Black', 48, True)
+
+            # Approx center value
+            if score < 10:
+                x_offset = 27
+            else:
+                x_offset = 5
+
+            score_display.drawText(str(score), x_offset, 8)
+
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
             self.receive_territory(station_code, receiver)
 
         if self._claim_log.is_dirty():
             self.update_territory_links()
+            self.update_displayed_scores()
 
         self._claim_log.record_captures()
 
