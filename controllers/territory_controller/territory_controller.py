@@ -146,6 +146,7 @@ class ClaimLog:
 
     def record_captures(self) -> None:
         if not self._record_arena_actions:
+            self._log_is_dirty = False  # Stop links and displays being updated every timestep
             return
 
         if not self._log_is_dirty:
