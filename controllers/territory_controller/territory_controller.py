@@ -2,7 +2,8 @@ import sys
 import enum
 import struct
 import logging
-from typing import Set, Dict, List, Tuple, Union
+import collections
+from typing import Set, Dict, List, Tuple, Union, Mapping
 from pathlib import Path
 from collections import defaultdict
 
@@ -168,21 +169,15 @@ class ClaimLog:
     def is_dirty(self) -> bool:
         return self._log_is_dirty
 
-    def get_scores(self) -> Tuple[int, ...]:
-        scores_list: List[int] = []
+    def get_scores(self) -> Mapping[Claimant, int]:
+        POINTS_PER_TERRITORY = 2
+        territory_counts = collections.Counter(self._station_statuses.values())
 
-        current_state = {zone: claimant for zone, claimant, _, _ in self._log}
-
-        for zone_num in range(controller_utils.NUM_ZONES):
-            scores_list.append(
-                # All territories worth 2 points
-                len([
-                    x for x in current_state.values()
-                    if x == Claimant(zone_num)
-                ]) * 2,
-            )
-
-        return tuple(scores_list)
+        return {
+            claimant: territories_owned * POINTS_PER_TERRITORY
+            for claimant, territories_owned in territory_counts.items()
+            if claimant != Claimant.UNCLAIMED
+        }
 
 
 class AttachedTerritories:
@@ -491,8 +486,12 @@ class TerritoryController:
 
         scores = self._claim_log.get_scores()
 
-        for zone, score in enumerate(scores):
-            score_display = get_robot_device(self._robot, f'SCORE_DISPLAY_{zone}', Display)
+        for zone, score in scores.items():
+            score_display = get_robot_device(
+                self._robot,
+                f'SCORE_DISPLAY_{zone.value}',
+                Display,
+            )
 
             # fill with background colour
             score_display.setColor(0x183acc)
