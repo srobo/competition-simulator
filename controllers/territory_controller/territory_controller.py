@@ -485,7 +485,12 @@ class TerritoryController:
             self.set_node_colour(f'{stn_a}-{stn_b}', LINK_COLOURS[claimed_by])
 
     def update_displayed_scores(self) -> None:
+        character_width = 40
+        character_spacing = 4
+        starting_spacing = 2
+
         scores = self._claim_log.get_scores()
+
         for zone, score in enumerate(scores):
             score_display = get_robot_device(self._robot, f'SCORE_DISPLAY_{zone}', Display)
 
@@ -497,16 +502,21 @@ class TerritoryController:
                 score_display.getHeight(),
             )
 
-            # Add the score value
+            # setup score text
             score_display.setColor(0xffffff)
             score_display.setFont('Arial Black', 48, True)
 
             # Approx center value
             if score < 10:
-                x_offset = 27
+                # single character
+                x_used = character_width
             else:
-                x_offset = 5
+                # dual character
+                x_used = 2 * character_width + character_spacing
 
+            x_offset = int((score_display.getWidth() - x_used) / 2) - starting_spacing
+
+            # Add the score value
             score_display.drawText(str(score), x_offset, 8)
 
     def receive_robot_captures(self) -> None:
