@@ -508,13 +508,12 @@ class TerritoryController:
             score_display.setFont('Arial Black', 48, True)
 
             score_str = str(score)
+
             # Approx center value
-            if len(score_str) == 1:
-                # single character
-                x_used = character_width
-            else:
-                # dual character
-                x_used = 2 * character_width + character_spacing
+            x_used = (
+                len(score_str) * character_width +  # pixels used by characters
+                (len(score_str) - 1) * character_spacing  # pixels used between characters
+            )
 
             x_offset = int((score_display.getWidth() - x_used) / 2) - starting_spacing
 
