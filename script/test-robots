@@ -19,7 +19,6 @@ import tempfile
 import subprocess
 from typing import List, Optional
 from pathlib import Path
-from zipfile import ZipFile
 
 # Seconds beyond a normal match duration for the match to be considered stuck
 EXCESS_SUBPROCESS_TIMEOUT = 10
@@ -100,14 +99,13 @@ def main(args: argparse.Namespace) -> None:
     with tempfile.TemporaryDirectory() as tempdir_name:
 
         tempdir = Path(tempdir_name)
+        archives = tempdir / 'archives'
+
         # Make a temporary copy of the archives to receive the logs
         if args.archives_dir.is_dir():
-            archives = shutil.copytree(args.archives_dir, tempdir / 'archives')
+            shutil.copytree(args.archives_dir, archives)
         else:
-            archives = tempdir / 'archives'
-            archives.mkdir()
-            with ZipFile(args.archives_dir) as zipfile:
-                zipfile.extractall(archives)
+            shutil.unpack_archive(args.archives_dir, archives, 'zip')
 
         start_time = time.time()
         if not run_robot_match(run_comp_match, archives, '-', None):
