@@ -19,6 +19,7 @@ import tempfile
 import subprocess
 from typing import List, Optional
 from pathlib import Path
+from zipfile import ZipFile
 
 # Seconds beyond a normal match duration for the match to be considered stuck
 EXCESS_SUBPROCESS_TIMEOUT = 10
