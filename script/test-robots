@@ -35,9 +35,8 @@ def run_robot_match(
     comp_match_script: Path,
     archives_dir: Path,
     tla: str,
-    failed_tlas: Optional[List[str]],
     subprocess_timeout: Optional[int],
-) -> int:
+) -> bool:
     try:
         print(f"Running match for {tla}")  # noqa:T001
 
@@ -53,7 +52,6 @@ def run_robot_match(
             tla,
         ] + (['-'] * num_empty_zones)
 
-        start_time = time.time()
         subprocess.run(
             match_args,
             check=True,
@@ -68,16 +66,12 @@ def run_robot_match(
     except subprocess.CalledProcessError as match_errors:
         print(match_errors.output)  # noqa: T001
         print(f"Failed on team {tla}")  # noqa:T001
-        if failed_tlas is None:
-            raise match_errors
-        else:
-            failed_tlas.append(tla)
+        return False
     except subprocess.TimeoutExpired as match_timeout:
         print(match_timeout.output.decode())  # noqa: T001
         print(f"Timeout on team {tla}")  # noqa:T001
-        if failed_tlas is not None:
-            failed_tlas.append(tla)
-    return round(time.time() - start_time)
+        return False
+    return True
 
 
 def is_team_archive(archive: str) -> bool:
@@ -115,10 +109,12 @@ def main(args: argparse.Namespace) -> None:
             with ZipFile(args.archives_dir) as zipfile:
                 zipfile.extractall(archives)
 
-        subprocess_timeout = (
-            EXCESS_SUBPROCESS_TIMEOUT +
-            run_robot_match(run_comp_match, archives, '-', None, None)
-        )
+        start_time = time.time()
+        if not run_robot_match(run_comp_match, archives, '-', None):
+            exit(1)
+
+        match_duration = round(time.time() - start_time)
+        subprocess_timeout = EXCESS_SUBPROCESS_TIMEOUT + match_duration
 
         print(f"Timeout set to : {subprocess_timeout}")  # noqa:T001
 
@@ -129,7 +125,8 @@ def main(args: argparse.Namespace) -> None:
             if not is_team_archive(tla):
                 continue
 
-            run_robot_match(run_comp_match, archives, tla, failed_tlas, subprocess_timeout)
+            if not run_robot_match(run_comp_match, archives, tla, subprocess_timeout):
+                failed_tlas.append(tla)
 
     print(f"Failing TLAs: {', '.join(failed_tlas)}")  # noqa: T001
 
