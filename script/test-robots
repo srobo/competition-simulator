@@ -34,7 +34,7 @@ def run_robot_match(
     comp_match_script: Path,
     archives_dir: Path,
     tla: str,
-    subprocess_timeout: Optional[int],
+    subprocess_timeout: Optional[float],
 ) -> bool:
     try:
         print(f"Running match for {tla}")  # noqa:T001
@@ -111,10 +111,10 @@ def main(args: argparse.Namespace) -> None:
         if not run_robot_match(run_comp_match, archives, '-', None):
             exit(1)
 
-        match_duration = round(time.time() - start_time)
+        match_duration = time.time() - start_time
         subprocess_timeout = EXCESS_SUBPROCESS_TIMEOUT + match_duration
 
-        print(f"Timeout set to : {subprocess_timeout}")  # noqa:T001
+        print(f"Timeout set to : {subprocess_timeout:.1f}")  # noqa:T001
 
         for team in archives.glob('*.zip'):
             tla = team.stem
