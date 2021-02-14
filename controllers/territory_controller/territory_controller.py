@@ -304,6 +304,10 @@ class TerritoryController:
         for station_code in StationCode:
             self.set_node_colour(station_code, ZONE_COLOURS[Claimant.UNCLAIMED])
 
+        for claimant in Claimant:
+            if claimant != Claimant.UNCLAIMED:
+                self.set_score_display(claimant, 0)
+
     def set_node_colour(self, node_id: str, new_colour: Tuple[float, float, float]) -> None:
         node = self._robot.getFromDef(node_id)
         if node is None:
@@ -480,45 +484,48 @@ class TerritoryController:
             self.set_node_colour(f'{stn_a}-{stn_b}', LINK_COLOURS[claimed_by])
 
     def update_displayed_scores(self) -> None:
+        scores = self._claim_log.get_scores()
+
+        for zone, score in scores.items():
+            self.set_score_display(zone, score)
+
+    def set_score_display(self, zone: Claimant, score: int) -> None:
         # the text is not strictly monospace
         # but the subset of characters used roughly approximates this
         character_width = 40
         character_spacing = 4
         starting_spacing = 2
 
-        scores = self._claim_log.get_scores()
+        score_display = get_robot_device(
+            self._robot,
+            f'SCORE_DISPLAY_{zone.value}',
+            Display,
+        )
 
-        for zone, score in scores.items():
-            score_display = get_robot_device(
-                self._robot,
-                f'SCORE_DISPLAY_{zone.value}',
-                Display,
-            )
+        # fill with background colour
+        score_display.setColor(0x183acc)
+        score_display.fillRectangle(
+            0, 0,
+            score_display.getWidth(),
+            score_display.getHeight(),
+        )
 
-            # fill with background colour
-            score_display.setColor(0x183acc)
-            score_display.fillRectangle(
-                0, 0,
-                score_display.getWidth(),
-                score_display.getHeight(),
-            )
+        # setup score text
+        score_display.setColor(0xffffff)
+        score_display.setFont('Arial Black', 48, True)
 
-            # setup score text
-            score_display.setColor(0xffffff)
-            score_display.setFont('Arial Black', 48, True)
+        score_str = str(score)
 
-            score_str = str(score)
+        # Approx center value
+        x_used = (
+            len(score_str) * character_width +  # pixels used by characters
+            (len(score_str) - 1) * character_spacing  # pixels used between characters
+        )
 
-            # Approx center value
-            x_used = (
-                len(score_str) * character_width +  # pixels used by characters
-                (len(score_str) - 1) * character_spacing  # pixels used between characters
-            )
+        x_offset = int((score_display.getWidth() - x_used) / 2) - starting_spacing
 
-            x_offset = int((score_display.getWidth() - x_used) / 2) - starting_spacing
-
-            # Add the score value
-            score_display.drawText(score_str, x_offset, 8)
+        # Add the score value
+        score_display.drawText(score_str, x_offset, 8)
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
