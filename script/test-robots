@@ -27,6 +27,7 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 from controller_utils import NUM_ZONES  # isort:skip
 
+# Seconds beyond a normal match duration for the match to be considered stuck
 EXCESS_SUBPROCESS_TIMEOUT = 10
 
 
