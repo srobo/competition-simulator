@@ -4,6 +4,7 @@ PROTO SRTerritory [
   field SFString territoryName ""
   field SFString emitterName ""
   field SFString receiverName ""
+  field MFString textureName ""
   field SFColor zoneColour 0.34191456 0.34191436 0.34191447
 ]
 {
@@ -27,16 +28,15 @@ PROTO SRTerritory [
                       radius 0.5
                   }
                 }
-                Display {
-                  name IS territoryName
+                Transform {
                   translation 0 0.005 0.25
-                  height 55
-                  width 120
                   children [
                     Shape {
                       appearance PBRAppearance {
                         baseColor 1 1 1
-                        baseColorMap ImageTexture {}
+                        baseColorMap ImageTexture {
+                          url IS textureName
+                        }
                       }
                       geometry Plane {
                         size 0.5 0.25
