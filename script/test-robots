@@ -108,7 +108,7 @@ def main(args: argparse.Namespace) -> None:
         tempdir = Path(tempdir_name)
         # Make a temporary copy of the archives to receive the logs
         if args.archives_dir.is_dir():
-            archives = shutil.copytree(args.archives_dir.resolve(), tempdir / 'archives')
+            archives = shutil.copytree(args.archives_dir, tempdir / 'archives')
         else:
             archives = tempdir / 'archives'
             archives.mkdir()
