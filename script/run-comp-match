@@ -33,7 +33,7 @@ def construct_match_data(args: argparse.Namespace) -> controller_utils.MatchData
     ]
 
     recording_config = controller_utils.RecordingConfig(
-        resolution=controller_utils.Resolution(args.resolution[0], args.resolution[1]),
+        resolution=controller_utils.Resolution(*args.resolution),
         quality=100,
     )
 
