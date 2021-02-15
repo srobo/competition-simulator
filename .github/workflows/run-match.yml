@@ -22,6 +22,7 @@ jobs:
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
           sudo apt-get install --yes wget zip pulseaudio xvfb
+          pulseaudio -D
       - name: Download Webots
         run: |
           wget -O ./webots.deb \
