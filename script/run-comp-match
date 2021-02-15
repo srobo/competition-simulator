@@ -236,7 +236,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         '--resolution',
-        help="Set the resolution of the produced video. The format is <width> <height>",
+        help="Set the resolution of the produced video.",
         type=int,
         nargs=2,
         default=[1920, 1080],
