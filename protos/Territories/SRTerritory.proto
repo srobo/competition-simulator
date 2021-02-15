@@ -33,7 +33,6 @@ PROTO SRTerritory [
                   children [
                     Shape {
                       appearance PBRAppearance {
-                        baseColor 1 1 1
                         baseColorMap ImageTexture {
                           url IS textureName
                         }
