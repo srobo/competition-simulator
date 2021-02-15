@@ -12,12 +12,11 @@ Viewpoint {
 TexturedBackgroundLight {
   texture "noon_park_empty"
 }
-TexturedBackground {
-  texture "noon_park_empty"
-  skybox FALSE
+Background {
   skyColor [
     0.960784 0.952941 0.956863
   ]
+  luminosity 0.35
 }
 
 # Updating colours? Update `territory_controller.py`
@@ -305,8 +304,10 @@ Transform {
       translation 0 -0.001 0
       children [
         Shape {
-          appearance MattePaint {
+          appearance PBRAppearance {
             baseColor 0.6 0.6 0.6
+            roughness 1
+            metalness 0
           }
           geometry Plane {
             size 10 5
