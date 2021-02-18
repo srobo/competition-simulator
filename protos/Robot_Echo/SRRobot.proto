@@ -439,22 +439,7 @@ PROTO SRRobot [
                     ]
                   }
                   roughness 0.9
-                  roughnessMap ImageTexture {
-                    url [
-                      "./textures/cyberbotics/smooth_rubber_roughness.jpg"
-                    ]
-                  }
                   metalness 0
-                  normalMap ImageTexture {
-                    url [
-                      "./textures/cyberbotics/smooth_rubber_normal.jpg"
-                    ]
-                  }
-                  occlusionMap ImageTexture {
-                    url [
-                      "./textures/cyberbotics/smooth_rubber_occlusion.jpg"
-                    ]
-                  }
                 }
                 geometry IndexedFaceSet {
                   coord DEF coord_LEFT_TIRE Coordinate {
@@ -634,22 +619,7 @@ PROTO SRRobot [
                     ]
                   }
                   roughness 0.9
-                  roughnessMap ImageTexture {
-                    url [
-                      "./textures/cyberbotics/smooth_rubber_roughness.jpg"
-                    ]
-                  }
                   metalness 0
-                  normalMap ImageTexture {
-                    url [
-                      "./textures/cyberbotics/smooth_rubber_normal.jpg"
-                    ]
-                  }
-                  occlusionMap ImageTexture {
-                    url [
-                      "./textures/cyberbotics/smooth_rubber_occlusion.jpg"
-                    ]
-                  }
                 }
                 geometry IndexedFaceSet {
                   coord DEF coord_LEFT_TIRE Coordinate {

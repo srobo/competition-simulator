@@ -4,6 +4,7 @@ PROTO SRTerritory [
   field SFString territoryName ""
   field SFString emitterName ""
   field SFString receiverName ""
+  field MFString textureName ""
   field SFColor zoneColour 0.34191456 0.34191436 0.34191447
 ]
 {
@@ -27,22 +28,19 @@ PROTO SRTerritory [
                       radius 0.5
                   }
                 }
-                Display {
-                  name IS territoryName
-                  translation 0 0.005 0
-                  height 256
-                  width 256
+                Transform {
+                  translation 0 0.005 0.25
                   children [
                     Shape {
                       appearance PBRAppearance {
-                        baseColor 0.34191456 0.34191436 0.34191447
-                        roughness 1
-                        metalness 0
-                        baseColorMap ImageTexture {}
+                        baseColorMap ImageTexture {
+                          # Texture labels are 128x64 and produced in GIMP
+                          # Font used is Arial Heavy, 75pt, in bold using colour #3270ed
+                          url IS textureName
+                        }
                       }
-                      geometry DEF TERRITORY Cylinder {
-                          height 0.001
-                          radius 0.5
+                      geometry Plane {
+                        size 0.5 0.25
                       }
                     }
                   ]

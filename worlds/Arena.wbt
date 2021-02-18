@@ -12,12 +12,11 @@ Viewpoint {
 TexturedBackgroundLight {
   texture "noon_park_empty"
 }
-TexturedBackground {
-  texture "noon_park_empty"
-  skybox FALSE
+Background {
   skyColor [
     0.960784 0.952941 0.956863
   ]
+  luminosity 0.35
 }
 
 # Updating colours? Update `territory_controller.py`
@@ -66,77 +65,90 @@ Robot {
       territoryName "PNTerritory"
       emitterName "PNEmitter"
       receiverName "PNReceiver"
+      textureName "../textures/territory-labels/PN.png"
     }
     DEF EY SRTerritory {
       translation -1.5 0 -0.75
       territoryName "EYTerritory"
       emitterName "EYEmitter"
       receiverName "EYReceiver"
+      textureName "../textures/territory-labels/EY.png"
     }
     DEF BE SRTerritory {
       territoryName "BETerritory"
       emitterName "BEEmitter"
       receiverName "BEReceiver"
+      textureName "../textures/territory-labels/BE.png"
     }
     DEF PO SRTerritory {
       translation 1.5 0 -0.75
       territoryName "POTerritory"
       emitterName "POEmitter"
       receiverName "POReceiver"
+      textureName "../textures/territory-labels/PO.png"
     }
     DEF YL SRTerritory {
       translation 3 0 -1.5
       territoryName "YLTerritory"
       emitterName "YLEmitter"
       receiverName "YLReceiver"
+      textureName "../textures/territory-labels/YL.png"
     }
     DEF BG SRTerritory {
       translation -4.1 0 0.1
       territoryName "BGTerritory"
       emitterName "BGEmitter"
       receiverName "BGReceiver"
+      textureName "../textures/territory-labels/BG.png"
     }
     DEF OX SRTerritory {
       translation -4.1 0 1.7
       territoryName "OXTerritory"
       emitterName "OXEmitter"
       receiverName "OXReceiver"
+      textureName "../textures/territory-labels/OX.png"
     }
     DEF TS SRTerritory {
       translation -2.65 0 0.9
       territoryName "TSTerritory"
       emitterName "TSEmitter"
       receiverName "TSReceiver"
+      textureName "../textures/territory-labels/TS.png"
     }
     DEF VB SRTerritory {
       translation -1.1 0 1.7
       territoryName "VBTerritory"
       emitterName "VBEmitter"
       receiverName "VBReceiver"
+      textureName "../textures/territory-labels/VB.png"
     }
     DEF HV SRTerritory {
       translation 4.1 0 0.1
       territoryName "HVTerritory"
       emitterName "HVEmitter"
       receiverName "HVReceiver"
+      textureName "../textures/territory-labels/HV.png"
     }
     DEF BN SRTerritory {
       translation 4.1 0 1.7
       territoryName "BNTerritory"
       emitterName "BNEmitter"
       receiverName "BNReceiver"
+      textureName "../textures/territory-labels/BN.png"
     }
     DEF SW SRTerritory {
       translation 2.65 0 0.9
       territoryName "SWTerritory"
       emitterName "SWEmitter"
       receiverName "SWReceiver"
+      textureName "../textures/territory-labels/SW.png"
     }
     DEF SZ SRTerritory {
       translation 1.1 0 1.7
       territoryName "SZTerritory"
       emitterName "SZEmitter"
       receiverName "SZReceiver"
+      textureName "../textures/territory-labels/SZ.png"
     }
     Transform {
       translation 0 -0.0005 0
@@ -373,8 +385,10 @@ Transform {
       translation 0 -0.001 0
       children [
         Shape {
-          appearance MattePaint {
+          appearance PBRAppearance {
             baseColor 0.6 0.6 0.6
+            roughness 1
+            metalness 0
           }
           geometry Plane {
             size 10 5
