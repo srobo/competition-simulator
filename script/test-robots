@@ -67,6 +67,7 @@ def run_robot_match(
         print(f"Failed on team {tla}")  # noqa:T001
         return False
     except subprocess.TimeoutExpired as match_timeout:
+        # This appears to be a bug where TimeoutExpired always returns bytes
         print(match_timeout.output.decode())  # noqa: T001
         print(f"Timeout on team {tla}")  # noqa:T001
         return False
