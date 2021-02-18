@@ -8,7 +8,7 @@ from pathlib import Path
 from collections import defaultdict
 
 # Webots specific library
-from controller import Node, Emitter, Receiver, Supervisor
+from controller import Node, Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
