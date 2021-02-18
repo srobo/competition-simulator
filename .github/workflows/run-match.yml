@@ -22,6 +22,7 @@ jobs:
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
           sudo apt-get install --yes wget zip pulseaudio xvfb
+          pulseaudio -D
       - name: Download Webots
         run: |
           wget -O ./webots.deb \
@@ -58,7 +59,7 @@ jobs:
       - name: Run match
         run: |
           source ./venv/bin/activate
-          xvfb-run script/run-comp-match archives 42 - ABC --duration 5 --no-record
+          xvfb-run script/run-comp-match archives 42 - ABC --duration 5 --resolution 1280 720
       - name: Store archives
         uses: actions/upload-artifact@v2
         with:

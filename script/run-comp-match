@@ -32,12 +32,11 @@ def construct_match_data(args: argparse.Namespace) -> controller_utils.MatchData
         for tla in args.tla
     ]
 
-    recording_config = None  # use the default
-    if args.no_record:
-        recording_config = controller_utils.RecordingConfig(
-            resolution=controller_utils.Resolution(0, 0),  # the resolution is unused
-            quality=0,  # signal to the competition_supervisor to not generate a video
-        )
+    recording_config = controller_utils.RecordingConfig(
+        resolution=controller_utils.Resolution(*args.resolution),
+        # signal to the competition_supervisor to not generate a video when no_record is set
+        quality=0 if args.no_record else 100,
+    )
 
     return controller_utils.MatchData(
         args.match_num,
@@ -231,6 +230,14 @@ def parse_args() -> argparse.Namespace:
         ),
         action='store_true',
         dest='no_record',
+    )
+    parser.add_argument(
+        '--resolution',
+        help="Set the resolution of the produced video.",
+        type=int,
+        nargs=2,
+        default=[1920, 1080],
+        metavar=('width', 'height'),
     )
     return parser.parse_args()
 
