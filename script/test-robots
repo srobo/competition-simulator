@@ -126,7 +126,7 @@ def main(args: argparse.Namespace) -> None:
             if not run_robot_match(run_comp_match, archives, tla, subprocess_timeout):
                 failed_tlas.append(tla)
 
-    print(f"Failing TLAs: {', '.join(failed_tlas)}")  # noqa: T001
+    print("Failing TLAs:", ', '.join(failed_tlas))  # noqa: T001
 
 
 if __name__ == '__main__':
