@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""
+A script to run a test competition match on every robot in an submissions directory.
+
+A "broken" robot is any robot which:
+- Fails to reach the wait_start function within the 5 second timeout
+  set in wait_until_robots_ready, caused by:
+  a. The robot code throwing an uncaught exception before instantiating the Robot
+  b. The robot code taking over 5 seconds before instantiating the Robot
+- Fails to complete a 1 second match within the subprocess timout
+- Causes the simulator to exit with a non-zero exit code
+"""
+import re
+import sys
+import time
+import shutil
+import argparse
+import tempfile
+import subprocess
+from typing import List, Optional
+from pathlib import Path
+
+# Seconds beyond a normal match duration for the match to be considered stuck
+EXCESS_SUBPROCESS_TIMEOUT = 10
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
+
+from controller_utils import NUM_ZONES  # isort:skip
+
+
+def run_robot_match(
+    comp_match_script: Path,
+    archives_dir: Path,
+    tla: str,
+    subprocess_timeout: Optional[float],
+) -> bool:
+    try:
+        print(f"Running match for {tla}")  # noqa:T001
+
+        num_empty_zones = NUM_ZONES - 1
+        match_args = [
+            sys.executable,
+            str(comp_match_script),
+            str(archives_dir),
+            '--duration', '1',
+            '--no-record',
+            '--',
+            '0',  # no logs will be retained so a fixed match number is used
+            tla,
+        ] + (['-'] * num_empty_zones)
+
+        subprocess.run(
+            match_args,
+            check=True,
+            stdout=subprocess.PIPE,  # we only want to print output from failing robots
+            stderr=subprocess.STDOUT,
+            timeout=subprocess_timeout,
+            text=True,
+        )
+
+        print(f"Completed match for {tla}")  # noqa:T001
+
+    except subprocess.CalledProcessError as match_errors:
+        print(match_errors.output)  # noqa: T001
+        print(f"Failed on team {tla}")  # noqa:T001
+        return False
+    except subprocess.TimeoutExpired as match_timeout:
+        # This appears to be a bug where TimeoutExpired always returns bytes
+        print(match_timeout.output.decode())  # noqa: T001
+        print(f"Timeout on team {tla}")  # noqa:T001
+        return False
+    return True
+
+
+def is_team_archive(archive: str) -> bool:
+    # team archives are three uppercase letters and an optional number
+    return bool(re.search(r'^[A-Z]{3}[0-9]?$', archive))
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'archives_dir',
+        help=(
+            "The directory, or archive, containing the teams' robot code, "
+            "as Zip archives named for the teams' TLAs."
+        ),
+        type=Path,
+    )
+    return parser.parse_args()
+
+
+def main(args: argparse.Namespace) -> None:
+    failed_tlas: List[str] = []
+
+    run_comp_match = REPO_ROOT / 'script' / 'run-comp-match'
+
+    with tempfile.TemporaryDirectory() as tempdir_name:
+
+        tempdir = Path(tempdir_name)
+        archives = tempdir / 'archives'
+
+        # Make a temporary copy of the archives to receive the logs
+        if args.archives_dir.is_dir():
+            shutil.copytree(args.archives_dir, archives)
+        else:
+            shutil.unpack_archive(args.archives_dir, archives, 'zip')
+
+        start_time = time.time()
+        if not run_robot_match(run_comp_match, archives, '-', None):
+            exit(1)
+
+        match_duration = time.time() - start_time
+        subprocess_timeout = EXCESS_SUBPROCESS_TIMEOUT + match_duration
+
+        print(f"Timeout set to : {subprocess_timeout:.1f}")  # noqa:T001
+
+        for team in archives.glob('*.zip'):
+            tla = team.stem
+
+            # skip non-robot archives
+            if not is_team_archive(tla):
+                continue
+
+            if not run_robot_match(run_comp_match, archives, tla, subprocess_timeout):
+                failed_tlas.append(tla)
+
+    print("Failing TLAs:", ', '.join(failed_tlas))  # noqa: T001
+
+
+if __name__ == '__main__':
+    main(parse_args())
