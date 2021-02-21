@@ -31,6 +31,7 @@ class Claimant(enum.IntEnum):
     ZONE_1 = 1
 
 
+POINTS_PER_TERRITORY = 2
 LOCKED_OUT_AFTER_CLAIM = 4
 
 
@@ -170,7 +171,6 @@ class ClaimLog:
         return self._log_is_dirty
 
     def get_scores(self) -> Mapping[Claimant, int]:
-        POINTS_PER_TERRITORY = 2
         territory_counts = collections.Counter(self._station_statuses.values())
 
         return {
