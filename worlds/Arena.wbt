@@ -21,16 +21,16 @@ Background {
 
 # Updating colours? Update `territory_controller.py`
 DEF ROBOT-0 SRRobot {
-  translation 2 0 -4.5
-  rotation 0 1 0 2.266
+  translation 0 0 -7
+  rotation 0 1 0 3.14
   controller "sr_controller"
   model "Robot0"
   flagColour 1 0 1
   controllerArgs "0"
 }
 DEF ROBOT-1 SRRobot {
-  translation 2 0 4.5
-  rotation 0 1 0 0.785
+  translation 0 0 7
+  rotation 0 1 0 0
   controller "sr_controller"
   model "Robot1"
   flagColour 1 1 0
@@ -61,14 +61,14 @@ Robot {
   supervisor TRUE
   children [
     DEF PN SRTerritory {
-      translation -3 0 -1.5
+      translation -4.2 0 -1.8
       territoryName "PNTerritory"
       emitterName "PNEmitter"
       receiverName "PNReceiver"
       textureName "../textures/territory-labels/PN.png"
     }
     DEF EY SRTerritory {
-      translation -1.5 0 -0.75
+      translation -1.3 0 -0.75
       territoryName "EYTerritory"
       emitterName "EYEmitter"
       receiverName "EYReceiver"
@@ -81,191 +81,272 @@ Robot {
       textureName "../textures/territory-labels/BE.png"
     }
     DEF PO SRTerritory {
-      translation 1.5 0 -0.75
+      translation 1.3 0 -0.75
       territoryName "POTerritory"
       emitterName "POEmitter"
       receiverName "POReceiver"
       textureName "../textures/territory-labels/PO.png"
     }
     DEF YL SRTerritory {
-      translation 3 0 -1.5
+      translation 4.2 0 -1.8
       territoryName "YLTerritory"
       emitterName "YLEmitter"
       receiverName "YLReceiver"
       textureName "../textures/territory-labels/YL.png"
     }
     DEF BG SRTerritory {
-      translation -4.1 0 0.1
+      translation -4 0 0.3
       territoryName "BGTerritory"
       emitterName "BGEmitter"
       receiverName "BGReceiver"
       textureName "../textures/territory-labels/BG.png"
     }
     DEF OX SRTerritory {
-      translation -4.1 0 1.7
+      translation -6.6 0 3
       territoryName "OXTerritory"
       emitterName "OXEmitter"
       receiverName "OXReceiver"
       textureName "../textures/territory-labels/OX.png"
     }
     DEF TS SRTerritory {
-      translation -2.65 0 0.9
+      translation -3.3 0 2.5
       territoryName "TSTerritory"
       emitterName "TSEmitter"
       receiverName "TSReceiver"
       textureName "../textures/territory-labels/TS.png"
     }
     DEF VB SRTerritory {
-      translation -1.1 0 1.7
+      translation -1.3 0 0.75
       territoryName "VBTerritory"
       emitterName "VBEmitter"
       receiverName "VBReceiver"
       textureName "../textures/territory-labels/VB.png"
     }
     DEF HV SRTerritory {
-      translation 4.1 0 0.1
+      translation 4 0 0.3
       territoryName "HVTerritory"
       emitterName "HVEmitter"
       receiverName "HVReceiver"
       textureName "../textures/territory-labels/HV.png"
     }
     DEF BN SRTerritory {
-      translation 4.1 0 1.7
+      translation  6.6 0 3
       territoryName "BNTerritory"
       emitterName "BNEmitter"
       receiverName "BNReceiver"
       textureName "../textures/territory-labels/BN.png"
     }
     DEF SW SRTerritory {
-      translation 2.65 0 0.9
+      translation 3.3 0 2.5
       territoryName "SWTerritory"
       emitterName "SWEmitter"
       receiverName "SWReceiver"
       textureName "../textures/territory-labels/SW.png"
     }
     DEF SZ SRTerritory {
-      translation 1.1 0 1.7
+      translation 1.3 0 0.75
       territoryName "SZTerritory"
       emitterName "SZEmitter"
       receiverName "SZReceiver"
       textureName "../textures/territory-labels/SZ.png"
     }
+    DEF T0 SRTerritory {
+      translation 0 0 -3
+      territoryName "T0Territory"
+      emitterName "T0Emitter"
+      receiverName "T0Receiver"
+    }
+    DEF T1 SRTerritory {
+      translation 0 0 -1.5
+      territoryName "T1Territory"
+      emitterName "T1Emitter"
+      receiverName "T1Receiver"
+    }
+    DEF T2 SRTerritory {
+      translation 0 0 1.5
+      territoryName "T2Territory"
+      emitterName "T2Emitter"
+      receiverName "T2Receiver"
+    }
+    DEF T3 SRTerritory {
+      translation 0 0 3
+      territoryName "T3Territory"
+      emitterName "T3Emitter"
+      receiverName "T3Receiver"
+    }
+    DEF T4 SRTerritory {
+      translation -6.6 0 -3
+      territoryName "T4Territory"
+      emitterName "T4Emitter"
+      receiverName "T4Receiver"
+    }
+    DEF T5 SRTerritory {
+      translation 6.6 0 -3
+      territoryName "T5Territory"
+      emitterName "T5Emitter"
+      receiverName "T5Receiver"
+    }
     Transform {
       translation 0 -0.0005 0
       children [
         DEF PN-EY SRLink {
-          translation -2.25 0 -1.125
-          rotation 0 1 0 1.1071
-          size 0.2 1.7
+          translation -2.75 0 -1.275
+          rotation 0 1 0 1.2234
+          size 0.2 3.1
           linkName "link PN-EY"
         }
-        DEF BG-OX SRLink {
-          translation -4.1 0 0.9
-          rotation 0 1 0 0
-          size 0.2 1.6
-          linkName "link BG-OX"
+        DEF BG-VB SRLink {
+          translation -2.65 0 0.525
+          rotation 0 1 0 1.4056
+          size 0.2 2.7
+          linkName "link BG-VB"
+        }
+        DEF OX-VB SRLink {
+          translation -3.95 0 1.875
+          rotation 0 1 0 1.9723
+          size 0.2 5.8
+          linkName "link OX-VB"
         }
         DEF OX-TS SRLink {
-          translation -3.375 0 1.3
-          rotation 0 1 0 -1.067
-          size 0.2 1.7
+          translation -4.95 0 2.75
+          rotation 0 1 0 1.7212
+          size 0.2 3.3
           linkName "link OX-TS"
         }
-        DEF TS-VB SRLink {
-          translation -1.875 0 1.3
-          rotation 0 1 0 1.094
-          size 0.2 1.7
-          linkName "link TS-VB"
+        DEF EY-VB SRLink {
+          translation -1.3 0 0
+          rotation 0 1 0 0
+          size 0.2 1.5
+          linkName "link EY-VB"
         }
-        DEF EY-BE SRLink {
-          translation -0.75 0 -0.375
-          rotation 0 1 0 1.107
-          size 0.2 1.7
-          linkName "link EY-BE"
+        DEF T4-PN SRLink {
+          translation -5.4 0 -2.4
+          rotation 0 1 0 1.1071
+          size 0.2 2.7
+          linkName "link T4-PN"
         }
-        DEF VB-BE SRLink {
-          translation -0.55 0 0.85
-          rotation 0 1 0 -0.574
-          size 0.2 2
-          linkName "link VB-BE"
+        DEF VB-T3 SRLink {
+          translation -0.65 0 1.875
+          rotation 0 1 0 0.5239
+          size 0.2 2.6
+          linkName "link VB-T3"
         }
-        DEF VB-SZ SRLink {
-          translation 0 0 1.7
-          rotation 0 1 0 1.571
-          size 0.2 2.2
-          linkName "link VB-SZ"
+        DEF VB-T2 SRLink {
+          translation -0.65 0 1.125
+          rotation 0 1 0 1.0475
+          size 0.2 1.5
+          linkName "link VB-T2"
         }
-        DEF BE-SZ SRLink {
-          translation 0.55 0 0.85
-          rotation 0 1 0 0.574
-          size 0.2 2
-          linkName "link BE-SZ"
+        DEF EY-T0 SRLink {
+          translation -0.65 0 -1.875
+          rotation 0 1 0 2.6177
+          size 0.2 2.6
+          linkName "link EY-T0"
         }
-        DEF BE-PO SRLink {
-          translation 0.75 0 -0.375
-          rotation 0 1 0 -1.107
-          size 0.2 1.7
-          linkName "link BE-PO"
+
+        DEF T1-BE SRLink {
+          translation 0 0 -0.75
+          rotation 0 1 0 0
+          size 0.2 1.5
+          linkName "link T1-BE"
         }
-        DEF SZ-SW SRLink {
-          translation 1.875 0 1.3
-          rotation 0 1 0 -1.094
-          size 0.2 1.7
-          linkName "link SZ-SW"
+        DEF BE-T2 SRLink {
+          translation 0 0 0.75
+          rotation 0 1 0 0
+          size 0.2 1.5
+          linkName "link BE-T2"
         }
+
         DEF PO-YL SRLink {
-          translation 2.25 0 -1.125
-          rotation 0 1 0 -1.107
-          size 0.2 1.7
+          translation 2.75 0 -1.275
+          rotation 0 1 0 1.9182
+          size 0.2 3.1
           linkName "link PO-YL"
         }
+        DEF SZ-HV SRLink {
+          translation 2.65 0 0.525
+          rotation 0 1 0 1.7359
+          size 0.2 2.7
+          linkName "link SZ-HV"
+        }
+        DEF SZ-BN SRLink {
+          translation 3.95 0 1.875
+          rotation 0 1 0 1.1693
+          size 0.2 5.8
+          linkName "link SZ-BN"
+        }
         DEF SW-BN SRLink {
-          translation 3.375 0 1.3
-          rotation 0 1 0 1.067
-          size 0.2 1.7
+          translation 4.95 0 2.75
+          rotation 0 1 0 1.4204
+          size 0.2 3.3
           linkName "link SW-BN"
         }
-        DEF HV-BN SRLink {
-          translation 4.1 0 0.9
+        DEF PO-SZ SRLink {
+          translation 1.3 0 0
           rotation 0 1 0 0
-          size 0.2 1.6
-          linkName "link HV-BN"
+          size 0.2 1.5
+          linkName "link PO-SZ"
         }
+        DEF YL-T5 SRLink {
+          translation 5.4 0 -2.4
+          rotation 0 1 0 2.0344
+          size 0.2 2.7
+          linkName "link YL-T5"
+        }
+        DEF T3-SZ SRLink {
+          translation 0.65 0 1.875
+          rotation 0 1 0 2.6177
+          size 0.2 2.6
+          linkName "link T3-SZ"
+        }
+        DEF T2-SZ SRLink {
+          translation 0.65 0 1.125
+          rotation 0 1 0 2.0941
+          size 0.2 1.5
+          linkName "link T2-SZ"
+        }
+        DEF T0-PO SRLink {
+          translation 0.65 0 -1.875
+          rotation 0 1 0 0.5239
+          size 0.2 2.6
+          linkName "link T0-PO"
+        }
+
         DEF z0-PN SRLink {
-          translation -3.75 0 -1.75
-          rotation 0 1 0 1.249
-          size 0.2 1.6
+          translation -5.6 0 -0.9
+          rotation 0 1 0 2.1421
+          size 0.2 3.3
           linkName "link z0-PN"
         }
-        DEF z0-TS SRLink {
-          translation -3.575 0 -0.55
-          rotation 0 1 0 0.568
-          size 0.2 3.4
-          linkName "link z0-TS"
-        }
         DEF z0-BG SRLink {
-          translation -4.3 0 -0.95
-          rotation 0 1 0 0.188
-          size 0.2 2.1
+          translation -5.5 0 0.15
+          rotation 0 1 0 1.4711
+          size 0.2 3.0
           linkName "link z0-BG"
         }
+        DEF z0-OX SRLink {
+          translation -6.8 0 1.5
+          rotation 0 1 0 0.1326
+          size 0.2 3
+          linkName "link z0-OX"
+        }
         DEF z1-YL SRLink {
-          translation 3.75 0 -1.75
-          rotation 0 1 0 -1.249
-          size 0.2 1.6
+          translation 5.6 0 -0.9
+          rotation 0 1 0 -2.1421
+          size 0.2 3.3
           linkName "link z1-YL"
         }
-        DEF z1-SW SRLink {
-          translation 3.575 0 -0.55
-          rotation 0 1 0 -0.568
-          size 0.2 3.4
-          linkName "link z1-SW"
-        }
         DEF z1-HV SRLink {
-          translation 4.3 0 -0.95
-          rotation 0 1 0 -0.188
-          size 0.2 2.1
+          translation 5.5 0 0.15
+          rotation 0 1 0 -1.4711
+          size 0.2 3
           linkName "link z1-HV"
+        }
+        DEF z1-BN SRLink {
+          translation 6.8 0 1.5
+          rotation 0 1 0 -0.1326
+          size 0.2 3
+          linkName "link z1-BN"
         }
       ]
     }
@@ -283,7 +364,7 @@ Transform {
   rotation 0 1 0 -1.5708
 
   children [
-    Solid {
+    Solid {  # North-West Arena Triangle
       children [
         DEF SHAPE Shape {
           appearance PBRAppearance {
@@ -294,12 +375,12 @@ Transform {
           geometry IndexedFaceSet {
             coord Coordinate {
               point [
-                0 0 -1
-                3 0 -2.55975
-                3 0.3 -2.55975
-                0 0.3 -1
-                -3 0.3 -2.55975
-                -3 0 -2.55975
+                -1.5 0 -2
+                -0.5 0 -3.75
+                -0.5 0.3 -3.75
+                -1.5 0.3 -2
+                -5.5 0.3 -3.75
+                -5.5 0 -3.75
               ]
             }
             coordIndex [
@@ -310,32 +391,121 @@ Transform {
           }
         }
       ]
-      name "Arena Triangle"
+      name "North-West Arena Triangle"
       boundingObject USE SHAPE
     }
-    Solid {
+    Solid {  # North-East Arena Triangle
+      children [
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry IndexedFaceSet {
+            coord Coordinate {
+              point [
+                1.5 0 -2
+                5.5 0 -3.75
+                5.5 0.3 -3.75
+                1.5 0.3 -2
+                0.5 0.3 -3.75
+                0.5 0 -3.75
+              ]
+            }
+            coordIndex [
+              0, 1, 2, 3, -1,
+              0, 3, 4, 5, -1,
+              4, 3, 2
+            ]
+          }
+        }
+      ]
+      name "North-East Arena Triangle"
+      boundingObject USE SHAPE
+    }
+    Solid {  # South-West Arena Triangle
+      children [
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry IndexedFaceSet {
+            coord Coordinate {
+              point [
+                -3.5 0 1
+                -5.43 0 1
+                -5.43 0.3 1
+                -3.5 0.3 1
+                -5.43 0.3 2.25
+                -5.43 0 2.25
+              ]
+            }
+            coordIndex [
+              0, 1, 2, 3, -1,
+              0, 3, 4, 5, -1,
+              4, 3, 2
+            ]
+          }
+        }
+      ]
+      name "South-West Arena Triangle"
+      boundingObject USE SHAPE
+    }
+    Solid {  # South-East Arena Triangle
+      children [
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry IndexedFaceSet {
+            coord Coordinate {
+              point [
+                3.5 0 1
+                5.43 0 2.25
+                5.43 0.3 2.25
+                3.5 0.3 1
+                5.43 0.3 1
+                5.43 0 1
+              ]
+            }
+            coordIndex [
+              0, 1, 2, 3, -1,
+              0, 3, 4, 5, -1,
+              4, 3, 2
+            ]
+          }
+        }
+      ]
+      name "South-East Arena Triangle"
+      boundingObject USE SHAPE
+    }
+    Solid {  # Floor
       translation 0 -0.001 0
       children [
-        Shape {
+        DEF FLOOR Shape {
           appearance PBRAppearance {
             baseColor 0.6 0.6 0.6
             roughness 1
             metalness 0
           }
           geometry Plane {
-            size 10 5
+            size 15 7.5
           }
         }
       ]
-      boundingObject Plane {
-        size 10 5
-      }
+      name "Floor"
+      boundingObject USE FLOOR
     }
-    Solid {
+    Solid {  # Robot Corners
       children [
         # Zone 0 inner
         Transform {
-          translation -4.55 0.0015 -2.05
+          translation -7.05 0.0015 0
           children [
             Shape {
               appearance PBRAppearance {
@@ -351,7 +521,7 @@ Transform {
         }
         # Zone 0 outer
         Transform {
-          translation -4.5 0.001 -2
+          translation -7 0.001 0
           children [
             Shape {
               appearance PBRAppearance {
@@ -360,14 +530,14 @@ Transform {
                 metalness 0
               }
               geometry Plane {
-                size 1 1
+                size 1 1.1
               }
             }
           ]
         }
         # Zone 1 inner
         Transform {
-          translation 4.55 0.0015 -2.05
+          translation 7.05 0.0015 0
           children [
             Shape {
               appearance PBRAppearance {
@@ -383,7 +553,7 @@ Transform {
         }
         # Zone 1 outer
         Transform {
-          translation 4.5 0.001 -2
+          translation 7 0.001 0
           children [
             Shape {
               appearance PBRAppearance {
@@ -392,7 +562,7 @@ Transform {
                 metalness 0
               }
               geometry Plane {
-                size 1 1
+                size 1 1.1
               }
             }
           ]
@@ -400,8 +570,8 @@ Transform {
       ]
       name "Robot Corners"
     }
-    Solid {
-      translation -5.075 0.15 0
+    Solid {  # West Wall
+      translation -7.575 0.15 0
       children [
         DEF SHAPE Shape {
           appearance PBRAppearance {
@@ -410,15 +580,15 @@ Transform {
             metalness 0
           }
           geometry Box {
-            size 0.15 0.4 5
+            size 0.15 0.4 7.5
           }
         }
       ]
       boundingObject USE SHAPE
       name "West Wall"
     }
-    Solid {
-      translation 5.075 0.15 0
+    Solid {  # East Wall
+      translation 7.575 0.15 0
       children [
         DEF SHAPE Shape {
           appearance PBRAppearance {
@@ -427,15 +597,15 @@ Transform {
             metalness 0
           }
           geometry Box {
-            size 0.15 0.4 5
+            size 0.15 0.4 7.5
           }
         }
       ]
       boundingObject USE SHAPE
       name "East Wall"
     }
-    Solid {
-      translation 0 0.15 2.575
+    Solid {  # North Wall
+      translation 0 0.15 3.825
       children [
         DEF SHAPE Shape {
           appearance PBRAppearance {
@@ -444,15 +614,15 @@ Transform {
             metalness 0
           }
           geometry Box {
-            size 10.3 0.4 0.15
+            size 15.3 0.4 0.15
           }
         }
       ]
       boundingObject USE SHAPE
       name "North Wall"
     }
-    Solid {
-      translation 0 0.15 -2.575
+    Solid {  # South Wall
+      translation 0 0.15 -3.825
       children [
         DEF SHAPE Shape {
           appearance PBRAppearance {
@@ -461,7 +631,7 @@ Transform {
             metalness 0
           }
           geometry Box {
-            size 10.3 0.4 0.15
+            size 15.3 0.4 0.15
           }
         }
       ]
@@ -469,309 +639,55 @@ Transform {
       name "South Wall"
     }
     DEF west_moving_wall Solid {
-      # An issue with the DistanceSensor in webots-2020b-r1
-      # causes certain faces to not be detected
-      # It appears that the issue does not occur in IndexedFaceSet
-      # when all faces have a common vertex with all others
+      translation -5.5 0.15 -0.25
       children [
-        Solid {
-          children [
-            DEF SHAPE Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    -0.74 0.3 0.67
-                    -4.30 0.3 -1.24
-                    -4.30 0.0 -1.24
-                    -0.74 0.0 0.67
-
-                    -0.79 0.0 0.92
-                    -0.79 0.3 0.92
-                    -4.30 0.0 -0.96
-                    -4.30 0.3 -0.96
-                  ]
-                }
-                coordIndex [
-                  3 2 1 0 -1 # back
-                  5 4 3 0 # left
-                ]
-              }
-            }
-          ]
-          boundingObject USE SHAPE
-          name "North Side"
-        }
-        Solid {
-          children [
-            DEF SHAPE Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    -0.74 0.3 0.67
-                    -4.30 0.3 -1.24
-                    -4.30 0.0 -1.24
-                    -0.74 0.0 0.67
-
-                    -0.79 0.0 0.92
-                    -0.79 0.3 0.92
-                    -4.30 0.0 -0.96
-                    -4.30 0.3 -0.96
-                  ]
-                }
-                coordIndex [
-                  7 5 0 1 -1 # top
-                  7 6 4 5 -1 # front
-                  1 2 6 7 # right
-                ]
-              }
-            }
-          ]
-          boundingObject USE SHAPE
-          name "South Side"
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.15 0.3 5
+          }
         }
       ]
-      name "West Inner Wall"
-      radarCrossSection 1
-      rotationStep 0.261799
+      boundingObject USE SHAPE
+      name "West Moving Wall"
     }
     DEF east_moving_wall Solid {
-      # An issue with the DistanceSensor in webots-2020b-r1
-      # causes certain faces to not be detected
-      # It appears that the issue does not occur in IndexedFaceSet
-      # when all faces have a common vertex with all others
+      translation 5.5 0.15 -0.25
       children [
-        Solid {
-          children [
-            DEF SHAPE Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    0.74 0.3 0.67
-                    4.30 0.3 -1.24
-                    4.30 0.0 -1.24
-                    0.74 0.0 0.67
-
-                    0.79 0.0 0.92
-                    0.79 0.3 0.92
-                    4.30 0.0 -0.96
-                    4.30 0.3 -0.96
-                  ]
-                }
-                coordIndex [
-                  0 1 2 3 -1 # back
-                  0 3 4 5 # left
-                ]
-              }
-            }
-          ]
-          boundingObject USE SHAPE
-          name "North Side"
-        }
-        Solid {
-          children [
-            DEF SHAPE Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    0.74 0.3 0.67
-                    4.30 0.3 -1.24
-                    4.30 0.0 -1.24
-                    0.74 0.0 0.67
-
-                    0.79 0.0 0.92
-                    0.79 0.3 0.92
-                    4.30 0.0 -0.96
-                    4.30 0.3 -0.96
-                  ]
-                }
-                coordIndex [
-                  1 0 5 7 -1 # top
-                  5 4 6 7 -1 # front
-                  7 6 2 1 # right
-                ]
-              }
-            }
-          ]
-          boundingObject USE SHAPE
-          name "South Side"
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.15 0.3 5
+          }
         }
       ]
-      name "East Inner Wall"
-      radarCrossSection 1
-      rotationStep 0.261799
-    }
-    Solid {
-      # An issue with the DistanceSensor in webots-2020b-r1
-      # causes certain faces to not be detected
-      # It appears that the issue does not occur in IndexedFaceSet
-      # when all faces have a common vertex with all others
-      children [
-        Solid {
-          children [
-            DEF SHAPE Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    -0.35 0.3 -1.18
-                    -0.63 0.3 -1.33
-                    -0.63 0.0 -1.33
-                    -0.35 0.0 -1.18
-
-                    -0.74 0.0 0.67
-                    -0.74 0.3 0.67
-                    -1.02 0.0 0.52
-                    -1.02 0.3 0.52
-                  ]
-                }
-                coordIndex [
-                  3 2 1 0 -1 # back
-                  5 4 3 0 # left
-                ]
-              }
-            }
-          ]
-          boundingObject USE SHAPE
-          name "North Side"
-        }
-        Solid {
-          children [
-            DEF SHAPE Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    -0.35 0.3 -1.18
-                    -0.63 0.3 -1.33
-                    -0.63 0.0 -1.33
-                    -0.35 0.0 -1.18
-
-                    -0.74 0.0 0.67
-                    -0.74 0.3 0.67
-                    -1.02 0.0 0.52
-                    -1.02 0.3 0.52
-                  ]
-                }
-                coordIndex [
-                  7 5 0 1 -1 # top
-                  7 6 4 5 -1 # front
-                  1 2 6 7 # right
-                ]
-              }
-            }
-          ]
-          boundingObject USE SHAPE
-          name "South Side"
-        }
-      ]
-      name "West Center Wall"
       boundingObject USE SHAPE
-      radarCrossSection 1
-      rotationStep 0.261799
+      name "East Moving Wall"
     }
-    Solid {
-      # An issue with the DistanceSensor in webots-2020b-r1
-      # causes certain faces to not be detected
-      # It appears that the issue does not occur in IndexedFaceSet
-      # when all faces have a common vertex with all others
+    Solid {  # Center Wall
+      translation 0 0.15 0
       children [
-        Solid {
-          children [
-            DEF SHAPE Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    0.35 0.3 -1.18
-                    0.63 0.3 -1.33
-                    0.63 0.0 -1.33
-                    0.35 0.0 -1.18
-
-                    0.74 0.0 0.67
-                    0.74 0.3 0.67
-                    1.02 0.0 0.52
-                    1.02 0.3 0.52
-                  ]
-                }
-                coordIndex [
-                  0 1 2 3 -1 # back
-                  0 3 4 5 # left
-                ]
-              }
-            }
-          ]
-          boundingObject USE SHAPE
-          name "North Side"
-        }
-        Solid {
-          children [
-            DEF SHAPE Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    0.35 0.3 -1.18
-                    0.63 0.3 -1.33
-                    0.63 0.0 -1.33
-                    0.35 0.0 -1.18
-
-                    0.74 0.0 0.67
-                    0.74 0.3 0.67
-                    1.02 0.0 0.52
-                    1.02 0.3 0.52
-                  ]
-                }
-                coordIndex [
-                  1 0 5 7 -1 # top
-                  5 4 6 7 -1 # front
-                  7 6 2 1 # right
-                ]
-              }
-            }
-          ]
-          boundingObject USE SHAPE
-          name "South Side"
+        DEF SHAPE Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 6.5 0.3 0.15
+          }
         }
       ]
-      name "East Center Wall"
-      radarCrossSection 1
-      rotationStep 0.261799
+      boundingObject USE SHAPE
+      name "Center Wall"
     }
   ]
 }
