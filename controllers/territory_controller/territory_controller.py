@@ -48,6 +48,12 @@ class StationCode(str, enum.Enum):
     SW = 'SW'
     BN = 'BN'
     HV = 'HV'
+    T0 = 'T0'
+    T1 = 'T1'
+    T2 = 'T2'
+    T3 = 'T3'
+    T4 = 'T4'
+    T5 = 'T5'
 
 
 class TerritoryRoot(str, enum.Enum):
@@ -72,25 +78,32 @@ LOCKED_COLOUR = (0.5, 0, 0)
 
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
-    (StationCode.BG, StationCode.OX),  # BG-OX
+    (StationCode.BG, StationCode.VB),  # BG-VB
+    (StationCode.OX, StationCode.VB),  # OX-VB
     (StationCode.OX, StationCode.TS),  # OX-TS
-    (StationCode.TS, StationCode.VB),  # TS-VB
-    (StationCode.EY, StationCode.BE),  # EY-BE
-    (StationCode.VB, StationCode.BE),  # VB-BE
-    (StationCode.VB, StationCode.SZ),  # VB-SZ
-    (StationCode.BE, StationCode.SZ),  # BE-SZ
-    (StationCode.BE, StationCode.PO),  # BE-PO
-    (StationCode.SZ, StationCode.SW),  # SZ-SW
+    (StationCode.EY, StationCode.VB),  # EY-VB
+    (StationCode.T4, StationCode.PN),  # T4-PN
+    (StationCode.VB, StationCode.T3),  # VB-T3
+    (StationCode.VB, StationCode.T2),  # VB-T2
+    (StationCode.EY, StationCode.T0),  # EY-T0
+    (StationCode.T1, StationCode.BE),  # T1-BE
+    (StationCode.BE, StationCode.T2),  # BE-T2
     (StationCode.PO, StationCode.YL),  # PO-YL
+    (StationCode.SZ, StationCode.HV),  # SZ-HV
+    (StationCode.SZ, StationCode.BN),  # SZ-BN
     (StationCode.SW, StationCode.BN),  # SW-BN
-    (StationCode.HV, StationCode.BN),  # HV-BN
+    (StationCode.PO, StationCode.SZ),  # PO-SZ
+    (StationCode.YL, StationCode.T5),  # YL-T5
+    (StationCode.T3, StationCode.SZ),  # T3-SZ
+    (StationCode.T2, StationCode.SZ),  # T2-SZ
+    (StationCode.T0, StationCode.PO),  # T0-PO
     # These links are between territories and the starting zones
     (TerritoryRoot.z0, StationCode.PN),  # z0-PN
-    (TerritoryRoot.z0, StationCode.TS),  # z0-TS
     (TerritoryRoot.z0, StationCode.BG),  # z0-BG
+    (TerritoryRoot.z0, StationCode.OX),  # z0-OX
     (TerritoryRoot.z1, StationCode.YL),  # z1-YL
-    (TerritoryRoot.z1, StationCode.SW),  # z1-SW
     (TerritoryRoot.z1, StationCode.HV),  # z1-HV
+    (TerritoryRoot.z1, StationCode.BN),  # z1-BN
 }
 
 
