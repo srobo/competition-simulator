@@ -155,36 +155,42 @@ Robot {
       territoryName "T0Territory"
       emitterName "T0Emitter"
       receiverName "T0Receiver"
+      textureName "../textures/territory-labels/T0.png"
     }
     DEF T1 SRTerritory {
       translation 0 0 -1.5
       territoryName "T1Territory"
       emitterName "T1Emitter"
       receiverName "T1Receiver"
+      textureName "../textures/territory-labels/T1.png"
     }
     DEF T2 SRTerritory {
       translation 0 0 1.5
       territoryName "T2Territory"
       emitterName "T2Emitter"
       receiverName "T2Receiver"
+      textureName "../textures/territory-labels/T2.png"
     }
     DEF T3 SRTerritory {
       translation 0 0 3
       territoryName "T3Territory"
       emitterName "T3Emitter"
       receiverName "T3Receiver"
+      textureName "../textures/territory-labels/T3.png"
     }
     DEF T4 SRTerritory {
       translation -6.6 0 -3
       territoryName "T4Territory"
       emitterName "T4Emitter"
       receiverName "T4Receiver"
+      textureName "../textures/territory-labels/T4.png"
     }
     DEF T5 SRTerritory {
       translation 6.6 0 -3
       territoryName "T5Territory"
       emitterName "T5Emitter"
       receiverName "T5Receiver"
+      textureName "../textures/territory-labels/T5.png"
     }
     Transform {
       translation 0 -0.0005 0
