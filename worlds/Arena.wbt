@@ -713,6 +713,18 @@ Transform {
                 radius 0.6
               }
             }
+            Transform {
+              translation 0 12 -8.5
+              children [
+                SpotLight {
+                  attenuation 0 0 1
+                  beamWidth 0.05
+                  cutOffAngle 0.2
+                  direction 0 -20 12
+                  intensity 5
+                }
+              ]
+            }
           ]
         }
         Solid {
@@ -729,6 +741,18 @@ Transform {
                 height 0.001
                 radius 0.6
               }
+            }
+            Transform {
+              translation 0 12 -10
+              children [
+                SpotLight {
+                  attenuation 0 0 1
+                  beamWidth 0.05
+                  cutOffAngle 0.2
+                  direction 0 -20 14
+                  intensity 5
+                }
+              ]
             }
           ]
         }
