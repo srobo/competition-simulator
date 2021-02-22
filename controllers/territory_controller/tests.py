@@ -23,14 +23,13 @@ class TestAttachedTerritories(unittest.TestCase):
         StationCode.TS,
         StationCode.OX,
         StationCode.VB,
-        StationCode.BE,
-        StationCode.SZ,
+        StationCode.T3,
     }
     _zone_1_territories = {StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL}
     _zone_1_disconnected = {StationCode.PN, StationCode.EY}
 
     def load_territory_owners(self, claim_log: ClaimLog) -> None:
-        # territories BG, TS, OX, VB, BE, SZ owned by zone 0
+        # territories BG, TS, OX, VB, etc. owned by zone 0
         for territory in self._zone_0_territories:
             claim_log._station_statuses[territory] = Claimant.ZONE_0
 
@@ -69,7 +68,7 @@ class TestAttachedTerritories(unittest.TestCase):
         )
 
     def test_stations_can_capture(self) -> None:
-        for station in {StationCode.PN, StationCode.EY, StationCode.SW, StationCode.PO}:
+        for station in {StationCode.PN, StationCode.EY, StationCode.TS, StationCode.SZ}:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_0,
@@ -81,7 +80,7 @@ class TestAttachedTerritories(unittest.TestCase):
                 f'Zone 0 should be able to capture {station}',
             )
 
-        for station in {StationCode.BE, StationCode.SW, StationCode.HV}:
+        for station in {StationCode.BN, StationCode.SZ, StationCode.HV}:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_1,
@@ -94,7 +93,7 @@ class TestAttachedTerritories(unittest.TestCase):
             )
 
     def test_stations_cant_capture(self) -> None:
-        for station in {StationCode.YL, StationCode.BN, StationCode.HV}:
+        for station in {StationCode.YL, StationCode.PO, StationCode.BE}:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_0,
@@ -109,9 +108,8 @@ class TestAttachedTerritories(unittest.TestCase):
         for station in {
             StationCode.PN,
             StationCode.EY,
-            StationCode.SZ,
-            StationCode.BN,
             StationCode.VB,
+            StationCode.SW,
         }:
             capturable = self.attached_territories.can_capture_station(
                 station,
@@ -177,10 +175,16 @@ class TestAdjacentTerritories(unittest.TestCase):
                 f'Zone 1 starting zone incorrectly appears in {station.value} links',
             )
 
-    def test_BE_links(self) -> None:
+    def test_VB_links(self) -> None:
         'test BE for correct links'
         self.assertEqual(
-            self.attached_territories.adjacent_zones[StationCode.BE],
-            {StationCode.EY, StationCode.VB, StationCode.SZ, StationCode.PO},
-            'Territory BE has incorrect territory links',
+            self.attached_territories.adjacent_zones[StationCode.VB],
+            {
+                StationCode.BG,
+                StationCode.EY,
+                StationCode.OX,
+                StationCode.T2,
+                StationCode.T3,
+            },
+            'Territory VB has incorrect territory links',
         )
