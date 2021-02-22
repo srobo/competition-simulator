@@ -706,9 +706,7 @@ Transform {
           children [
             Shape {
               appearance PBRAppearance {
-                baseColor 0.4431 0.4392 0.4314
-                emissiveColor 0.651 0.651 0.651
-                emissiveIntensity 0.3
+                baseColor 0.6902 0.5529 0.3412
               }
               geometry Cylinder {
                 height 0.001
