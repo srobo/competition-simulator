@@ -695,5 +695,43 @@ Transform {
       boundingObject USE SHAPE
       name "Center Wall"
     }
+    Transform {
+      translation 0 -0.0005 0
+      children [
+        Solid {
+          name "BE border"
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.4431 0.4392 0.4314
+                emissiveColor 0.651 0.651 0.651
+                emissiveIntensity 0.3
+              }
+              geometry Cylinder {
+                height 0.001
+                radius 0.6
+              }
+            }
+          ]
+        }
+        Solid {
+          name "T1 border"
+          translation 0 0 -1.5
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.6471 0.4863 0
+                emissiveColor 0.6471 0.4863 0
+                emissiveIntensity 0.4
+              }
+              geometry Cylinder {
+                height 0.001
+                radius 0.6
+              }
+            }
+          ]
+        }
+      ]
+    }
   ]
 }
