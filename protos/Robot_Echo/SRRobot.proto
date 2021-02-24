@@ -501,7 +501,8 @@ PROTO SRRobot [
           }
           name "right wheel spacer"
           physics Physics {
-            density 0.1
+            density -1
+            mass 0.001
           }
         }
         DEF LEFT_WHEEL HingeJoint {
@@ -681,7 +682,8 @@ PROTO SRRobot [
           }
           name "left wheel spacer"
           physics Physics {
-            density 0.1
+            density -1
+            mass 0.001
           }
         }
       ]
