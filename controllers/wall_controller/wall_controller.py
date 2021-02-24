@@ -21,7 +21,9 @@ def move_walls_after(seconds: int) -> None:
     timestep = robot.getBasicTimeStep()
     walls = [
         webots_utils.node_from_def(robot, 'west_moving_wall'),
+        webots_utils.node_from_def(robot, 'west_moving_triangle'),
         webots_utils.node_from_def(robot, 'east_moving_wall'),
+        webots_utils.node_from_def(robot, 'east_moving_triangle'),
     ]
 
     if controller_utils.get_robot_mode() == 'comp':
