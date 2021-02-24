@@ -715,12 +715,13 @@ Transform {
               }
             }
             SpotLight {
-              attenuation 0 0 1
+              ambientIntensity 1
               beamWidth 1.57
               cutOffAngle 1.57
-              direction 0 -1 0
-              location 0 0.8 0
-              intensity 0.2
+              direction 0 -15.2 10
+              location 0 1520 -1000
+              radius 10000
+              intensity 0.03
             }
           ]
         }
@@ -740,12 +741,13 @@ Transform {
               }
             }
             SpotLight {
-              attenuation 0 0 1
+              ambientIntensity 1
               beamWidth 1.57
               cutOffAngle 1.57
-              direction 0 -1 0
-              location 0 0.8 0
+              direction 0 -200 140
+              location 0 135 -100
               intensity 0.2
+              radius 10000
             }
           ]
         }
@@ -763,12 +765,13 @@ Transform {
               }
             }
             SpotLight {
-              attenuation 0 0 1
+              ambientIntensity 1
               beamWidth 1.57
               cutOffAngle 1.57
               direction 0 -1 0
-              location 0 0.7 0
-              intensity 0.2
+              location 0 1500 -1240
+              radius 10000
+              intensity 0.03
             }
           ]
         }
