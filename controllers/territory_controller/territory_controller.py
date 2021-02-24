@@ -2,12 +2,13 @@ import sys
 import enum
 import struct
 import logging
-from typing import Set, Dict, List, Tuple, Union
+import collections
+from typing import Set, Dict, List, Tuple, Union, Mapping
 from pathlib import Path
 from collections import defaultdict
 
 # Webots specific library
-from controller import Node, Emitter, Receiver, Supervisor
+from controller import Node, Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -30,6 +31,7 @@ class Claimant(enum.IntEnum):
     ZONE_1 = 1
 
 
+POINTS_PER_TERRITORY = 2
 LOCKED_OUT_AFTER_CLAIM = 4
 
 
@@ -146,6 +148,7 @@ class ClaimLog:
 
     def record_captures(self) -> None:
         if not self._record_arena_actions:
+            self._log_is_dirty = False  # Stop links and displays being updated every timestep
             return
 
         if not self._log_is_dirty:
@@ -166,6 +169,15 @@ class ClaimLog:
 
     def is_dirty(self) -> bool:
         return self._log_is_dirty
+
+    def get_scores(self) -> Mapping[Claimant, int]:
+        territory_counts = collections.Counter(self._station_statuses.values())
+
+        return {
+            claimant: territories_owned * POINTS_PER_TERRITORY
+            for claimant, territories_owned in territory_counts.items()
+            if claimant != Claimant.UNCLAIMED
+        }
 
 
 class AttachedTerritories:
@@ -271,6 +283,10 @@ class TerritoryController:
 
         for station_code in StationCode:
             self.set_node_colour(station_code, ZONE_COLOURS[Claimant.UNCLAIMED])
+
+        for claimant in Claimant:
+            if claimant != Claimant.UNCLAIMED:
+                self.set_score_display(claimant, 0)
 
     def set_node_colour(self, node_id: str, new_colour: Tuple[float, float, float]) -> None:
         node = self._robot.getFromDef(node_id)
@@ -447,12 +463,57 @@ class TerritoryController:
 
             self.set_node_colour(f'{stn_a}-{stn_b}', LINK_COLOURS[claimed_by])
 
+    def update_displayed_scores(self) -> None:
+        scores = self._claim_log.get_scores()
+
+        for zone, score in scores.items():
+            self.set_score_display(zone, score)
+
+    def set_score_display(self, zone: Claimant, score: int) -> None:
+        # the text is not strictly monospace
+        # but the subset of characters used roughly approximates this
+        character_width = 40
+        character_spacing = 4
+        starting_spacing = 2
+
+        score_display = get_robot_device(
+            self._robot,
+            f'SCORE_DISPLAY_{zone.value}',
+            Display,
+        )
+
+        # fill with background colour
+        score_display.setColor(0x183acc)
+        score_display.fillRectangle(
+            0, 0,
+            score_display.getWidth(),
+            score_display.getHeight(),
+        )
+
+        # setup score text
+        score_display.setColor(0xffffff)
+        score_display.setFont('Arial Black', 48, True)
+
+        score_str = str(score)
+
+        # Approx center value
+        x_used = (
+            len(score_str) * character_width +  # pixels used by characters
+            (len(score_str) - 1) * character_spacing  # pixels used between characters
+        )
+
+        x_offset = int((score_display.getWidth() - x_used) / 2) - starting_spacing
+
+        # Add the score value
+        score_display.drawText(score_str, x_offset, 8)
+
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
             self.receive_territory(station_code, receiver)
 
         if self._claim_log.is_dirty():
             self.update_territory_links()
+            self.update_displayed_scores()
 
         self._claim_log.record_captures()
 
