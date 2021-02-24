@@ -51,7 +51,6 @@ jobs:
           path: venv
           key: deps-library-${{ hashfiles('libraries.txt') }}-v2
       - name: Install Libraries
-        if: steps.cache-library.outputs.cache-hit != 'true'
         run: |
           python3 -m venv venv
           venv/bin/pip install -U pip
