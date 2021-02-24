@@ -714,15 +714,6 @@ Transform {
                 radius 0.6
               }
             }
-            SpotLight {
-              ambientIntensity 1
-              beamWidth 1.57
-              cutOffAngle 1.57
-              direction 0 -15.2 10
-              location 0 1520 -1000
-              radius 10000
-              intensity 0.03
-            }
           ]
         }
         Solid {
@@ -740,15 +731,6 @@ Transform {
                 radius 0.6
               }
             }
-            SpotLight {
-              ambientIntensity 1
-              beamWidth 1.57
-              cutOffAngle 1.57
-              direction 0 -200 140
-              location 0 135 -100
-              intensity 0.2
-              radius 10000
-            }
           ]
         }
         Solid {
@@ -763,15 +745,6 @@ Transform {
                 height 0.001
                 radius 0.6
               }
-            }
-            SpotLight {
-              ambientIntensity 1
-              beamWidth 1.57
-              cutOffAngle 1.57
-              direction 0 -1 0
-              location 0 1500 -1240
-              radius 10000
-              intensity 0.03
             }
           ]
         }
@@ -788,14 +761,6 @@ Transform {
                 radius 0.6
               }
             }
-            SpotLight {
-              attenuation 0 0 1
-              beamWidth 1.57
-              cutOffAngle 1.57
-              direction 0 -1 0
-              location 0 0.6 0
-              intensity 0.2
-            }
           ]
         }
         Solid {
@@ -811,17 +776,30 @@ Transform {
                 radius 0.6
               }
             }
-            SpotLight {
-              attenuation 0 0 1
-              beamWidth 1.57
-              cutOffAngle 1.57
-              direction 0 -1 0
-              location 0 0.6 0
-              intensity 0.2
-            }
           ]
         }
       ]
     }
   ]
+}
+
+DirectionalLight {  # BE light
+  direction -10 -15.2 0
+  intensity 0.03
+}
+DirectionalLight {  # T1 light
+  direction -147 -200 0
+  intensity 0.2
+}
+DirectionalLight {  # T0 light
+  direction -1240 -1500 0
+  intensity 0.03
+}
+DirectionalLight {  # T4 light
+  direction -101 -122 46
+  intensity 0.03
+}
+DirectionalLight {  # T5 light
+  direction -101 -122 -46
+  intensity 0.03
 }
