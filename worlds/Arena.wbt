@@ -442,7 +442,7 @@ Transform {
             metalness 0
           }
           geometry IndexedFaceSet {
-            coord Coordinate {
+            coord DEF SW-TRI Coordinate {
               point [
                 -2.7 0 1
                 -5.43 0 1
@@ -459,6 +459,19 @@ Transform {
             ]
           }
         }
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry IndexedFaceSet {
+            coord USE SW-TRI
+            coordIndex [
+              1, 5, 4, 2
+            ]
+          }
+        }
       ]
       name "South-West Arena Triangle"
       boundingObject USE SHAPE
@@ -472,7 +485,7 @@ Transform {
             metalness 0
           }
           geometry IndexedFaceSet {
-            coord Coordinate {
+            coord DEF SE-TRI Coordinate {
               point [
                 2.7 0 1
                 5.43 0 2.25
@@ -486,6 +499,19 @@ Transform {
               0, 1, 2, 3, -1,
               0, 3, 4, 5, -1,
               4, 3, 2
+            ]
+          }
+        }
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry IndexedFaceSet {
+            coord USE SE-TRI
+            coordIndex [
+              1, 5, 4, 2
             ]
           }
         }
