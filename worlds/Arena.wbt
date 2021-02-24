@@ -196,7 +196,7 @@ Robot {
       textureName "../textures/territory-labels/T5.png"
     }
     Transform {
-      translation 0 -0.0005 0
+      translation 0 -0.0015 0
       children [
         DEF PN-EY SRLink {
           translation -2.75 0 -1.275
@@ -520,7 +520,7 @@ Transform {
       boundingObject USE SHAPE
     }
     Solid {  # Floor
-      translation 0 -0.001 0
+      translation 0 -0.002 0
       children [
         DEF FLOOR Shape {
           appearance PBRAppearance {
@@ -725,7 +725,7 @@ Transform {
       name "Center Wall"
     }
     Transform {
-      translation 0 -0.0005 0
+      translation 0 -0.001 0
       children [
         Solid {
           name "BE border"
