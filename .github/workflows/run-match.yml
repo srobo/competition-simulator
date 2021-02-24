@@ -49,7 +49,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: venv
-          key: deps-library-${{ hashfiles('libraries.txt') }}
+          key: deps-library-${{ hashfiles('libraries.txt') }}-v2
       - name: Install Libraries
         if: steps.cache-library.outputs.cache-hit != 'true'
         run: |
