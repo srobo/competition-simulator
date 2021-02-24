@@ -774,6 +774,75 @@ Transform {
             }
           ]
         }
+        Solid {
+          name "T0 border"
+          translation 0 0 -3
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.6902 0.5529 0.3412
+              }
+              geometry Cylinder {
+                height 0.001
+                radius 0.6
+              }
+            }
+            SpotLight {
+              attenuation 0 0 1
+              beamWidth 1.57
+              cutOffAngle 1.57
+              direction 0 -1 0
+              location 0 0.7 0
+              intensity 0.2
+            }
+          ]
+        }
+        Solid {
+          name "T4 border"
+          translation -6.6 0 -3
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.6902 0.5529 0.3412
+              }
+              geometry Cylinder {
+                height 0.001
+                radius 0.6
+              }
+            }
+            SpotLight {
+              attenuation 0 0 1
+              beamWidth 1.57
+              cutOffAngle 1.57
+              direction 0 -1 0
+              location 0 0.6 0
+              intensity 0.2
+            }
+          ]
+        }
+        Solid {
+          name "T5 border"
+          translation 6.6 0 -3
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.6902 0.5529 0.3412
+              }
+              geometry Cylinder {
+                height 0.001
+                radius 0.6
+              }
+            }
+            SpotLight {
+              attenuation 0 0 1
+              beamWidth 1.57
+              cutOffAngle 1.57
+              direction 0 -1 0
+              location 0 0.6 0
+              intensity 0.2
+            }
+          ]
+        }
       ]
     }
   ]
