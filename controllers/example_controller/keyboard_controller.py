@@ -74,8 +74,8 @@ while True:
                 R.motors[0].m1.power = -50
 
             elif key == key_boost + key_reverse:
-                R.motors[0].m0.power = -50
-                R.motors[0].m1.power = -50
+                R.motors[0].m0.power = -100
+                R.motors[0].m1.power = -100
 
             elif key == key_left:
                 R.motors[0].m0.power = -25
