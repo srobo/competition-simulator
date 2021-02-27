@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 import enum
 import struct
@@ -29,6 +31,14 @@ class Claimant(enum.IntEnum):
     UNCLAIMED = -1
     ZONE_0 = 0
     ZONE_1 = 1
+
+    @classmethod
+    def zones(cls) -> Tuple[Claimant, ...]:
+        return tuple(
+            claimant
+            for claimant in cls
+            if claimant != cls.UNCLAIMED
+        )
 
 
 POINTS_PER_TERRITORY = 2
@@ -122,7 +132,7 @@ class ClaimLog:
         return len([
             log_station
             for log_station, claimant, _, _ in self._log
-            if log_station == station_code and claimant != Claimant.UNCLAIMED
+            if log_station == station_code and claimant in Claimant.zones()
         ])
 
     def _record_log_entry(self, entry: ClaimLogEntry) -> None:
