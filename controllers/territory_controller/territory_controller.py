@@ -120,9 +120,9 @@ class ClaimLog:
 
     def get_claim_count(self, station_code: StationCode) -> int:
         return len([
-            x
-            for x, y, _, _ in self._log
-            if x == station_code and y != Claimant.UNCLAIMED
+            log_station
+            for log_station, claimant, _, _ in self._log
+            if log_station == station_code and claimant != Claimant.UNCLAIMED
         ])
 
     def _record_log_entry(self, entry: ClaimLogEntry) -> None:
