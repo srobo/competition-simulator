@@ -351,7 +351,7 @@ class TerritoryController:
 
         if (
             self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1 and
-            claimed_by != Claimant.UNCLAIMED
+            claimed_by in Claimant.zones()
         ):
             # This next claim would trigger the "locked out" condition, so rather than
             # making the claim, instead cause a lock-out.
