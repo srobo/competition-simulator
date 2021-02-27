@@ -78,6 +78,7 @@ Robot {
       textureName "../textures/territory-labels/EY.png"
     }
     DEF BE SRTerritory {
+      translation 0 0 1.5
       territoryName "BETerritory"
       emitterName "BEEmitter"
       receiverName "BEReceiver"
@@ -168,7 +169,6 @@ Robot {
       textureName "../textures/territory-labels/T1.png"
     }
     DEF T2 SRTerritory {
-      translation 0 0 1.5
       territoryName "T2Territory"
       emitterName "T2Emitter"
       receiverName "T2Receiver"
@@ -240,11 +240,11 @@ Robot {
           size 0.2 3
           linkName "link VB-T3"
         }
-        DEF VB-T2 SRLink {
+        DEF VB-BE SRLink {
           translation -0.975 0 1.125
           rotation 0 1 0 1.2036
           size 0.2 2.1
-          linkName "link VB-T2"
+          linkName "link VB-BE"
         }
         DEF EY-T0 SRLink {
           translation -0.975 0 -1.875
@@ -253,17 +253,17 @@ Robot {
           linkName "link EY-T0"
         }
 
-        DEF T1-BE SRLink {
+        DEF T1-T2 SRLink {
           translation 0 0 -0.75
           rotation 0 1 0 0
           size 0.2 1.5
-          linkName "link T1-BE"
+          linkName "link T1-T2"
         }
-        DEF BE-T2 SRLink {
+        DEF T2-BE SRLink {
           translation 0 0 0.75
           rotation 0 1 0 0
           size 0.2 1.5
-          linkName "link BE-T2"
+          linkName "link T2-BE"
         }
 
         DEF PO-YL SRLink {
@@ -308,11 +308,11 @@ Robot {
           size 0.2 3
           linkName "link T3-SZ"
         }
-        DEF T2-SZ SRLink {
+        DEF BE-SZ SRLink {
           translation 0.975 0 1.125
           rotation 0 1 0 1.938
           size 0.2 2.1
-          linkName "link T2-SZ"
+          linkName "link BE-SZ"
         }
         DEF T0-PO SRLink {
           translation 0.975 0 -1.875
@@ -703,7 +703,7 @@ Transform {
       translation 0 -0.001 0
       children [
         Solid {
-          name "BE border"
+          name "T2 border"
           children [
             Shape {
               appearance PBRAppearance {
@@ -783,7 +783,7 @@ Transform {
   ]
 }
 
-DirectionalLight {  # BE light
+DirectionalLight {  # T2 light
   direction -10 -15.2 0
   intensity 0.03
 }

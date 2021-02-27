@@ -84,10 +84,10 @@ TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.EY, StationCode.VB),  # EY-VB
     (StationCode.T4, StationCode.PN),  # T4-PN
     (StationCode.VB, StationCode.T3),  # VB-T3
-    (StationCode.VB, StationCode.T2),  # VB-T2
+    (StationCode.VB, StationCode.BE),  # VB-BE
     (StationCode.EY, StationCode.T0),  # EY-T0
-    (StationCode.T1, StationCode.BE),  # T1-BE
-    (StationCode.BE, StationCode.T2),  # BE-T2
+    (StationCode.T1, StationCode.T2),  # T1-T2
+    (StationCode.T2, StationCode.BE),  # T2-BE
     (StationCode.PO, StationCode.YL),  # PO-YL
     (StationCode.SZ, StationCode.HV),  # SZ-HV
     (StationCode.SZ, StationCode.BN),  # SZ-BN
@@ -95,7 +95,7 @@ TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PO, StationCode.SZ),  # PO-SZ
     (StationCode.YL, StationCode.T5),  # YL-T5
     (StationCode.T3, StationCode.SZ),  # T3-SZ
-    (StationCode.T2, StationCode.SZ),  # T2-SZ
+    (StationCode.BE, StationCode.SZ),  # BE-SZ
     (StationCode.T0, StationCode.PO),  # T0-PO
     # These links are between territories and the starting zones
     (TerritoryRoot.z0, StationCode.PN),  # z0-PN
