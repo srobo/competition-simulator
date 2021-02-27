@@ -4,6 +4,15 @@ from controller import Keyboard
 KEYBOARD_SAMPLING_FREQUENCY = 16
 NO_KEY_PRESSED = -1
 
+CONTROLS = {
+    "forward": ("W", "I"),
+    "reverse": ("S", "K"),
+    "left": ("A", "J"),
+    "right": ("D", "L"),
+    "claim": ("E", "O"),
+    "sense": ("Q", "U"),
+}
+
 
 def print_distance_sensors(robot: Robot) -> None:
     distance_sensor_names = [
@@ -28,6 +37,13 @@ R = Robot()
 keyboard = Keyboard()
 keyboard.enable(KEYBOARD_SAMPLING_FREQUENCY)
 
+key_forward = ord(CONTROLS["forward"][R.zone])
+key_reverse = ord(CONTROLS["reverse"][R.zone])
+key_left = ord(CONTROLS["left"][R.zone])
+key_right = ord(CONTROLS["right"][R.zone])
+key_claim = ord(CONTROLS["claim"][R.zone])
+key_sense = ord(CONTROLS["sense"][R.zone])
+
 print(
     "Note: you need to click on 3D viewport for keyboard events to be picked "
     "up by webots",
@@ -43,26 +59,26 @@ while True:
     else:
         while key != NO_KEY_PRESSED:
 
-            if key == ord('W'):
+            if key == key_forward:
                 R.motors[0].m0.power = 50
                 R.motors[0].m1.power = 50
 
-            elif key == ord('S'):
+            elif key == key_reverse:
                 R.motors[0].m0.power = -50
                 R.motors[0].m1.power = -50
 
-            elif key == ord('A'):
+            elif key == key_left:
                 R.motors[0].m0.power = -25
                 R.motors[0].m1.power = 25
 
-            elif key == ord('D'):
+            elif key == key_right:
                 R.motors[0].m0.power = 25
                 R.motors[0].m1.power = -25
 
-            elif key == ord('E'):
+            elif key == key_claim:
                 R.radio.claim_territory()
 
-            elif key == ord('Q'):
+            elif key == key_sense:
                 print_distance_sensors(R)
 
             # Work our way through all the enqueued key presses before dropping
