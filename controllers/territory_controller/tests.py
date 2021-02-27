@@ -93,7 +93,7 @@ class TestAttachedTerritories(unittest.TestCase):
             )
 
     def test_stations_cant_capture(self) -> None:
-        for station in {StationCode.YL, StationCode.PO, StationCode.BE}:
+        for station in {StationCode.YL, StationCode.PO, StationCode.T2}:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_0,
@@ -183,7 +183,7 @@ class TestAdjacentTerritories(unittest.TestCase):
                 StationCode.BG,
                 StationCode.EY,
                 StationCode.OX,
-                StationCode.T2,
+                StationCode.BE,
                 StationCode.T3,
             },
             'Territory VB has incorrect territory links',
