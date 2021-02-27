@@ -33,12 +33,12 @@ class Claimant(enum.IntEnum):
     ZONE_1 = 1
 
     @classmethod
-    def zones(cls) -> Tuple[Claimant, ...]:
-        return tuple(
+    def zones(cls) -> Set[Claimant]:
+        return {
             claimant
             for claimant in cls
             if claimant != cls.UNCLAIMED
-        )
+        }
 
 
 POINTS_PER_TERRITORY = 2
