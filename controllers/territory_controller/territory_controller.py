@@ -119,7 +119,11 @@ class ClaimLog:
         return station_code in self._locked_territories
 
     def get_claim_count(self, station_code: StationCode) -> int:
-        return len([x for x, _, _, _ in self._log if x == station_code])
+        return len([
+            x
+            for x, y, _, _ in self._log
+            if x == station_code and y != Claimant.UNCLAIMED
+        ])
 
     def _record_log_entry(self, entry: ClaimLogEntry) -> None:
         self._log.append(entry)
@@ -335,7 +339,10 @@ class TerritoryController:
             )
             return
 
-        if self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1:
+        if (
+            self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1 and
+            claimed_by != Claimant.UNCLAIMED
+        ):
             # This next claim would trigger the "locked out" condition, so rather than
             # making the claim, instead cause a lock-out.
             set_node_colour(station, LOCKED_COLOUR)
