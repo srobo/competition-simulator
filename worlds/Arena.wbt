@@ -359,6 +359,74 @@ Robot {
         }
       ]
     }
+    Transform {
+      translation -0.6 0.31 -2
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 0 1
+            roughness 1
+            metalness 0
+          }
+          geometry Plane {
+              size 1 0.7
+          }
+        }
+        Display {
+          name "SCORE_DISPLAY_0"
+          translation 0 0.01 0
+          height 64
+          width 96
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 1 1 1
+                roughness 1
+                metalness 0
+                baseColorMap ImageTexture {}
+              }
+              geometry Plane {
+                  size 0.9 0.6
+              }
+            }
+          ]
+        }
+      ]
+    }
+    Transform {
+      translation 0.6 0.31 -2
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Plane {
+              size 1 0.7
+          }
+        }
+        Display {
+          name "SCORE_DISPLAY_1"
+          translation 0 0.01 0
+          height 64
+          width 96
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 1 1 1
+                roughness 1
+                metalness 0
+                baseColorMap ImageTexture {}
+              }
+              geometry Plane {
+                  size 0.9 0.6
+              }
+            }
+          ]
+        }
+      ]
+    }
   ]
 }
 DEF WALL_CTRL Robot {
