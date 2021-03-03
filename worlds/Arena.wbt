@@ -154,45 +154,45 @@ Robot {
       receiverName "SZReceiver"
       textureName "../textures/territory-labels/SZ.png"
     }
-    DEF T0 SRTerritory {
+    DEF FL SRTerritory {
       translation 0 0 -3
-      territoryName "T0Territory"
-      emitterName "T0Emitter"
-      receiverName "T0Receiver"
+      territoryName "FLTerritory"
+      emitterName "FLEmitter"
+      receiverName "FLReceiver"
       textureName "../textures/territory-labels/T0.png"
     }
-    DEF T1 SRTerritory {
+    DEF YT SRTerritory {
       translation 0 0 -1.5
-      territoryName "T1Territory"
-      emitterName "T1Emitter"
-      receiverName "T1Receiver"
+      territoryName "YTTerritory"
+      emitterName "YTEmitter"
+      receiverName "YTReceiver"
       textureName "../textures/territory-labels/T1.png"
     }
-    DEF T2 SRTerritory {
-      territoryName "T2Territory"
-      emitterName "T2Emitter"
-      receiverName "T2Receiver"
+    DEF HA SRTerritory {
+      territoryName "HATerritory"
+      emitterName "HAEmitter"
+      receiverName "HAReceiver"
       textureName "../textures/territory-labels/T2.png"
     }
-    DEF T3 SRTerritory {
+    DEF PL SRTerritory {
       translation 0 0 3
-      territoryName "T3Territory"
-      emitterName "T3Emitter"
-      receiverName "T3Receiver"
+      territoryName "PLTerritory"
+      emitterName "PLEmitter"
+      receiverName "PLReceiver"
       textureName "../textures/territory-labels/T3.png"
     }
-    DEF T4 SRTerritory {
+    DEF TH SRTerritory {
       translation -6.6 0 -3
-      territoryName "T4Territory"
-      emitterName "T4Emitter"
-      receiverName "T4Receiver"
+      territoryName "THTerritory"
+      emitterName "THEmitter"
+      receiverName "THReceiver"
       textureName "../textures/territory-labels/T4.png"
     }
-    DEF T5 SRTerritory {
+    DEF SF SRTerritory {
       translation 6.6 0 -3
-      territoryName "T5Territory"
-      emitterName "T5Emitter"
-      receiverName "T5Receiver"
+      territoryName "SFTerritory"
+      emitterName "SFEmitter"
+      receiverName "SFReceiver"
       textureName "../textures/territory-labels/T5.png"
     }
     Transform {
@@ -228,17 +228,17 @@ Robot {
           size 0.2 1.5
           linkName "link EY-VB"
         }
-        DEF T4-PN SRLink {
+        DEF TH-PN SRLink {
           translation -5.4 0 -2.4
           rotation 0 1 0 1.1071
           size 0.2 2.7
-          linkName "link T4-PN"
+          linkName "link TH-PN"
         }
-        DEF VB-T3 SRLink {
+        DEF VB-PL SRLink {
           translation -0.975 0 1.875
           rotation 0 1 0 0.7141
           size 0.2 3
-          linkName "link VB-T3"
+          linkName "link VB-PL"
         }
         DEF VB-BE SRLink {
           translation -0.975 0 1.125
@@ -246,24 +246,24 @@ Robot {
           size 0.2 2.1
           linkName "link VB-BE"
         }
-        DEF EY-T0 SRLink {
+        DEF EY-FL SRLink {
           translation -0.975 0 -1.875
           rotation 0 1 0 2.4275
           size 0.2 3
-          linkName "link EY-T0"
+          linkName "link EY-FL"
         }
 
-        DEF T1-T2 SRLink {
+        DEF YT-HA SRLink {
           translation 0 0 -0.75
           rotation 0 1 0 0
           size 0.2 1.5
-          linkName "link T1-T2"
+          linkName "link YT-HA"
         }
-        DEF T2-BE SRLink {
+        DEF HA-BE SRLink {
           translation 0 0 0.75
           rotation 0 1 0 0
           size 0.2 1.5
-          linkName "link T2-BE"
+          linkName "link HA-BE"
         }
 
         DEF PO-YL SRLink {
@@ -296,17 +296,17 @@ Robot {
           size 0.2 1.5
           linkName "link PO-SZ"
         }
-        DEF YL-T5 SRLink {
+        DEF YL-SF SRLink {
           translation 5.4 0 -2.4
           rotation 0 1 0 2.0344
           size 0.2 2.7
-          linkName "link YL-T5"
+          linkName "link YL-SF"
         }
-        DEF T3-SZ SRLink {
+        DEF PL-SZ SRLink {
           translation 0.975 0 1.875
           rotation 0 1 0 2.4275
           size 0.2 3
-          linkName "link T3-SZ"
+          linkName "link PL-SZ"
         }
         DEF BE-SZ SRLink {
           translation 0.975 0 1.125
@@ -314,11 +314,11 @@ Robot {
           size 0.2 2.1
           linkName "link BE-SZ"
         }
-        DEF T0-PO SRLink {
+        DEF FL-PO SRLink {
           translation 0.975 0 -1.875
           rotation 0 1 0 0.7141
           size 0.2 3
-          linkName "link T0-PO"
+          linkName "link FL-PO"
         }
 
         DEF z0-PN SRLink {
