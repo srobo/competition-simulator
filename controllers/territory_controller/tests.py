@@ -196,11 +196,9 @@ class TestTerritoryLockout(unittest.TestCase):
     _zone_1_territories = {StationCode.YL, StationCode.PO}
 
     def load_territory_owners(self, claim_log: ClaimLog) -> None:
-        # set territories owned by zone 0
         for territory in self._zone_0_territories:
             claim_log._station_statuses[territory] = Claimant.ZONE_0
 
-        # set territories owned by zone 1
         for territory in self._zone_1_territories:
             claim_log._station_statuses[territory] = Claimant.ZONE_1
 
