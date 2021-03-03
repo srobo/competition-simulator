@@ -1,7 +1,7 @@
 import re
 import unittest
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from territory_controller import (
     Claimant,
@@ -205,12 +205,7 @@ class TestTerritoryLockout(unittest.TestCase):
     @patch('controller.Supervisor.getFromDef')
     @patch('territory_controller.get_robot_device')
     @patch('territory_controller.TerritoryController.set_score_display')
-    def setUp(
-        self,
-        mock_score_display: Mock,
-        mock_get_robot: Mock,
-        mock_getFromDef: Mock,
-    ) -> None:
+    def setUp(self, _: object, __: object, ___: object) -> None:
         super().setUp()
         claim_log = ClaimLog(record_arena_actions=False)
         self.load_territory_owners(claim_log)
@@ -221,7 +216,7 @@ class TestTerritoryLockout(unittest.TestCase):
         )
 
     @patch('controller.Supervisor.getFromDef')
-    def test_territory_lockout(self, mock_getFromDef: Mock) -> None:
+    def test_territory_lockout(self, _: object) -> None:
         """
         Test a territory is locked after the correct number of claims and
         disconnected territories aren't also locked
@@ -257,7 +252,7 @@ class TestTerritoryLockout(unittest.TestCase):
         )
 
     @patch('controller.Supervisor.getFromDef')
-    def test_self_lockout(self, mock_getFromDef: Mock) -> None:
+    def test_self_lockout(self, _: object) -> None:
         "Test a territory is locked after the correct number of claims by its own owner"
         for i in range(LOCKED_OUT_AFTER_CLAIM):
             # lock status is tested before capturing since the final
