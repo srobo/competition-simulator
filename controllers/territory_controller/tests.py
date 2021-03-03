@@ -204,16 +204,21 @@ class TestTerritoryLockout(unittest.TestCase):
 
     @patch('controller.Supervisor.getFromDef')
     @patch('territory_controller.get_robot_device')
-    def setUp(self, mock_get_robot: Mock, mock_getFromDef: Mock) -> None:
+    @patch('territory_controller.TerritoryController.set_score_display')
+    def setUp(
+        self,
+        mock_score_display: Mock,
+        mock_get_robot: Mock,
+        mock_getFromDef: Mock,
+    ) -> None:
         super().setUp()
         claim_log = ClaimLog(record_arena_actions=False)
         self.load_territory_owners(claim_log)
         self.attached_territories = AttachedTerritories(claim_log)
-        with patch('territory_controller.TerritoryController.set_score_display'):
-            self.territory_controller = TerritoryController(
-                claim_log,
-                self.attached_territories,
-            )
+        self.territory_controller = TerritoryController(
+            claim_log,
+            self.attached_territories,
+        )
 
     @patch('controller.Supervisor.getFromDef')
     def test_territory_lockout(self, mock_getFromDef: Mock) -> None:
