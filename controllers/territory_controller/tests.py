@@ -232,8 +232,11 @@ class TestTerritoryLockout(unittest.TestCase):
                     f"Territory {station.value} locked early on claim {i}",
                 )
 
-            # capture BE, SZ by opposing side
-            claimant = Claimant(i % 2)
+            # capture BE, SZ by alternating sides
+            if i % 2 == 0:
+                claimant = Claimant.ZONE_0
+            else:
+                claimant = Claimant.ZONE_1
             for station in [StationCode.BE, StationCode.SZ]:
                 # when BE becomes locked SZ will be uncapturable
                 # which will prevent it from also locking
