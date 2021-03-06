@@ -41,7 +41,6 @@ class Claimant(enum.IntEnum):
         }
 
 
-POINTS_PER_TERRITORY = 2
 LOCKED_OUT_AFTER_CLAIM = 4
 
 
@@ -73,6 +72,7 @@ class TerritoryRoot(str, enum.Enum):
     z1 = 'z1'
 
 
+DEFAULT_POINTS_PER_TERRITORY = 2
 EXTRA_VALUE_TERRITORIES = {
     StationCode.TH: 4,
     StationCode.FL: 4,
@@ -212,7 +212,7 @@ class ClaimLog:
 
         return {
             zone: sum(
-                EXTRA_VALUE_TERRITORIES.get(territory, POINTS_PER_TERRITORY)
+                EXTRA_VALUE_TERRITORIES.get(territory, DEFAULT_POINTS_PER_TERRITORY)
                 for territory in zone_to_territories.get(zone, [])
             )
             for zone in Claimant.zones()
