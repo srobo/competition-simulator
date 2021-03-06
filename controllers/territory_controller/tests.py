@@ -258,7 +258,7 @@ class TestTerritoryLockout(unittest.TestCase):
         self.claim_territory(StationCode.PN, Claimant.ZONE_0)
 
         self.assertLocked(StationCode.PN, "after third claim")
-        self.assertNotLocked(StationCode.EY, "after third claim")
+        self.assertNotLocked(StationCode.EY, "after lock-out of PN")
 
     @patch('controller.Supervisor.getFromDef')
     def test_self_lockout(self, _: object) -> None:
