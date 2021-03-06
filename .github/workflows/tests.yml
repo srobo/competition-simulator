@@ -39,6 +39,12 @@ jobs:
         if ! command -v python3 &> /dev/null; then
           ln -s $(which python) /usr/bin/python3
         fi
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      id: cache-dep
+      with:
+        path: venv
+        key: deps-py${{ matrix.python-version }}-${{ matrix.test-os }}-${{ hashfiles('all-requirements.txt') }}-v2
     - name: Install Dependencies - Posix
       if: matrix.test-os != 'windows-latest'
       run: |
