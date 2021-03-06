@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 import enum
 import struct
@@ -29,6 +31,14 @@ class Claimant(enum.IntEnum):
     UNCLAIMED = -1
     ZONE_0 = 0
     ZONE_1 = 1
+
+    @classmethod
+    def zones(cls) -> Set[Claimant]:
+        return {
+            claimant
+            for claimant in cls
+            if claimant != cls.UNCLAIMED
+        }
 
 
 POINTS_PER_TERRITORY = 2
@@ -132,7 +142,11 @@ class ClaimLog:
         return station_code in self._locked_territories
 
     def get_claim_count(self, station_code: StationCode) -> int:
-        return len([x for x, _, _, _ in self._log if x == station_code])
+        return len([
+            log_station
+            for log_station, claimant, _, _ in self._log
+            if log_station == station_code and claimant in Claimant.zones()
+        ])
 
     def _record_log_entry(self, entry: ClaimLogEntry) -> None:
         self._log.append(entry)
@@ -348,7 +362,10 @@ class TerritoryController:
             )
             return
 
-        if self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1:
+        if (
+            self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1 and
+            claimed_by in Claimant.zones()
+        ):
             # This next claim would trigger the "locked out" condition, so rather than
             # making the claim, instead cause a lock-out.
             set_node_colour(station, LOCKED_COLOUR)
