@@ -26,7 +26,7 @@ class TestAttachedTerritories(unittest.TestCase):
         StationCode.TS,
         StationCode.OX,
         StationCode.VB,
-        StationCode.T3,
+        StationCode.PL,
     }
     _zone_1_territories = {StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL}
     _zone_1_disconnected = {StationCode.PN, StationCode.EY}
@@ -96,7 +96,7 @@ class TestAttachedTerritories(unittest.TestCase):
             )
 
     def test_stations_cant_capture(self) -> None:
-        for station in {StationCode.YL, StationCode.PO, StationCode.T2}:
+        for station in {StationCode.YL, StationCode.PO, StationCode.HA}:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_0,
@@ -187,7 +187,7 @@ class TestAdjacentTerritories(unittest.TestCase):
                 StationCode.EY,
                 StationCode.OX,
                 StationCode.BE,
-                StationCode.T3,
+                StationCode.PL,
             },
             'Territory VB has incorrect territory links',
         )

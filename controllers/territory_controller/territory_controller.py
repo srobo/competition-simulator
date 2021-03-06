@@ -60,12 +60,12 @@ class StationCode(str, enum.Enum):
     SW = 'SW'
     BN = 'BN'
     HV = 'HV'
-    T0 = 'T0'
-    T1 = 'T1'
-    T2 = 'T2'
-    T3 = 'T3'
-    T4 = 'T4'
-    T5 = 'T5'
+    FL = 'FL'
+    YT = 'YT'
+    HA = 'HA'
+    PL = 'PL'
+    TH = 'TH'
+    SF = 'SF'
 
 
 class TerritoryRoot(str, enum.Enum):
@@ -94,21 +94,21 @@ TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.OX, StationCode.VB),  # OX-VB
     (StationCode.OX, StationCode.TS),  # OX-TS
     (StationCode.EY, StationCode.VB),  # EY-VB
-    (StationCode.T4, StationCode.PN),  # T4-PN
-    (StationCode.VB, StationCode.T3),  # VB-T3
+    (StationCode.TH, StationCode.PN),  # TH-PN
+    (StationCode.VB, StationCode.PL),  # VB-PL
     (StationCode.VB, StationCode.BE),  # VB-BE
-    (StationCode.EY, StationCode.T0),  # EY-T0
-    (StationCode.T1, StationCode.T2),  # T1-T2
-    (StationCode.T2, StationCode.BE),  # T2-BE
+    (StationCode.EY, StationCode.FL),  # EY-FL
+    (StationCode.YT, StationCode.HA),  # YT-HA
+    (StationCode.HA, StationCode.BE),  # HA-BE
     (StationCode.PO, StationCode.YL),  # PO-YL
     (StationCode.SZ, StationCode.HV),  # SZ-HV
     (StationCode.SZ, StationCode.BN),  # SZ-BN
     (StationCode.SW, StationCode.BN),  # SW-BN
     (StationCode.PO, StationCode.SZ),  # PO-SZ
-    (StationCode.YL, StationCode.T5),  # YL-T5
-    (StationCode.T3, StationCode.SZ),  # T3-SZ
+    (StationCode.YL, StationCode.SF),  # YL-SF
+    (StationCode.PL, StationCode.SZ),  # PL-SZ
     (StationCode.BE, StationCode.SZ),  # BE-SZ
-    (StationCode.T0, StationCode.PO),  # T0-PO
+    (StationCode.FL, StationCode.PO),  # FL-PO
     # These links are between territories and the starting zones
     (TerritoryRoot.z0, StationCode.PN),  # z0-PN
     (TerritoryRoot.z0, StationCode.BG),  # z0-BG
