@@ -244,8 +244,8 @@ class TestTerritoryLockout(unittest.TestCase):
 
         The reduce map in this test looks like this:
 
-            z0 -- PN -- z1
-                   ┕- EY
+            z0 ── PN ── z1
+                   └─ EY
 
         Thus EY is claimable only after PN has been claimed and can easily
         become unclaimed when PN is claimed. This test is validating both that
