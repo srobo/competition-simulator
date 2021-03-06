@@ -240,7 +240,17 @@ class TestTerritoryLockout(unittest.TestCase):
     def test_territory_lockout(self, _: object) -> None:
         """
         Test a territory is locked after the correct number of claims and
-        disconnected territories aren't also locked
+        disconnected territories aren't also locked.
+
+        The reduce map in this test looks like this:
+
+            z0 -- PN -- z1
+                   ┕- EY
+
+        Thus EY is claimable only after PN has been claimed and can easily
+        become unclaimed when PN is claimed. This test is validating both that
+        PN becomes locked at the right point and also that EY does not become
+        locked at that point.
         """
 
         self.claim_territory(StationCode.PN, Claimant.ZONE_0)
