@@ -360,7 +360,7 @@ Robot {
       ]
     }
     Transform {
-      translation -0.6 0.31 -2
+      translation -2.3 0.31 -3
       children [
         Shape {
           appearance PBRAppearance {
@@ -394,7 +394,7 @@ Robot {
       ]
     }
     Transform {
-      translation 0.6 0.31 -2
+      translation 2.3 0.31 -3
       children [
         Shape {
           appearance PBRAppearance {
