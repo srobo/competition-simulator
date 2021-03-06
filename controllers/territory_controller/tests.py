@@ -274,4 +274,3 @@ class TestTerritoryLockout(unittest.TestCase):
             self.claim_territory(StationCode.PN, Claimant.ZONE_0)
 
         self.assertLocked(StationCode.PN, f"after {LOCKED_OUT_AFTER_CLAIM} claims")
-
