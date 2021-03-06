@@ -196,9 +196,6 @@ class TestAdjacentTerritories(unittest.TestCase):
 class TestTerritoryLockout(unittest.TestCase):
     "Test that individual territories become 'locked' when claimed a set number of times"
 
-    _zone_0_territories = {StationCode.PN, StationCode.EY}
-    _zone_1_territories = {StationCode.YL, StationCode.PO}
-
     def assertLocked(self, station: StationCode, context: str) -> None:
         self.assertTrue(
             self.territory_controller._claim_log.is_locked(station),
@@ -214,20 +211,12 @@ class TestTerritoryLockout(unittest.TestCase):
     def claim_territory(self, station_code: StationCode, claimed_by: Claimant) -> None:
         self.territory_controller.claim_territory(station_code, claimed_by, claim_time=0)
 
-    def load_territory_owners(self, claim_log: ClaimLog) -> None:
-        for territory in self._zone_0_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_0
-
-        for territory in self._zone_1_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_1
-
     @patch('controller.Supervisor.getFromDef')
     @patch('territory_controller.get_robot_device')
     @patch('territory_controller.TerritoryController.set_score_display')
     def setUp(self, _: object, __: object, ___: object) -> None:
         super().setUp()
         claim_log = ClaimLog(record_arena_actions=False)
-        self.load_territory_owners(claim_log)
         self.attached_territories = AttachedTerritories(claim_log)
         self.territory_controller = TerritoryController(
             claim_log,
@@ -275,21 +264,26 @@ class TestTerritoryLockout(unittest.TestCase):
         self.assertNotLocked(StationCode.EY, "after lock-out of PN")
 
     @patch('controller.Supervisor.getFromDef')
+    @patch('territory_controller.TERRITORY_LINKS', new={
+        (StationCode.PN, StationCode.EY),
+        (TerritoryRoot.z0, StationCode.PN),
+        (TerritoryRoot.z1, StationCode.PN),
+    })
     def test_self_lockout(self, _: object) -> None:
         "Test a territory is locked after the correct number of claims by its own owner"
         for i in range(LOCKED_OUT_AFTER_CLAIM):
             # lock status is tested before capturing since the final
             # iteration will lock the territory
             self.assertFalse(  # assert BE, SZ unlocked
-                self.territory_controller._claim_log.is_locked(StationCode.BE),
+                self.territory_controller._claim_log.is_locked(StationCode.PN),
                 f"Territory BE locked early on claim {i}",
             )
 
             # attempt to claim BE, again
-            self.territory_controller.claim_territory(StationCode.BE, Claimant.ZONE_0, 0)
+            self.territory_controller.claim_territory(StationCode.PN, Claimant.ZONE_0, 0)
 
         # assert BE locked
         self.assertTrue(
-            self.territory_controller._claim_log.is_locked(StationCode.BE),
+            self.territory_controller._claim_log.is_locked(StationCode.PN),
             f"Territory BE failed to lock after {LOCKED_OUT_AFTER_CLAIM} claims",
         )
