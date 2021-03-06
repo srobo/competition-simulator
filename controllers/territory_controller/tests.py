@@ -128,31 +128,31 @@ class TestAttachedTerritories(unittest.TestCase):
 
 
 class TestLiveScoring(unittest.TestCase):
+    "Test the live scoring computed in the claim log using tests from the scorer"
     _tla_to_zone = {
         'ABC': Claimant.ZONE_0,
         'DEF': Claimant.ZONE_1,
     }
 
-    def setUp(self) -> None:
-        super().setUp()
-        self.claim_log = ClaimLog(record_arena_actions=False)
-
-    def load_territory_owners(
+    def calculate_scores(
         self,
         territory_claims: List[Dict[str, Union[str, int, float]]],
-    ) -> None:
+    ) -> Mapping[Claimant, int]:
+        claim_log = ClaimLog(record_arena_actions=False)
+
         for claim in territory_claims:
             territory = StationCode(claim['station_code'])
             claimant = Claimant(claim['zone'])
-            self.claim_log._station_statuses[territory] = claimant
+            claim_log._station_statuses[territory] = claimant
+
+        return claim_log.get_scores()
 
     def assertScores(
         self,
         expected_scores_tla: Mapping[str, int],
         territory_claims: List[Dict[str, Union[str, int, float]]],
     ) -> None:
-        self.load_territory_owners(territory_claims)
-        actual_scores = self.claim_log.get_scores()
+        actual_scores = self.calculate_scores(territory_claims)
 
         # swap the TLAs used by the scorer with claimant zones
         expected_scores: Mapping[Claimant, int] = {
