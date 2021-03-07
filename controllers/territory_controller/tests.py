@@ -210,13 +210,6 @@ class TestTerritoryLockout(unittest.TestCase):
     def claim_territory(self, station_code: StationCode, claimed_by: Claimant) -> None:
         self.territory_controller.claim_territory(station_code, claimed_by, claim_time=0)
 
-    def load_territory_owners(self, claim_log: ClaimLog) -> None:
-        for territory in self._zone_0_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_0
-
-        for territory in self._zone_1_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_1
-
     @patch('controller.Supervisor.getFromDef')
     @patch('territory_controller.get_robot_device')
     @patch('territory_controller.TerritoryController.set_score_display')
@@ -228,7 +221,6 @@ class TestTerritoryLockout(unittest.TestCase):
     def setUp(self, _: object, __: object, ___: object) -> None:
         super().setUp()
         claim_log = ClaimLog(record_arena_actions=False)
-        self.load_territory_owners(claim_log)
         self.attached_territories = AttachedTerritories(claim_log)
         self.territory_controller = TerritoryController(
             claim_log,
