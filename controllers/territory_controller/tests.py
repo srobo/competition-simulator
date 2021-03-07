@@ -1,4 +1,5 @@
 import re
+import random
 import unittest
 from typing import Dict, List, Union, Mapping
 from pathlib import Path
@@ -7,6 +8,7 @@ from unittest.mock import patch
 from territory_controller import (
     Claimant,
     ClaimLog,
+    ActionTimer,
     StationCode,
     TerritoryRoot,
     TERRITORY_LINKS,
@@ -483,3 +485,68 @@ class TestTerritoryLockout(unittest.TestCase):
             self.claim_territory(StationCode.PN, Claimant.ZONE_0)
 
         self.assertLocked(StationCode.PN, f"after {LOCKED_OUT_AFTER_CLAIM} claims")
+
+
+class TestActionTimer(unittest.TestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        self.action_timer = ActionTimer(1.9)
+
+    def execute_timer(self, duration: float, expected_result: bool) -> None:
+        start_time = random.uniform(0, 1000)
+        self.action_timer.begin_action(StationCode.PN, Claimant.ZONE_1, start_time)
+
+        actual_result = self.action_timer.has_begun_action_in_time_window(
+            StationCode.PN,
+            Claimant.ZONE_1,
+            start_time + duration,
+        )
+
+        self.assertEqual(
+            actual_result,
+            expected_result,
+            f"Timer gave incorect result with duration {duration}",
+        )
+
+    def test_exact_time(self) -> None:
+        self.execute_timer(1.9, True)
+
+    def test_too_short_time(self) -> None:
+        self.execute_timer(1.7, False)
+
+    def test_too_long_time(self) -> None:
+        self.execute_timer(2.2, False)
+
+    def test_marginal_short_time(self) -> None:
+        self.execute_timer(1.82, True)
+
+    def test_marginal_long_time(self) -> None:
+        self.execute_timer(2.08, True)
+
+    def test_different_stations(self) -> None:
+        start_time = random.uniform(0, 1000)
+        # Start action with station PN
+        self.action_timer.begin_action(StationCode.PN, Claimant.ZONE_1, start_time)
+
+        # Attempt to complete action with SZ
+        result = self.action_timer.has_begun_action_in_time_window(
+            StationCode.SZ,
+            Claimant.ZONE_1,
+            start_time + 1.9,
+        )
+
+        self.assertFalse(result)
+
+    def test_different_claimants(self) -> None:
+        start_time = random.uniform(0, 1000)
+        # Zone 0 starts action
+        self.action_timer.begin_action(StationCode.PN, Claimant.ZONE_0, start_time)
+
+        # Zone 1 attempts to complete action
+        result = self.action_timer.has_begun_action_in_time_window(
+            StationCode.PN,
+            Claimant.ZONE_1,
+            start_time + 1.9,
+        )
+
+        self.assertFalse(result)
