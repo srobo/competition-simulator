@@ -5,7 +5,7 @@ import enum
 import struct
 import logging
 import collections
-from typing import Set, Dict, List, Tuple, Union, Mapping
+from typing import Set, Dict, List, Tuple, Union, Mapping, NamedTuple
 from pathlib import Path
 from collections import defaultdict
 
@@ -106,7 +106,11 @@ TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
 }
 
 
-ClaimLogEntry = Tuple[StationCode, Claimant, float, bool]
+class ClaimLogEntry(NamedTuple):
+    station_code: StationCode
+    claimant: Claimant
+    claim_time: float
+    locked: bool = False
 
 
 class ClaimLog:
@@ -130,9 +134,12 @@ class ClaimLog:
 
     def get_claim_count(self, station_code: StationCode) -> int:
         return len([
-            log_station
-            for log_station, claimant, _, _ in self._log
-            if log_station == station_code and claimant in Claimant.zones()
+            claim.station_code
+            for claim in self._log
+            if (
+                claim.station_code == station_code and
+                claim.claimant in Claimant.zones()
+            )
         ])
 
     def _record_log_entry(self, entry: ClaimLogEntry) -> None:
@@ -145,7 +152,7 @@ class ClaimLog:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        self._record_log_entry((station_code, claimed_by, claim_time, False))
+        self._record_log_entry(ClaimLogEntry(station_code, claimed_by, claim_time))
         print(f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s")  # noqa:T001
         self._station_statuses[station_code] = claimed_by
 
@@ -155,7 +162,12 @@ class ClaimLog:
         locked_by: Claimant,
         claim_time: float,
     ) -> None:
-        self._record_log_entry((station_code, Claimant.UNCLAIMED, claim_time, True))
+        self._record_log_entry(ClaimLogEntry(
+            station_code,
+            Claimant.UNCLAIMED,
+            claim_time,
+            locked=True,
+        ))
         print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")  # noqa:T001
         self._station_statuses[station_code] = Claimant.UNCLAIMED
         self._locked_territories.add(station_code)
@@ -171,12 +183,12 @@ class ClaimLog:
 
         controller_utils.record_arena_data({'territory_claims': [
             {
-                'zone': claimed_by.value,
-                'station_code': station_code.value,
-                'time': claim_time,
-                'locked': locked,
+                'zone': claim.claimant.value,
+                'station_code': claim.station_code.value,
+                'time': claim.claim_time,
+                'locked': claim.locked,
             }
-            for station_code, claimed_by, claim_time, locked in self._log
+            for claim in self._log
         ]})
 
         self._log_is_dirty = False
