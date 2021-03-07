@@ -8,6 +8,7 @@ import collections
 from typing import Set, Dict, List, Tuple, Union, Mapping, NamedTuple
 from pathlib import Path
 from collections import defaultdict
+from dataclasses import dataclass
 
 # Webots specific library
 from controller import Node, Display, Emitter, Receiver, Supervisor
@@ -106,6 +107,12 @@ TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
 }
 
 
+@dataclass
+class StationStatus:
+    owner: Claimant = Claimant.UNCLAIMED
+    locked: bool = False
+
+
 class ClaimLogEntry(NamedTuple):
     station_code: StationCode
     claimant: Claimant
@@ -117,20 +124,19 @@ class ClaimLog:
     def __init__(self, record_arena_actions: bool) -> None:
         self._record_arena_actions = record_arena_actions
 
-        self._station_statuses: Dict[StationCode, Claimant] = {
-            code: Claimant.UNCLAIMED for code in StationCode
+        self._station_statuses: Dict[StationCode, StationStatus] = {
+            code: StationStatus() for code in StationCode
         }
-        self._locked_territories: Set[StationCode] = set()
 
         self._log: List[ClaimLogEntry] = []
         # Starting with a dirty log ensures the structure is written for every match.
         self._log_is_dirty = True
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
-        return self._station_statuses[station_code]
+        return self._station_statuses[station_code].owner
 
     def is_locked(self, station_code: StationCode) -> bool:
-        return station_code in self._locked_territories
+        return self._station_statuses[station_code].locked
 
     def get_claim_count(self, station_code: StationCode) -> int:
         return len([
@@ -154,7 +160,7 @@ class ClaimLog:
     ) -> None:
         self._record_log_entry(ClaimLogEntry(station_code, claimed_by, claim_time))
         print(f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s")  # noqa:T001
-        self._station_statuses[station_code] = claimed_by
+        self._station_statuses[station_code].owner = claimed_by
 
     def log_lock(
         self,
@@ -169,8 +175,8 @@ class ClaimLog:
             locked=True,
         ))
         print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")  # noqa:T001
-        self._station_statuses[station_code] = Claimant.UNCLAIMED
-        self._locked_territories.add(station_code)
+        self._station_statuses[station_code].owner = Claimant.UNCLAIMED
+        self._station_statuses[station_code].locked = True
 
     def record_captures(self) -> None:
         if not self._record_arena_actions:
@@ -197,7 +203,10 @@ class ClaimLog:
         return self._log_is_dirty
 
     def get_scores(self) -> Mapping[Claimant, int]:
-        territory_counts = collections.Counter(self._station_statuses.values())
+        territory_counts = collections.Counter(
+            station.owner
+            for station in self._station_statuses.values()
+        )
 
         return {
             claimant: territories_owned * POINTS_PER_TERRITORY
