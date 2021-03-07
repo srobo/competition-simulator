@@ -1,5 +1,6 @@
 import os
 import sys
+import runpy
 import subprocess
 from shutil import copyfile
 from pathlib import Path
@@ -145,7 +146,7 @@ def main() -> None:
     # Swith to running the competitor code
     reconfigure_environment(robot_file)
 
-    exec(robot_file.read_text(), {})
+    runpy.run_path(str(robot_file))
 
 
 if __name__ == "__main__":
