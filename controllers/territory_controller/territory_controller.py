@@ -357,18 +357,14 @@ class TerritoryController:
             # making the claim, instead cause a lock-out.
             set_node_colour(station, LOCKED_COLOUR)
 
-            self._claim_log.log_lock(station_code, claimed_by, self._robot.getTime())
+            self._claim_log.log_lock(station_code, claimed_by, claim_time)
 
         else:
             new_colour = ZONE_COLOURS[claimed_by]
 
             set_node_colour(station, new_colour)
 
-            self._claim_log.log_territory_claim(
-                station_code,
-                claimed_by,
-                self._robot.getTime(),
-            )
+            self._claim_log.log_territory_claim(station_code, claimed_by, claim_time)
 
     def prune_detached_stations(
         self,
