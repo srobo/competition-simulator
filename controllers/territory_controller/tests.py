@@ -1,5 +1,6 @@
 import re
 import unittest
+from typing import Dict, List, Union, Mapping
 from pathlib import Path
 from unittest.mock import patch
 
@@ -124,6 +125,214 @@ class TestAttachedTerritories(unittest.TestCase):
                 False,
                 f'Zone 1 should not be able to capture {station}',
             )
+
+
+class TestLiveScoring(unittest.TestCase):
+    "Test the live scoring computed in the claim log using tests from the scorer"
+    _tla_to_zone = {
+        'ABC': Claimant.ZONE_0,
+        'DEF': Claimant.ZONE_1,
+    }
+
+    def calculate_scores(
+        self,
+        territory_claims: List[Dict[str, Union[str, int, float]]],
+    ) -> Mapping[Claimant, int]:
+        claim_log = ClaimLog(record_arena_actions=False)
+
+        for claim in territory_claims:
+            territory = StationCode(claim['station_code'])
+            claimant = Claimant(claim['zone'])
+            claim_log._station_statuses[territory] = claimant
+
+        return claim_log.get_scores()
+
+    def assertScores(
+        self,
+        expected_scores_tla: Mapping[str, int],
+        territory_claims: List[Dict[str, Union[str, int, float]]],
+    ) -> None:
+        actual_scores = self.calculate_scores(territory_claims)
+
+        # swap the TLAs used by the scorer with claimant zones
+        expected_scores: Mapping[Claimant, int] = {
+            self._tla_to_zone[tla]: score
+            for tla, score in expected_scores_tla.items()
+        }
+
+        self.assertEqual(expected_scores, actual_scores, "Wrong scores")
+
+    # All tests below this line are copied from the scorer
+    def test_no_claims(self) -> None:
+        self.assertScores({
+            'ABC': 0,
+            'DEF': 0,
+        }, [])
+
+    def test_single_claim(self) -> None:
+        self.assertScores({
+            'ABC': 2,
+            'DEF': 0,
+        }, [
+            {
+                'zone': 0,
+                'station_code': 'PN',
+                'time': 4.432,
+            },
+        ])
+
+    def test_two_claims_same_territory(self) -> None:
+        self.assertScores({
+            'ABC': 0,
+            'DEF': 2,
+        }, [
+            {
+                'zone': 0,
+                'station_code': 'PN',
+                'time': 4,
+            },
+            {
+                'zone': 1,
+                'station_code': 'PN',
+                'time': 5,
+            },
+        ])
+
+    def test_two_concurrent_territories(self) -> None:
+        self.assertScores({
+            'ABC': 2,
+            'DEF': 2,
+        }, [
+            {
+                'zone': 0,
+                'station_code': 'PN',
+                'time': 4,
+            },
+            {
+                'zone': 0,
+                'station_code': 'EY',
+                'time': 5,
+            },
+            {
+                'zone': 1,
+                'station_code': 'PN',
+                'time': 5.01,
+            },
+        ])
+
+    def test_two_isolated_territories(self) -> None:
+        self.assertScores({
+            'ABC': 2,
+            'DEF': 2,
+        }, [
+            {
+                'zone': 0,
+                'station_code': 'PN',
+                'time': 4,
+            },
+            {
+                'zone': 1,
+                'station_code': 'PN',
+                'time': 5,
+            },
+            {
+                'zone': 0,
+                'station_code': 'EY',
+                'time': 5.01,
+            },
+        ])
+
+    def test_both_teams_claim_both_territories(self) -> None:
+        # But only one of them holds both at the same time
+        self.assertScores({
+            'ABC': 2,
+            'DEF': 2,
+        }, [
+            {
+                'zone': 0,
+                'station_code': 'PN',
+                'time': 4,
+            },
+            {
+                'zone': 1,
+                'station_code': 'PN',
+                'time': 5,
+            },
+            {
+                'zone': 1,
+                'station_code': 'EY',
+                'time': 6,
+            },
+            {
+                'zone': 0,
+                'station_code': 'EY',
+                'time': 7,
+            },
+        ])
+
+    def test_territory_becoming_unclaimed_after_it_was_claimed(self) -> None:
+        self.assertScores({
+            'ABC': 0,
+            'DEF': 0,
+        }, [
+            {
+                'zone': 0,
+                'station_code': 'PN',
+                'time': 4,
+            },
+            {
+                'zone': 1,
+                'station_code': 'PN',
+                'time': 5,
+            },
+            {
+                'zone': 0,
+                'station_code': 'PN',
+                'time': 6,
+            },
+            {
+                'zone': -1,
+                'station_code': 'PN',
+                'time': 7,
+            },
+        ])
+
+    def test_unclaimed_territory_with_others_claimed(self) -> None:
+        self.assertScores({
+            'ABC': 2,
+            'DEF': 2,
+        }, [
+            {
+                'zone': 0,
+                'station_code': 'PN',
+                'time': 4,
+            },
+            {
+                'zone': 1,
+                'station_code': 'PN',
+                'time': 5,
+            },
+            {
+                'zone': 0,
+                'station_code': 'PN',
+                'time': 6,
+            },
+            {
+                'zone': 0,
+                'station_code': 'EY',
+                'time': 7,
+            },
+            {
+                'zone': -1,
+                'station_code': 'PN',
+                'time': 8,
+            },
+            {
+                'zone': 1,
+                'station_code': 'SZ',
+                'time': 9,
+            },
+        ])
 
 
 class TestAdjacentTerritories(unittest.TestCase):

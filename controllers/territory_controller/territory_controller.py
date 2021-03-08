@@ -41,7 +41,6 @@ class Claimant(enum.IntEnum):
         }
 
 
-POINTS_PER_TERRITORY = 2
 LOCKED_OUT_AFTER_CLAIM = 4
 
 
@@ -72,6 +71,15 @@ class TerritoryRoot(str, enum.Enum):
     z0 = 'z0'
     z1 = 'z1'
 
+
+DEFAULT_POINTS_PER_TERRITORY = 2
+EXTRA_VALUE_TERRITORIES = {
+    StationCode.TH: 4,
+    StationCode.FL: 4,
+    StationCode.SF: 4,
+    StationCode.HA: 4,
+    StationCode.YT: 8,
+}
 
 # Updating? Update `Arena.wbt` too
 ZONE_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
@@ -198,12 +206,16 @@ class ClaimLog:
         return self._log_is_dirty
 
     def get_scores(self) -> Mapping[Claimant, int]:
-        territory_counts = collections.Counter(self._station_statuses.values())
+        zone_to_territories = collections.defaultdict(list)
+        for territory, zone in self._station_statuses.items():
+            zone_to_territories[zone].append(territory)
 
         return {
-            claimant: territories_owned * POINTS_PER_TERRITORY
-            for claimant, territories_owned in territory_counts.items()
-            if claimant != Claimant.UNCLAIMED
+            zone: sum(
+                EXTRA_VALUE_TERRITORIES.get(territory, DEFAULT_POINTS_PER_TERRITORY)
+                for territory in zone_to_territories.get(zone, [])
+            )
+            for zone in Claimant.zones()
         }
 
 
