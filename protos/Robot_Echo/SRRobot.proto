@@ -801,8 +801,7 @@ PROTO SRRobot [
                 ]
                 name "solid(3)"
                 boundingObject USE flag_pole
-                physics Physics {
-                }
+                physics Physics {}
               }
               DEF front_bar_top Solid {
                 translation 0 0.23 -0.015
@@ -820,8 +819,7 @@ PROTO SRRobot [
                 ]
                 name "front_bar_top"
                 boundingObject USE front_bar
-                physics Physics {
-                }
+                physics Physics {}
               }
               DEF front_bar_bottom Solid {
                 translation 0 0.09 -0.015
@@ -837,8 +835,7 @@ PROTO SRRobot [
                 ]
                 name "front_bar_bottom"
                 boundingObject USE front_bar
-                physics Physics {
-                }
+                physics Physics {}
               }
               DEF horizontal Solid {
                 translation 0.157 0.235 0.16
@@ -856,8 +853,7 @@ PROTO SRRobot [
                 ]
                 name "solid(2)"
                 boundingObject USE sidebar
-                physics Physics {
-                }
+                physics Physics {}
               }
               DEF upright Solid {
                 translation 0.157 0.164 0.318
@@ -877,8 +873,7 @@ PROTO SRRobot [
                 boundingObject Box {
                   size 0.025 0.165 0.025
                 }
-                physics Physics {
-                }
+                physics Physics {}
               }
               DEF Wheel_axes Solid {
                 translation 0 0.1 0.08
@@ -901,8 +896,7 @@ PROTO SRRobot [
                   height 0.35
                   radius 0.04
                 }
-                physics Physics {
-                }
+                physics Physics {}
               }
               DEF LOGO Solid {
                 translation 0 0.17 0.281
@@ -939,8 +933,7 @@ PROTO SRRobot [
                 ]
                 name "solid(5)"
                 boundingObject USE sidebar
-                physics Physics {
-                }
+                physics Physics {}
               }
               DEF upright Solid {
                 translation -0.157 0.164 0.318
@@ -960,8 +953,7 @@ PROTO SRRobot [
                 boundingObject Box {
                   size 0.025 0.165 0.025
                 }
-                physics Physics {
-                }
+                physics Physics {}
               }
               DEF MAIN Solid {
                 translation 0 0.155 0.155
@@ -997,8 +989,7 @@ PROTO SRRobot [
         }
       ]
     }
-    physics Physics {
-    }
+    physics Physics {}
     controller IS controller
     customData IS customData
   }
