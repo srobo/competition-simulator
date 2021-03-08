@@ -55,6 +55,14 @@ jobs:
           python3 -m venv venv
           venv/bin/pip install -U pip
           venv/bin/pip install -r libraries.txt
+      - name: Hide overlays
+        run: |
+          # pre-run webots to generate the config file
+          xvfb-run webots --sysinfo
+          sed --in-place '
+            s/\(hideAllCameraOverlays\)=.*/\1=true/
+            s/\(hideAllDisplayOverlays\)=.*/\1=true/
+            ' ~/.config/Cyberbotics/Webots-*.conf
       - name: Run match
         run: |
           source ./venv/bin/activate
