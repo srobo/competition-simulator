@@ -5,7 +5,7 @@ import enum
 import struct
 import logging
 import collections
-from typing import Set, Dict, List, Tuple, Union, Mapping, NamedTuple
+from typing import Set, Dict, List, Tuple, Union, Mapping
 from pathlib import Path
 from collections import defaultdict
 from dataclasses import dataclass
@@ -113,7 +113,8 @@ class StationStatus:
     locked: bool = False
 
 
-class ClaimLogEntry(NamedTuple):
+@dataclass(frozen=True)
+class ClaimLogEntry:
     station_code: StationCode
     claimant: Claimant
     claim_time: float
