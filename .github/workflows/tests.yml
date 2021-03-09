@@ -1,7 +1,10 @@
 name: Simulator tests
 
 on:
-  push: {}
+  push:
+    branches:
+      - master
+  pull_request: {}
 
 jobs:
   run-checks:
