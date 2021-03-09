@@ -492,7 +492,7 @@ class TestActionTimer(unittest.TestCase):
         super().setUp()
         self.action_timer = ActionTimer(1.9)
 
-    def execute_timer(self, duration: float, expected_result: bool) -> None:
+    def assertBegunInsideDuration(self, duration: float, expected_result: bool) -> None:
         start_time = random.uniform(0, 1000)
         self.action_timer.begin_action(StationCode.PN, Claimant.ZONE_1, start_time)
 
@@ -509,19 +509,19 @@ class TestActionTimer(unittest.TestCase):
         )
 
     def test_exact_time(self) -> None:
-        self.execute_timer(1.9, True)
+        self.assertBegunInsideDuration(1.9, True)
 
     def test_too_short_time(self) -> None:
-        self.execute_timer(1.7, False)
+        self.assertBegunInsideDuration(1.7, False)
 
     def test_too_long_time(self) -> None:
-        self.execute_timer(2.2, False)
+        self.assertBegunInsideDuration(2.2, False)
 
     def test_marginal_short_time(self) -> None:
-        self.execute_timer(1.82, True)
+        self.assertBegunInsideDuration(1.82, True)
 
     def test_marginal_long_time(self) -> None:
-        self.execute_timer(2.08, True)
+        self.assertBegunInsideDuration(2.08, True)
 
     def test_different_stations(self) -> None:
         start_time = random.uniform(0, 1000)
