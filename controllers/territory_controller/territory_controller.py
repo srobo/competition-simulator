@@ -324,7 +324,7 @@ def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
 class ActionTimer:
     def __init__(self, action_duration: float):
         self._duration_upper = action_duration * 1.1
-        self._duration_lower = action_duration * 0.95
+        self._duration_lower = action_duration * 0.9
         self._action_starts: Dict[Tuple[StationCode, Claimant], float] = {}
 
     def begin_action(
@@ -358,7 +358,7 @@ class TerritoryController:
         self._claim_log = claim_log
         self._attached_territories = attached_territories
         self._robot = Supervisor()
-        self._claim_timer = ActionTimer(1.9)
+        self._claim_timer = ActionTimer(2)
 
         self._emitters = {
             station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)

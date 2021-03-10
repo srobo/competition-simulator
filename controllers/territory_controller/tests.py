@@ -509,7 +509,7 @@ class TestActionTimer(unittest.TestCase):
         )
 
     def test_exact_time(self) -> None:
-        self.assertBegunInsideDuration(1.9, True)
+        self.assertBegunInsideDuration(2, True)
 
     def test_too_short_time(self) -> None:
         self.assertBegunInsideDuration(1.7, False)
@@ -518,7 +518,7 @@ class TestActionTimer(unittest.TestCase):
         self.assertBegunInsideDuration(2.2, False)
 
     def test_marginal_short_time(self) -> None:
-        self.assertBegunInsideDuration(1.82, True)
+        self.assertBegunInsideDuration(1.72, True)
 
     def test_marginal_long_time(self) -> None:
         self.assertBegunInsideDuration(2.08, True)
