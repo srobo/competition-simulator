@@ -9,7 +9,6 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    # checkout@v1 must be used since v2 breaks tags
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
@@ -36,4 +35,3 @@ jobs:
         artifact: archive/${{ steps.build_archive.outputs.archive }}
         omitBodyDuringUpdate: true
         omitNameDuringUpdate: true
-        # replacesArtifacts: true
