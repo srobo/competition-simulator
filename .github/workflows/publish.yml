@@ -9,9 +9,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+    # using v2 strips tag annotations https://github.com/actions/checkout/issues/290
+    - uses: actions/checkout@v1
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
