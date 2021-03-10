@@ -93,7 +93,7 @@ def record_arena_data(other_data: Dict[str, List[object]]) -> None:
     data = json.loads(match_file.read_text())
     arena_zones = data.setdefault('arena_zones', {})
     arena_zones['other'] = other_data
-    arena_zone['other']['game_style'] = 'end_state'
+    arena_zones['other']['game_style'] = 'end_state'
     match_file.write_text(json.dumps(data, indent=4))
 
 
