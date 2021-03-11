@@ -143,7 +143,7 @@ class TestLiveScoring(unittest.TestCase):
         for claim in territory_claims:
             territory = StationCode(claim['station_code'])
             claimant = Claimant(claim['zone'])
-            claim_log._station_statuses[territory] = claimant
+            claim_log._station_statuses[territory].owner = claimant
 
         return claim_log.get_scores()
 

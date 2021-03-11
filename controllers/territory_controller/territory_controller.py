@@ -229,7 +229,6 @@ class ClaimLog:
         for territory, status in self._station_statuses.items():
             zone_to_territories[status.owner].append(territory)
 
-
         return {
             zone: sum(
                 EXTRA_VALUE_TERRITORIES.get(territory, DEFAULT_POINTS_PER_TERRITORY)
