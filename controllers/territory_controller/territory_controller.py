@@ -332,7 +332,7 @@ class ActionTimer:
         self._action_starts: Dict[Tuple[StationCode, Claimant], float] = {}
         # working_action is called on each timestep for each active action
         # the third action is the current duration of the action
-        # or -1 when the action is completed of expires
+        # or -1 when the action is completed  and -2 if it expires
         self._working_action = working_action
 
     def begin_action(
@@ -366,7 +366,7 @@ class ActionTimer:
             time_delta = current_time - start_time
             if time_delta > self._duration_upper:
                 self._action_starts.pop((station_code, acted_by))  # remove expired claim
-                self._working_action(station_code, acted_by, -1)  # trigger reset action
+                self._working_action(station_code, acted_by, -2)  # trigger reset action
             else:
                 # run working action with current time delta
                 self._working_action(station_code, acted_by, time_delta)
