@@ -1,12 +1,25 @@
 name: Simulator match
 
 on:
-  push: {}
+  push:
+    branches:
+      - master
+  pull_request: {}
   release:
     types: [ created ]
 
 jobs:
+  skip_duplicates:
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.8.0
+        with:
+          access_token: ${{ github.token }}
+
   run-comp-match:
+    needs: skip_duplicates
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -55,6 +68,14 @@ jobs:
           python3 -m venv venv
           venv/bin/pip install -U pip
           venv/bin/pip install -r libraries.txt
+      - name: Hide overlays
+        run: |
+          # pre-run webots to generate the config file
+          xvfb-run webots --sysinfo
+          sed --in-place '
+            s/\(hideAllCameraOverlays\)=.*/\1=true/
+            s/\(hideAllDisplayOverlays\)=.*/\1=true/
+            ' ~/.config/Cyberbotics/Webots-*.conf
       - name: Run match
         run: |
           source ./venv/bin/activate

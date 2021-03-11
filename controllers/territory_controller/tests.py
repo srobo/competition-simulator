@@ -35,11 +35,11 @@ class TestAttachedTerritories(unittest.TestCase):
     def load_territory_owners(self, claim_log: ClaimLog) -> None:
         # territories BG, TS, OX, VB, etc. owned by zone 0
         for territory in self._zone_0_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_0
+            claim_log._station_statuses[territory].owner = Claimant.ZONE_0
 
         # territories PN, EY, PO, YL owned by zone 1
         for territory in self._zone_1_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_1
+            claim_log._station_statuses[territory].owner = Claimant.ZONE_1
 
     def setUp(self) -> None:
         super().setUp()
