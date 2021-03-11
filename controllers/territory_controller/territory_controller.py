@@ -331,9 +331,9 @@ class ActionTimer:
         self,
         station_code: StationCode,
         acted_by: Claimant,
-        claim_time: float,
+        start_time: float,
     ) -> None:
-        self._action_starts[station_code, acted_by] = claim_time
+        self._action_starts[station_code, acted_by] = start_time
 
     def has_begun_action_in_time_window(
         self,
