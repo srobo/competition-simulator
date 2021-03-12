@@ -225,6 +225,12 @@ class ClaimLog:
         return self._log_is_dirty
 
     def get_scores(self) -> Mapping[Claimant, int]:
+        """
+        Get the current scores.
+
+        The returned mapping will always include all the claimants as keys.
+        """
+
         zone_to_territories = collections.defaultdict(list)
         for territory, status in self._station_statuses.items():
             zone_to_territories[status.owner].append(territory)

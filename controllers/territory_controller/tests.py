@@ -127,6 +127,73 @@ class TestAttachedTerritories(unittest.TestCase):
             )
 
 
+class TestAdjacentTerritories(unittest.TestCase):
+    'Test the AttachedTerritories initialisation of adjacent_zones'
+
+    def setUp(self) -> None:
+        super().setUp()
+        claim_log = ClaimLog(record_arena_actions=False)
+        self.attached_territories = AttachedTerritories(claim_log)
+
+    def test_all_links_in_set(self) -> None:
+        'test all territory links from Arena.wbt are in TERRITORY_LINKS'
+        arena_links = set()
+        with (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r') as f:
+            for line in f.readlines():
+                if 'SRLink' in line:
+                    arena_links.add(re.sub(r'.*DEF (.*) SRLink .*\n', r'\1', line))
+
+        territory_links_strs = {'-'.join(link) for link in TERRITORY_LINKS}
+
+        self.assertEqual(
+            arena_links,
+            territory_links_strs,
+            'TERRITORY_LINKS differs from links in Arena.wbt',
+        )
+
+    def test_all_territories_linked(self) -> None:
+        'test every territory exists in keys'
+        station_codes = {station.value for station in StationCode}
+        station_codes.update({zone.value for zone in TerritoryRoot})
+        adjacent_stations = set(self.attached_territories.adjacent_zones.keys())
+
+        self.assertEqual(
+            station_codes,
+            adjacent_stations,
+            'Not all territories are linked',
+        )
+
+    def test_omitted_start_zones(self) -> None:
+        'test PN, YL for incorrect links back to z0/z1'
+
+        for station, links in self.attached_territories.adjacent_zones.items():
+            self.assertNotIn(
+                TerritoryRoot.z0,
+                links,
+                f'Zone 0 starting zone incorrectly appears in {station.value} links',
+            )
+
+            self.assertNotIn(
+                TerritoryRoot.z1,
+                links,
+                f'Zone 1 starting zone incorrectly appears in {station.value} links',
+            )
+
+    def test_VB_links(self) -> None:
+        'test BE for correct links'
+        self.assertEqual(
+            self.attached_territories.adjacent_zones[StationCode.VB],
+            {
+                StationCode.BG,
+                StationCode.EY,
+                StationCode.OX,
+                StationCode.BE,
+                StationCode.PL,
+            },
+            'Territory VB has incorrect territory links',
+        )
+
+
 class TestLiveScoring(unittest.TestCase):
     "Test the live scoring computed in the claim log using tests from the scorer"
     _tla_to_zone = {
@@ -333,73 +400,6 @@ class TestLiveScoring(unittest.TestCase):
                 'time': 9,
             },
         ])
-
-
-class TestAdjacentTerritories(unittest.TestCase):
-    'Test the AttachedTerritories initialisation of adjacent_zones'
-
-    def setUp(self) -> None:
-        super().setUp()
-        claim_log = ClaimLog(record_arena_actions=False)
-        self.attached_territories = AttachedTerritories(claim_log)
-
-    def test_all_links_in_set(self) -> None:
-        'test all territory links from Arena.wbt are in TERRITORY_LINKS'
-        arena_links = set()
-        with (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r') as f:
-            for line in f.readlines():
-                if 'SRLink' in line:
-                    arena_links.add(re.sub(r'.*DEF (.*) SRLink .*\n', r'\1', line))
-
-        territory_links_strs = {'-'.join(link) for link in TERRITORY_LINKS}
-
-        self.assertEqual(
-            arena_links,
-            territory_links_strs,
-            'TERRITORY_LINKS differs from links in Arena.wbt',
-        )
-
-    def test_all_territories_linked(self) -> None:
-        'test every territory exists in keys'
-        station_codes = {station.value for station in StationCode}
-        station_codes.update({zone.value for zone in TerritoryRoot})
-        adjacent_stations = set(self.attached_territories.adjacent_zones.keys())
-
-        self.assertEqual(
-            station_codes,
-            adjacent_stations,
-            'Not all territories are linked',
-        )
-
-    def test_omitted_start_zones(self) -> None:
-        'test PN, YL for incorrect links back to z0/z1'
-
-        for station, links in self.attached_territories.adjacent_zones.items():
-            self.assertNotIn(
-                TerritoryRoot.z0,
-                links,
-                f'Zone 0 starting zone incorrectly appears in {station.value} links',
-            )
-
-            self.assertNotIn(
-                TerritoryRoot.z1,
-                links,
-                f'Zone 1 starting zone incorrectly appears in {station.value} links',
-            )
-
-    def test_VB_links(self) -> None:
-        'test BE for correct links'
-        self.assertEqual(
-            self.attached_territories.adjacent_zones[StationCode.VB],
-            {
-                StationCode.BG,
-                StationCode.EY,
-                StationCode.OX,
-                StationCode.BE,
-                StationCode.PL,
-            },
-            'Territory VB has incorrect territory links',
-        )
 
 
 class TestTerritoryLockout(unittest.TestCase):
