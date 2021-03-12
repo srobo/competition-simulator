@@ -204,15 +204,20 @@ class ClaimLog:
         return self._log_is_dirty
 
     def get_scores(self) -> Mapping[Claimant, int]:
+        """
+        Get the current scores.
+
+        The returned mapping will always include all the claimants as keys.
+        """
+
         territory_counts = collections.Counter(
             station.owner
             for station in self._station_statuses.values()
         )
 
         return {
-            claimant: territories_owned * POINTS_PER_TERRITORY
-            for claimant, territories_owned in territory_counts.items()
-            if claimant != Claimant.UNCLAIMED
+            claimant: territory_counts[claimant] * POINTS_PER_TERRITORY
+            for claimant in Claimant.zones()
         }
 
 
