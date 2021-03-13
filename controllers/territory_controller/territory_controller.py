@@ -321,6 +321,34 @@ def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
     node.getField('zoneColour').setSFColor(list(colour))
 
 
+class ActionTimer:
+    def __init__(self, action_duration: float):
+        self._duration_upper = action_duration * 1.1
+        self._duration_lower = action_duration * 0.95
+        self._action_starts: Dict[Tuple[StationCode, Claimant], float] = {}
+
+    def begin_action(
+        self,
+        station_code: StationCode,
+        acted_by: Claimant,
+        claim_time: float,
+    ) -> None:
+        self._action_starts[station_code, acted_by] = claim_time
+
+    def has_begun_action_in_time_window(
+        self,
+        station_code: StationCode,
+        acted_by: Claimant,
+        current_time: float,
+    ) -> bool:
+        try:
+            start_time = self._action_starts[station_code, acted_by]
+        except KeyError:
+            return False
+        time_delta = current_time - start_time
+        return self._duration_lower <= time_delta <= self._duration_upper
+
+
 class TerritoryController:
 
     _emitters: Dict[StationCode, Emitter]
@@ -330,7 +358,7 @@ class TerritoryController:
         self._claim_log = claim_log
         self._attached_territories = attached_territories
         self._robot = Supervisor()
-        self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
+        self._claim_timer = ActionTimer(1.9)
 
         self._emitters = {
             station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)
@@ -358,27 +386,6 @@ class TerritoryController:
             logging.error(f"Failed to fetch node {node_id}")
         else:
             set_node_colour(node, new_colour)
-
-    def begin_claim(
-        self,
-        station_code: StationCode,
-        claimed_by: Claimant,
-        claim_time: float,
-    ) -> None:
-        self._claim_starts[station_code, claimed_by] = claim_time
-
-    def has_begun_claim_in_time_window(
-        self,
-        station_code: StationCode,
-        claimant: Claimant,
-        current_time: float,
-    ) -> bool:
-        try:
-            start_time = self._claim_starts[station_code, claimant]
-        except KeyError:
-            return False
-        time_delta = current_time - start_time
-        return 1.8 <= time_delta <= 2.1
 
     def set_territory_ownership(
         self,
@@ -473,7 +480,7 @@ class TerritoryController:
             robot_id, is_conclude = struct.unpack("!BB", packet)  # type: Tuple[int, int]
             claimant = Claimant(robot_id)
             if is_conclude:
-                if self.has_begun_claim_in_time_window(
+                if self._claim_timer.has_begun_action_in_time_window(
                     station_code,
                     claimant,
                     receive_time,
@@ -484,7 +491,7 @@ class TerritoryController:
                         receive_time,
                     )
             else:
-                self.begin_claim(
+                self._claim_timer.begin_action(
                     station_code,
                     claimant,
                     receive_time,
