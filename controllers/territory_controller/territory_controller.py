@@ -96,7 +96,7 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
 }
 
 LOCKED_COLOUR = (0.5, 0, 0)
-CLAIMING_COLOUR = (0, 0.7, 0.7)
+CLAIMING_COLOUR = (0, 0.5, 0.5)
 
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
@@ -600,7 +600,7 @@ class TerritoryController:
         _: Claimant,
         progress: float,
     ) -> None:
-        if progress not in {0, ActionTimer.TIMER_EXPIRE}:
+        if progress not in {0, ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
             return
 
         station = self._robot.getFromDef(station_code)
@@ -612,11 +612,12 @@ class TerritoryController:
 
         if progress == 0:  # claim starting
             set_node_colour(station, CLAIMING_COLOUR)
-        elif progress == ActionTimer.TIMER_EXPIRE:  # claim failed
-            set_node_colour(
-                station,
-                ZONE_COLOURS[self._claim_log.get_claimant(station_code)],
-            )
+        else:  # claim failed or expired
+            new_colour = ZONE_COLOURS[self._claim_log.get_claimant(station_code)]
+            if self._claim_log.is_locked(station_code):
+                new_colour = LOCKED_COLOUR
+
+            set_node_colour(station, new_colour)
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
