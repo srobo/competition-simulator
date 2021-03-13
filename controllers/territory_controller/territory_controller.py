@@ -479,23 +479,12 @@ class TerritoryController:
         try:
             robot_id, is_conclude = struct.unpack("!BB", packet)  # type: Tuple[int, int]
             claimant = Claimant(robot_id)
+            operation_args = (station_code, claimant, receive_time)
             if is_conclude:
-                if self._claim_timer.has_begun_action_in_time_window(
-                    station_code,
-                    claimant,
-                    receive_time,
-                ):
-                    self.claim_territory(
-                        station_code,
-                        claimant,
-                        receive_time,
-                    )
+                if self._claim_timer.has_begun_action_in_time_window(*operation_args):
+                    self.claim_territory(*operation_args)
             else:
-                self._claim_timer.begin_action(
-                    station_code,
-                    claimant,
-                    receive_time,
-                )
+                self._claim_timer.begin_action(*operation_args)
         except ValueError:
             print(  # noqa:T001
                 f"Received malformed packet at {receive_time} on {station_code}: {packet!r}",
