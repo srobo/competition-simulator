@@ -459,7 +459,7 @@ class TerritoryController:
             connected_territories,
         ):
             # This claimant doesn't have a connection back to their starting zone
-            print(f"Robot in zone {claimed_by} failed to capture {station_code}")  # noqa: T001
+            logging.error(f"Robot in zone {claimed_by} failed to capture {station_code}")
             return
 
         self.set_territory_ownership(station_code, claimed_by, claim_time)
@@ -486,7 +486,7 @@ class TerritoryController:
             else:
                 self._claim_timer.begin_action(*operation_args)
         except ValueError:
-            print(  # noqa:T001
+            logging.error(
                 f"Received malformed packet at {receive_time} on {station_code}: {packet!r}",
             )
 
