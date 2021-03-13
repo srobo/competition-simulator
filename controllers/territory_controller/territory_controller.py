@@ -96,6 +96,7 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
 }
 
 LOCKED_COLOUR = (0.5, 0, 0)
+CLAIMING_COLOUR = (0, 0.7, 0.7)
 
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
@@ -385,7 +386,7 @@ class TerritoryController:
         self._claim_log = claim_log
         self._attached_territories = attached_territories
         self._robot = Supervisor()
-        self._claim_timer = ActionTimer(2)
+        self._claim_timer = ActionTimer(2, self.handle_claim_timer_tick)
 
         self._emitters = {
             station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)
@@ -592,6 +593,30 @@ class TerritoryController:
 
         # Add the score value
         score_display.drawText(score_str, x_offset, 8)
+
+    def handle_claim_timer_tick(
+        self,
+        station_code: StationCode,
+        _: Claimant,
+        progress: float,
+    ) -> None:
+        if progress not in {0, ActionTimer.TIMER_EXPIRE}:
+            return
+
+        station = self._robot.getFromDef(station_code)
+        if station is None:
+            logging.error(
+                f"Failed to fetch territory node {station_code}",
+            )
+            return
+
+        if progress == 0:  # claim starting
+            set_node_colour(station, CLAIMING_COLOUR)
+        elif progress == ActionTimer.TIMER_EXPIRE:  # claim failed
+            set_node_colour(
+                station,
+                ZONE_COLOURS[self._claim_log.get_claimant(station_code)],
+            )
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
