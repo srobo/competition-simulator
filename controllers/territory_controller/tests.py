@@ -3,7 +3,7 @@ import random
 import unittest
 from typing import Dict, List, Union, Mapping
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from territory_controller import (
     Claimant,
@@ -550,3 +550,83 @@ class TestActionTimer(unittest.TestCase):
         )
 
         self.assertFalse(result)
+
+
+class TestActionTimerTick(unittest.TestCase):
+    "Test the working_action functionality of the ActionTimer"
+    def setUp(self) -> None:
+        super().setUp()
+        self.working_action = Mock()
+        self.action_timer = ActionTimer(2, self.working_action)
+
+    def assertTickCall(self, start_time: float, end_time: float) -> None:
+        self.action_timer.tick(end_time)
+        self.working_action.assert_called_with(
+            StationCode.BE,
+            Claimant.ZONE_1,
+            # recalculate the duration to avoid floating-pint precision errors
+            end_time - start_time,
+        )
+
+    def assertCallCount(self, call_count: int, context: str) -> None:
+        self.assertEqual(
+            self.working_action.call_count,
+            call_count,
+            f"Incorrect number of calls of working_action {context}"
+            f" ({self.working_action.call_args_list})",
+        )
+
+    def test_successful_completion(self) -> None:
+        """
+        Test that working_action is called with appropriate arguments at the start
+        and completion of the timer. Namely the duration parameter should be 0
+        when the timer starts and -1 when the timer action is successfully completed.
+        Once a duration value of -1 is parsed the timer item should be removed from the
+        internal dict and not cause working_action to be called on subsequent calls of tick.
+        """
+        start_time = random.uniform(0, 1000)
+        self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
+        self.working_action.assert_called_with(StationCode.BE, Claimant.ZONE_1, 0)
+
+        used_duration = random.uniform(1.8, 2.2)
+        self.action_timer.has_begun_action_in_time_window(
+            StationCode.BE,
+            Claimant.ZONE_1,
+            start_time + used_duration,
+        )
+        self.working_action.assert_called_with(StationCode.BE, Claimant.ZONE_1, -1)
+
+        self.action_timer.tick(start_time + used_duration)
+        self.assertCallCount(2, "after action completion")
+
+    def test_expired_timer(self) -> None:
+        """
+        Test that working_action is called with appropriate arguments at the start
+        and expiry of the timer. Namely the duration parameter should be 0
+        when the timer starts and -1 when the timer expires.
+        """
+        start_time = random.uniform(0, 1000)
+        self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
+        self.working_action.assert_called_with(StationCode.BE, Claimant.ZONE_1, 0)
+
+        # make timer expire
+        used_duration = random.uniform(2.3, 10)
+        self.action_timer.tick(start_time + used_duration)
+        self.working_action.assert_called_with(StationCode.BE, Claimant.ZONE_1, -1)
+
+        self.action_timer.tick(start_time + used_duration)
+        self.assertCallCount(2, "after timer expired")
+
+    def test_tick_call(self) -> None:
+        """
+        Test that the working_action method is called will the given duration
+        on each call to ActionTimer.tick
+        """
+        start_time = random.uniform(0, 1000)
+        self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
+
+        self.assertTickCall(start_time, start_time + 0.9)
+
+        self.assertTickCall(start_time, start_time + 2.1)
+
+        self.assertCallCount(3, "")

@@ -5,7 +5,7 @@ import enum
 import struct
 import logging
 import collections
-from typing import Set, Dict, List, Tuple, Union, Mapping
+from typing import Set, Dict, List, Tuple, Union, Mapping, Callable
 from pathlib import Path
 from collections import defaultdict
 from dataclasses import dataclass
@@ -322,10 +322,18 @@ def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
 
 
 class ActionTimer:
-    def __init__(self, action_duration: float):
+    def __init__(
+        self,
+        action_duration: float,
+        working_action: Callable[[StationCode, Claimant, float], None] = lambda *args: None,
+    ):
         self._duration_upper = action_duration * 1.1
         self._duration_lower = action_duration * 0.9
         self._action_starts: Dict[Tuple[StationCode, Claimant], float] = {}
+        # working_action is called on each timestep for each active action
+        # the third action is the current duration of the action
+        # or -1 when the action is completed of expires
+        self._working_action = working_action
 
     def begin_action(
         self,
@@ -334,6 +342,7 @@ class ActionTimer:
         start_time: float,
     ) -> None:
         self._action_starts[station_code, acted_by] = start_time
+        self._working_action(station_code, acted_by, 0)  # run starting action
 
     def has_begun_action_in_time_window(
         self,
@@ -346,7 +355,21 @@ class ActionTimer:
         except KeyError:
             return False
         time_delta = current_time - start_time
-        return self._duration_lower <= time_delta <= self._duration_upper
+        in_window = self._duration_lower <= time_delta <= self._duration_upper
+        if in_window:
+            self._working_action(station_code, acted_by, -1)  # trigger reset action
+            self._action_starts.pop((station_code, acted_by))  # remove completed claim
+        return in_window
+
+    def tick(self, current_time: float) -> None:
+        for (station_code, acted_by), start_time in self._action_starts.copy().items():
+            time_delta = current_time - start_time
+            if time_delta > self._duration_upper:
+                self._action_starts.pop((station_code, acted_by))  # remove expired claim
+                self._working_action(station_code, acted_by, -1)  # trigger reset action
+            else:
+                # run working action with current time delta
+                self._working_action(station_code, acted_by, time_delta)
 
 
 class TerritoryController:
@@ -594,6 +617,8 @@ class TerritoryController:
         while True:
             counter += 1
             self.receive_robot_captures()
+            current_time = self._robot.getTime()
+            self._claim_timer.tick(current_time)
             if counter > steps_per_broadcast:
                 self.transmit_pulses()
                 counter = 0
