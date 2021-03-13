@@ -322,6 +322,10 @@ def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
 
 
 class ActionTimer:
+
+    TIMER_COMPLETE = -1
+    TIMER_EXPIRE = -2
+
     def __init__(
         self,
         action_duration: float,
@@ -357,7 +361,7 @@ class ActionTimer:
         time_delta = current_time - start_time
         in_window = self._duration_lower <= time_delta <= self._duration_upper
         if in_window:
-            self._progress_callback(station_code, acted_by, -1)  # trigger reset action
+            self._progress_callback(station_code, acted_by, self.TIMER_COMPLETE)
             self._action_starts.pop((station_code, acted_by))  # remove completed claim
         return in_window
 
@@ -366,7 +370,7 @@ class ActionTimer:
             time_delta = current_time - start_time
             if time_delta > self._duration_upper:
                 self._action_starts.pop((station_code, acted_by))  # remove expired claim
-                self._progress_callback(station_code, acted_by, -2)  # trigger reset action
+                self._progress_callback(station_code, acted_by, self.TIMER_EXPIRE)
             else:
                 # run working action with current time delta
                 self._progress_callback(station_code, acted_by, time_delta)

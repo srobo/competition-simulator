@@ -579,9 +579,9 @@ class TestActionTimerTick(unittest.TestCase):
     def test_successful_completion(self) -> None:
         """
         Test that progress_callback is called with appropriate arguments at the start
-        and completion of the timer. Namely the duration parameter should be 0
-        when the timer starts and -1 when the timer action is successfully completed.
-        Once a negative duration value is parsed to progress_callback, the timer item
+        and completion of the timer. Namely the duration parameter should be 0 when the
+        timer starts and TIMER_COMPLETE when the timer action is successfully completed.
+        Once TIMER_COMPLETE or TIMER_EXPIRE is parsed to progress_callback, the timer item
         is removed from the internal dict and should not cause progress_callback to be
         called on subsequent calls of tick().
         """
@@ -595,7 +595,11 @@ class TestActionTimerTick(unittest.TestCase):
             Claimant.ZONE_1,
             start_time + used_duration,
         )
-        self.progress_callback.assert_called_with(StationCode.BE, Claimant.ZONE_1, -1)
+        self.progress_callback.assert_called_with(
+            StationCode.BE,
+            Claimant.ZONE_1,
+            ActionTimer.TIMER_COMPLETE,
+        )
 
         self.action_timer.tick(start_time + used_duration)
         self.assertCallCount(2, "after action completion")
@@ -604,7 +608,7 @@ class TestActionTimerTick(unittest.TestCase):
         """
         Test that progress_callback is called with appropriate arguments at the start
         and expiry of the timer. Namely the duration parameter should be 0
-        when the timer starts and -2 when the timer expires.
+        when the timer starts and TIMER_EXPIRE when the timer expires.
         """
         start_time = random.uniform(0, 1000)
         self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
@@ -613,7 +617,11 @@ class TestActionTimerTick(unittest.TestCase):
         # make timer expire
         used_duration = random.uniform(2.3, 10)
         self.action_timer.tick(start_time + used_duration)
-        self.progress_callback.assert_called_with(StationCode.BE, Claimant.ZONE_1, -2)
+        self.progress_callback.assert_called_with(
+            StationCode.BE,
+            Claimant.ZONE_1,
+            ActionTimer.TIMER_EXPIRE,
+        )
 
         self.action_timer.tick(start_time + used_duration)
         self.assertCallCount(2, "after timer expired")
