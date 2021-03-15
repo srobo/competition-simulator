@@ -332,12 +332,13 @@ class ActionTimer:
         action_duration: float,
         progress_callback: Callable[[StationCode, Claimant, float], None] = lambda *args: None,
     ):
+        self._duration = action_duration
         self._duration_upper = action_duration * 1.1
         self._duration_lower = action_duration * 0.9
         self._action_starts: Dict[Tuple[StationCode, Claimant], float] = {}
         # progress_callback is called on each timestep for each active action
-        # the third action is the current duration of the action
-        # or -1 when the action is completed  and -2 if it expires
+        # the third argument is the current progress through the action
+        # or TIMER_COMPLETE/TIMER_EXPIRE when the action is finished
         self._progress_callback = progress_callback
 
     def begin_action(
@@ -373,8 +374,8 @@ class ActionTimer:
                 self._action_starts.pop((station_code, acted_by))  # remove expired claim
                 self._progress_callback(station_code, acted_by, self.TIMER_EXPIRE)
             else:
-                # run working action with current time delta
-                self._progress_callback(station_code, acted_by, time_delta)
+                # run working action with current progress
+                self._progress_callback(station_code, acted_by, time_delta / self._duration)
 
 
 class TerritoryController:

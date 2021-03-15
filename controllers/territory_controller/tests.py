@@ -557,15 +557,16 @@ class TestActionTimerTick(unittest.TestCase):
     def setUp(self) -> None:
         super().setUp()
         self.progress_callback = Mock()
-        self.action_timer = ActionTimer(2, self.progress_callback)
+        self.action_duration = 2
+        self.action_timer = ActionTimer(self.action_duration, self.progress_callback)
 
     def assertTickCall(self, start_time: float, end_time: float) -> None:
         self.action_timer.tick(end_time)
         self.progress_callback.assert_called_with(
             StationCode.BE,
             Claimant.ZONE_1,
-            # recalculate the duration to avoid floating-pint precision errors
-            end_time - start_time,
+            # recalculate the duration to avoid floating-point precision errors
+            (end_time - start_time) / self.action_duration,
         )
 
     def assertCallCount(self, call_count: int, context: str) -> None:
@@ -579,7 +580,7 @@ class TestActionTimerTick(unittest.TestCase):
     def test_successful_completion(self) -> None:
         """
         Test that progress_callback is called with appropriate arguments at the start
-        and completion of the timer. Namely the duration parameter should be 0 when the
+        and completion of the timer. Namely the progress parameter should be 0 when the
         timer starts and TIMER_COMPLETE when the timer action is successfully completed.
         Once TIMER_COMPLETE or TIMER_EXPIRE is parsed to progress_callback, the timer item
         is removed from the internal dict and should not cause progress_callback to be
@@ -607,7 +608,7 @@ class TestActionTimerTick(unittest.TestCase):
     def test_expired_timer(self) -> None:
         """
         Test that progress_callback is called with appropriate arguments at the start
-        and expiry of the timer. Namely the duration parameter should be 0
+        and expiry of the timer. Namely the progress parameter should be 0
         when the timer starts and TIMER_EXPIRE when the timer expires.
         """
         start_time = random.uniform(0, 1000)
@@ -628,7 +629,7 @@ class TestActionTimerTick(unittest.TestCase):
 
     def test_tick_call(self) -> None:
         """
-        Test that the progress_callback method is called will the given duration
+        Test that the progress_callback method is called will the given progress
         on each call to ActionTimer.tick
         """
         start_time = random.uniform(0, 1000)
