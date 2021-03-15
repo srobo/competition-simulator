@@ -11,7 +11,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 # Webots specific library
-from controller import LED, Node, Display, Emitter, Receiver, Supervisor
+from controller import Node, Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -405,15 +405,6 @@ class TerritoryController:
 
         for station_code in StationCode:
             self.set_node_colour(station_code, ZONE_COLOURS[Claimant.UNCLAIMED])
-
-            get_robot_device(self._robot, station_code.value + "Territory led0", LED).set(1)
-            get_robot_device(self._robot, station_code.value + "Territory led1", LED).set(1)
-            get_robot_device(self._robot, station_code.value + "Territory led2", LED).set(2)
-            get_robot_device(self._robot, station_code.value + "Territory led3", LED).set(3)
-            get_robot_device(self._robot, station_code.value + "Territory led4", LED).set(3)
-            get_robot_device(self._robot, station_code.value + "Territory led5", LED).set(3)
-            get_robot_device(self._robot, station_code.value + "Territory led6", LED).set(3)
-            get_robot_device(self._robot, station_code.value + "Territory led7", LED).set(3)
 
         for claimant in Claimant:
             if claimant != Claimant.UNCLAIMED:
