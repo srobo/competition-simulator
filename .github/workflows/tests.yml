@@ -26,10 +26,7 @@ jobs:
         include:
           - python-version: 3.7
             test-os: windows-latest
-          - python-version: 3.7
-            test-os: macos-latest
 
-    if: "! ( ${{ matrix.test-os }} == 'macos-latest' && github.event_name == 'pull_request' )"
     runs-on: ${{ matrix.test-os }}
     defaults:
       run:
