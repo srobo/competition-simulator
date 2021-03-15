@@ -26,8 +26,6 @@ jobs:
         include:
           - python-version: 3.7
             test-os: windows-latest
-          - python-version: 3.7
-            test-os: macos-latest
 
     runs-on: ${{ matrix.test-os }}
     defaults:
