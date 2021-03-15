@@ -100,6 +100,7 @@ TOWER_LEDS: Dict[Claimant, int] = {
     Claimant.ZONE_1: 2,
 }
 
+NUM_TOWER_LEDS = 8
 LOCKED_COLOUR = (0.5, 0, 0)
 CLAIMING_COLOUR = (0, 0.5, 0.5)
 
@@ -609,7 +610,7 @@ class TerritoryController:
     ) -> None:
         zone_colour = TOWER_LEDS[claimant]
         if progress in {ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
-            for led in range(8):
+            for led in range(NUM_TOWER_LEDS):
                 tower_led = get_robot_device(
                     self._robot,
                     f"{station_code.value}Territory led{led}",
@@ -619,7 +620,8 @@ class TerritoryController:
                     tower_led.set(0)
             return
 
-        led_progress = min(int(progress * 8), 7)  # map the progress value to the 8 LEDs
+        # map the progress value to the LEDs
+        led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
 
         tower_led = get_robot_device(
             self._robot,
