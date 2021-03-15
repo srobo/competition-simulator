@@ -11,7 +11,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 # Webots specific library
-from controller import Node, Display, Emitter, Receiver, Supervisor
+from controller import LED, Node, Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -93,6 +93,11 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.ZONE_0: (0.5, 0, 0.5),
     Claimant.ZONE_1: (0.6, 0.6, 0),
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
+}
+
+TOWER_LEDS: Dict[Claimant, int] = {
+    Claimant.ZONE_0: 1,
+    Claimant.ZONE_1: 2,
 }
 
 LOCKED_COLOUR = (0.5, 0, 0)
@@ -599,27 +604,29 @@ class TerritoryController:
     def handle_claim_timer_tick(
         self,
         station_code: StationCode,
-        _: Claimant,
+        claimant: Claimant,
         progress: float,
     ) -> None:
-        if progress not in {0, ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
+        zone_colour = TOWER_LEDS[claimant]
+        if progress in {ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
+            for led in range(8):
+                tower_led = get_robot_device(
+                    self._robot,
+                    f"{station_code.value}Territory led{led}",
+                    LED,
+                )
+                if tower_led.get() == zone_colour:
+                    tower_led.set(0)
             return
 
-        station = self._robot.getFromDef(station_code)
-        if station is None:
-            logging.error(
-                f"Failed to fetch territory node {station_code}",
-            )
-            return
+        led_progress = min(int(progress * 8), 7)  # map the progress value to the 8 LEDs
 
-        if progress == 0:  # claim starting
-            set_node_colour(station, CLAIMING_COLOUR)
-        else:  # claim failed or expired
-            new_colour = ZONE_COLOURS[self._claim_log.get_claimant(station_code)]
-            if self._claim_log.is_locked(station_code):
-                new_colour = LOCKED_COLOUR
-
-            set_node_colour(station, new_colour)
+        tower_led = get_robot_device(
+            self._robot,
+            f"{station_code.value}Territory led{led_progress}",
+            LED,
+        )
+        tower_led.set(zone_colour)
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
