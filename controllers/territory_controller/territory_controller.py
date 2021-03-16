@@ -612,6 +612,13 @@ class TerritoryController:
         # Add the score value
         score_display.drawText(score_str, x_offset, 8)
 
+    def get_tower_led(self, station_code: StationCode, led: int) -> LED:
+        return get_robot_device(
+            self._robot,
+            f"{station_code.value}Territory led{led}",
+            LED,
+        )
+
     def handle_claim_timer_tick(
         self,
         station_code: StationCode,
