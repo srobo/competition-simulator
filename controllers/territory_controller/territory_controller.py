@@ -102,7 +102,6 @@ TOWER_LEDS: Dict[Claimant, int] = {
 
 NUM_TOWER_LEDS = 8
 LOCKED_COLOUR = (0.5, 0, 0)
-CLAIMING_COLOUR = (0, 0.5, 0.5)
 
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
