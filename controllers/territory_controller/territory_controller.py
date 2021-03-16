@@ -628,11 +628,7 @@ class TerritoryController:
         zone_colour = TOWER_LEDS[claimant]
         if progress in {ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
             for led in range(NUM_TOWER_LEDS):
-                tower_led = get_robot_device(
-                    self._robot,
-                    f"{station_code.value}Territory led{led}",
-                    LED,
-                )
+                tower_led = self.get_tower_led(station_code, led)
                 if tower_led.get() == zone_colour:
                     tower_led.set(0)
             return
@@ -640,11 +636,7 @@ class TerritoryController:
         # map the progress value to the LEDs
         led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
 
-        tower_led = get_robot_device(
-            self._robot,
-            f"{station_code.value}Territory led{led_progress}",
-            LED,
-        )
+        tower_led = self.get_tower_led(station_code, led_progress)
         tower_led.set(zone_colour)
 
     def receive_robot_captures(self) -> None:
