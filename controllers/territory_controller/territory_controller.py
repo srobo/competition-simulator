@@ -5,7 +5,7 @@ import enum
 import struct
 import logging
 import collections
-from typing import Set, Dict, List, Tuple, Union, Mapping, Callable
+from typing import Set, Dict, List, Tuple, Union, Mapping, Callable, Optional
 from pathlib import Path
 from collections import defaultdict
 from dataclasses import dataclass
@@ -382,6 +382,17 @@ class ActionTimer:
             else:
                 # run working action with current progress
                 self._progress_callback(station_code, acted_by, time_delta / self._duration)
+
+    def other_ongoing_actions(
+        self,
+        station_code: StationCode,
+        ignore_claimant: Optional[Claimant],
+    ) -> Set[Claimant]:
+        return {
+            action_claimant
+            for action_station_code, action_claimant in self._action_starts.keys()
+            if action_station_code == station_code and action_claimant != ignore_claimant
+        }
 
 
 class TerritoryController:
