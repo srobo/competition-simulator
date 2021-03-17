@@ -627,17 +627,44 @@ class TerritoryController:
     ) -> None:
         zone_colour = TOWER_LEDS[claimant]
         if progress in {ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
-            for led in range(NUM_TOWER_LEDS):
+            # TODO Update when visual-capture and visual-unlocking-2 merge
+            TOWER_LEDS_UNLOCK = 3
+            other_unlocks: Optional[Set[Claimant]] = None
+            # other_unlocks = self._unlock_timer.other_ongoing_actions(station_code, None)
+
+            if other_unlocks:
+                other_unlock_colour = TOWER_LEDS[other_unlocks.pop()]
+
+                # if the other claimant has no leds then my leds are exactly covering them
+                # so we should restore their led colour
+                new_colour = other_unlock_colour
+
+                for led in range(NUM_TOWER_LEDS):
+                    tower_led = self.get_tower_led(station_code, led)
+                    if tower_led.get() == other_unlock_colour:
+                        # since we have found their colour present we need to set the leds
+                        # at the top back to the unlocking colour so that their unlock looks
+                        # the same as if it had run alone
+                        new_colour = TOWER_LEDS_UNLOCK
+                        break
+            else:
+                new_colour = 0
+
+            # set leds from the top-down so that we stop
+            # if we reach the other claimant's colour
+            for led in range(NUM_TOWER_LEDS - 1, -1, -1):
                 tower_led = self.get_tower_led(station_code, led)
-                if tower_led.get() == zone_colour:
-                    tower_led.set(0)
-            return
+                # skip checking the top LED because there will be a race condition
+                if tower_led.get() != zone_colour and led != NUM_TOWER_LEDS - 1:
+                    break
 
-        # map the progress value to the LEDs
-        led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
+                tower_led.set(new_colour)
+        else:
+            # map the progress value to the LEDs
+            led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
 
-        tower_led = self.get_tower_led(station_code, led_progress)
-        tower_led.set(zone_colour)
+            tower_led = self.get_tower_led(station_code, led_progress)
+            tower_led.set(zone_colour)
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
