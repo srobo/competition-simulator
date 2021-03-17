@@ -374,6 +374,7 @@ class ActionTimer:
         return in_window
 
     def tick(self, current_time: float) -> None:
+        # cast required since expired entries are pruned during iteration
         for (station_code, acted_by), start_time in list(self._action_starts.items()):
             time_delta = current_time - start_time
             if time_delta > self._duration_upper:
