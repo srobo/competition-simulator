@@ -5,13 +5,13 @@ import enum
 import struct
 import logging
 import collections
-from typing import Set, Dict, List, Tuple, Union, Mapping
+from typing import Set, Dict, List, Tuple, Union, Mapping, Callable
 from pathlib import Path
 from collections import defaultdict
 from dataclasses import dataclass
 
 # Webots specific library
-from controller import Node, Display, Emitter, Receiver, Supervisor
+from controller import LED, Node, Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -95,6 +95,7 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
+NUM_TOWER_LEDS = 8
 LOCKED_COLOUR = (0.5, 0, 0)
 
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
@@ -321,11 +322,30 @@ def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
     node.getField('zoneColour').setSFColor(list(colour))
 
 
+def convert_to_led_colour(colour_tuple: Tuple[float, float, float]) -> int:
+    scaled_colour = (colour * 255 for colour in colour_tuple)
+    return int.from_bytes(struct.pack('!BBB', *scaled_colour), 'big')
+
+
 class ActionTimer:
-    def __init__(self, action_duration: float):
+
+    TIMER_COMPLETE = -1
+    TIMER_EXPIRE = -2
+
+    def __init__(
+        self,
+        action_duration: float,
+        progress_callback: Callable[[StationCode, Claimant, float], None] =
+        lambda station_code, claimant, progress: None,
+    ):
+        self._duration = action_duration
         self._duration_upper = action_duration * 1.1
         self._duration_lower = action_duration * 0.9
         self._action_starts: Dict[Tuple[StationCode, Claimant], float] = {}
+        # progress_callback is called on each timestep for each active action
+        # the third argument is the current progress through the action
+        # or TIMER_COMPLETE/TIMER_EXPIRE when the action is finished
+        self._progress_callback = progress_callback
 
     def begin_action(
         self,
@@ -334,6 +354,7 @@ class ActionTimer:
         start_time: float,
     ) -> None:
         self._action_starts[station_code, acted_by] = start_time
+        self._progress_callback(station_code, acted_by, 0)  # run starting action
 
     def has_begun_action_in_time_window(
         self,
@@ -346,7 +367,22 @@ class ActionTimer:
         except KeyError:
             return False
         time_delta = current_time - start_time
-        return self._duration_lower <= time_delta <= self._duration_upper
+        in_window = self._duration_lower <= time_delta <= self._duration_upper
+        if in_window:
+            self._progress_callback(station_code, acted_by, self.TIMER_COMPLETE)
+            self._action_starts.pop((station_code, acted_by))  # remove completed claim
+        return in_window
+
+    def tick(self, current_time: float) -> None:
+        # cast required since expired entries are pruned during iteration
+        for (station_code, acted_by), start_time in list(self._action_starts.items()):
+            time_delta = current_time - start_time
+            if time_delta > self._duration_upper:
+                self._action_starts.pop((station_code, acted_by))  # remove expired claim
+                self._progress_callback(station_code, acted_by, self.TIMER_EXPIRE)
+            else:
+                # run working action with current progress
+                self._progress_callback(station_code, acted_by, time_delta / self._duration)
 
 
 class TerritoryController:
@@ -358,7 +394,7 @@ class TerritoryController:
         self._claim_log = claim_log
         self._attached_territories = attached_territories
         self._robot = Supervisor()
-        self._claim_timer = ActionTimer(2)
+        self._claim_timer = ActionTimer(2, self.handle_claim_timer_tick)
 
         self._emitters = {
             station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)
@@ -566,6 +602,32 @@ class TerritoryController:
         # Add the score value
         score_display.drawText(score_str, x_offset, 8)
 
+    def get_tower_led(self, station_code: StationCode, led: int) -> LED:
+        return get_robot_device(
+            self._robot,
+            f"{station_code.value}Territory led{led}",
+            LED,
+        )
+
+    def handle_claim_timer_tick(
+        self,
+        station_code: StationCode,
+        claimant: Claimant,
+        progress: float,
+    ) -> None:
+        zone_colour = convert_to_led_colour(ZONE_COLOURS[claimant])
+        if progress in {ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
+            for led in range(NUM_TOWER_LEDS):
+                tower_led = self.get_tower_led(station_code, led)
+                if tower_led.get() == zone_colour:
+                    tower_led.set(0)
+        else:
+            # map the progress value to the LEDs
+            led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
+
+            tower_led = self.get_tower_led(station_code, led_progress)
+            tower_led.set(zone_colour)
+
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
             self.receive_territory(station_code, receiver)
@@ -594,6 +656,8 @@ class TerritoryController:
         while True:
             counter += 1
             self.receive_robot_captures()
+            current_time = self._robot.getTime()
+            self._claim_timer.tick(current_time)
             if counter > steps_per_broadcast:
                 self.transmit_pulses()
                 counter = 0
