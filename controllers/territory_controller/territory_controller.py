@@ -642,10 +642,9 @@ class TerritoryController:
         for station_code, emitter in self._emitters.items():
             emitter.send(
                 struct.pack(
-                    "!2sbb",
+                    "!2sb",
                     station_code.encode("ASCII"),
                     int(self._claim_log.get_claimant(station_code)),
-                    int(self._claim_log.is_locked(station_code)),
                 ),
             )
 
