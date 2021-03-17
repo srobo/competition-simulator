@@ -169,6 +169,6 @@ class Radio:
         """
         self.begin_territory_claim()
         with self._step_lock:
-            # Wait 1.9s
-            self._webot.step(int(max(1, 1900)))
+            # Wait 2s
+            self._webot.step(int(max(1, 2000)))
         self.complete_territory_claim()
