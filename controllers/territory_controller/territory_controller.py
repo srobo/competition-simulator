@@ -412,9 +412,8 @@ class TerritoryController:
         for station_code in StationCode:
             self.set_node_colour(station_code, ZONE_COLOURS[Claimant.UNCLAIMED])
 
-        for claimant in Claimant:
-            if claimant != Claimant.UNCLAIMED:
-                self.set_score_display(claimant, 0)
+        for claimant in Claimant.zones():
+            self.set_score_display(claimant, 0)
 
     def set_node_colour(self, node_id: str, new_colour: Tuple[float, float, float]) -> None:
         node = self._robot.getFromDef(node_id)
