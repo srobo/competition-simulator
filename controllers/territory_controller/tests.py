@@ -3,7 +3,7 @@ import random
 import unittest
 from typing import Dict, List, Union, Mapping
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from territory_controller import (
     Claimant,
@@ -13,8 +13,6 @@ from territory_controller import (
     TerritoryRoot,
     TERRITORY_LINKS,
     AttachedTerritories,
-    TerritoryController,
-    LOCKED_OUT_AFTER_CLAIM,
 )
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -426,89 +424,6 @@ class TestLiveScoring(unittest.TestCase):
                 'time': 3.14,
             },
         ])
-
-
-class TestTerritoryLockout(unittest.TestCase):
-    "Test that individual territories become 'locked' when claimed a set number of times"
-
-    def assertLocked(self, station: StationCode, context: str) -> None:
-        self.assertTrue(
-            self.territory_controller._claim_log.is_locked(station),
-            f"Territory {station.value} not locked {context}",
-        )
-
-    def assertNotLocked(self, station: StationCode, context: str) -> None:
-        self.assertFalse(
-            self.territory_controller._claim_log.is_locked(station),
-            f"Territory {station.value} locked {context}",
-        )
-
-    def claim_territory(self, station_code: StationCode, claimed_by: Claimant) -> None:
-        self.territory_controller.claim_territory(station_code, claimed_by, claim_time=0)
-
-    @patch('controller.Supervisor.getFromDef')
-    @patch('territory_controller.get_robot_device')
-    @patch('territory_controller.TerritoryController.set_score_display')
-    @patch('territory_controller.TERRITORY_LINKS', new={
-        (StationCode.PN, StationCode.EY),
-        (TerritoryRoot.z0, StationCode.PN),
-        (TerritoryRoot.z1, StationCode.PN),
-    })
-    def setUp(self, _: object, __: object, ___: object) -> None:
-        super().setUp()
-        claim_log = ClaimLog(record_arena_actions=False)
-        self.attached_territories = AttachedTerritories(claim_log)
-        self.territory_controller = TerritoryController(
-            claim_log,
-            self.attached_territories,
-        )
-
-    @patch('controller.Supervisor.getFromDef')
-    @patch('territory_controller.LOCKED_OUT_AFTER_CLAIM', new=3)
-    def test_territory_lockout(self, _: object) -> None:
-        """
-        Test a territory is locked after the correct number of claims and
-        disconnected territories aren't also locked.
-
-        The reduce map in this test looks like this:
-
-            z0 ── PN ── z1
-                   └─ EY
-
-        Thus EY is claimable only after PN has been claimed and can easily
-        become unclaimed when PN is claimed. This test is validating both that
-        PN becomes locked at the right point and also that EY does not become
-        locked at that point.
-        """
-
-        self.claim_territory(StationCode.PN, Claimant.ZONE_0)
-        self.claim_territory(StationCode.EY, Claimant.ZONE_0)
-
-        self.assertNotLocked(StationCode.PN, "early after first claims")
-        self.assertNotLocked(StationCode.EY, "early after first claims")
-
-        self.claim_territory(StationCode.PN, Claimant.ZONE_1)
-        self.claim_territory(StationCode.EY, Claimant.ZONE_1)
-
-        self.assertNotLocked(StationCode.PN, "early after second claims")
-        self.assertNotLocked(StationCode.EY, "early after second claims")
-
-        self.claim_territory(StationCode.PN, Claimant.ZONE_0)
-
-        self.assertLocked(StationCode.PN, "after third claim")
-        self.assertNotLocked(StationCode.EY, "after lock-out of PN")
-
-    @patch('controller.Supervisor.getFromDef')
-    def test_self_lockout(self, _: object) -> None:
-        "Test a territory is locked after the correct number of claims by its own owner"
-        for i in range(LOCKED_OUT_AFTER_CLAIM):
-            # lock status is tested before capturing since the final
-            # iteration will lock the territory
-            self.assertNotLocked(StationCode.PN, f"early after {i+1} claims")
-
-            self.claim_territory(StationCode.PN, Claimant.ZONE_0)
-
-        self.assertLocked(StationCode.PN, f"after {LOCKED_OUT_AFTER_CLAIM} claims")
 
 
 class TestActionTimer(unittest.TestCase):
