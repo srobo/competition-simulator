@@ -95,11 +95,6 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
-TOWER_LEDS: Dict[Claimant, int] = {
-    Claimant.ZONE_0: 1,
-    Claimant.ZONE_1: 2,
-}
-
 NUM_TOWER_LEDS = 8
 LOCKED_COLOUR = (0.5, 0, 0)
 
@@ -325,6 +320,11 @@ class AttachedTerritories:
 
 def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
     node.getField('zoneColour').setSFColor(list(colour))
+
+
+def convert_to_led_colour(colour_tuple: Tuple[float, float, float]) -> int:
+    scaled_colour = (colour * 255 for colour in colour_tuple)
+    return int.from_bytes(struct.pack('!BBB', *scaled_colour), 'big')
 
 
 class ActionTimer:
@@ -625,7 +625,7 @@ class TerritoryController:
         claimant: Claimant,
         progress: float,
     ) -> None:
-        zone_colour = TOWER_LEDS[claimant]
+        zone_colour = convert_to_led_colour(ZONE_COLOURS[claimant])
         if progress in {ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
             for led in range(NUM_TOWER_LEDS):
                 tower_led = self.get_tower_led(station_code, led)

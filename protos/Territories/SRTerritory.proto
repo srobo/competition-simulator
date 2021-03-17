@@ -71,7 +71,8 @@ PROTO SRTerritory [
                     }
                   ]
                   name %{= '"' .. fields.territoryName.value .. ' led0"'}%
-                  color IS TOWER_LED_COLOURS
+                  color []
+                  gradual TRUE
                 }
                 LED {
                   translation 0 -0.125 0
@@ -87,7 +88,8 @@ PROTO SRTerritory [
                     }
                   ]
                   name %{= '"' .. fields.territoryName.value .. ' led1"'}%
-                  color IS TOWER_LED_COLOURS
+                  color []
+                  gradual TRUE
                 }
                 LED {
                   translation 0 -0.075 0
@@ -103,7 +105,8 @@ PROTO SRTerritory [
                     }
                   ]
                   name %{= '"' .. fields.territoryName.value .. ' led2"'}%
-                  color IS TOWER_LED_COLOURS
+                  color []
+                  gradual TRUE
                 }
                 LED {
                   translation 0 -0.025 0
@@ -119,7 +122,8 @@ PROTO SRTerritory [
                     }
                   ]
                   name %{= '"' .. fields.territoryName.value .. ' led3"'}%
-                  color IS TOWER_LED_COLOURS
+                  color []
+                  gradual TRUE
                 }
                 LED {
                   translation 0 0.025 0
@@ -135,7 +139,8 @@ PROTO SRTerritory [
                     }
                   ]
                   name %{= '"' .. fields.territoryName.value .. ' led4"'}%
-                  color IS TOWER_LED_COLOURS
+                  color []
+                  gradual TRUE
                 }
                 LED {
                   translation 0 0.075 0
@@ -151,7 +156,8 @@ PROTO SRTerritory [
                     }
                   ]
                   name %{= '"' .. fields.territoryName.value .. ' led5"'}%
-                  color IS TOWER_LED_COLOURS
+                  color []
+                  gradual TRUE
                 }
                 LED {
                   translation 0 0.125 0
@@ -167,7 +173,8 @@ PROTO SRTerritory [
                     }
                   ]
                   name %{= '"' .. fields.territoryName.value .. ' led6"'}%
-                  color IS TOWER_LED_COLOURS
+                  color []
+                  gradual TRUE
                 }
                 LED {
                   translation 0 0.175 0
@@ -183,7 +190,8 @@ PROTO SRTerritory [
                     }
                   ]
                   name %{= '"' .. fields.territoryName.value .. ' led7"'}%
-                  color IS TOWER_LED_COLOURS
+                  color []
+                  gradual TRUE
                 }
               ]
               boundingObject DEF TOWER Cylinder {
