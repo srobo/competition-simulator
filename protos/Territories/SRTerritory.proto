@@ -6,7 +6,6 @@ PROTO SRTerritory [
   field SFString receiverName ""
   field MFString textureName ""
   field SFColor zoneColour 0.34191456 0.34191436 0.34191447
-  field MFColor TOWER_LED_COLOURS [1 0 1, 1 1 0, 1 0 0]
 ]
 {
     Solid {
