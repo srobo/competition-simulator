@@ -446,7 +446,13 @@ class TerritoryController:
             logging.error(f"Robot in zone {claimed_by} failed to capture {station_code}")
             return
 
-        self.set_territory_ownership(station_code, claimed_by, claim_time)
+        if claimed_by == self._claim_log.get_claimant(station_code):
+            logging.error(
+                f"{station_code} already owned by {claimed_by.name}, resetting to UNCLAIMED",
+            )
+            self.set_territory_ownership(station_code, Claimant.UNCLAIMED, claim_time)
+        else:
+            self.set_territory_ownership(station_code, claimed_by, claim_time)
 
         # recalculate connected territories to account for
         # the new capture and newly created islands
