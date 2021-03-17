@@ -125,11 +125,6 @@ TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
 }
 
 
-@dataclass
-class StationStatus:
-    owner: Claimant = Claimant.UNCLAIMED
-
-
 @dataclass(frozen=True)
 class ClaimLogEntry:
     station_code: StationCode
