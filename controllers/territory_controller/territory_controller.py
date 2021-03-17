@@ -42,9 +42,6 @@ class Claimant(enum.IntEnum):
         }
 
 
-LOCKED_OUT_AFTER_CLAIM = 4
-
-
 # Updating? Update radio.py too.
 class StationCode(str, enum.Enum):
     PN = 'PN'
@@ -96,7 +93,6 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
 }
 
 NUM_TOWER_LEDS = 8
-LOCKED_COLOUR = (0.5, 0, 0)
 
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
@@ -132,7 +128,6 @@ TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
 @dataclass
 class StationStatus:
     owner: Claimant = Claimant.UNCLAIMED
-    locked: bool = False
 
 
 @dataclass(frozen=True)
@@ -140,7 +135,6 @@ class ClaimLogEntry:
     station_code: StationCode
     claimant: Claimant
     claim_time: float
-    locked: bool = False
 
 
 class ClaimLog:
@@ -158,19 +152,6 @@ class ClaimLog:
     def get_claimant(self, station_code: StationCode) -> Claimant:
         return self._station_statuses[station_code].owner
 
-    def is_locked(self, station_code: StationCode) -> bool:
-        return self._station_statuses[station_code].locked
-
-    def get_claim_count(self, station_code: StationCode) -> int:
-        return len([
-            claim.station_code
-            for claim in self._log
-            if (
-                claim.station_code == station_code and
-                claim.claimant in Claimant.zones()
-            )
-        ])
-
     def _record_log_entry(self, entry: ClaimLogEntry) -> None:
         self._log.append(entry)
         self._log_is_dirty = True
@@ -184,22 +165,6 @@ class ClaimLog:
         self._record_log_entry(ClaimLogEntry(station_code, claimed_by, claim_time))
         print(f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s")  # noqa:T001
         self._station_statuses[station_code].owner = claimed_by
-
-    def log_lock(
-        self,
-        station_code: StationCode,
-        locked_by: Claimant,
-        claim_time: float,
-    ) -> None:
-        self._record_log_entry(ClaimLogEntry(
-            station_code,
-            Claimant.UNCLAIMED,
-            claim_time,
-            locked=True,
-        ))
-        print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")  # noqa:T001
-        self._station_statuses[station_code].owner = Claimant.UNCLAIMED
-        self._station_statuses[station_code].locked = True
 
     def record_captures(self) -> None:
         if not self._record_arena_actions:
@@ -215,7 +180,6 @@ class ClaimLog:
                 'zone': claim.claimant.value,
                 'station_code': claim.station_code.value,
                 'time': claim.claim_time,
-                'locked': claim.locked,
             }
             for claim in self._log
         ]})
@@ -429,11 +393,6 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self._claim_log.is_locked(station_code):
-            logging.error(
-                f"Territory {station_code} is locked",
-            )
-            return
 
         station = self._robot.getFromDef(station_code)
         if station is None:
@@ -442,22 +401,11 @@ class TerritoryController:
             )
             return
 
-        if (
-            self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1 and
-            claimed_by in Claimant.zones()
-        ):
-            # This next claim would trigger the "locked out" condition, so rather than
-            # making the claim, instead cause a lock-out.
-            set_node_colour(station, LOCKED_COLOUR)
+        new_colour = ZONE_COLOURS[claimed_by]
 
-            self._claim_log.log_lock(station_code, claimed_by, claim_time)
+        set_node_colour(station, new_colour)
 
-        else:
-            new_colour = ZONE_COLOURS[claimed_by]
-
-            set_node_colour(station, new_colour)
-
-            self._claim_log.log_territory_claim(station_code, claimed_by, claim_time)
+        self._claim_log.log_territory_claim(station_code, claimed_by, claim_time)
 
     def prune_detached_stations(
         self,
