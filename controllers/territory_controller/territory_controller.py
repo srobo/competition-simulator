@@ -141,8 +141,8 @@ class ClaimLog:
     def __init__(self, record_arena_actions: bool) -> None:
         self._record_arena_actions = record_arena_actions
 
-        self._station_statuses: Dict[StationCode, StationStatus] = {
-            code: StationStatus() for code in StationCode
+        self._station_statuses: Dict[StationCode, Claimant] = {
+            code: Claimant.UNCLAIMED for code in StationCode
         }
 
         self._log: List[ClaimLogEntry] = []
@@ -150,7 +150,7 @@ class ClaimLog:
         self._log_is_dirty = True
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
-        return self._station_statuses[station_code].owner
+        return self._station_statuses[station_code]
 
     def _record_log_entry(self, entry: ClaimLogEntry) -> None:
         self._log.append(entry)
@@ -164,7 +164,7 @@ class ClaimLog:
     ) -> None:
         self._record_log_entry(ClaimLogEntry(station_code, claimed_by, claim_time))
         print(f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s")  # noqa:T001
-        self._station_statuses[station_code].owner = claimed_by
+        self._station_statuses[station_code] = claimed_by
 
     def record_captures(self) -> None:
         if not self._record_arena_actions:
@@ -198,7 +198,7 @@ class ClaimLog:
 
         zone_to_territories = collections.defaultdict(list)
         for territory, status in self._station_statuses.items():
-            zone_to_territories[status.owner].append(territory)
+            zone_to_territories[status].append(territory)
 
         return {
             zone: sum(
@@ -450,9 +450,9 @@ class TerritoryController:
             logging.error(
                 f"{station_code} already owned by {claimed_by.name}, resetting to UNCLAIMED",
             )
-            self.set_territory_ownership(station_code, Claimant.UNCLAIMED, claim_time)
-        else:
-            self.set_territory_ownership(station_code, claimed_by, claim_time)
+            claimed_by = Claimant.UNCLAIMED
+
+        self.set_territory_ownership(station_code, claimed_by, claim_time)
 
         # recalculate connected territories to account for
         # the new capture and newly created islands
