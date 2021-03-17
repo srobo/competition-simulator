@@ -631,13 +631,12 @@ class TerritoryController:
                 tower_led = self.get_tower_led(station_code, led)
                 if tower_led.get() == zone_colour:
                     tower_led.set(0)
-            return
+        else:
+            # map the progress value to the LEDs
+            led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
 
-        # map the progress value to the LEDs
-        led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
-
-        tower_led = self.get_tower_led(station_code, led_progress)
-        tower_led.set(zone_colour)
+            tower_led = self.get_tower_led(station_code, led_progress)
+            tower_led.set(zone_colour)
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
