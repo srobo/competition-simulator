@@ -2,57 +2,81 @@
 """
 Primitive whitespace linting of VRML PROTO files.
 Currently supports:
-- Strippong trailing whitespace
+- Stripping trailing whitespace
 - Setting indentation based on brackets to 2-space
+- Collapsing empty pairs of brackets
 """
 import re
+import sys
 import logging
 import argparse
 from typing import List
+from difflib import unified_diff
 from pathlib import Path
+
+MATCHING_BRACKET = {
+    '{': '}',
+    '(': ')',
+    '[': ']',
+}
 
 
 def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
-    differing_lines = False
     current_indent = 0
-    new_file: List[str] = []
+    old_lines: List[str] = []
+    new_lines: List[str] = []
+    last_line_bracket = ''
 
     print(f"Linting {file}")  # noqa: T001
 
     with file.open('r') as f:
-        for line_no, line in enumerate(f.readlines(), 1):
+        for line in f.readlines():
+            old_lines.append(line)
+
             new_line = line.strip()
 
             if re.search(r'^[})\]]', new_line):
                 current_indent -= 1
+                # test for an empty pair of brackets
+                if last_line_bracket and MATCHING_BRACKET[last_line_bracket] == new_line[0]:
+                    # append this line to the previous line
+                    new_lines[-1] = new_lines[-1][:-1] + new_line + '\n'
+                    last_line_bracket = ''
+                    continue
 
             if current_indent < 0:
                 logging.error('Brackets mismatch, indentation went negative. Aborting')
-                exit(-1)
+                return False
 
             if new_line != "":
                 new_line = '  ' * current_indent + new_line
 
             if re.search(r'[{([]$', new_line):
                 current_indent += 1
+                last_line_bracket = new_line[-1]
+            else:
+                last_line_bracket = ''
 
-            new_file.append(new_line + "\n")
+            new_lines.append(new_line + "\n")
 
-            if new_line != line[:-1]:
-                differing_lines = True
-                if print_diffs:
-                    print(line_no)  # noqa: T001
-                    print('<', line[:-1])  # noqa: T001
-                    print('>', new_line)  # noqa: T001
+    diff = list(unified_diff(
+        old_lines,
+        new_lines,
+        fromfile=str(file),
+        tofile=f"{file} (linted)",
+    ))
 
-    if not print_diffs and differing_lines:
-        print("  Linting issues found")  # noqa: T001
+    if diff:
+        if print_diffs:
+            sys.stdout.writelines(diff)
+        else:
+            print("  Linting issues found")  # noqa: T001
 
-    if differing_lines and inplace:
-        with file.open('w') as f:
-            f.writelines(new_file)
-
-    return differing_lines
+        if inplace:
+            with file.open('w') as f:
+                f.writelines(new_lines)
+        return True
+    return False
 
 
 def parse_args() -> argparse.Namespace:
