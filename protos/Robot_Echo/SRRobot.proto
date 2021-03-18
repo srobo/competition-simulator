@@ -852,15 +852,15 @@ PROTO SRRobot [
                     signalStrengthNoise 0.03
                   }
                   Emitter {
-                      type "radio"
-                      name "robot emitter"
-                      range 0.5
-                      maxRange 0.5
-                      channel 2
+                    type "radio"
+                    name "robot emitter"
+                    range 0.5
+                    maxRange 0.5
+                    channel 2
                   }
                   Compass {
-                      name "robot compass"
-                      rotation 0 1 0 3.14
+                    name "robot compass"
+                    rotation 0 1 0 3.14
                   }
                   LED {
                     translation 0 0.1 0.085
