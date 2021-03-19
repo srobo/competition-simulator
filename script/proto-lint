@@ -92,7 +92,9 @@ def main() -> int:
         if lint_file(file, args.inplace, args.print_diffs):
             differing_lines = True
 
-    return differing_lines
+    if differing_lines:
+        return 1
+    return 0
 
 
 if __name__ == '__main__':
