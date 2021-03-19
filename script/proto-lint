@@ -4,7 +4,6 @@ Primitive whitespace linting of VRML PROTO files.
 Currently supports:
 - Stripping trailing whitespace
 - Setting indentation based on brackets to 2-space
-- Collapsing empty pairs of brackets
 """
 import re
 import sys
@@ -14,18 +13,11 @@ from typing import List
 from difflib import unified_diff
 from pathlib import Path
 
-MATCHING_BRACKET = {
-    '{': '}',
-    '(': ')',
-    '[': ']',
-}
-
 
 def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
     current_indent = 0
     old_lines: List[str] = []
     new_lines: List[str] = []
-    last_line_bracket = ''
 
     print(f"Linting {file}")  # noqa: T001
 
@@ -37,12 +29,6 @@ def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
 
             if re.search(r'^[})\]]', new_line):
                 current_indent -= 1
-                # test for an empty pair of brackets
-                if last_line_bracket and MATCHING_BRACKET[last_line_bracket] == new_line[0]:
-                    # append this line to the previous line
-                    new_lines[-1] = new_lines[-1][:-1] + new_line + '\n'
-                    last_line_bracket = ''
-                    continue
 
             if current_indent < 0:
                 logging.error('Brackets mismatch, indentation went negative. Aborting')
@@ -53,9 +39,6 @@ def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
 
             if re.search(r'[{([]$', new_line):
                 current_indent += 1
-                last_line_bracket = new_line[-1]
-            else:
-                last_line_bracket = ''
 
             new_lines.append(new_line + "\n")
 
