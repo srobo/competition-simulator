@@ -34,7 +34,7 @@ def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
                 logging.error('Brackets mismatch, indentation went negative. Aborting')
                 return False
 
-            if new_line != "":
+            if new_line:
                 new_line = '  ' * current_indent + new_line
 
             if re.search(r'[{([]$', new_line):
