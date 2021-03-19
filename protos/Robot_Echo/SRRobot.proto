@@ -737,7 +737,6 @@ PROTO SRRobot [
             }
           }
         ]
-
       }
       DEF body_group Transform {
         children [
