@@ -39,6 +39,12 @@ class StationCode(str, enum.Enum):
     SW = 'SW'
     BN = 'BN'
     HV = 'HV'
+    FL = 'FL'
+    YT = 'YT'
+    HA = 'HA'
+    PL = 'PL'
+    TH = 'TH'
+    SF = 'SF'
 
 
 class TargetInfo(NamedTuple):
