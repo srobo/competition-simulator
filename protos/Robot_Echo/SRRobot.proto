@@ -19,7 +19,7 @@ PROTO SRRobot [
         children [
           TouchSensor {
             translation 0 0.09 -0.03
-            rotation 0 1 0 -3.1415926535897705
+            rotation 0 1 0 -3.14
             children [
               Shape {
                 appearance PBRAppearance {
