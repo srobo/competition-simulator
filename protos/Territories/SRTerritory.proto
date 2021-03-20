@@ -23,202 +23,202 @@ PROTO SRTerritory [
                   roughness 1
                   metalness 0
                 }
-                  geometry DEF TERRITORY Cylinder {
-                      height 0.001
-                      radius 0.5
-                  }
+                geometry DEF TERRITORY Cylinder {
+                  height 0.001
+                  radius 0.5
                 }
-                Transform {
-                  translation 0 0.005 0.25
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColorMap ImageTexture {
-                          # Texture labels are 128x64 and produced in GIMP
-                          # Font used is Arial Heavy, 75pt, in bold using colour #3270ed
-                          url IS textureName
-                        }
-                        roughness 1
-                      }
-                      geometry Plane {
-                        size 0.5 0.25
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-            Solid {
-              name "Territory tower"
-              translation 0 0.2 0
-              children [
-                LED {
-                  translation 0 -0.175 0
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0.79910326 0.33961943 0.037047286
-                        metalness 0
-                        roughness 1
-                        emissiveIntensity 10
-                      }
-                      geometry DEF TOWER_LED_GEO Cylinder {
-                        height 0.05
-                        radius 0.08
-                        bottom FALSE
-                      }
-                    }
-                  ]
-                  name %{= '"' .. fields.territoryName.value .. ' led0"'}%
-                  color []
-                  gradual TRUE
-                }
-                LED {
-                  translation 0 -0.125 0
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0.79910326 0.33961943 0.037047286
-                        metalness 0
-                        roughness 1
-                        emissiveIntensity 10
-                      }
-                      geometry USE TOWER_LED_GEO
-                    }
-                  ]
-                  name %{= '"' .. fields.territoryName.value .. ' led1"'}%
-                  color []
-                  gradual TRUE
-                }
-                LED {
-                  translation 0 -0.075 0
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0.79910326 0.33961943 0.037047286
-                        metalness 0
-                        roughness 1
-                        emissiveIntensity 10
-                      }
-                      geometry USE TOWER_LED_GEO
-                    }
-                  ]
-                  name %{= '"' .. fields.territoryName.value .. ' led2"'}%
-                  color []
-                  gradual TRUE
-                }
-                LED {
-                  translation 0 -0.025 0
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0.79910326 0.33961943 0.037047286
-                        metalness 0
-                        roughness 1
-                        emissiveIntensity 10
-                      }
-                      geometry USE TOWER_LED_GEO
-                    }
-                  ]
-                  name %{= '"' .. fields.territoryName.value .. ' led3"'}%
-                  color []
-                  gradual TRUE
-                }
-                LED {
-                  translation 0 0.025 0
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0.79910326 0.33961943 0.037047286
-                        metalness 0
-                        roughness 1
-                        emissiveIntensity 10
-                      }
-                      geometry USE TOWER_LED_GEO
-                    }
-                  ]
-                  name %{= '"' .. fields.territoryName.value .. ' led4"'}%
-                  color []
-                  gradual TRUE
-                }
-                LED {
-                  translation 0 0.075 0
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0.79910326 0.33961943 0.037047286
-                        metalness 0
-                        roughness 1
-                        emissiveIntensity 10
-                      }
-                      geometry USE TOWER_LED_GEO
-                    }
-                  ]
-                  name %{= '"' .. fields.territoryName.value .. ' led5"'}%
-                  color []
-                  gradual TRUE
-                }
-                LED {
-                  translation 0 0.125 0
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0.79910326 0.33961943 0.037047286
-                        metalness 0
-                        roughness 1
-                        emissiveIntensity 10
-                      }
-                      geometry USE TOWER_LED_GEO
-                    }
-                  ]
-                  name %{= '"' .. fields.territoryName.value .. ' led6"'}%
-                  color []
-                  gradual TRUE
-                }
-                LED {
-                  translation 0 0.175 0
-                  children [
-                    Shape {
-                      appearance PBRAppearance {
-                        baseColor 0.79910326 0.33961943 0.037047286
-                        metalness 0
-                        roughness 1
-                        emissiveIntensity 10
-                      }
-                      geometry USE TOWER_LED_GEO
-                    }
-                  ]
-                  name %{= '"' .. fields.territoryName.value .. ' led7"'}%
-                  color []
-                  gradual TRUE
-                }
-              ]
-              boundingObject DEF TOWER Cylinder {
-                height 0.4
-                radius 0.08
               }
+              Transform {
+                translation 0 0.005 0.25
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColorMap ImageTexture {
+                        # Texture labels are 128x64 and produced in GIMP
+                        # Font used is Arial Heavy, 75pt, in bold using colour #3270ed
+                        url IS textureName
+                      }
+                      roughness 1
+                    }
+                    geometry Plane {
+                      size 0.5 0.25
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          Solid {
+            name "Territory tower"
+            translation 0 0.2 0
+            children [
+              LED {
+                translation 0 -0.175 0
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.79910326 0.33961943 0.037047286
+                      metalness 0
+                      roughness 1
+                      emissiveIntensity 10
+                    }
+                    geometry DEF TOWER_LED_GEO Cylinder {
+                      height 0.05
+                      radius 0.08
+                      bottom FALSE
+                    }
+                  }
+                ]
+                name %{= '"' .. fields.territoryName.value .. ' led0"'}%
+                color []
+                gradual TRUE
+              }
+              LED {
+                translation 0 -0.125 0
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.79910326 0.33961943 0.037047286
+                      metalness 0
+                      roughness 1
+                      emissiveIntensity 10
+                    }
+                    geometry USE TOWER_LED_GEO
+                  }
+                ]
+                name %{= '"' .. fields.territoryName.value .. ' led1"'}%
+                color []
+                gradual TRUE
+              }
+              LED {
+                translation 0 -0.075 0
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.79910326 0.33961943 0.037047286
+                      metalness 0
+                      roughness 1
+                      emissiveIntensity 10
+                    }
+                    geometry USE TOWER_LED_GEO
+                  }
+                ]
+                name %{= '"' .. fields.territoryName.value .. ' led2"'}%
+                color []
+                gradual TRUE
+              }
+              LED {
+                translation 0 -0.025 0
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.79910326 0.33961943 0.037047286
+                      metalness 0
+                      roughness 1
+                      emissiveIntensity 10
+                    }
+                    geometry USE TOWER_LED_GEO
+                  }
+                ]
+                name %{= '"' .. fields.territoryName.value .. ' led3"'}%
+                color []
+                gradual TRUE
+              }
+              LED {
+                translation 0 0.025 0
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.79910326 0.33961943 0.037047286
+                      metalness 0
+                      roughness 1
+                      emissiveIntensity 10
+                    }
+                    geometry USE TOWER_LED_GEO
+                  }
+                ]
+                name %{= '"' .. fields.territoryName.value .. ' led4"'}%
+                color []
+                gradual TRUE
+              }
+              LED {
+                translation 0 0.075 0
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.79910326 0.33961943 0.037047286
+                      metalness 0
+                      roughness 1
+                      emissiveIntensity 10
+                    }
+                    geometry USE TOWER_LED_GEO
+                  }
+                ]
+                name %{= '"' .. fields.territoryName.value .. ' led5"'}%
+                color []
+                gradual TRUE
+              }
+              LED {
+                translation 0 0.125 0
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.79910326 0.33961943 0.037047286
+                      metalness 0
+                      roughness 1
+                      emissiveIntensity 10
+                    }
+                    geometry USE TOWER_LED_GEO
+                  }
+                ]
+                name %{= '"' .. fields.territoryName.value .. ' led6"'}%
+                color []
+                gradual TRUE
+              }
+              LED {
+                translation 0 0.175 0
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.79910326 0.33961943 0.037047286
+                      metalness 0
+                      roughness 1
+                      emissiveIntensity 10
+                    }
+                    geometry USE TOWER_LED_GEO
+                  }
+                ]
+                name %{= '"' .. fields.territoryName.value .. ' led7"'}%
+                color []
+                gradual TRUE
+              }
+            ]
+            boundingObject DEF TOWER Cylinder {
+              height 0.4
+              radius 0.08
             }
-            Transform{
-              translation 0 0.25 0
-              children [
-                Receiver {
-                  type "radio"
-                  name IS receiverName
-                  bufferSize 10
-                  channel 2
-                }
+          }
+          Transform{
+            translation 0 0.25 0
+            children [
+              Receiver {
+                type "radio"
+                name IS receiverName
+                bufferSize 10
+                channel 2
+              }
 
-                Emitter {
-                  type "radio"
-                  name IS emitterName
-                  range 2
-                  maxRange 2
-                  channel 1
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+              Emitter {
+                type "radio"
+                name IS emitterName
+                range 2
+                maxRange 2
+                channel 1
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }
