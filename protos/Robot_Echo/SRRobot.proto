@@ -326,7 +326,7 @@ PROTO SRRobot [
         children [
           DEF RIGHT_WHEEL HingeJoint {
             jointParameters HingeJointParameters {
-              position 0.8927782142630201
+              position 0
               axis -1 0 0
             }
             device [
@@ -559,7 +559,7 @@ PROTO SRRobot [
           }
           DEF LEFT_WHEEL HingeJoint {
             jointParameters HingeJointParameters {
-              position 0.9012614925631643
+              position 0
               axis -1 0 0
             }
             device [
