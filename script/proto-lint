@@ -27,15 +27,16 @@ def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
 
             new_line = line.strip()
 
-            if re.search(r'^[})\]]', new_line):
-                current_indent -= 1
+            if new_line[0] == '#':  # ignore brackets in comments
+                if re.search(r'^[})\]]', new_line):
+                    current_indent -= 1
 
-            if current_indent < 0:
-                logging.error('Brackets mismatch, indentation went negative. Aborting')
-                return False
+                if current_indent < 0:
+                    logging.error('Brackets mismatch, indentation went negative. Aborting')
+                    return False
 
-            if new_line:
-                new_line = '  ' * current_indent + new_line
+                if new_line:
+                    new_line = '  ' * current_indent + new_line
 
             if re.search(r'[{([]$', new_line):
                 current_indent += 1
