@@ -13,4 +13,7 @@ result=$((result | $?))
 ./script/typing/check $SCRIPTS
 result=$((result | $?))
 
+./script/proto-lint worlds/Arena.wbt protos/**/*.proto
+result=$((result | $?))
+
 exit $result

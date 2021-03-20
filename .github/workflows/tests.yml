@@ -105,3 +105,9 @@ jobs:
         [ -f venv/bin/activate ] && source venv/bin/activate
         [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
         ./script/testing/test
+    - name: Lint proto files
+      if: ${{ always() }}
+      run: |
+        [ -f venv/bin/activate ] && source venv/bin/activate
+        [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
+        ./script/proto-lint worlds/Arena.wbt protos/**/*.proto
