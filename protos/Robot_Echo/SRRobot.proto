@@ -339,8 +339,8 @@ PROTO SRRobot [
               }
             ]
             endPoint Solid {
-              translation 0.19999998777297837 0.00026863610916181684 -0.00036030151878293246
-              rotation -0.9999999953968224 4.284946735166644e-05 8.585032564057752e-05 0.9344151591877564
+              translation 0.2 0 0
+              rotation -1 0 0 0
               children [
                 DEF RIGHT_BLACK_CYLINDER_SHAPE Shape {
                   appearance PBRAppearance {
@@ -572,8 +572,8 @@ PROTO SRRobot [
               }
             ]
             endPoint Solid {
-              translation -0.19999998767113233 0.00026863721059561843 -0.00036030299207660306
-              rotation -0.999999995396832 -4.284942171371578e-05 -8.585023441169805e-05 0.9344151521635337
+              translation -0.2 0 0
+              rotation -1 0 0 0
               children [
                 DEF BLACK_CYLINDER_SHAPE Shape {
                   appearance PBRAppearance {
