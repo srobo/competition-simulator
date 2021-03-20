@@ -1,0 +1,101 @@
+#!/usr/bin/env python3
+"""
+Primitive whitespace linting of VRML PROTO files.
+Currently supports:
+- Stripping trailing whitespace
+- Setting indentation based on brackets to 2-space
+"""
+import re
+import sys
+import logging
+import argparse
+from typing import List
+from difflib import unified_diff
+from pathlib import Path
+
+
+def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
+    current_indent = 0
+    old_lines: List[str] = []
+    new_lines: List[str] = []
+
+    print(f"Linting {file}")  # noqa: T001
+
+    with file.open('r') as f:
+        for line in f.readlines():
+            old_lines.append(line)
+
+            new_line = line.strip()
+
+            if re.search(r'^[})\]]', new_line):
+                current_indent -= 1
+
+            if current_indent < 0:
+                logging.error('Brackets mismatch, indentation went negative. Aborting')
+                return False
+
+            if new_line:
+                new_line = '  ' * current_indent + new_line
+
+            if re.search(r'[{([]$', new_line):
+                current_indent += 1
+
+            new_lines.append(new_line + "\n")
+
+    diff = list(unified_diff(
+        old_lines,
+        new_lines,
+        fromfile=str(file),
+        tofile=f"{file} (linted)",
+    ))
+
+    if diff:
+        if print_diffs:
+            sys.stdout.writelines(diff)
+        else:
+            print("  Linting issues found")  # noqa: T001
+
+        if inplace:
+            with file.open('w') as f:
+                f.writelines(new_lines)
+        return True
+    return False
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'files',
+        help="The files to be linted",
+        type=Path,
+        nargs='+',
+    )
+    parser.add_argument(
+        '--inplace',
+        help="Correct errors found",
+        action='store_true',
+    )
+    parser.add_argument(
+        '--quiet',
+        help="Suppress printing differing lines",
+        dest='print_diffs',
+        action='store_false',
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    differing_lines = False
+    args = parse_args()
+
+    for file in args.files:
+        if lint_file(file, args.inplace, args.print_diffs):
+            differing_lines = True
+
+    if differing_lines:
+        return 1
+    return 0
+
+
+if __name__ == '__main__':
+    exit(main())
