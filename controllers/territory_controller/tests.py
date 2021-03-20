@@ -1,18 +1,18 @@
 import re
+import random
 import unittest
 from typing import Dict, List, Union, Mapping
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock
 
 from territory_controller import (
     Claimant,
     ClaimLog,
+    ActionTimer,
     StationCode,
     TerritoryRoot,
     TERRITORY_LINKS,
     AttachedTerritories,
-    TerritoryController,
-    LOCKED_OUT_AFTER_CLAIM,
 )
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
@@ -27,20 +27,19 @@ class TestAttachedTerritories(unittest.TestCase):
         StationCode.TS,
         StationCode.OX,
         StationCode.VB,
-        StationCode.BE,
-        StationCode.SZ,
+        StationCode.PL,
     }
     _zone_1_territories = {StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL}
     _zone_1_disconnected = {StationCode.PN, StationCode.EY}
 
     def load_territory_owners(self, claim_log: ClaimLog) -> None:
-        # territories BG, TS, OX, VB, BE, SZ owned by zone 0
+        # territories BG, TS, OX, VB, etc. owned by zone 0
         for territory in self._zone_0_territories:
-            claim_log._station_statuses[territory].owner = Claimant.ZONE_0
+            claim_log._station_statuses[territory] = Claimant.ZONE_0
 
         # territories PN, EY, PO, YL owned by zone 1
         for territory in self._zone_1_territories:
-            claim_log._station_statuses[territory].owner = Claimant.ZONE_1
+            claim_log._station_statuses[territory] = Claimant.ZONE_1
 
     def setUp(self) -> None:
         super().setUp()
@@ -73,7 +72,7 @@ class TestAttachedTerritories(unittest.TestCase):
         )
 
     def test_stations_can_capture(self) -> None:
-        for station in {StationCode.PN, StationCode.EY, StationCode.SW, StationCode.PO}:
+        for station in {StationCode.PN, StationCode.EY, StationCode.TS, StationCode.SZ}:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_0,
@@ -85,7 +84,7 @@ class TestAttachedTerritories(unittest.TestCase):
                 f'Zone 0 should be able to capture {station}',
             )
 
-        for station in {StationCode.BE, StationCode.SW, StationCode.HV}:
+        for station in {StationCode.BN, StationCode.SZ, StationCode.HV}:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_1,
@@ -98,7 +97,7 @@ class TestAttachedTerritories(unittest.TestCase):
             )
 
     def test_stations_cant_capture(self) -> None:
-        for station in {StationCode.YL, StationCode.BN, StationCode.HV}:
+        for station in {StationCode.YL, StationCode.PO, StationCode.HA}:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_0,
@@ -113,9 +112,8 @@ class TestAttachedTerritories(unittest.TestCase):
         for station in {
             StationCode.PN,
             StationCode.EY,
-            StationCode.SZ,
-            StationCode.BN,
             StationCode.VB,
+            StationCode.SW,
         }:
             capturable = self.attached_territories.can_capture_station(
                 station,
@@ -181,12 +179,18 @@ class TestAdjacentTerritories(unittest.TestCase):
                 f'Zone 1 starting zone incorrectly appears in {station.value} links',
             )
 
-    def test_BE_links(self) -> None:
+    def test_VB_links(self) -> None:
         'test BE for correct links'
         self.assertEqual(
-            self.attached_territories.adjacent_zones[StationCode.BE],
-            {StationCode.EY, StationCode.VB, StationCode.SZ, StationCode.PO},
-            'Territory BE has incorrect territory links',
+            self.attached_territories.adjacent_zones[StationCode.VB],
+            {
+                StationCode.BG,
+                StationCode.EY,
+                StationCode.OX,
+                StationCode.BE,
+                StationCode.PL,
+            },
+            'Territory VB has incorrect territory links',
         )
 
 
@@ -206,7 +210,7 @@ class TestLiveScoring(unittest.TestCase):
         for claim in territory_claims:
             territory = StationCode(claim['station_code'])
             claimant = Claimant(claim['zone'])
-            claim_log._station_statuses[territory].owner = claimant
+            claim_log._station_statuses[territory] = claimant
 
         return claim_log.get_scores()
 
@@ -397,88 +401,181 @@ class TestLiveScoring(unittest.TestCase):
             },
         ])
 
+    def test_bronze_claim(self) -> None:
+        self.assertScores({
+            'ABC': 4,
+            'DEF': 0,
+        }, [
+            {
+                'zone': 0,
+                'station_code': 'HA',
+                'time': 3.14,
+            },
+        ])
 
-class TestTerritoryLockout(unittest.TestCase):
-    "Test that individual territories become 'locked' when claimed a set number of times"
+    def test_gold_claim(self) -> None:
+        self.assertScores({
+            'ABC': 8,
+            'DEF': 0,
+        }, [
+            {
+                'zone': 0,
+                'station_code': 'YT',
+                'time': 3.14,
+            },
+        ])
 
-    _zone_0_territories = {StationCode.PN, StationCode.EY}
-    _zone_1_territories = {StationCode.YL, StationCode.PO}
 
-    def assertLocked(self, station: StationCode, context: str) -> None:
-        self.assertTrue(
-            self.territory_controller._claim_log.is_locked(station),
-            f"Territory {station.value} not locked {context}",
-        )
-
-    def assertNotLocked(self, station: StationCode, context: str) -> None:
-        self.assertFalse(
-            self.territory_controller._claim_log.is_locked(station),
-            f"Territory {station.value} locked {context}",
-        )
-
-    def claim_territory(self, station_code: StationCode, claimed_by: Claimant) -> None:
-        self.territory_controller.claim_territory(station_code, claimed_by, claim_time=0)
-
-    @patch('controller.Supervisor.getFromDef')
-    @patch('territory_controller.get_robot_device')
-    @patch('territory_controller.TerritoryController.set_score_display')
-    @patch('territory_controller.TERRITORY_LINKS', new={
-        (StationCode.PN, StationCode.EY),
-        (TerritoryRoot.z0, StationCode.PN),
-        (TerritoryRoot.z1, StationCode.PN),
-    })
-    def setUp(self, _: object, __: object, ___: object) -> None:
+class TestActionTimer(unittest.TestCase):
+    def setUp(self) -> None:
         super().setUp()
-        claim_log = ClaimLog(record_arena_actions=False)
-        self.attached_territories = AttachedTerritories(claim_log)
-        self.territory_controller = TerritoryController(
-            claim_log,
-            self.attached_territories,
+        self.action_timer = ActionTimer(1.9)
+
+    def assertBegunInsideDuration(self, duration: float, expected_result: bool) -> None:
+        start_time = random.uniform(0, 1000)
+        self.action_timer.begin_action(StationCode.PN, Claimant.ZONE_1, start_time)
+
+        actual_result = self.action_timer.has_begun_action_in_time_window(
+            StationCode.PN,
+            Claimant.ZONE_1,
+            start_time + duration,
         )
 
-    @patch('controller.Supervisor.getFromDef')
-    @patch('territory_controller.LOCKED_OUT_AFTER_CLAIM', new=3)
-    def test_territory_lockout(self, _: object) -> None:
+        self.assertEqual(
+            actual_result,
+            expected_result,
+            f"Timer gave incorect result with duration {duration}",
+        )
+
+    def test_exact_time(self) -> None:
+        self.assertBegunInsideDuration(2, True)
+
+    def test_too_short_time(self) -> None:
+        self.assertBegunInsideDuration(1.7, False)
+
+    def test_too_long_time(self) -> None:
+        self.assertBegunInsideDuration(2.2, False)
+
+    def test_marginal_short_time(self) -> None:
+        self.assertBegunInsideDuration(1.72, True)
+
+    def test_marginal_long_time(self) -> None:
+        self.assertBegunInsideDuration(2.08, True)
+
+    def test_different_stations(self) -> None:
+        start_time = random.uniform(0, 1000)
+        # Start action with station PN
+        self.action_timer.begin_action(StationCode.PN, Claimant.ZONE_1, start_time)
+
+        # Attempt to complete action with SZ
+        result = self.action_timer.has_begun_action_in_time_window(
+            StationCode.SZ,
+            Claimant.ZONE_1,
+            start_time + 1.9,
+        )
+
+        self.assertFalse(result)
+
+    def test_different_claimants(self) -> None:
+        start_time = random.uniform(0, 1000)
+        # Zone 0 starts action
+        self.action_timer.begin_action(StationCode.PN, Claimant.ZONE_0, start_time)
+
+        # Zone 1 attempts to complete action
+        result = self.action_timer.has_begun_action_in_time_window(
+            StationCode.PN,
+            Claimant.ZONE_1,
+            start_time + 1.9,
+        )
+
+        self.assertFalse(result)
+
+
+class TestActionTimerTick(unittest.TestCase):
+    "Test the progress_callback functionality of the ActionTimer"
+    def setUp(self) -> None:
+        super().setUp()
+        self.progress_callback = Mock()
+        self.action_duration = 2
+        self.action_timer = ActionTimer(self.action_duration, self.progress_callback)
+
+    def assertTickCall(self, start_time: float, end_time: float) -> None:
+        self.action_timer.tick(end_time)
+        self.progress_callback.assert_called_with(
+            StationCode.BE,
+            Claimant.ZONE_1,
+            # recalculate the duration to avoid floating-point precision errors
+            (end_time - start_time) / self.action_duration,
+        )
+
+    def assertCallCount(self, call_count: int, context: str) -> None:
+        self.assertEqual(
+            self.progress_callback.call_count,
+            call_count,
+            f"Incorrect number of calls of progress_callback {context}"
+            f" ({self.progress_callback.call_args_list})",
+        )
+
+    def test_successful_completion(self) -> None:
         """
-        Test a territory is locked after the correct number of claims and
-        disconnected territories aren't also locked.
-
-        The reduce map in this test looks like this:
-
-            z0 ── PN ── z1
-                   └─ EY
-
-        Thus EY is claimable only after PN has been claimed and can easily
-        become unclaimed when PN is claimed. This test is validating both that
-        PN becomes locked at the right point and also that EY does not become
-        locked at that point.
+        Test that progress_callback is called with appropriate arguments at the start
+        and completion of the timer. Namely the progress parameter should be 0 when the
+        timer starts and TIMER_COMPLETE when the timer action is successfully completed.
+        Once TIMER_COMPLETE or TIMER_EXPIRE is parsed to progress_callback, the timer item
+        is removed from the internal dict and should not cause progress_callback to be
+        called on subsequent calls of tick().
         """
+        start_time = random.uniform(0, 1000)
+        self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
+        self.progress_callback.assert_called_with(StationCode.BE, Claimant.ZONE_1, 0)
 
-        self.claim_territory(StationCode.PN, Claimant.ZONE_0)
-        self.claim_territory(StationCode.EY, Claimant.ZONE_0)
+        used_duration = random.uniform(1.8, 2.2)
+        self.action_timer.has_begun_action_in_time_window(
+            StationCode.BE,
+            Claimant.ZONE_1,
+            start_time + used_duration,
+        )
+        self.progress_callback.assert_called_with(
+            StationCode.BE,
+            Claimant.ZONE_1,
+            ActionTimer.TIMER_COMPLETE,
+        )
 
-        self.assertNotLocked(StationCode.PN, "early after first claims")
-        self.assertNotLocked(StationCode.EY, "early after first claims")
+        self.action_timer.tick(start_time + used_duration)
+        self.assertCallCount(2, "after action completion")
 
-        self.claim_territory(StationCode.PN, Claimant.ZONE_1)
-        self.claim_territory(StationCode.EY, Claimant.ZONE_1)
+    def test_expired_timer(self) -> None:
+        """
+        Test that progress_callback is called with appropriate arguments at the start
+        and expiry of the timer. Namely the progress parameter should be 0
+        when the timer starts and TIMER_EXPIRE when the timer expires.
+        """
+        start_time = random.uniform(0, 1000)
+        self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
+        self.progress_callback.assert_called_with(StationCode.BE, Claimant.ZONE_1, 0)
 
-        self.assertNotLocked(StationCode.PN, "early after second claims")
-        self.assertNotLocked(StationCode.EY, "early after second claims")
+        # make timer expire
+        used_duration = random.uniform(2.3, 10)
+        self.action_timer.tick(start_time + used_duration)
+        self.progress_callback.assert_called_with(
+            StationCode.BE,
+            Claimant.ZONE_1,
+            ActionTimer.TIMER_EXPIRE,
+        )
 
-        self.claim_territory(StationCode.PN, Claimant.ZONE_0)
+        self.action_timer.tick(start_time + used_duration)
+        self.assertCallCount(2, "after timer expired")
 
-        self.assertLocked(StationCode.PN, "after third claim")
-        self.assertNotLocked(StationCode.EY, "after lock-out of PN")
+    def test_tick_call(self) -> None:
+        """
+        Test that the progress_callback method is called will the given progress
+        on each call to ActionTimer.tick
+        """
+        start_time = random.uniform(0, 1000)
+        self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
 
-    @patch('controller.Supervisor.getFromDef')
-    def test_self_lockout(self, _: object) -> None:
-        "Test a territory is locked after the correct number of claims by its own owner"
-        for i in range(LOCKED_OUT_AFTER_CLAIM):
-            # lock status is tested before capturing since the final
-            # iteration will lock the territory
-            self.assertNotLocked(StationCode.PN, f"early after {i+1} claims")
+        self.assertTickCall(start_time, start_time + 0.9)
 
-            self.claim_territory(StationCode.PN, Claimant.ZONE_0)
+        self.assertTickCall(start_time, start_time + 2.1)
 
-        self.assertLocked(StationCode.PN, f"after {LOCKED_OUT_AFTER_CLAIM} claims")
+        self.assertCallCount(3, "")

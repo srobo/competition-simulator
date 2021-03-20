@@ -5,13 +5,13 @@ import enum
 import struct
 import logging
 import collections
-from typing import Set, Dict, List, Tuple, Union, Mapping
+from typing import Set, Dict, List, Tuple, Union, Mapping, Callable
 from pathlib import Path
 from collections import defaultdict
 from dataclasses import dataclass
 
 # Webots specific library
-from controller import Node, Display, Emitter, Receiver, Supervisor
+from controller import LED, Node, Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -42,10 +42,6 @@ class Claimant(enum.IntEnum):
         }
 
 
-POINTS_PER_TERRITORY = 2
-LOCKED_OUT_AFTER_CLAIM = 4
-
-
 # Updating? Update radio.py too.
 class StationCode(str, enum.Enum):
     PN = 'PN'
@@ -61,12 +57,27 @@ class StationCode(str, enum.Enum):
     SW = 'SW'
     BN = 'BN'
     HV = 'HV'
+    FL = 'FL'
+    YT = 'YT'
+    HA = 'HA'
+    PL = 'PL'
+    TH = 'TH'
+    SF = 'SF'
 
 
 class TerritoryRoot(str, enum.Enum):
     z0 = 'z0'
     z1 = 'z1'
 
+
+DEFAULT_POINTS_PER_TERRITORY = 2
+EXTRA_VALUE_TERRITORIES = {
+    StationCode.TH: 4,
+    StationCode.FL: 4,
+    StationCode.SF: 4,
+    StationCode.HA: 4,
+    StationCode.YT: 8,
+}
 
 # Updating? Update `Arena.wbt` too
 ZONE_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
@@ -81,36 +92,37 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
-LOCKED_COLOUR = (0.5, 0, 0)
+NUM_TOWER_LEDS = 8
 
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
-    (StationCode.BG, StationCode.OX),  # BG-OX
+    (StationCode.BG, StationCode.VB),  # BG-VB
+    (StationCode.OX, StationCode.VB),  # OX-VB
     (StationCode.OX, StationCode.TS),  # OX-TS
-    (StationCode.TS, StationCode.VB),  # TS-VB
-    (StationCode.EY, StationCode.BE),  # EY-BE
+    (StationCode.EY, StationCode.VB),  # EY-VB
+    (StationCode.TH, StationCode.PN),  # TH-PN
+    (StationCode.VB, StationCode.PL),  # VB-PL
     (StationCode.VB, StationCode.BE),  # VB-BE
-    (StationCode.VB, StationCode.SZ),  # VB-SZ
-    (StationCode.BE, StationCode.SZ),  # BE-SZ
-    (StationCode.BE, StationCode.PO),  # BE-PO
-    (StationCode.SZ, StationCode.SW),  # SZ-SW
+    (StationCode.EY, StationCode.FL),  # EY-FL
+    (StationCode.YT, StationCode.HA),  # YT-HA
+    (StationCode.HA, StationCode.BE),  # HA-BE
     (StationCode.PO, StationCode.YL),  # PO-YL
+    (StationCode.SZ, StationCode.HV),  # SZ-HV
+    (StationCode.SZ, StationCode.BN),  # SZ-BN
     (StationCode.SW, StationCode.BN),  # SW-BN
-    (StationCode.HV, StationCode.BN),  # HV-BN
+    (StationCode.PO, StationCode.SZ),  # PO-SZ
+    (StationCode.YL, StationCode.SF),  # YL-SF
+    (StationCode.PL, StationCode.SZ),  # PL-SZ
+    (StationCode.BE, StationCode.SZ),  # BE-SZ
+    (StationCode.FL, StationCode.PO),  # FL-PO
     # These links are between territories and the starting zones
     (TerritoryRoot.z0, StationCode.PN),  # z0-PN
-    (TerritoryRoot.z0, StationCode.TS),  # z0-TS
     (TerritoryRoot.z0, StationCode.BG),  # z0-BG
+    (TerritoryRoot.z0, StationCode.OX),  # z0-OX
     (TerritoryRoot.z1, StationCode.YL),  # z1-YL
-    (TerritoryRoot.z1, StationCode.SW),  # z1-SW
     (TerritoryRoot.z1, StationCode.HV),  # z1-HV
+    (TerritoryRoot.z1, StationCode.BN),  # z1-BN
 }
-
-
-@dataclass
-class StationStatus:
-    owner: Claimant = Claimant.UNCLAIMED
-    locked: bool = False
 
 
 @dataclass(frozen=True)
@@ -118,15 +130,14 @@ class ClaimLogEntry:
     station_code: StationCode
     claimant: Claimant
     claim_time: float
-    locked: bool = False
 
 
 class ClaimLog:
     def __init__(self, record_arena_actions: bool) -> None:
         self._record_arena_actions = record_arena_actions
 
-        self._station_statuses: Dict[StationCode, StationStatus] = {
-            code: StationStatus() for code in StationCode
+        self._station_statuses: Dict[StationCode, Claimant] = {
+            code: Claimant.UNCLAIMED for code in StationCode
         }
 
         self._log: List[ClaimLogEntry] = []
@@ -134,20 +145,7 @@ class ClaimLog:
         self._log_is_dirty = True
 
     def get_claimant(self, station_code: StationCode) -> Claimant:
-        return self._station_statuses[station_code].owner
-
-    def is_locked(self, station_code: StationCode) -> bool:
-        return self._station_statuses[station_code].locked
-
-    def get_claim_count(self, station_code: StationCode) -> int:
-        return len([
-            claim.station_code
-            for claim in self._log
-            if (
-                claim.station_code == station_code and
-                claim.claimant in Claimant.zones()
-            )
-        ])
+        return self._station_statuses[station_code]
 
     def _record_log_entry(self, entry: ClaimLogEntry) -> None:
         self._log.append(entry)
@@ -161,23 +159,7 @@ class ClaimLog:
     ) -> None:
         self._record_log_entry(ClaimLogEntry(station_code, claimed_by, claim_time))
         print(f"{station_code} CLAIMED BY {claimed_by.name} AT {claim_time}s")  # noqa:T001
-        self._station_statuses[station_code].owner = claimed_by
-
-    def log_lock(
-        self,
-        station_code: StationCode,
-        locked_by: Claimant,
-        claim_time: float,
-    ) -> None:
-        self._record_log_entry(ClaimLogEntry(
-            station_code,
-            Claimant.UNCLAIMED,
-            claim_time,
-            locked=True,
-        ))
-        print(f"{station_code} LOCKED OUT BY {locked_by.name} at {claim_time}s")  # noqa:T001
-        self._station_statuses[station_code].owner = Claimant.UNCLAIMED
-        self._station_statuses[station_code].locked = True
+        self._station_statuses[station_code] = claimed_by
 
     def record_captures(self) -> None:
         if not self._record_arena_actions:
@@ -193,7 +175,6 @@ class ClaimLog:
                 'zone': claim.claimant.value,
                 'station_code': claim.station_code.value,
                 'time': claim.claim_time,
-                'locked': claim.locked,
             }
             for claim in self._log
         ]})
@@ -210,14 +191,16 @@ class ClaimLog:
         The returned mapping will always include all the claimants as keys.
         """
 
-        territory_counts = collections.Counter(
-            station.owner
-            for station in self._station_statuses.values()
-        )
+        zone_to_territories = collections.defaultdict(list)
+        for territory, status in self._station_statuses.items():
+            zone_to_territories[status].append(territory)
 
         return {
-            claimant: territory_counts[claimant] * POINTS_PER_TERRITORY
-            for claimant in Claimant.zones()
+            zone: sum(
+                EXTRA_VALUE_TERRITORIES.get(territory, DEFAULT_POINTS_PER_TERRITORY)
+                for territory in zone_to_territories.get(zone, [])
+            )
+            for zone in Claimant.zones()
         }
 
 
@@ -298,6 +281,69 @@ def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
     node.getField('zoneColour').setSFColor(list(colour))
 
 
+def convert_to_led_colour(colour_tuple: Tuple[float, float, float]) -> int:
+    scaled_colour = (colour * 255 for colour in colour_tuple)
+    return int.from_bytes(struct.pack('!BBB', *scaled_colour), 'big')
+
+
+class ActionTimer:
+
+    TIMER_COMPLETE = -1
+    TIMER_EXPIRE = -2
+
+    def __init__(
+        self,
+        action_duration: float,
+        progress_callback: Callable[[StationCode, Claimant, float], None] =
+        lambda station_code, claimant, progress: None,
+    ):
+        self._duration = action_duration
+        self._duration_upper = action_duration * 1.1
+        self._duration_lower = action_duration * 0.9
+        self._action_starts: Dict[Tuple[StationCode, Claimant], float] = {}
+        # progress_callback is called on each timestep for each active action
+        # the third argument is the current progress through the action
+        # or TIMER_COMPLETE/TIMER_EXPIRE when the action is finished
+        self._progress_callback = progress_callback
+
+    def begin_action(
+        self,
+        station_code: StationCode,
+        acted_by: Claimant,
+        start_time: float,
+    ) -> None:
+        self._action_starts[station_code, acted_by] = start_time
+        self._progress_callback(station_code, acted_by, 0)  # run starting action
+
+    def has_begun_action_in_time_window(
+        self,
+        station_code: StationCode,
+        acted_by: Claimant,
+        current_time: float,
+    ) -> bool:
+        try:
+            start_time = self._action_starts[station_code, acted_by]
+        except KeyError:
+            return False
+        time_delta = current_time - start_time
+        in_window = self._duration_lower <= time_delta <= self._duration_upper
+        if in_window:
+            self._progress_callback(station_code, acted_by, self.TIMER_COMPLETE)
+            self._action_starts.pop((station_code, acted_by))  # remove completed claim
+        return in_window
+
+    def tick(self, current_time: float) -> None:
+        # cast required since expired entries are pruned during iteration
+        for (station_code, acted_by), start_time in list(self._action_starts.items()):
+            time_delta = current_time - start_time
+            if time_delta > self._duration_upper:
+                self._action_starts.pop((station_code, acted_by))  # remove expired claim
+                self._progress_callback(station_code, acted_by, self.TIMER_EXPIRE)
+            else:
+                # run working action with current progress
+                self._progress_callback(station_code, acted_by, time_delta / self._duration)
+
+
 class TerritoryController:
 
     _emitters: Dict[StationCode, Emitter]
@@ -307,7 +353,7 @@ class TerritoryController:
         self._claim_log = claim_log
         self._attached_territories = attached_territories
         self._robot = Supervisor()
-        self._claim_starts: Dict[Tuple[StationCode, Claimant], float] = {}
+        self._claim_timer = ActionTimer(2, self.handle_claim_timer_tick)
 
         self._emitters = {
             station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)
@@ -325,9 +371,8 @@ class TerritoryController:
         for station_code in StationCode:
             self.set_node_colour(station_code, ZONE_COLOURS[Claimant.UNCLAIMED])
 
-        for claimant in Claimant:
-            if claimant != Claimant.UNCLAIMED:
-                self.set_score_display(claimant, 0)
+        for claimant in Claimant.zones():
+            self.set_score_display(claimant, 0)
 
     def set_node_colour(self, node_id: str, new_colour: Tuple[float, float, float]) -> None:
         node = self._robot.getFromDef(node_id)
@@ -336,38 +381,12 @@ class TerritoryController:
         else:
             set_node_colour(node, new_colour)
 
-    def begin_claim(
-        self,
-        station_code: StationCode,
-        claimed_by: Claimant,
-        claim_time: float,
-    ) -> None:
-        self._claim_starts[station_code, claimed_by] = claim_time
-
-    def has_begun_claim_in_time_window(
-        self,
-        station_code: StationCode,
-        claimant: Claimant,
-        current_time: float,
-    ) -> bool:
-        try:
-            start_time = self._claim_starts[station_code, claimant]
-        except KeyError:
-            return False
-        time_delta = current_time - start_time
-        return 1.8 <= time_delta <= 2.1
-
     def set_territory_ownership(
         self,
         station_code: StationCode,
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        if self._claim_log.is_locked(station_code):
-            logging.error(
-                f"Territory {station_code} is locked",
-            )
-            return
 
         station = self._robot.getFromDef(station_code)
         if station is None:
@@ -376,22 +395,11 @@ class TerritoryController:
             )
             return
 
-        if (
-            self._claim_log.get_claim_count(station_code) == LOCKED_OUT_AFTER_CLAIM - 1 and
-            claimed_by in Claimant.zones()
-        ):
-            # This next claim would trigger the "locked out" condition, so rather than
-            # making the claim, instead cause a lock-out.
-            set_node_colour(station, LOCKED_COLOUR)
+        new_colour = ZONE_COLOURS[claimed_by]
 
-            self._claim_log.log_lock(station_code, claimed_by, claim_time)
+        set_node_colour(station, new_colour)
 
-        else:
-            new_colour = ZONE_COLOURS[claimed_by]
-
-            set_node_colour(station, new_colour)
-
-            self._claim_log.log_territory_claim(station_code, claimed_by, claim_time)
+        self._claim_log.log_territory_claim(station_code, claimed_by, claim_time)
 
     def prune_detached_stations(
         self,
@@ -429,8 +437,14 @@ class TerritoryController:
             connected_territories,
         ):
             # This claimant doesn't have a connection back to their starting zone
-            print(f"Robot in zone {claimed_by} failed to capture {station_code}")  # noqa: T001
+            logging.error(f"Robot in zone {claimed_by} failed to capture {station_code}")
             return
+
+        if claimed_by == self._claim_log.get_claimant(station_code):
+            logging.error(
+                f"{station_code} already owned by {claimed_by.name}, resetting to UNCLAIMED",
+            )
+            claimed_by = Claimant.UNCLAIMED
 
         self.set_territory_ownership(station_code, claimed_by, claim_time)
 
@@ -449,25 +463,14 @@ class TerritoryController:
         try:
             robot_id, is_conclude = struct.unpack("!BB", packet)  # type: Tuple[int, int]
             claimant = Claimant(robot_id)
+            operation_args = (station_code, claimant, receive_time)
             if is_conclude:
-                if self.has_begun_claim_in_time_window(
-                    station_code,
-                    claimant,
-                    receive_time,
-                ):
-                    self.claim_territory(
-                        station_code,
-                        claimant,
-                        receive_time,
-                    )
+                if self._claim_timer.has_begun_action_in_time_window(*operation_args):
+                    self.claim_territory(*operation_args)
             else:
-                self.begin_claim(
-                    station_code,
-                    claimant,
-                    receive_time,
-                )
+                self._claim_timer.begin_action(*operation_args)
         except ValueError:
-            print(  # noqa:T001
+            logging.error(
                 f"Received malformed packet at {receive_time} on {station_code}: {packet!r}",
             )
 
@@ -547,6 +550,32 @@ class TerritoryController:
         # Add the score value
         score_display.drawText(score_str, x_offset, 8)
 
+    def get_tower_led(self, station_code: StationCode, led: int) -> LED:
+        return get_robot_device(
+            self._robot,
+            f"{station_code.value}Territory led{led}",
+            LED,
+        )
+
+    def handle_claim_timer_tick(
+        self,
+        station_code: StationCode,
+        claimant: Claimant,
+        progress: float,
+    ) -> None:
+        zone_colour = convert_to_led_colour(ZONE_COLOURS[claimant])
+        if progress in {ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
+            for led in range(NUM_TOWER_LEDS):
+                tower_led = self.get_tower_led(station_code, led)
+                if tower_led.get() == zone_colour:
+                    tower_led.set(0)
+        else:
+            # map the progress value to the LEDs
+            led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
+
+            tower_led = self.get_tower_led(station_code, led_progress)
+            tower_led.set(zone_colour)
+
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
             self.receive_territory(station_code, receiver)
@@ -561,10 +590,9 @@ class TerritoryController:
         for station_code, emitter in self._emitters.items():
             emitter.send(
                 struct.pack(
-                    "!2sbb",
+                    "!2sb",
                     station_code.encode("ASCII"),
                     int(self._claim_log.get_claimant(station_code)),
-                    int(self._claim_log.is_locked(station_code)),
                 ),
             )
 
@@ -575,6 +603,8 @@ class TerritoryController:
         while True:
             counter += 1
             self.receive_robot_captures()
+            current_time = self._robot.getTime()
+            self._claim_timer.tick(current_time)
             if counter > steps_per_broadcast:
                 self.transmit_pulses()
                 counter = 0

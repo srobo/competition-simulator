@@ -39,21 +39,25 @@ class StationCode(str, enum.Enum):
     SW = 'SW'
     BN = 'BN'
     HV = 'HV'
+    FL = 'FL'
+    YT = 'YT'
+    HA = 'HA'
+    PL = 'PL'
+    TH = 'TH'
+    SF = 'SF'
 
 
 class TargetInfo(NamedTuple):
     station_code: StationCode
     owned_by: Optional[Claimant]
-    locked: bool
 
 
 def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
     try:
-        station_code, owned_by, locked = struct.unpack("!2sbb", message)
+        station_code, owned_by = struct.unpack("!2sb", message)
         return TargetInfo(
             station_code=StationCode(station_code.decode('ascii')),
             owned_by=None if owned_by == UNCLAIMED else Claimant(owned_by),
-            locked=bool(locked),
         )
     except ValueError:
         print(f"Robot starting in zone {zone} received malformed message.")  # noqa:T001

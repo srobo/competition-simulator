@@ -22,7 +22,7 @@ def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
     print(f"Linting {file}")  # noqa: T001
 
     with file.open('r') as f:
-        for line in f.readlines():
+        for i, line in enumerate(f.readlines()):
             old_lines.append(line)
 
             new_line = line.strip()
@@ -37,8 +37,9 @@ def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
             if new_line:
                 new_line = '  ' * current_indent + new_line
 
-            if re.search(r'[{([]$', new_line):
-                current_indent += 1
+            if not new_line.strip().startswith('#'):  # ignore brackets in comments
+                if re.search(r'[{([](\s*#.*)?$', new_line):
+                    current_indent += 1
 
             new_lines.append(new_line + "\n")
 
