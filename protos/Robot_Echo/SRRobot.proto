@@ -69,10 +69,10 @@ PROTO SRRobot [
       }
       DEF LEDS_left Transform {
         translation -0.13 0.22 0.11
-        rotation 0 1 0 1.5708003061004252
+        rotation 0 1 0 0
         children [
           LED {
-            translation 0.05 0 0
+            translation 0 0 0.05
             children [
               Shape {
                 appearance DEF APP_LED PBRAppearance {
@@ -109,7 +109,7 @@ PROTO SRRobot [
             ]
           }
           LED {
-            translation -0.05 0 0
+            translation 0 0 -0.05
             children [
               Shape {
                 appearance DEF APP_LED PBRAppearance {
@@ -128,10 +128,10 @@ PROTO SRRobot [
       }
       DEF LEDS_right Transform {
         translation 0.13 0.22 0.11
-        rotation 0 1 0 1.5708003061004252
+        rotation 0 1 0 0
         children [
           LED {
-            translation 0.05 0 0
+            translation 0 0 0.05
             children [
               Shape {
                 appearance DEF APP_LED PBRAppearance {
@@ -165,7 +165,7 @@ PROTO SRRobot [
             ]
           }
           LED {
-            translation -0.05 0 0
+            translation 0 0 -0.05
             children [
               Shape {
                 appearance USE APP_LED
