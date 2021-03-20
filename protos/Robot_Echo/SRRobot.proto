@@ -24,7 +24,7 @@ PROTO SRRobot [
               Shape {
                 appearance PBRAppearance {
                   baseColor 0.5 0 0
-                  roughness 0.6980390000000001
+                  roughness 0.7
                 }
                 geometry DEF BUMPER Box {
                   size 0.14 0.01 0.01
@@ -48,7 +48,7 @@ PROTO SRRobot [
               Shape {
                 appearance PBRAppearance {
                   baseColor 0.5 0 0
-                  roughness 0.6980390000000001
+                  roughness 0.7
                 }
                 geometry DEF BUMPER Box {
                   size 0.2 0.01 0.01
