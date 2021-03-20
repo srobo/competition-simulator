@@ -211,8 +211,8 @@ PROTO SRTerritory [
               Emitter {
                 type "radio"
                 name IS emitterName
-                range 2
-                maxRange 2
+                range 2.5
+                maxRange 2.5
                 channel 1
               }
               # Shape {
@@ -224,7 +224,7 @@ PROTO SRTerritory [
               #   }
               #   geometry DEF TOWER Cylinder {
               #     height 0.5
-              #     radius 2
+              #     radius 2.5
               #     side FALSE
               #   }
               # }
