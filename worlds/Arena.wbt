@@ -369,7 +369,7 @@ Robot {
             metalness 0
           }
           geometry Plane {
-              size 1 0.7
+            size 1 0.7
           }
         }
         Display {
@@ -386,7 +386,7 @@ Robot {
                 baseColorMap ImageTexture {}
               }
               geometry Plane {
-                  size 0.9 0.6
+                size 0.9 0.6
               }
             }
           ]
@@ -403,7 +403,7 @@ Robot {
             metalness 0
           }
           geometry Plane {
-              size 1 0.7
+            size 1 0.7
           }
         }
         Display {
@@ -420,7 +420,7 @@ Robot {
                 baseColorMap ImageTexture {}
               }
               geometry Plane {
-                  size 0.9 0.6
+                size 0.9 0.6
               }
             }
           ]

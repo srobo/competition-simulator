@@ -8,21 +8,21 @@ PROTO SRTerritory [
   field SFColor zoneColour 0.34191456 0.34191436 0.34191447
 ]
 {
-    Solid {
-      name IS territoryName
-      translation IS translation
-      children [
-        Group {
-          children [
-            Solid {
-              name "Territory floor"
-              children [
-                Shape {
-                  appearance PBRAppearance {
-                    baseColor IS zoneColour
-                    roughness 1
-                    metalness 0
-                  }
+  Solid {
+    name IS territoryName
+    translation IS translation
+    children [
+      Group {
+        children [
+          Solid {
+            name "Territory floor"
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor IS zoneColour
+                  roughness 1
+                  metalness 0
+                }
                   geometry DEF TERRITORY Cylinder {
                       height 0.001
                       radius 0.5
