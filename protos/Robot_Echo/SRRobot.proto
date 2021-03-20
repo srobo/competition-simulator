@@ -274,7 +274,7 @@ PROTO SRRobot [
             ]
           }
           DEF front_right DistanceSensor {
-            translation 0.120925 0.17 -0.00995702
+            translation 0.12 0.17 -0.01
             type "sonar"
             numberOfRays 10
             aperture 0.3
@@ -297,7 +297,7 @@ PROTO SRRobot [
             ]
           }
           DEF front_left DistanceSensor {
-            translation -0.120382 0.17 -0.009993
+            translation -0.12 0.17 -0.01
             type "sonar"
             numberOfRays 10
             aperture 0.3
