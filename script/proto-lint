@@ -22,7 +22,7 @@ def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
     print(f"Linting {file}")  # noqa: T001
 
     with file.open('r') as f:
-        for i, line in enumerate(f.readlines()):
+        for line in f.readlines():
             old_lines.append(line)
 
             new_line = line.strip()
