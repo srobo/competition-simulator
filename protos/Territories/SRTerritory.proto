@@ -215,6 +215,19 @@ PROTO SRTerritory [
                 maxRange 2
                 channel 1
               }
+              # Shape {
+              #   appearance PBRAppearance {
+              #     baseColorMap ImageTexture {
+              #       url "../textures/coverage.png"
+              #     }
+              #     roughness 1
+              #   }
+              #   geometry DEF TOWER Cylinder {
+              #     height 0.5
+              #     radius 2
+              #     side FALSE
+              #   }
+              # }
             ]
           }
         ]
