@@ -41,9 +41,13 @@ class LightingEffect(NamedTuple):
 
 
 CUE_STACK = [
-    LightingEffect(0, lighting=ArenaLighting(intensity=1, luminosity=0.15), name="Pre-set"),
-    LightingEffect(0, fade_time=3, name="Fade-up"),
-    LightingEffect(-0.1, lighting=ArenaLighting(colour=(1, 0, 0)), name="End of match"),
+    LightingEffect(0, lighting=ArenaLighting(intensity=1, luminosity=0.05), name="Pre-set"),
+    LightingEffect(0, fade_time=1.5, name="Fade-up"),
+    LightingEffect(
+        -0.1,
+        lighting=ArenaLighting(colour=(1, 0, 0), luminosity=0.5),
+        name="End of match",
+    ),
 ]
 
 
