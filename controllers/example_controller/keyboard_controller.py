@@ -1,7 +1,7 @@
 from sr.robot import Robot
 from controller import Keyboard
 
-KEYBOARD_SAMPLING_PERIOD = 16
+KEYBOARD_SAMPLING_PERIOD = 100
 NO_KEY_PRESSED = -1
 
 NO_ACTION = 0
