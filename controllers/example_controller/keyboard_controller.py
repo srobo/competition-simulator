@@ -15,6 +15,7 @@ CONTROLS = {
     "right": (ord("D"), ord("L")),
     "claim": (ord("E"), ord("O")),
     "sense": (ord("Q"), ord("U")),
+    "scan": (ord("R"), ord("P")),
     "boost": (Keyboard.SHIFT, Keyboard.CONTROL),
 }
 
@@ -59,6 +60,7 @@ key_left = CONTROLS["left"][R.zone]
 key_right = CONTROLS["right"][R.zone]
 key_claim = CONTROLS["claim"][R.zone]
 key_sense = CONTROLS["sense"][R.zone]
+key_scan = CONTROLS["scan"][R.zone]
 key_boost = CONTROLS["boost"][R.zone]
 
 print(
@@ -100,6 +102,15 @@ while True:
 
         elif key_ascii == key_sense:
             print_sensors(R)
+
+        elif key_ascii == key_scan:
+            transmitters = R.radio.sweep()
+            print("Found transmitter(s)")
+
+            for transmitter in transmitters:
+                print(transmitter)
+
+            print()
 
         # Work our way through all the enqueued key presses before dropping
         # out to the timestep
