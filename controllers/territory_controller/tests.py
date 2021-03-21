@@ -1,4 +1,5 @@
 import re
+import sys
 import random
 import unittest
 from typing import Dict, List, Union, Mapping
@@ -17,6 +18,10 @@ from territory_controller import (
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
+
+from sr.robot.radio import StationCode as RadioStationCode  # isort:skip
 
 
 class TestAttachedTerritories(unittest.TestCase):
@@ -191,6 +196,18 @@ class TestAdjacentTerritories(unittest.TestCase):
                 StationCode.PL,
             },
             'Territory VB has incorrect territory links',
+        )
+
+
+class TestMatchingStationCode(unittest.TestCase):
+
+    def test_radio_matches_territory_controller(self) -> None:
+        station_codes = {station.value for station in StationCode}
+        radio_station_codes = {station.value for station in RadioStationCode}
+        self.assertEqual(
+            station_codes,
+            radio_station_codes,
+            "StationCode enums differ between territory_controlled and sr.robot.radio",
         )
 
 
