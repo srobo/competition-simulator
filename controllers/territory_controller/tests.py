@@ -81,9 +81,8 @@ class TestAttachedTerritories(unittest.TestCase):
                 Claimant.ZONE_0,
                 self.connected_territories,
             )
-            self.assertEqual(
+            self.assertTrue(
                 capturable,
-                True,
                 f'Zone 0 should be able to capture {station}',
             )
 
@@ -93,9 +92,8 @@ class TestAttachedTerritories(unittest.TestCase):
                 Claimant.ZONE_1,
                 self.connected_territories,
             )
-            self.assertEqual(
+            self.assertTrue(
                 capturable,
-                True,
                 f'Zone 1 should be able to capture {station}',
             )
 
@@ -106,9 +104,8 @@ class TestAttachedTerritories(unittest.TestCase):
                 Claimant.ZONE_0,
                 self.connected_territories,
             )
-            self.assertEqual(
+            self.assertFalse(
                 capturable,
-                False,
                 f'Zone 0 should not be able to capture {station}',
             )
 
@@ -123,9 +120,8 @@ class TestAttachedTerritories(unittest.TestCase):
                 Claimant.ZONE_1,
                 self.connected_territories,
             )
-            self.assertEqual(
+            self.assertFalse(
                 capturable,
-                False,
                 f'Zone 1 should not be able to capture {station}',
             )
 
