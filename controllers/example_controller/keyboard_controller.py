@@ -1,7 +1,7 @@
 from sr.robot import Robot
 from controller import Keyboard
 
-KEYBOARD_SAMPLING_FREQUENCY = 16
+KEYBOARD_SAMPLING_PERIOD = 16
 NO_KEY_PRESSED = -1
 
 NO_ACTION = 0
@@ -49,7 +49,7 @@ def print_sensors(robot: Robot) -> None:
 R = Robot()
 
 keyboard = Keyboard()
-keyboard.enable(KEYBOARD_SAMPLING_FREQUENCY)
+keyboard.enable(KEYBOARD_SAMPLING_PERIOD)
 
 pending_claims = []
 
@@ -138,4 +138,4 @@ while True:
             R.radio.complete_territory_claim()
             pending_claims.remove(claim_end_time)
 
-    R.sleep(KEYBOARD_SAMPLING_FREQUENCY / 1000)
+    R.sleep(KEYBOARD_SAMPLING_PERIOD / 1000)
