@@ -19,7 +19,7 @@ CONTROLS = {
 }
 
 
-def print_distance_sensors(robot: Robot) -> None:
+def print_sensors(robot: Robot) -> None:
     distance_sensor_names = [
         "Front Left",
         "Front Right",
@@ -28,11 +28,20 @@ def print_distance_sensors(robot: Robot) -> None:
         "Back Left",
         "Back Right",
     ]
+    touch_sensor_names = [
+        "Front",
+        "Rear",
+    ]
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
     for pin, name in enumerate(distance_sensor_names):
         dist = R.ruggeduinos[0].analogue_read(pin)
         print(f"{pin} {name: <12}: {dist:.2f}")
+
+    print("Touch sensor readings:")
+    for pin, name in enumerate(touch_sensor_names, 2):
+        touching = R.ruggeduinos[0].digital_read(pin)
+        print(f"{pin} {name: <6}: {touching}")
 
     print()
 
@@ -87,7 +96,7 @@ while True:
             R.radio.claim_territory()
 
         elif key_ascii == key_sense:
-            print_distance_sensors(R)
+            print_sensors(R)
 
         # Work our way through all the enqueued key presses before dropping
         # out to the timestep
