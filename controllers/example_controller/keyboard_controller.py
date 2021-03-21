@@ -51,6 +51,8 @@ R = Robot()
 keyboard = Keyboard()
 keyboard.enable(KEYBOARD_SAMPLING_FREQUENCY)
 
+pending_claims = []
+
 key_forward = CONTROLS["forward"][R.zone]
 key_reverse = CONTROLS["reverse"][R.zone]
 key_left = CONTROLS["left"][R.zone]
@@ -93,7 +95,8 @@ while True:
             turn = RIGHT
 
         elif key_ascii == key_claim:
-            R.radio.claim_territory()
+            R.radio.begin_territory_claim()
+            pending_claims.append(R.time() + 2)
 
         elif key_ascii == key_sense:
             print_sensors(R)
@@ -127,5 +130,12 @@ while True:
 
     R.motors[0].m0.power = left_power
     R.motors[0].m1.power = right_power
+
+    current_time = R.time()
+    # complete claims after their 2 seconds has lapsed
+    for claim_end_time in pending_claims:
+        if current_time > claim_end_time:
+            R.radio.complete_territory_claim()
+            pending_claims.remove(claim_end_time)
 
     R.sleep(KEYBOARD_SAMPLING_FREQUENCY / 1000)
