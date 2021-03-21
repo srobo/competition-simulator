@@ -210,6 +210,23 @@ class TestMatchingStationCode(unittest.TestCase):
             "StationCode enums differ between territory_controlled and sr.robot.radio",
         )
 
+    def test_matches_arena_file(self) -> None:
+        "test StationCode matches SRTerritory nodes in Arena.wbt"
+
+        arena_territories = set()
+        with (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r') as f:
+            for line in f.readlines():
+                if 'SRTerritory' in line:
+                    arena_territories.add(re.sub(r'.*DEF (.*) SRTerritory .*\n', r'\1', line))
+
+        station_codes = {station.value for station in StationCode}
+
+        self.assertEqual(
+            station_codes,
+            arena_territories,
+            "StationCode values differs from territories in Arena.wbt",
+        )
+
 
 class TestLiveScoring(unittest.TestCase):
     "Test the live scoring computed in the claim log using tests from the scorer"
