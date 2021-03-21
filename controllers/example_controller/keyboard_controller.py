@@ -4,6 +4,10 @@ from controller import Keyboard
 KEYBOARD_SAMPLING_FREQUENCY = 16
 NO_KEY_PRESSED = -1
 
+NO_ACTION = 0
+FORWARD, REVERSE = 1, -1
+LEFT, RIGHT = 1, -1
+
 CONTROLS = {
     "forward": (ord("W"), ord("I")),
     "reverse": (ord("S"), ord("K")),
@@ -54,45 +58,65 @@ print(
 while True:
     key = keyboard.getKey()
 
-    if key == NO_KEY_PRESSED:
-        R.motors[0].m0.power = 0
-        R.motors[0].m1.power = 0
+    move = NO_ACTION
+    turn = NO_ACTION
 
-    else:
-        while key != NO_KEY_PRESSED:
+    boost = False
 
-            if key == key_forward:
-                R.motors[0].m0.power = 50
-                R.motors[0].m1.power = 50
+    while key != NO_KEY_PRESSED:
+        key_ascii = key & 0x7F  # mask out modifier keys
+        # note: modifiers are only recorded when pressed before other keys
+        key_mod = key & (~0x7F)
 
-            elif key == key_boost + key_forward:
-                R.motors[0].m0.power = 100
-                R.motors[0].m1.power = 100
+        if key_mod == key_boost:
+            boost = True
 
-            elif key == key_reverse:
-                R.motors[0].m0.power = -50
-                R.motors[0].m1.power = -50
+        if key_ascii == key_forward:
+            move = FORWARD
 
-            elif key == key_boost + key_reverse:
-                R.motors[0].m0.power = -100
-                R.motors[0].m1.power = -100
+        elif key_ascii == key_reverse:
+            move = REVERSE
 
-            elif key == key_left:
-                R.motors[0].m0.power = -25
-                R.motors[0].m1.power = 25
+        elif key_ascii == key_left:
+            turn = LEFT
 
-            elif key == key_right:
-                R.motors[0].m0.power = 25
-                R.motors[0].m1.power = -25
+        elif key_ascii == key_right:
+            turn = RIGHT
 
-            elif key == key_claim:
-                R.radio.claim_territory()
+        elif key_ascii == key_claim:
+            R.radio.claim_territory()
 
-            elif key == key_sense:
-                print_distance_sensors(R)
+        elif key_ascii == key_sense:
+            print_distance_sensors(R)
 
-            # Work our way through all the enqueued key presses before dropping
-            # out to the timestep
-            key = keyboard.getKey()
+        # Work our way through all the enqueued key presses before dropping
+        # out to the timestep
+        key = keyboard.getKey()
+
+    left_power = 0
+    right_power = 0
+
+    # Now the pressed keys have been captured, calculate the resulting movement
+    if move == FORWARD:
+        left_power = 50
+        right_power = 50
+    elif move == REVERSE:
+        left_power = -50
+        right_power = -50
+
+    if turn == LEFT:
+        left_power -= 25
+        right_power += 25
+    elif turn == RIGHT:
+        left_power += 25
+        right_power -= 25
+
+    if boost:
+        # double power values but constrain to [-100, 100]
+        left_power = max(min(left_power * 2, 100), -100)
+        right_power = max(min(right_power * 2, 100), -100)
+
+    R.motors[0].m0.power = left_power
+    R.motors[0].m1.power = right_power
 
     R.sleep(KEYBOARD_SAMPLING_FREQUENCY / 1000)
