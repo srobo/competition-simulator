@@ -1,10 +1,11 @@
 import re
 import sys
+import enum
 import random
 import unittest
 from typing import Dict, List, Union, Mapping
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from territory_controller import (
     Claimant,
@@ -24,18 +25,51 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 from sr.robot.radio import StationCode as RadioStationCode  # isort:skip
 
 
-class TestAttachedTerritories(unittest.TestCase):
-    'Test build_attached_capture_trees/get_attached_territories'
+class MockStationCode(str, enum.Enum):
+    T0 = 'T0'
+    T1 = 'T1'
+    T2 = 'T2'
+    T3 = 'T3'
+    T4 = 'T4'
+    T5 = 'T5'
+    T6 = 'T6'
+    T7 = 'T7'
+    T8 = 'T8'
 
-    _zone_0_territories = {
-        StationCode.BG,
-        StationCode.TS,
-        StationCode.OX,
-        StationCode.VB,
-        StationCode.PL,
+
+@patch('territory_controller.StationCode', MockStationCode)
+class TestAttachedTerritories(unittest.TestCase):
+    """
+    Test build_attached_capture_trees/get_attached_territories
+    Uses a fixed, reduced map:
+        z0 ── T0 ── T1 ── T2 ── T3 ── z1
+         │         ╱  ╲                │
+         └─ T4 ── T5 ─ T6 ── T7 ── T8 ─┘
+    """
+
+    _zone_0_territories = {MockStationCode.T0, MockStationCode.T1, MockStationCode.T6}
+    _zone_1_territories = {
+        MockStationCode.T3,
+        MockStationCode.T2,
+        MockStationCode.T5,
+        MockStationCode.T4,
     }
-    _zone_1_territories = {StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL}
-    _zone_1_disconnected = {StationCode.PN, StationCode.EY}
+    _zone_1_disconnected = {MockStationCode.T4, MockStationCode.T5}
+    _zone_0_capturable = {
+        MockStationCode.T2,
+        MockStationCode.T4,
+        MockStationCode.T5,
+        MockStationCode.T7,
+    }
+    _zone_1_capturable = {MockStationCode.T1, MockStationCode.T8}
+    _zone_0_uncapturable = {MockStationCode.T8, MockStationCode.T3}
+    _zone_1_uncapturable = {
+        MockStationCode.T0,
+        MockStationCode.T4,
+        MockStationCode.T5,
+        MockStationCode.T6,
+        MockStationCode.T7,
+    }
 
     def load_territory_owners(self, claim_log: ClaimLog) -> None:
         for territory in self._zone_0_territories:
@@ -44,6 +78,23 @@ class TestAttachedTerritories(unittest.TestCase):
         for territory in self._zone_1_territories:
             claim_log._station_statuses[territory] = Claimant.ZONE_1
 
+    @patch('territory_controller.TERRITORY_LINKS', new={
+        (TerritoryRoot.z0, MockStationCode.T0),
+        (TerritoryRoot.z0, MockStationCode.T4),
+        (TerritoryRoot.z1, MockStationCode.T3),
+        (TerritoryRoot.z1, MockStationCode.T8),
+
+        (MockStationCode.T0, MockStationCode.T1),
+        (MockStationCode.T1, MockStationCode.T2),
+        (MockStationCode.T2, MockStationCode.T3),
+        (MockStationCode.T4, MockStationCode.T5),
+        (MockStationCode.T5, MockStationCode.T6),
+        (MockStationCode.T6, MockStationCode.T7),
+        (MockStationCode.T7, MockStationCode.T8),
+        (MockStationCode.T5, MockStationCode.T1),
+        (MockStationCode.T6, MockStationCode.T1),
+    })
+    @patch('territory_controller.StationCode', MockStationCode)
     def setUp(self) -> None:
         super().setUp()
         claim_log = ClaimLog(record_arena_actions=False)
@@ -75,7 +126,7 @@ class TestAttachedTerritories(unittest.TestCase):
         )
 
     def test_stations_can_capture(self) -> None:
-        for station in {StationCode.PN, StationCode.EY, StationCode.TS, StationCode.SZ}:
+        for station in self._zone_0_capturable:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_0,
@@ -86,7 +137,7 @@ class TestAttachedTerritories(unittest.TestCase):
                 f'Zone 0 should be able to capture {station}',
             )
 
-        for station in {StationCode.BN, StationCode.SZ, StationCode.HV}:
+        for station in self._zone_1_capturable:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_1,
@@ -98,7 +149,7 @@ class TestAttachedTerritories(unittest.TestCase):
             )
 
     def test_stations_cant_capture(self) -> None:
-        for station in {StationCode.YL, StationCode.PO, StationCode.HA}:
+        for station in self._zone_0_uncapturable:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_0,
@@ -109,12 +160,7 @@ class TestAttachedTerritories(unittest.TestCase):
                 f'Zone 0 should not be able to capture {station}',
             )
 
-        for station in {
-            StationCode.PN,
-            StationCode.EY,
-            StationCode.VB,
-            StationCode.SW,
-        }:
+        for station in self._zone_1_uncapturable:
             capturable = self.attached_territories.can_capture_station(
                 station,
                 Claimant.ZONE_1,
