@@ -224,20 +224,6 @@ class TestAdjacentTerritories(unittest.TestCase):
                 f'Zone 1 starting zone incorrectly appears in {station.value} links',
             )
 
-    def test_VB_links(self) -> None:
-        'test BE for correct links'
-        self.assertEqual(
-            self.attached_territories.adjacent_zones[StationCode.VB],
-            {
-                StationCode.BG,
-                StationCode.EY,
-                StationCode.OX,
-                StationCode.BE,
-                StationCode.PL,
-            },
-            'Territory VB has incorrect territory links',
-        )
-
 
 class TestMatchingStationCode(unittest.TestCase):
 
