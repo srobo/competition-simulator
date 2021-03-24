@@ -4,10 +4,6 @@ from controller import Keyboard
 KEYBOARD_SAMPLING_PERIOD = 100
 NO_KEY_PRESSED = -1
 
-NO_ACTION = 0
-FORWARD, REVERSE = 1, -1
-LEFT, RIGHT = 1, -1
-
 CONTROLS = {
     "forward": (ord("W"), ord("I")),
     "reverse": (ord("S"), ord("K")),
@@ -71,10 +67,10 @@ print(
 while True:
     key = keyboard.getKey()
 
-    move = NO_ACTION
-    turn = NO_ACTION
-
     boost = False
+
+    left_power = 0
+    right_power = 0
 
     while key != NO_KEY_PRESSED:
         key_ascii = key & 0x7F  # mask out modifier keys
@@ -85,16 +81,20 @@ while True:
             boost = True
 
         if key_ascii == key_forward:
-            move = FORWARD
+            left_power += 50
+            right_power += 50
 
         elif key_ascii == key_reverse:
-            move = REVERSE
+            left_power += -50
+            right_power += -50
 
         elif key_ascii == key_left:
-            turn = LEFT
+            left_power -= 25
+            right_power += 25
 
         elif key_ascii == key_right:
-            turn = RIGHT
+            left_power += 25
+            right_power -= 25
 
         elif key_ascii == key_claim:
             R.radio.begin_territory_claim()
@@ -115,24 +115,6 @@ while True:
         # Work our way through all the enqueued key presses before dropping
         # out to the timestep
         key = keyboard.getKey()
-
-    left_power = 0
-    right_power = 0
-
-    # Now the pressed keys have been captured, calculate the resulting movement
-    if move == FORWARD:
-        left_power = 50
-        right_power = 50
-    elif move == REVERSE:
-        left_power = -50
-        right_power = -50
-
-    if turn == LEFT:
-        left_power -= 25
-        right_power += 25
-    elif turn == RIGHT:
-        left_power += 25
-        right_power -= 25
 
     if boost:
         # double power values but constrain to [-100, 100]
