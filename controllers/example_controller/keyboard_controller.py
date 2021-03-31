@@ -1,6 +1,8 @@
 from sr.robot import Robot
 from controller import Keyboard
 
+# Any keys still pressed in the following period will be handled again
+# leading to repeated claim attempts or printing sensors multiple times
 KEYBOARD_SAMPLING_PERIOD = 100
 NO_KEY_PRESSED = -1
 
