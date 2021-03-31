@@ -233,7 +233,7 @@ class TestMatchingStationCode(unittest.TestCase):
         self.assertEqual(
             station_codes,
             radio_station_codes,
-            "StationCode enums differ between territory_controlled and sr.robot.radio",
+            "StationCode enums differ between territory_controller and sr.robot.radio",
         )
 
     def test_matches_arena_file(self) -> None:
