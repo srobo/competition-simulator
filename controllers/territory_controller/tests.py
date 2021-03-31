@@ -73,10 +73,10 @@ class TestAttachedTerritories(unittest.TestCase):
 
     def load_territory_owners(self, claim_log: ClaimLog) -> None:
         for territory in self._zone_0_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_0  # type: ignore
+            claim_log._station_statuses[territory] = Claimant.ZONE_0  # type: ignore[index]
 
         for territory in self._zone_1_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_1  # type: ignore
+            claim_log._station_statuses[territory] = Claimant.ZONE_1  # type: ignore[index]
 
     @patch('territory_controller.TERRITORY_LINKS', new={
         (TerritoryRoot.z0, MockStationCode.T0),
@@ -128,7 +128,7 @@ class TestAttachedTerritories(unittest.TestCase):
     def test_stations_can_capture(self) -> None:
         for station in self._zone_0_capturable:
             capturable = self.attached_territories.can_capture_station(
-                station,  # type: ignore
+                station,  # type: ignore[arg-type]
                 Claimant.ZONE_0,
                 self.connected_territories,
             )
@@ -139,7 +139,7 @@ class TestAttachedTerritories(unittest.TestCase):
 
         for station in self._zone_1_capturable:
             capturable = self.attached_territories.can_capture_station(
-                station,  # type: ignore
+                station,  # type: ignore[arg-type]
                 Claimant.ZONE_1,
                 self.connected_territories,
             )
@@ -151,7 +151,7 @@ class TestAttachedTerritories(unittest.TestCase):
     def test_stations_cant_capture(self) -> None:
         for station in self._zone_0_uncapturable:
             capturable = self.attached_territories.can_capture_station(
-                station,  # type: ignore
+                station,  # type: ignore[arg-type]
                 Claimant.ZONE_0,
                 self.connected_territories,
             )
@@ -162,7 +162,7 @@ class TestAttachedTerritories(unittest.TestCase):
 
         for station in self._zone_1_uncapturable:
             capturable = self.attached_territories.can_capture_station(
-                station,  # type: ignore
+                station,  # type: ignore[arg-type]
                 Claimant.ZONE_1,
                 self.connected_territories,
             )
