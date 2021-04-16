@@ -19,7 +19,7 @@ import webots_utils  # isort:skip
 
 
 class ArenaLighting(NamedTuple):
-    lightDef: str
+    light_def: str
     intensity: float = 3.5
     colour: Tuple[float, float, float] = (1, 1, 1)
 
@@ -34,7 +34,7 @@ class LightingEffect(NamedTuple):
 
     def __repr__(self) -> str:
         lights_info = [
-            f"({light.lightDef}, int={light.intensity}, col={light.colour})"
+            f"({light.light_def}, int={light.intensity}, col={light.colour})"
             for light in self.lighting
         ]
         return (
@@ -100,10 +100,10 @@ class LightingController:
         self.light_nodes: Dict[str, Node] = {}
         for cue in cue_stack:
             for light in cue.lighting:
-                if self.light_nodes.get(light.lightDef) is None:
-                    self.light_nodes[light.lightDef] = webots_utils.node_from_def(
+                if self.light_nodes.get(light.light_def) is None:
+                    self.light_nodes[light.light_def] = webots_utils.node_from_def(
                         self._robot,
-                        light.lightDef,
+                        light.light_def,
                     )
 
     def set_node_luminosity(self, node: Node, luminosity: float) -> None:
@@ -118,10 +118,10 @@ class LightingController:
     def get_current_luminosity(self) -> float:
         return self.ambient_node.getField('luminosity').getSFFloat()
 
-    def get_current_lighting_values(self, lightDef: str) -> ArenaLighting:
-        light = self.light_nodes[lightDef]
+    def get_current_lighting_values(self, light_def: str) -> ArenaLighting:
+        light = self.light_nodes[light_def]
         return ArenaLighting(
-            lightDef,
+            light_def,
             light.getField('intensity').getSFFloat(),
             light.getField('color').getSFColor(),  # type: ignore
         )
@@ -147,8 +147,8 @@ class LightingController:
         if effect.fade_time is None:
             self.set_node_luminosity(self.ambient_node, effect.luminosity)
             for light in effect.lighting:
-                self.set_node_intensity(self.light_nodes[light.lightDef], light.intensity)
-                self.set_node_colour(self.light_nodes[light.lightDef], light.colour)
+                self.set_node_intensity(self.light_nodes[light.light_def], light.intensity)
+                self.set_node_colour(self.light_nodes[light.light_def], light.colour)
 
             print(f"Lighting effect '{effect.name}' complete")  # noqa: T001
 
@@ -171,7 +171,7 @@ class LightingController:
                     _,
                     current_intensity,
                     current_colour,
-                ) = self.get_current_lighting_values(light.lightDef)
+                ) = self.get_current_lighting_values(light.light_def)
 
                 # figure out steps of each value
                 intensity_step = (light.intensity - current_intensity) / steps
@@ -182,7 +182,7 @@ class LightingController:
 
                 # add fade to queue to have steps processed
                 self.lighting_fades.append(LightFade(
-                    self.light_nodes[light.lightDef],
+                    self.light_nodes[light.light_def],
                     steps,
                     intensity_step,
                     colour_step,
@@ -219,7 +219,7 @@ class LightingController:
                 self.set_node_intensity(fade.light, fade.effect.intensity)
                 self.set_node_colour(fade.light, fade.effect.colour)
 
-                print(f"Lighting effect for '{fade.effect.lightDef}' complete")  # noqa: T001
+                print(f"Lighting effect for '{fade.effect.light_def}' complete")  # noqa: T001
 
                 self.lighting_fades.remove(fade)  # remove completed fade
 
