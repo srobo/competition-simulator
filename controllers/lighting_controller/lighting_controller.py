@@ -38,7 +38,7 @@ class LightingEffect(NamedTuple):
             for light in self.lighting
         ]
         return (
-            f"<LightingEffect: \"{self.name}\", "
+            f"<LightingEffect: {self.name!r}, "
             f"start={self.start_time}, fade={self.fade_time}, "
             f"lum={self.luminosity}, "
             f"{', '.join(lights_info)}"
