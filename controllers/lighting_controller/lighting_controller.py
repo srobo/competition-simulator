@@ -20,7 +20,7 @@ import webots_utils  # isort:skip
 
 class ArenaLighting(NamedTuple):
     lightDef: str
-    intensity: float = 0.35
+    intensity: float = 3.5
     colour: Tuple[float, float, float] = (1, 1, 1)
 
 
@@ -100,10 +100,11 @@ class LightingController:
         self.light_nodes: Dict[str, Node] = {}
         for cue in cue_stack:
             for light in cue.lighting:
-                self.light_nodes[light.lightDef] = webots_utils.node_from_def(
-                    self._robot,
-                    light.lightDef,
-                )
+                if self.light_nodes.get(light.lightDef) is None:
+                    self.light_nodes[light.lightDef] = webots_utils.node_from_def(
+                        self._robot,
+                        light.lightDef,
+                    )
 
     def set_node_luminosity(self, node: Node, luminosity: float) -> None:
         node.getField('luminosity').setSFFloat(luminosity)
