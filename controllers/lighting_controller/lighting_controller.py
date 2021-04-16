@@ -75,8 +75,8 @@ CUE_STACK = [
     LightingEffect(0, fade_time=1.5, name="Fade-up"),
     LightingEffect(
         -0.1,
-        lighting=[ArenaLighting('SUN', colour=(1, 0, 0))],
-        luminosity=0.5,
+        lighting=[ArenaLighting('SUN', intensity=1, colour=(1, 0, 0))],
+        luminosity=0.05,
         name="End of match",
     ),
 ]
