@@ -5,26 +5,6 @@ from typing import Tuple, Optional
 from sr.robot import Robot
 from controller import Keyboard
 
-s = socket.socket(
-    socket.AF_INET6,
-    socket.SOCK_STREAM,
-    socket.SOL_TCP,
-)
-s.setsockopt(
-    socket.SOL_SOCKET,
-    socket.SO_REUSEADDR,
-    1,
-)
-
-s.bind(('::', 8000))
-
-s.listen(1)
-
-conn, _ = s.accept()
-
-sel = selectors.DefaultSelector()
-sel.register(conn, selectors.EVENT_READ)
-
 
 # Any keys still pressed in the following period will be handled again
 # leading to repeated claim attempts or printing sensors multiple times
@@ -90,6 +70,26 @@ print(
     "Note: you need to click on 3D viewport for keyboard events to be picked "
     "up by webots",
 )
+
+s = socket.socket(
+    socket.AF_INET6,
+    socket.SOCK_STREAM,
+    socket.SOL_TCP,
+)
+s.setsockopt(
+    socket.SOL_SOCKET,
+    socket.SO_REUSEADDR,
+    1,
+)
+
+s.bind(('::', 8000 + R.zone))
+
+s.listen(1)
+
+conn, _ = s.accept()
+
+sel = selectors.DefaultSelector()
+sel.register(conn, selectors.EVENT_READ)
 
 
 def get_key_from_socket() -> Optional[Tuple[str, bool]]:
