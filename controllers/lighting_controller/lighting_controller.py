@@ -1,12 +1,12 @@
 """
 The controller for altering arena lighting provided by a DirectionalLight and a Background
 Currently doesn't support:
-- Overlapping lighting fades
 - Timed pre-match lighting changes
 """
 import sys
-from typing import List, Tuple, Optional, NamedTuple
+from typing import Dict, List, Tuple, Optional, NamedTuple
 from pathlib import Path
+from dataclasses import dataclass
 
 from controller import Node, Supervisor
 
@@ -19,33 +19,64 @@ import webots_utils  # isort:skip
 
 
 class ArenaLighting(NamedTuple):
-    intensity: float = 3.5
+    lightDef: str
+    intensity: float = 0.35
     colour: Tuple[float, float, float] = (1, 1, 1)
-    luminosity: float = 0.35
 
 
 class LightingEffect(NamedTuple):
     start_time: float  # Negative start times are relative to the end of the match
     # Negative values 0 - (-0.08) don't get included in the produced recordings
     fade_time: Optional[float] = None
-    lighting: ArenaLighting = ArenaLighting()
+    lighting: List[ArenaLighting] = [ArenaLighting('SUN')]
+    luminosity: float = 0.35
     name: str = ""
 
     def __repr__(self) -> str:
+        lights_info = [
+            f"({light.lightDef}, int={light.intensity}, col={light.colour})"
+            for light in self.lighting
+        ]
         return (
             f"<LightingEffect: \"{self.name}\", "
             f"start={self.start_time}, fade={self.fade_time}, "
-            f"int={self.lighting.intensity}, col={self.lighting.colour}, "
-            f"lum={self.lighting.intensity}>"
+            f"lum={self.luminosity}, "
+            f"{', '.join(lights_info)}"
+            ">"
         )
 
 
+@dataclass
+class LightFade:
+    light: Node
+    remaining_steps: int
+    intensity_step: float
+    colour_step: Tuple[float, float, float]
+    current_intensity: float
+    current_colour: Tuple[float, float, float]
+    effect: ArenaLighting
+
+
+@dataclass
+class LuminosityFade:
+    remaining_steps: int
+    luminosity_step: float
+    current_luminosity: float
+    final_luminosity: float
+
+
 CUE_STACK = [
-    LightingEffect(0, lighting=ArenaLighting(intensity=1, luminosity=0.05), name="Pre-set"),
+    LightingEffect(
+        0,
+        lighting=[ArenaLighting('SUN', intensity=1)],
+        luminosity=0.05,
+        name="Pre-set",
+    ),
     LightingEffect(0, fade_time=1.5, name="Fade-up"),
     LightingEffect(
         -0.1,
-        lighting=ArenaLighting(colour=(1, 0, 0), luminosity=0.5),
+        lighting=[ArenaLighting('SUN', colour=(1, 0, 0))],
+        luminosity=0.5,
         name="End of match",
     ),
 ]
@@ -60,8 +91,19 @@ class LightingController:
         self.duration = duration
         self.cue_stack = cue_stack
 
-        self.sun_node = webots_utils.node_from_def(self._robot, 'SUN')
         self.ambient_node = webots_utils.node_from_def(self._robot, 'AMBIENT')
+
+        self.luminosity_fade = LuminosityFade(0, 0, 0.35, 0.35)
+        self.lighting_fades: List[LightFade] = []
+
+        # fetch all nodes used in effects, any missing nodes will be flagged here
+        self.light_nodes: Dict[str, Node] = {}
+        for cue in cue_stack:
+            for light in cue.lighting:
+                self.light_nodes[light.lightDef] = webots_utils.node_from_def(
+                    self._robot,
+                    light.lightDef,
+                )
 
     def set_node_luminosity(self, node: Node, luminosity: float) -> None:
         node.getField('luminosity').setSFFloat(luminosity)
@@ -72,11 +114,15 @@ class LightingController:
     def set_node_colour(self, node: Node, colour: Tuple[float, float, float]) -> None:
         node.getField('color').setSFColor(list(colour))
 
-    def get_current_lighting_values(self) -> ArenaLighting:
+    def get_current_luminosity(self) -> float:
+        return self.ambient_node.getField('luminosity').getSFFloat()
+
+    def get_current_lighting_values(self, lightDef: str) -> ArenaLighting:
+        light = self.light_nodes[lightDef]
         return ArenaLighting(
-            self.sun_node.getField('intensity').getSFFloat(),
-            tuple(self.sun_node.getField('color').getSFColor()),  # type: ignore
-            self.ambient_node.getField('luminosity').getSFFloat(),
+            lightDef,
+            light.getField('intensity').getSFFloat(),
+            light.getField('color').getSFColor(),  # type: ignore
         )
 
     def increment_colour(
@@ -92,47 +138,89 @@ class LightingController:
     def remaining_match_time(self) -> float:
         return self.duration - self.current_match_time()
 
-    def do_lighting_effect(self, effect: LightingEffect) -> None:
+    def start_lighting_effect(self, effect: LightingEffect) -> None:
         print(  # noqa: T001
             f"Running lighting effect: {effect.name} @ {self.current_match_time()}",
         )
 
         if effect.fade_time is None:
-            self.set_node_intensity(self.sun_node, effect.lighting.intensity)
-            self.set_node_colour(self.sun_node, effect.lighting.colour)
-            self.set_node_luminosity(self.ambient_node, effect.lighting.luminosity)
-        else:
-            (  # get starting values
-                current_intensity,
-                current_colour,
-                current_luminosity,
-            ) = self.get_current_lighting_values()
-
-            # figure out steps of each value
-            steps = int((effect.fade_time * 1000) / self.timestep)
-            intensity_step = (effect.lighting.intensity - current_intensity) / steps
-            colour_step: Tuple[float, float, float] = tuple(  # type: ignore
-                effect.lighting.colour[i] - current_colour[i]
-                for i in range(3)
-            )
-            luminosity_step = (effect.lighting.luminosity - current_luminosity) / steps
-
-            for step in range(steps - 1):  # loop through for fade time
-                self.set_node_intensity(self.sun_node, current_intensity)
-                self.set_node_colour(self.sun_node, current_colour)
-                self.set_node_luminosity(self.ambient_node, current_luminosity)
-
-                current_intensity += intensity_step
-                current_colour = self.increment_colour(current_colour, colour_step)
-                current_luminosity += luminosity_step
-                self._robot.step(int(self.timestep))
-
-            # directly set final values to remove accumulated errors
-            self.set_node_intensity(self.sun_node, effect.lighting.intensity)
-            self.set_node_colour(self.sun_node, effect.lighting.colour)
-            self.set_node_luminosity(self.ambient_node, effect.lighting.luminosity)
+            self.set_node_luminosity(self.ambient_node, effect.luminosity)
+            for light in effect.lighting:
+                self.set_node_intensity(self.light_nodes[light.lightDef], light.intensity)
+                self.set_node_colour(self.light_nodes[light.lightDef], light.colour)
 
             print(f"Lighting effect '{effect.name}' complete")  # noqa: T001
+
+        else:
+            steps = int((effect.fade_time * 1000) / self.timestep)
+
+            # get starting values
+            current_luminosity = self.get_current_luminosity()
+            luminosity_step = (effect.luminosity - current_luminosity) / steps
+            self.luminosity_fade = LuminosityFade(
+                steps,
+                luminosity_step,
+                current_luminosity,
+                effect.luminosity,
+            )
+
+            for light in effect.lighting:
+                # get starting values
+                (
+                    _,
+                    current_intensity,
+                    current_colour,
+                ) = self.get_current_lighting_values(light.lightDef)
+
+                # figure out steps of each value
+                intensity_step = (light.intensity - current_intensity) / steps
+                colour_step: Tuple[float, float, float] = tuple(  # type: ignore
+                    light.colour[i] - current_colour[i]
+                    for i in range(3)
+                )
+
+                # add fade to queue to have steps processed
+                self.lighting_fades.append(LightFade(
+                    self.light_nodes[light.lightDef],
+                    steps,
+                    intensity_step,
+                    colour_step,
+                    current_intensity,
+                    current_colour,
+                    light,
+                ))
+
+    def do_lighting_step(self) -> None:
+        if self.luminosity_fade.remaining_steps != 0:
+            self.luminosity_fade.current_luminosity += self.luminosity_fade.luminosity_step
+            self.luminosity_fade.remaining_steps -= 1
+
+            if self.luminosity_fade.remaining_steps == 0:  # final step
+                self.luminosity_fade.current_luminosity = self.luminosity_fade.final_luminosity
+
+            self.set_node_luminosity(
+                self.ambient_node,
+                self.luminosity_fade.current_luminosity,
+            )
+
+        for fade in self.lighting_fades:
+            if fade.remaining_steps > 1:
+                fade.current_intensity += fade.intensity_step
+                fade.current_colour = self.increment_colour(
+                    fade.current_colour,
+                    fade.colour_step,
+                )
+                fade.remaining_steps -= 1
+
+                self.set_node_intensity(fade.light, fade.current_intensity)
+                self.set_node_colour(fade.light, fade.current_colour)
+            else:
+                self.set_node_intensity(fade.light, fade.effect.intensity)
+                self.set_node_colour(fade.light, fade.effect.colour)
+
+                print(f"Lighting effect for '{fade.effect.lightDef}' complete")  # noqa: T001
+
+                self.lighting_fades.remove(fade)  # remove completed fade
 
     def schedule_lighting(self) -> None:
         if controller_utils.get_robot_mode() != 'comp':
@@ -145,7 +233,7 @@ class LightingController:
         # run pre-start snap changes
         for cue in self.cue_stack:
             if cue.start_time == 0 and cue.fade_time is None:
-                self.do_lighting_effect(cue)
+                self.start_lighting_effect(cue)
                 self.cue_stack.remove(cue)
 
         # Interact with the supervisor "robot" to wait for the start of the match.
@@ -160,16 +248,17 @@ class LightingController:
                     cue.start_time >= 0 and
                     self.current_match_time() >= cue.start_time
                 ):  # cue relative to start
-                    self.do_lighting_effect(cue)
+                    self.start_lighting_effect(cue)
                     self.cue_stack.remove(cue)
                 elif (
                     cue.start_time < 0 and
                     self.remaining_match_time() <= -(cue.start_time)
                 ):  # cue relative to end
-                    self.do_lighting_effect(cue)
+                    self.start_lighting_effect(cue)
                     self.cue_stack.remove(cue)
 
-                self._robot.step(int(self.timestep))
+            self.do_lighting_step()
+            self._robot.step(int(self.timestep))
 
 
 if __name__ == "__main__":
