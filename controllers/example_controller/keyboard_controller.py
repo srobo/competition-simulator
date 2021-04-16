@@ -1,5 +1,30 @@
+import socket
+import selectors
+from typing import Tuple, Optional
+
 from sr.robot import Robot
 from controller import Keyboard
+
+s = socket.socket(
+    socket.AF_INET6,
+    socket.SOCK_STREAM,
+    socket.SOL_TCP,
+)
+s.setsockopt(
+    socket.SOL_SOCKET,
+    socket.SO_REUSEADDR,
+    1,
+)
+
+s.bind(('::', 8000))
+
+s.listen(1)
+
+conn, _ = s.accept()
+
+sel = selectors.DefaultSelector()
+sel.register(conn, selectors.EVENT_READ)
+
 
 # Any keys still pressed in the following period will be handled again
 # leading to repeated claim attempts or printing sensors multiple times
@@ -52,13 +77,13 @@ keyboard.enable(KEYBOARD_SAMPLING_PERIOD)
 
 pending_claims = []
 
-key_forward = CONTROLS["forward"][R.zone]
-key_reverse = CONTROLS["reverse"][R.zone]
-key_left = CONTROLS["left"][R.zone]
-key_right = CONTROLS["right"][R.zone]
-key_claim = CONTROLS["claim"][R.zone]
-key_sense = CONTROLS["sense"][R.zone]
-key_scan = CONTROLS["scan"][R.zone]
+key_forward = chr(CONTROLS["forward"][R.zone])
+key_reverse = chr(CONTROLS["reverse"][R.zone])
+key_left = chr(CONTROLS["left"][R.zone])
+key_right = chr(CONTROLS["right"][R.zone])
+key_claim = chr(CONTROLS["claim"][R.zone])
+key_sense = chr(CONTROLS["sense"][R.zone])
+key_scan = chr(CONTROLS["scan"][R.zone])
 key_boost = CONTROLS["boost"][R.zone]
 
 print(
@@ -66,21 +91,46 @@ print(
     "up by webots",
 )
 
-while True:
+
+def get_key_from_socket() -> Optional[Tuple[str, bool]]:
+    events = sel.select(timeout=0.001)
+    if events:
+        key = conn.recv(1).decode()
+        return key.upper(), key.isupper()
+    return None
+
+
+def get_key_from_keyboard() -> Optional[Tuple[str, bool]]:
     key = keyboard.getKey()
+
+    if key == NO_KEY_PRESSED:
+        return None
+
+    key_ascii = key & 0x7F  # mask out modifier keys
+    # note: modifiers are only recorded when pressed before other keys
+    key_mod = key & (~0x7F)
+
+    return chr(key_ascii), key_mod == key_boost
+
+
+def get_key() -> Optional[Tuple[str, bool]]:
+    key = get_key_from_socket()
+    if key:
+        return key
+
+    return get_key_from_keyboard()
+
+
+while True:
+    key = get_key()
 
     boost = False
 
     left_power = 0
     right_power = 0
 
-    while key != NO_KEY_PRESSED:
-        key_ascii = key & 0x7F  # mask out modifier keys
-        # note: modifiers are only recorded when pressed before other keys
-        key_mod = key & (~0x7F)
-
-        if key_mod == key_boost:
-            boost = True
+    while key is not None:
+        key_ascii, boost = key
 
         if key_ascii == key_forward:
             left_power += 50
@@ -116,7 +166,7 @@ while True:
 
         # Work our way through all the enqueued key presses before dropping
         # out to the timestep
-        key = keyboard.getKey()
+        key = get_key()
 
     if boost:
         # double power values but constrain to [-100, 100]
