@@ -851,23 +851,24 @@ Transform {
   ]
 }
 
-DirectionalLight {  # T2 light
+DirectionalLight {  # HA light
   direction -10 -15.2 0
   intensity 0.03
 }
-DirectionalLight {  # T1 light
+DirectionalLight {  # YT light
   direction -147 -200 0
   intensity 0.2
+  castShadows TRUE
 }
-DirectionalLight {  # T0 light
+DirectionalLight {  # FL light
   direction -1240 -1500 0
   intensity 0.03
 }
-DirectionalLight {  # T4 light
+DirectionalLight {  # TH light
   direction -101 -122 46
   intensity 0.03
 }
-DirectionalLight {  # T5 light
+DirectionalLight {  # SF light
   direction -101 -122 -46
   intensity 0.03
 }
