@@ -30,8 +30,7 @@ def add_independent_jitter(
     actual_value: T,
     min_possible: T,
     max_possible: T,
-    std_dev_percent: float =  # % of full scale value
-    DEFAULT_RANDOM_INDEPENDENT_RANGE_PERCENT,
+    std_dev_percent: float = DEFAULT_RANDOM_INDEPENDENT_RANGE_PERCENT,  # % of full scale value
     can_wrap: bool = False,
 ) -> T:
     value_range = max_possible - min_possible
