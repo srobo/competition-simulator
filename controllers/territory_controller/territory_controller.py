@@ -294,13 +294,14 @@ class ActionTimer:
     def __init__(
         self,
         action_duration: float,
-        progress_callback: Callable[[StationCode, Claimant, float], None] =
-        lambda station_code, claimant, progress: None,
+        progress_callback: Callable[[StationCode, Claimant, float, float], None] =
+        lambda station_code, claimant, progress, prev_progress: None,
     ):
         self._duration = action_duration
         self._duration_upper = action_duration * 1.1
         self._duration_lower = action_duration * 0.9
         self._action_starts: Dict[Tuple[StationCode, Claimant], float] = {}
+        self._prev_progress: Dict[Tuple[StationCode, Claimant], float] = {}
         # progress_callback is called on each timestep for each active action
         # the third argument is the current progress through the action
         # or TIMER_COMPLETE/TIMER_EXPIRE when the action is finished
@@ -313,7 +314,8 @@ class ActionTimer:
         start_time: float,
     ) -> None:
         self._action_starts[station_code, acted_by] = start_time
-        self._progress_callback(station_code, acted_by, 0)  # run starting action
+        self._prev_progress[station_code, acted_by] = 0
+        self._progress_callback(station_code, acted_by, 0, 0)  # run starting action
 
     def has_begun_action_in_time_window(
         self,
@@ -328,7 +330,13 @@ class ActionTimer:
         time_delta = current_time - start_time
         in_window = self._duration_lower <= time_delta <= self._duration_upper
         if in_window:
-            self._progress_callback(station_code, acted_by, self.TIMER_COMPLETE)
+            prev_progress = self._prev_progress[station_code, acted_by]
+            self._progress_callback(
+                station_code,
+                acted_by,
+                self.TIMER_COMPLETE,
+                prev_progress,
+            )
             self._action_starts.pop((station_code, acted_by))  # remove completed claim
         return in_window
 
@@ -336,12 +344,25 @@ class ActionTimer:
         # cast required since expired entries are pruned during iteration
         for (station_code, acted_by), start_time in list(self._action_starts.items()):
             time_delta = current_time - start_time
+            prev_progress = self._prev_progress[station_code, acted_by]
             if time_delta > self._duration_upper:
                 self._action_starts.pop((station_code, acted_by))  # remove expired claim
-                self._progress_callback(station_code, acted_by, self.TIMER_EXPIRE)
+                self._progress_callback(
+                    station_code,
+                    acted_by,
+                    self.TIMER_EXPIRE,
+                    prev_progress,
+                )
             else:
                 # run working action with current progress
-                self._progress_callback(station_code, acted_by, time_delta / self._duration)
+                progress = time_delta / self._duration
+                self._progress_callback(
+                    station_code,
+                    acted_by,
+                    progress,
+                    prev_progress,
+                )
+                self._prev_progress[station_code, acted_by] = progress
 
 
 class TerritoryController:
@@ -562,6 +583,7 @@ class TerritoryController:
         station_code: StationCode,
         claimant: Claimant,
         progress: float,
+        prev_progress: float,
     ) -> None:
         zone_colour = convert_to_led_colour(ZONE_COLOURS[claimant])
         if progress in {ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
@@ -572,6 +594,7 @@ class TerritoryController:
         else:
             # map the progress value to the LEDs
             led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
+            # led_prev_progress = min(int(prev_progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
 
             tower_led = self.get_tower_led(station_code, led_progress)
             tower_led.set(zone_colour)
