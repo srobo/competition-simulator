@@ -16,4 +16,4 @@ class Compass:
         """
         x, _, z = self._compass.getValues()
         heading = atan2(x, z) % tau
-        return add_independent_jitter(heading, 0, tau, 0.5, True)
+        return add_independent_jitter(heading, 0, tau, 0.4, True)
