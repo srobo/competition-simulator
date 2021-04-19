@@ -375,6 +375,7 @@ class TerritoryController:
         self._attached_territories = attached_territories
         self._robot = Supervisor()
         self._claim_timer = ActionTimer(2, self.handle_claim_timer_tick)
+        self._connected_territories = self._attached_territories.build_attached_capture_trees()
 
         self._emitters = {
             station_code: get_robot_device(self._robot, station_code + "Emitter", Emitter)
@@ -427,6 +428,8 @@ class TerritoryController:
         connected_territories: Tuple[Set[StationCode], Set[StationCode]],
         claim_time: float,
     ) -> None:
+        broken_links = False  # skip regenerating capture trees unless something changed
+
         # find territories which lack connections back to their claimant's corner
         for station in StationCode:  # for territory in station_codes
             if self._claim_log.get_claimant(station) == Claimant.UNCLAIMED:
@@ -443,6 +446,11 @@ class TerritoryController:
 
             # all disconnected territory is unclaimed
             self.set_territory_ownership(station, Claimant.UNCLAIMED, claim_time)
+            broken_links = True
+
+        if broken_links:
+            self._connected_territories = \
+                self._attached_territories.build_attached_capture_trees()
 
     def claim_territory(
         self,
@@ -450,12 +458,11 @@ class TerritoryController:
         claimed_by: Claimant,
         claim_time: float,
     ) -> None:
-        connected_territories = self._attached_territories.build_attached_capture_trees()
 
         if not self._attached_territories.can_capture_station(
             station_code,
             claimed_by,
-            connected_territories,
+            self._connected_territories,
         ):
             # This claimant doesn't have a connection back to their starting zone
             logging.error(f"Robot in zone {claimed_by} failed to capture {station_code}")
@@ -471,9 +478,9 @@ class TerritoryController:
 
         # recalculate connected territories to account for
         # the new capture and newly created islands
-        connected_territories = self._attached_territories.build_attached_capture_trees()
+        self._connected_territories = self._attached_territories.build_attached_capture_trees()
 
-        self.prune_detached_stations(connected_territories, claim_time)
+        self.prune_detached_stations(self._connected_territories, claim_time)
 
     def process_packet(
         self,
@@ -602,12 +609,10 @@ class TerritoryController:
 
             tower_led = self.get_tower_led(station_code, led_progress)
             if led_progress == NUM_TOWER_LEDS - 1:
-                connected_territories = \
-                    self._attached_territories.build_attached_capture_trees()
                 if not self._attached_territories.can_capture_station(
                     station_code,
                     claimant,
-                    connected_territories,
+                    self._connected_territories,
                 ):  # station can't be captured by this team, the claim  will fail
                     # skip setting top LED
                     return
