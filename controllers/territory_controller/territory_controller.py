@@ -601,6 +601,17 @@ class TerritoryController:
                 return
 
             tower_led = self.get_tower_led(station_code, led_progress)
+            if led_progress == NUM_TOWER_LEDS - 1:
+                connected_territories = \
+                    self._attached_territories.build_attached_capture_trees()
+                if not self._attached_territories.can_capture_station(
+                    station_code,
+                    claimant,
+                    connected_territories,
+                ):  # station can't be captured by this team, the claim  will fail
+                    # skip setting top LED
+                    return
+
             tower_led.set(zone_colour)
 
     def receive_robot_captures(self) -> None:
