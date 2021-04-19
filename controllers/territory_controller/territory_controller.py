@@ -594,7 +594,11 @@ class TerritoryController:
         else:
             # map the progress value to the LEDs
             led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
-            # led_prev_progress = min(int(prev_progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
+            led_prev_progress = min(int(prev_progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
+
+            if led_progress == led_prev_progress and prev_progress != 0:
+                # skip setting an LED that was already on
+                return
 
             tower_led = self.get_tower_led(station_code, led_progress)
             tower_led.set(zone_colour)
