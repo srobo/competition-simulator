@@ -35,8 +35,8 @@ def add_independent_jitter(
     can_wrap: bool = False,
 ) -> T:
     value_range = max_possible - min_possible
-    random_range = value_range * (std_dev_percent / float(100))
-    new_value = random.gauss(actual_value, random_range)
+    std_dev = value_range * (std_dev_percent / float(100))
+    new_value = random.gauss(actual_value, std_dev)
     if can_wrap:
         new_value_normalised = new_value - min_possible
         return type(actual_value)((new_value_normalised % value_range) + min_possible)
