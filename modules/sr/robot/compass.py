@@ -2,7 +2,7 @@ from math import tau, atan2
 
 from controller import Robot, Compass as WebotsCompass
 from sr.robot.utils import get_robot_device
-from sr.robot.randomizer import add_jitter
+from sr.robot.randomizer import add_independent_jitter
 
 
 class Compass:
@@ -16,4 +16,4 @@ class Compass:
         """
         x, _, z = self._compass.getValues()
         heading = atan2(x, z) % tau
-        return add_jitter(heading, 0, tau)
+        return add_independent_jitter(heading, 0, tau, 0.5, True)
