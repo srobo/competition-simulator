@@ -12,10 +12,13 @@ Viewpoint {
   #position 0 20.5 0
   near 0.1
 }
-TexturedBackgroundLight {
-  texture "noon_park_empty"
+DEF SUN DirectionalLight {
+  color 1 1 1
+  direction 0 -1 0
+  intensity 3.5
+  castShadows TRUE
 }
-Background {
+DEF AMBIENT Background {
   skyColor [
     0.960784 0.952941 0.956863
   ]
@@ -434,6 +437,13 @@ DEF WALL_CTRL Robot {
   name "wall_controller"
   description "A supervisor 'robot' to handle moving walls"
   controller "wall_controller"
+  supervisor TRUE
+}
+DEF LIGHT_CTRL Robot {
+  translation 0 0 0
+  name "lighting_controller"
+  description "A supervisor 'robot' to handle modifying the arena lighting throughout the match"
+  controller "lighting_controller"
   supervisor TRUE
 }
 
