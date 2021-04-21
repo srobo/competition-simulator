@@ -232,7 +232,7 @@ class LightingController:
             print(cue)  # noqa: T001
 
         # run pre-start snap changes
-        for cue in self.cue_stack:
+        for cue in self.cue_stack.copy():
             if cue.start_time == 0 and cue.fade_time is None:
                 self.start_lighting_effect(cue)
                 self.cue_stack.remove(cue)
@@ -244,7 +244,7 @@ class LightingController:
         self.start_offset = self._robot.getTime()
 
         while self.cue_stack:
-            for cue in self.cue_stack:
+            for cue in self.cue_stack.copy():
                 if (
                     cue.start_time >= 0 and
                     self.current_match_time() >= cue.start_time
