@@ -11,7 +11,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 # Webots specific library
-from controller import LED, Node, Display, Emitter, Receiver, Supervisor
+from controller import Node, Display, Emitter, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -92,7 +92,8 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
 }
 
-NUM_TOWER_LEDS = 8
+NUM_TOWER_LEDS = 16
+TOWER_CAP_MULTIPLIER = 4
 
 TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
@@ -578,13 +579,6 @@ class TerritoryController:
         # Add the score value
         score_display.drawText(score_str, x_offset, 8)
 
-    def get_tower_led(self, station_code: StationCode, led: int) -> LED:
-        return get_robot_device(
-            self._robot,
-            f"{station_code.value}Territory led{led}",
-            LED,
-        )
-
     def handle_claim_timer_tick(
         self,
         station_code: StationCode,
@@ -593,31 +587,55 @@ class TerritoryController:
         prev_progress: float,
     ) -> None:
         zone_colour = convert_to_led_colour(ZONE_COLOURS[claimant])
+
         if progress in {ActionTimer.TIMER_EXPIRE, ActionTimer.TIMER_COMPLETE}:
+            tower_display = get_robot_device(
+                self._robot,
+                f'{station_code.value}Territory display',
+                Display,
+            )
+            tower_display.setColor(0)
+
             for led in range(NUM_TOWER_LEDS):
-                tower_led = self.get_tower_led(station_code, led)
-                if tower_led.get() == zone_colour:
-                    tower_led.set(0)
+                tower_display.fillRectangle(0, 0, 1, NUM_TOWER_LEDS)
+                # TODO handle overlapping claim visuals
         else:
             # map the progress value to the LEDs
-            led_progress = min(int(progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
-            led_prev_progress = min(int(prev_progress * NUM_TOWER_LEDS), NUM_TOWER_LEDS - 1)
+            main_tower_substeps = (NUM_TOWER_LEDS // 2) * TOWER_CAP_MULTIPLIER
+            min_led_step = NUM_TOWER_LEDS // 2 + main_tower_substeps
+            led_progress = min(int(progress * min_led_step), min_led_step - 1)
+            led_prev_progress = min(int(prev_progress * min_led_step), min_led_step - 1)
+
+            # LEDs up the tower are a large style which are updated slower
+            if led_progress < main_tower_substeps and led_prev_progress < main_tower_substeps:
+                led_progress = int(led_progress / TOWER_CAP_MULTIPLIER)
+                led_prev_progress = int(led_prev_progress / TOWER_CAP_MULTIPLIER)
 
             if led_progress == led_prev_progress and prev_progress != 0:
                 # skip setting an LED that was already on
                 return
 
-            tower_led = self.get_tower_led(station_code, led_progress)
-            if led_progress == NUM_TOWER_LEDS - 1:
+            tower_display = get_robot_device(
+                self._robot,
+                f'{station_code.value}Territory display',
+                Display,
+            )
+
+            tower_display.setColor(zone_colour)
+
+            if led_progress >= main_tower_substeps:  # handle the cap LEDs
                 if not self._attached_territories.can_capture_station(
                     station_code,
                     claimant,
                     self._connected_territories,
                 ):  # station can't be captured by this team, the claim  will fail
-                    # skip setting top LED
+                    # skip setting the cap LEDs
                     return
 
-            tower_led.set(zone_colour)
+                cap_led_progress = led_progress - main_tower_substeps
+                tower_display.drawPixel(0, (NUM_TOWER_LEDS // 2 - 1) - cap_led_progress)
+            else:
+                tower_display.drawPixel(0, (NUM_TOWER_LEDS - 1) - led_progress)
 
     def receive_robot_captures(self) -> None:
         for station_code, receiver in self._receivers.items():
