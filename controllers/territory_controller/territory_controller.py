@@ -365,6 +365,17 @@ class ActionTimer:
                 )
                 self._prev_progress[station_code, acted_by] = progress
 
+    def other_claim_progress(
+        self,
+        station: StationCode,
+        current_time: float,
+    ) -> Dict[Claimant, float]:
+        return {
+            acted_by: (current_time - start_time) / self._duration
+            for (station_code, acted_by), start_time in self._action_starts.items()
+            if station_code == station
+        }
+
 
 class TerritoryController:
 
@@ -599,6 +610,11 @@ class TerritoryController:
             for led in range(NUM_TOWER_LEDS):
                 tower_display.fillRectangle(0, 0, 1, NUM_TOWER_LEDS)
                 # TODO handle overlapping claim visuals
+                # other_claims = self._claim_timer.other_claim_progress(
+                #     station_code,
+                #     self._robot.getTime(),
+                # )
+
         else:
             # map the progress value to the LEDs
             main_tower_substeps = (NUM_TOWER_LEDS // 2) * TOWER_CAP_MULTIPLIER
