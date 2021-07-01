@@ -499,14 +499,23 @@ class TestActionTimerTick(unittest.TestCase):
         self.action_duration = 2
         self.action_timer = ActionTimer(self.action_duration, self.progress_callback)
 
-    def assertTickCall(self, start_time: float, end_time: float) -> None:
+    def assertTickCall(
+        self,
+        start_time: float,
+        end_time: float,
+        prev_progress: float,
+    ) -> float:
         self.action_timer.tick(end_time)
+        # recalculate the duration to avoid floating-point precision errors
+        progress = (end_time - start_time) / self.action_duration
+
         self.progress_callback.assert_called_with(
             StationCode.BE,
             Claimant.ZONE_1,
-            # recalculate the duration to avoid floating-point precision errors
-            (end_time - start_time) / self.action_duration,
+            progress,
+            prev_progress,
         )
+        return progress
 
     def assertCallCount(self, call_count: int, context: str) -> None:
         self.assertEqual(
@@ -527,7 +536,7 @@ class TestActionTimerTick(unittest.TestCase):
         """
         start_time = random.uniform(0, 1000)
         self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
-        self.progress_callback.assert_called_with(StationCode.BE, Claimant.ZONE_1, 0)
+        self.progress_callback.assert_called_with(StationCode.BE, Claimant.ZONE_1, 0, 0)
 
         used_duration = random.uniform(1.8, 2.2)
         self.action_timer.has_begun_action_in_time_window(
@@ -539,6 +548,7 @@ class TestActionTimerTick(unittest.TestCase):
             StationCode.BE,
             Claimant.ZONE_1,
             ActionTimer.TIMER_COMPLETE,
+            0,
         )
 
         self.action_timer.tick(start_time + used_duration)
@@ -552,7 +562,7 @@ class TestActionTimerTick(unittest.TestCase):
         """
         start_time = random.uniform(0, 1000)
         self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
-        self.progress_callback.assert_called_with(StationCode.BE, Claimant.ZONE_1, 0)
+        self.progress_callback.assert_called_with(StationCode.BE, Claimant.ZONE_1, 0, 0)
 
         # make timer expire
         used_duration = random.uniform(2.3, 10)
@@ -561,6 +571,7 @@ class TestActionTimerTick(unittest.TestCase):
             StationCode.BE,
             Claimant.ZONE_1,
             ActionTimer.TIMER_EXPIRE,
+            0,
         )
 
         self.action_timer.tick(start_time + used_duration)
@@ -574,8 +585,8 @@ class TestActionTimerTick(unittest.TestCase):
         start_time = random.uniform(0, 1000)
         self.action_timer.begin_action(StationCode.BE, Claimant.ZONE_1, start_time)
 
-        self.assertTickCall(start_time, start_time + 0.9)
+        prev_progress = self.assertTickCall(start_time, start_time + 0.9, 0)
 
-        self.assertTickCall(start_time, start_time + 2.1)
+        self.assertTickCall(start_time, start_time + 2.1, prev_progress)
 
         self.assertCallCount(3, "")
