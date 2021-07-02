@@ -187,7 +187,8 @@ In order to run competition matches you'll need to:
     create any issues with the rendered videos, though you are encouraged to
     check that your setup is recording the videos correctly.
 
-# Collecting up logs for the Discord bot
+## Collecting up logs for the Discord bot
+
 The `zip-comp-logs` command allows logs to be collated into a zip with certain combinations of match animations.
 To create the zip file used by the discord bot to distribute the logs use the command:
 
