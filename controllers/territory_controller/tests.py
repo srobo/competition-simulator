@@ -1,9 +1,11 @@
 import re
+import sys
+import enum
 import random
 import unittest
 from typing import Dict, List, Union, Mapping
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from territory_controller import (
     Claimant,
@@ -18,29 +20,81 @@ from territory_controller import (
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
+from sr.robot.radio import StationCode as RadioStationCode  # isort:skip
+
+
+class MockStationCode(str, enum.Enum):
+    T0 = 'T0'
+    T1 = 'T1'
+    T2 = 'T2'
+    T3 = 'T3'
+    T4 = 'T4'
+    T5 = 'T5'
+    T6 = 'T6'
+    T7 = 'T7'
+    T8 = 'T8'
+
+
+@patch('territory_controller.StationCode', MockStationCode)
 class TestAttachedTerritories(unittest.TestCase):
-    'Test build_attached_capture_trees/get_attached_territories'
+    """
+    Test build_attached_capture_trees/get_attached_territories
+    Uses a fixed, reduced map:
+        z0 ── T0 ── T1 ── T2 ── T3 ── z1
+         │         ╱  ╲                │
+         └─ T4 ── T5 ─ T6 ── T7 ── T8 ─┘
+    """
 
-    _zone_0_territories = {
-        StationCode.BG,
-        StationCode.TS,
-        StationCode.OX,
-        StationCode.VB,
-        StationCode.PL,
+    _zone_0_territories = {MockStationCode.T0, MockStationCode.T1, MockStationCode.T6}
+    _zone_1_territories = {
+        MockStationCode.T3,
+        MockStationCode.T2,
+        MockStationCode.T5,
+        MockStationCode.T4,
     }
-    _zone_1_territories = {StationCode.PN, StationCode.EY, StationCode.PO, StationCode.YL}
-    _zone_1_disconnected = {StationCode.PN, StationCode.EY}
+    _zone_1_disconnected = {MockStationCode.T4, MockStationCode.T5}
+    _zone_0_capturable = {
+        MockStationCode.T2,
+        MockStationCode.T4,
+        MockStationCode.T5,
+        MockStationCode.T7,
+    }
+    _zone_1_capturable = {MockStationCode.T1, MockStationCode.T8}
+    _zone_0_uncapturable = {MockStationCode.T8, MockStationCode.T3}
+    _zone_1_uncapturable = {
+        MockStationCode.T0,
+        MockStationCode.T4,
+        MockStationCode.T5,
+        MockStationCode.T6,
+        MockStationCode.T7,
+    }
 
     def load_territory_owners(self, claim_log: ClaimLog) -> None:
-        # territories BG, TS, OX, VB, etc. owned by zone 0
         for territory in self._zone_0_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_0
+            claim_log._station_statuses[territory] = Claimant.ZONE_0  # type: ignore[index]
 
-        # territories PN, EY, PO, YL owned by zone 1
         for territory in self._zone_1_territories:
-            claim_log._station_statuses[territory] = Claimant.ZONE_1
+            claim_log._station_statuses[territory] = Claimant.ZONE_1  # type: ignore[index]
 
+    @patch('territory_controller.TERRITORY_LINKS', new={
+        (TerritoryRoot.z0, MockStationCode.T0),
+        (TerritoryRoot.z0, MockStationCode.T4),
+        (TerritoryRoot.z1, MockStationCode.T3),
+        (TerritoryRoot.z1, MockStationCode.T8),
+
+        (MockStationCode.T0, MockStationCode.T1),
+        (MockStationCode.T1, MockStationCode.T2),
+        (MockStationCode.T2, MockStationCode.T3),
+        (MockStationCode.T4, MockStationCode.T5),
+        (MockStationCode.T5, MockStationCode.T6),
+        (MockStationCode.T6, MockStationCode.T7),
+        (MockStationCode.T7, MockStationCode.T8),
+        (MockStationCode.T5, MockStationCode.T1),
+        (MockStationCode.T6, MockStationCode.T1),
+    })
+    @patch('territory_controller.StationCode', MockStationCode)
     def setUp(self) -> None:
         super().setUp()
         claim_log = ClaimLog(record_arena_actions=False)
@@ -72,57 +126,48 @@ class TestAttachedTerritories(unittest.TestCase):
         )
 
     def test_stations_can_capture(self) -> None:
-        for station in {StationCode.PN, StationCode.EY, StationCode.TS, StationCode.SZ}:
+        for station in self._zone_0_capturable:
             capturable = self.attached_territories.can_capture_station(
-                station,
+                station,  # type: ignore[arg-type]
                 Claimant.ZONE_0,
                 self.connected_territories,
             )
-            self.assertEqual(
+            self.assertTrue(
                 capturable,
-                True,
                 f'Zone 0 should be able to capture {station}',
             )
 
-        for station in {StationCode.BN, StationCode.SZ, StationCode.HV}:
+        for station in self._zone_1_capturable:
             capturable = self.attached_territories.can_capture_station(
-                station,
+                station,  # type: ignore[arg-type]
                 Claimant.ZONE_1,
                 self.connected_territories,
             )
-            self.assertEqual(
+            self.assertTrue(
                 capturable,
-                True,
                 f'Zone 1 should be able to capture {station}',
             )
 
     def test_stations_cant_capture(self) -> None:
-        for station in {StationCode.YL, StationCode.PO, StationCode.HA}:
+        for station in self._zone_0_uncapturable:
             capturable = self.attached_territories.can_capture_station(
-                station,
+                station,  # type: ignore[arg-type]
                 Claimant.ZONE_0,
                 self.connected_territories,
             )
-            self.assertEqual(
+            self.assertFalse(
                 capturable,
-                False,
                 f'Zone 0 should not be able to capture {station}',
             )
 
-        for station in {
-            StationCode.PN,
-            StationCode.EY,
-            StationCode.VB,
-            StationCode.SW,
-        }:
+        for station in self._zone_1_uncapturable:
             capturable = self.attached_territories.can_capture_station(
-                station,
+                station,  # type: ignore[arg-type]
                 Claimant.ZONE_1,
                 self.connected_territories,
             )
-            self.assertEqual(
+            self.assertFalse(
                 capturable,
-                False,
                 f'Zone 1 should not be able to capture {station}',
             )
 
@@ -164,7 +209,7 @@ class TestAdjacentTerritories(unittest.TestCase):
         )
 
     def test_omitted_start_zones(self) -> None:
-        'test PN, YL for incorrect links back to z0/z1'
+        'test for incorrect links back to z0/z1'
 
         for station, links in self.attached_territories.adjacent_zones.items():
             self.assertNotIn(
@@ -179,18 +224,33 @@ class TestAdjacentTerritories(unittest.TestCase):
                 f'Zone 1 starting zone incorrectly appears in {station.value} links',
             )
 
-    def test_VB_links(self) -> None:
-        'test BE for correct links'
+
+class TestMatchingStationCode(unittest.TestCase):
+
+    def test_radio_matches_territory_controller(self) -> None:
+        station_codes = {station.value for station in StationCode}
+        radio_station_codes = {station.value for station in RadioStationCode}
         self.assertEqual(
-            self.attached_territories.adjacent_zones[StationCode.VB],
-            {
-                StationCode.BG,
-                StationCode.EY,
-                StationCode.OX,
-                StationCode.BE,
-                StationCode.PL,
-            },
-            'Territory VB has incorrect territory links',
+            station_codes,
+            radio_station_codes,
+            "StationCode enums differ between territory_controller and sr.robot.radio",
+        )
+
+    def test_matches_arena_file(self) -> None:
+        "test StationCode matches SRTerritory nodes in Arena.wbt"
+
+        arena_territories = set()
+        with (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r') as f:
+            for line in f.readlines():
+                if 'SRTerritory' in line:
+                    arena_territories.add(re.sub(r'.*DEF (.*) SRTerritory .*\n', r'\1', line))
+
+        station_codes = {station.value for station in StationCode}
+
+        self.assertEqual(
+            station_codes,
+            arena_territories,
+            "StationCode values differs from territories in Arena.wbt",
         )
 
 
