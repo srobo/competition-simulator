@@ -19,12 +19,12 @@ PROTO SRRobot [
         children [
           TouchSensor {
             translation 0 0.09 -0.03
-            rotation 0 1 0 -3.1415926535897705
+            rotation 0 1 0 -3.14
             children [
               Shape {
                 appearance PBRAppearance {
                   baseColor 0.5 0 0
-                  roughness 0.6980390000000001
+                  roughness 0.7
                 }
                 geometry DEF BUMPER Box {
                   size 0.14 0.01 0.01
@@ -48,7 +48,7 @@ PROTO SRRobot [
               Shape {
                 appearance PBRAppearance {
                   baseColor 0.5 0 0
-                  roughness 0.6980390000000001
+                  roughness 0.7
                 }
                 geometry DEF BUMPER Box {
                   size 0.2 0.01 0.01
@@ -69,10 +69,10 @@ PROTO SRRobot [
       }
       DEF LEDS_left Transform {
         translation -0.13 0.22 0.11
-        rotation 0 1 0 1.5708003061004252
+        rotation 0 1 0 0
         children [
           LED {
-            translation 0.05 0 0
+            translation 0 0 0.05
             children [
               Shape {
                 appearance DEF APP_LED PBRAppearance {
@@ -109,7 +109,7 @@ PROTO SRRobot [
             ]
           }
           LED {
-            translation -0.05 0 0
+            translation 0 0 -0.05
             children [
               Shape {
                 appearance DEF APP_LED PBRAppearance {
@@ -128,10 +128,10 @@ PROTO SRRobot [
       }
       DEF LEDS_right Transform {
         translation 0.13 0.22 0.11
-        rotation 0 1 0 1.5708003061004252
+        rotation 0 1 0 0
         children [
           LED {
-            translation 0.05 0 0
+            translation 0 0 0.05
             children [
               Shape {
                 appearance DEF APP_LED PBRAppearance {
@@ -165,7 +165,7 @@ PROTO SRRobot [
             ]
           }
           LED {
-            translation -0.05 0 0
+            translation 0 0 -0.05
             children [
               Shape {
                 appearance USE APP_LED
@@ -274,7 +274,7 @@ PROTO SRRobot [
             ]
           }
           DEF front_right DistanceSensor {
-            translation 0.120925 0.17 -0.00995702
+            translation 0.12 0.17 -0.01
             type "sonar"
             numberOfRays 10
             aperture 0.3
@@ -297,7 +297,7 @@ PROTO SRRobot [
             ]
           }
           DEF front_left DistanceSensor {
-            translation -0.120382 0.17 -0.009993
+            translation -0.12 0.17 -0.01
             type "sonar"
             numberOfRays 10
             aperture 0.3
@@ -326,7 +326,7 @@ PROTO SRRobot [
         children [
           DEF RIGHT_WHEEL HingeJoint {
             jointParameters HingeJointParameters {
-              position 0.8927782142630201
+              position 0
               axis -1 0 0
             }
             device [
@@ -339,8 +339,8 @@ PROTO SRRobot [
               }
             ]
             endPoint Solid {
-              translation 0.19999998777297837 0.00026863610916181684 -0.00036030151878293246
-              rotation -0.9999999953968224 4.284946735166644e-05 8.585032564057752e-05 0.9344151591877564
+              translation 0.2 0 0
+              rotation -1 0 0 0
               children [
                 DEF RIGHT_BLACK_CYLINDER_SHAPE Shape {
                   appearance PBRAppearance {
@@ -535,8 +535,8 @@ PROTO SRRobot [
             }
           }
           Solid {
-            translation 0.19999998777297837 0.00026863610916181684 -0.00036030151878293246
-            rotation -0.9999999953968224 4.284946735166644e-05 8.585032564057752e-05 0.9344151591877564
+            translation 0.2 0 0
+            rotation -1 0 0 0
             boundingObject DEF BOUNDING_WHEEL Group {
               children [
                 Transform {
@@ -559,7 +559,7 @@ PROTO SRRobot [
           }
           DEF LEFT_WHEEL HingeJoint {
             jointParameters HingeJointParameters {
-              position 0.9012614925631643
+              position 0
               axis -1 0 0
             }
             device [
@@ -572,8 +572,8 @@ PROTO SRRobot [
               }
             ]
             endPoint Solid {
-              translation -0.19999998767113233 0.00026863721059561843 -0.00036030299207660306
-              rotation -0.999999995396832 -4.284942171371578e-05 -8.585023441169805e-05 0.9344151521635337
+              translation -0.2 0 0
+              rotation -1 0 0 0
               children [
                 DEF BLACK_CYLINDER_SHAPE Shape {
                   appearance PBRAppearance {
@@ -762,8 +762,8 @@ PROTO SRRobot [
             }
           }
           Solid {
-            translation -0.19999998767113233 0.00026863721059561843 -0.00036030299207660306
-            rotation -0.999999995396832 -4.284942171371578e-05 -8.585023441169805e-05 0.9344151521635337
+            translation -0.2 0 0
+            rotation -1 0 0 0
             boundingObject DEF BOUNDING_WHEEL Group {
               children [
                 Transform {
