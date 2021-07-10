@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - sb2021
   pull_request: {}
   release:
     types: [ created ]
