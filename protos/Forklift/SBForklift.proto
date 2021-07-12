@@ -1,0 +1,565 @@
+#VRML_OBJ R2020a utf8
+PROTO SBForklift [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFString controller ""
+  field SFString model ""
+  field SFString customData ""
+  field SFColor flagColour 1 1 1
+  field MFString controllerArgs []
+]
+{
+  Robot {
+    selfCollision FALSE
+    translation IS translation
+    rotation IS rotation
+    controllerArgs IS controllerArgs
+    children [
+      DEF DRIVE_WHEELS Transform {
+        translation 0 0.05 -0.07
+        children [
+          DEF LEFT_WHEEL_CLUSTER Transform {
+            translation -0.101 0 0
+            children [
+              DEF LEFT_WHEEL_MOUNT Solid {
+                translation 0.04 0 0
+                rotation 0 0 1 1.5708
+                name "left wheel mount"
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0 0.0051864 0
+                      roughness 0.3
+                      metalness 0
+                    }
+                    geometry Cylinder {
+                      height 0.07
+                      radius 0.015
+                    }
+                  }
+                ]
+                boundingObject Cylinder {
+                  height 0.07
+                  radius 0.015
+                }
+                physics Physics {
+                }
+              }
+              DEF LEFT_WHEEL HingeJoint {
+                jointParameters HingeJointParameters {
+                  position 0
+                  axis -1 0 0
+                }
+                device [
+                  RotationalMotor {
+                    name "left wheel"
+                    maxVelocity 12.3
+                  }
+                  PositionSensor {
+                    name "left wheel sensor"
+                  }
+                ]
+                endPoint Solid {
+                  translation 0 0 0
+                  rotation -1 0 0 0
+                  children [
+                    Transform {
+                      rotation 0 0 1 1.5708
+                      children [
+                        Shape {
+                          appearance PBRAppearance {
+                            baseColor 0 0.0051864 0
+                            roughness 0.3
+                            metalness 0
+                          }
+                          geometry Cylinder {
+                            height 0.021
+                            radius 0.05
+                            subdivision 32
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                  name "left wheel"
+                  boundingObject Transform {
+                    rotation 0 0 1 1.5708
+                    children [
+                      Cylinder {
+                        height 0.021
+                        radius 0.05
+                        subdivision 32
+                      }
+                    ]
+                  }
+                  physics Physics {
+                    # density 20000
+                  }
+                }
+              }
+            ]
+          }
+          DEF RIGHT_WHEEL_CLUSTER Transform {
+            translation 0.101 0 0
+            children [
+              DEF RIGHT_WHEEL_MOUNT Solid {
+                translation -0.04 0 0
+                rotation 0 0 1 1.5708
+                name "right wheel mount"
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0 0.0051864 0
+                      roughness 0.3
+                      metalness 0
+                    }
+                    geometry Cylinder {
+                      height 0.07
+                      radius 0.015
+                    }
+                  }
+                ]
+                boundingObject Cylinder {
+                  height 0.07
+                  radius 0.015
+                }
+                physics Physics {
+                }
+              }
+              DEF RIGHT_WHEEL HingeJoint {
+                jointParameters HingeJointParameters {
+                  position 0
+                  axis -1 0 0
+                }
+                device [
+                  RotationalMotor {
+                    name "right wheel"
+                    maxVelocity 12.3
+                  }
+                  PositionSensor {
+                    name "right wheel sensor"
+                  }
+                ]
+                endPoint Solid {
+                  translation 0 0 0
+                  rotation -1 0 0 0
+                  children [
+                    Transform {
+                      rotation 0 0 1 1.5708
+                      children [
+                        Shape {
+                          appearance PBRAppearance {
+                            baseColor 0 0.0051864 0
+                            roughness 0.3
+                            metalness 0
+                          }
+                          geometry Cylinder {
+                            height 0.021
+                            radius 0.05
+                            subdivision 32
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                  name "right wheel"
+                  boundingObject Transform {
+                    rotation 0 0 1 1.5708
+                    children [
+                      Cylinder {
+                        height 0.021
+                        radius 0.05
+                        subdivision 32
+                      }
+                    ]
+                  }
+                  physics Physics {
+                    # density 20000
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+      DEF BODY Transform {
+        translation 0 0 0.015
+        children [
+          DEF BASE_BOARD Solid {
+            translation 0 0.030 0
+            name "base"
+            children [
+              DEF body_core Transform {
+                translation 0 0 -0.085
+                children [
+                  Shape {
+                    appearance DEF BODY_COLOUR PBRAppearance {
+                      baseColor IS flagColour
+                      roughness 0.3
+                      metalness 0
+                    }
+                    geometry Box {
+                      size 0.17 0.012 0.11
+                    }
+                  }
+                ]
+              }
+              DEF body_front_spar Transform {
+                translation 0 0 -0.015
+                children [
+                  Shape {
+                    appearance USE BODY_COLOUR
+                    geometry Box {
+                      size 0.33 0.012 0.03
+                    }
+                  }
+                ]
+              }
+              DEF body_rear_spar Transform {
+                translation 0 0 -0.15
+                children [
+                  Shape {
+                    appearance USE BODY_COLOUR
+                    geometry Box {
+                      size 0.23 0.012 0.02
+                    }
+                  }
+                ]
+              }
+              DEF body_left_arm Transform {
+                translation 0.1525 0.006 0.06
+                children [
+                  Shape {
+                    appearance USE BODY_COLOUR
+                    geometry Box {
+                      size 0.025 0.024 0.12
+                    }
+                  }
+                ]
+              }
+              DEF body_right_arm Transform {
+                translation -0.1525 0.006 0.06
+                children [
+                  Shape {
+                    appearance USE BODY_COLOUR
+                    geometry Box {
+                      size 0.025 0.024 0.12
+                    }
+                  }
+                ]
+              }
+            ]
+            boundingObject USE body_core
+            physics Physics {
+            }
+          }
+        ]
+      }
+      DEF CASTERS Transform {
+        translation 0 0.0025 0.1
+        children [
+          DEF LEFT_CASTER Transform {
+            translation -0.15 0 0
+            children [
+              DEF CASTER_JOINT BallJoint {
+                jointParameters BallJointParameters {
+                }
+                endPoint Solid {
+                  name "left caster"
+                  translation 0 0 0
+                  children [
+                    DEF CASTER_BALL Shape {
+                      appearance PBRAppearance {
+                        baseColor 0 0.0051864 0
+                        roughness 0.0
+                        metalness 0
+                      }
+                      geometry Sphere {
+                        radius 0.005
+                        # subdivision 2
+                      }
+                    }
+                  ]
+                  boundingObject Sphere {
+                    radius 0.008
+                    # subdivision 2
+                  }
+                  physics Physics {
+                    # density 30000
+                  }
+                }
+              }
+              DEF CASTER_TOP Transform {
+                translation 0 0.01075 0
+                children [
+                  DEF CASTER_TOP_CYLINDER Shape {
+                    appearance PBRAppearance {
+                      baseColor 0 0.0051864 0
+                      roughness 0.5
+                      metalness 0
+                    }
+                    geometry Cylinder {
+                      height 0.0215
+                      radius 0.01
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          DEF RIGHT_CASTER Transform {
+            translation 0.15 0 0
+            children [
+              DEF CASTER_JOINT BallJoint {
+                jointParameters BallJointParameters {
+                }
+                endPoint Solid {
+                  name "right caster"
+                  translation 0 0 0
+                  children [
+                    DEF CASTER_BALL Shape {
+                      appearance PBRAppearance {
+                        baseColor 0 0.0051864 0
+                        roughness 0.0
+                        metalness 0
+                      }
+                      geometry Sphere {
+                        radius 0.005
+                        # subdivision 2
+                      }
+                    }
+                  ]
+                  boundingObject Sphere {
+                    radius 0.008
+                    # subdivision 2
+                  }
+                  physics Physics {
+                    # density 30000
+                  }
+                }
+              }
+              DEF CASTER_TOP Transform {
+                translation 0 0.01075 0
+                children [
+                  DEF CASTER_TOP_CYLINDER Shape {
+                    appearance PBRAppearance {
+                      baseColor 0 0.0051864 0
+                      roughness 0.5
+                      metalness 0
+                    }
+                    geometry Cylinder {
+                      height 0.0215
+                      radius 0.01
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      DEF GRABBER Transform {
+        translation 0 0.036 0
+        children [
+          Solid {
+            translation 0 0 0.03
+            rotation 0 0 1 1.5708
+            children [
+              Shape {
+                appearance PBRAppearance {}
+                geometry DEF rod Cylinder {
+                  radius 0.004
+                  height 0.3
+                }
+              }
+            ]
+            name "Support rod 1"
+            boundingObject USE rod
+            physics Physics {}
+          }
+          Solid {
+            translation 0 0 0.08
+            rotation 0 0 1 1.5708
+            children [
+              Shape {
+                appearance PBRAppearance {}
+                geometry DEF rod Cylinder {
+                  radius 0.004
+                  height 0.3
+                }
+              }
+            ]
+            name "Support rod 2"
+            boundingObject USE rod
+            physics Physics {}
+          }
+          DEF GRABBER_LEFT Transform {
+            translation 0.13 0 0.055
+            children [
+              SliderJoint {
+                jointParameters JointParameters {
+                  axis -1 0 0
+                  maxStop 0.134
+                  minStop 0.01
+                  position 0.01
+                }
+                device [
+                  LinearMotor {
+                    name "Gripper Motor 1"
+                    minPosition 0.01
+                    maxPosition 0.134
+                  }
+                ]
+                endPoint Solid {
+                  children [
+                    DEF GRIPPER_ARM_LEFT Transform {
+                      translation 0 0 0.067
+                      children [
+                        Shape {
+                          appearance PBRAppearance {}
+                          geometry Box {
+                            size 0.012 0.05 0.2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                  name "Gripper slider 1"
+                  boundingObject USE GRIPPER_ARM_LEFT
+                  physics Physics {
+                    density -1
+                    mass 0.1
+                  }
+                }
+              }
+            ]
+          }
+          DEF GRABBER_RIGHT Transform {
+            translation -0.13 0 0.055
+            children [
+              SliderJoint {
+                jointParameters JointParameters {
+                  axis 1 0 0
+                  maxStop 0.134
+                  minStop 0.01
+                  position 0.01
+                }
+                device [
+                  LinearMotor {
+                    name "Gripper Motor 2"
+                    minPosition 0.01
+                    maxPosition 0.134
+                  }
+                ]
+                endPoint Solid {
+                  children [
+                    DEF GRIPPER_ARM_RIGHT Transform {
+                      translation 0 0 0.067
+                      children [
+                        Shape {
+                          appearance PBRAppearance {}
+                          geometry Box {
+                            size 0.012 0.05 0.2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                  name "Gripper slider 2"
+                  boundingObject USE GRIPPER_ARM_RIGHT
+                  physics Physics {
+                    density -1
+                    mass 0.1
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+      # DEF flag_pole Solid {
+      #   translation 0 0.25 0
+      #   children [
+      #     LED {
+      #       translation 0 0.1 -0.085
+      #       children [
+      #         Shape {
+      #           appearance PBRAppearance {
+      #             metalness 0
+      #             occlusionMapStrength 130
+      #             emissiveIntensity 10
+      #             baseColor IS flagColour
+      #           }
+      #           geometry Box {
+      #             size 0.005 0.1 0.15
+      #           }
+      #         }
+      #       ]
+      #       name "flag"
+      #       color [
+      #         0.1 0.1 0.7
+      #         1 0.5 0.9
+      #         0.8 0.8 0.1
+      #         0.1 0.7 0.1
+      #       ]
+      #     }
+      #     Shape {
+      #       appearance PBRAppearance {
+      #         baseColor 0.0705882 0.0705882 0.0705882
+      #         roughness 0.4
+      #         metalness 0
+      #       }
+      #       geometry DEF flag_pole Cylinder {
+      #         height 0.3
+      #         radius 0.01
+      #       }
+      #     }
+      #   ]
+      #   boundingObject USE flag_pole
+      #   name "flag pole"
+      #   physics Physics {
+      #   }
+      # }
+      DEF SENSORS Transform {
+        translation 0 0 0
+        children [
+          Receiver {
+            type "radio"
+            name "robot receiver"
+            bufferSize 30
+            channel 1
+            directionNoise 0.05
+            signalStrengthNoise 0.03
+          }
+          Emitter {
+            type "radio"
+            name "robot emitter"
+            range 0.5
+            maxRange 0.5
+            channel 2
+          }
+          Compass {
+            name "robot compass"
+            rotation 0 1 0 0
+          }
+        ]
+      }
+    ]
+    name IS model
+    model IS model
+    boundingObject Transform {
+      translation 0 0.030 -0.065
+      children [
+        Shape {
+          geometry Box {
+            size 0.17 0.012 0.16
+          }
+        }
+      ]
+    }
+    physics Physics {
+    }
+    controller IS controller
+    customData IS customData
+  }
+}
