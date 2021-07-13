@@ -32,16 +32,13 @@ PROTO SBForklift [
                       roughness 0.3
                       metalness 0
                     }
-                    geometry Cylinder {
+                    geometry DEF MOTOR_HOUSING Cylinder {
                       height 0.07
                       radius 0.015
                     }
                   }
                 ]
-                boundingObject Cylinder {
-                  height 0.07
-                  radius 0.015
-                }
+                boundingObject USE MOTOR_HOUSING
                 physics Physics {
                 }
               }
@@ -113,16 +110,13 @@ PROTO SBForklift [
                       roughness 0.3
                       metalness 0
                     }
-                    geometry Cylinder {
+                    geometry DEF MOTOR_HOUSING Cylinder {
                       height 0.07
                       radius 0.015
                     }
                   }
                 ]
-                boundingObject Cylinder {
-                  height 0.07
-                  radius 0.015
-                }
+                boundingObject USE MOTOR_HOUSING
                 physics Physics {
                 }
               }
