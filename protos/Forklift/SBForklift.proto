@@ -283,7 +283,8 @@ PROTO SBForklift [
             rotation 0 0 1 1.5708
             children [
               DEF SUPPORT_ROD Shape {
-                appearance PBRAppearance {}
+                appearance PBRAppearance {
+                }
                 geometry Cylinder {
                   radius 0.004
                   height 0.3
@@ -292,7 +293,8 @@ PROTO SBForklift [
             ]
             name "Support rod 1"
             boundingObject USE SUPPORT_ROD
-            physics Physics {}
+            physics Physics {
+            }
           }
           Solid {
             translation 0 0 0.08
@@ -302,7 +304,8 @@ PROTO SBForklift [
             ]
             name "Support rod 2"
             boundingObject USE SUPPORT_ROD
-            physics Physics {}
+            physics Physics {
+            }
           }
           DEF GRABBER_LEFT Transform {
             translation 0.13 0 0.055
@@ -327,7 +330,8 @@ PROTO SBForklift [
                       translation 0 0 0.067
                       children [
                         Shape {
-                          appearance PBRAppearance {}
+                          appearance PBRAppearance {
+                          }
                           geometry Box {
                             size 0.012 0.05 0.2
                           }
