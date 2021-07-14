@@ -26,13 +26,13 @@ PROTO SBForklift [
                 rotation 0 0 1 1.5708
                 name "left wheel mount"
                 children [
-                  Shape {
+                  DEF MOTOR_HOUSING Shape {
                     appearance PBRAppearance {
                       baseColor 0 0.0051864 0
                       roughness 0.3
                       metalness 0
                     }
-                    geometry DEF MOTOR_HOUSING Cylinder {
+                    geometry Cylinder {
                       height 0.07
                       radius 0.015
                     }
@@ -58,37 +58,23 @@ PROTO SBForklift [
                 ]
                 endPoint Solid {
                   translation 0 0 0
-                  rotation -1 0 0 0
+                  rotation 0 0 1 1.5708
                   children [
-                    Transform {
-                      rotation 0 0 1 1.5708
-                      children [
-                        Shape {
-                          appearance PBRAppearance {
-                            baseColor 0 0.0051864 0
-                            roughness 0.3
-                            metalness 0
-                          }
-                          geometry Cylinder {
-                            height 0.021
-                            radius 0.05
-                            subdivision 32
-                          }
-                        }
-                      ]
-                    }
-                  ]
-                  name "left wheel"
-                  boundingObject Transform {
-                    rotation 0 0 1 1.5708
-                    children [
-                      Cylinder {
+                    DEF WHEEL_GEO Shape {
+                      appearance PBRAppearance {
+                        baseColor 0 0.0051864 0
+                        roughness 0.3
+                        metalness 0
+                      }
+                      geometry Cylinder {
                         height 0.021
                         radius 0.05
                         subdivision 32
                       }
-                    ]
-                  }
+                    }
+                  ]
+                  name "left wheel"
+                  boundingObject USE WHEEL_GEO
                   physics Physics {
                     # density 20000
                   }
@@ -104,17 +90,7 @@ PROTO SBForklift [
                 rotation 0 0 1 1.5708
                 name "right wheel mount"
                 children [
-                  Shape {
-                    appearance PBRAppearance {
-                      baseColor 0 0.0051864 0
-                      roughness 0.3
-                      metalness 0
-                    }
-                    geometry DEF MOTOR_HOUSING Cylinder {
-                      height 0.07
-                      radius 0.015
-                    }
-                  }
+                  USE MOTOR_HOUSING
                 ]
                 boundingObject USE MOTOR_HOUSING
                 physics Physics {
@@ -136,37 +112,12 @@ PROTO SBForklift [
                 ]
                 endPoint Solid {
                   translation 0 0 0
-                  rotation -1 0 0 0
+                  rotation 0 0 1 1.5708
                   children [
-                    Transform {
-                      rotation 0 0 1 1.5708
-                      children [
-                        Shape {
-                          appearance PBRAppearance {
-                            baseColor 0 0.0051864 0
-                            roughness 0.3
-                            metalness 0
-                          }
-                          geometry Cylinder {
-                            height 0.021
-                            radius 0.05
-                            subdivision 32
-                          }
-                        }
-                      ]
-                    }
+                    USE WHEEL_GEO
                   ]
                   name "right wheel"
-                  boundingObject Transform {
-                    rotation 0 0 1 1.5708
-                    children [
-                      Cylinder {
-                        height 0.021
-                        radius 0.05
-                        subdivision 32
-                      }
-                    ]
-                  }
+                  boundingObject  USE WHEEL_GEO
                   physics Physics {
                     # density 20000
                   }
@@ -274,7 +225,7 @@ PROTO SBForklift [
                       }
                     }
                   ]
-                  boundingObject Sphere {
+                  boundingObject DEF CASTER_BALL_BOUND Sphere {
                     radius 0.008
                     # subdivision 2
                   }
@@ -311,43 +262,15 @@ PROTO SBForklift [
                   name "right caster"
                   translation 0 0 0
                   children [
-                    DEF CASTER_BALL Shape {
-                      appearance PBRAppearance {
-                        baseColor 0 0.0051864 0
-                        roughness 0.0
-                        metalness 0
-                      }
-                      geometry Sphere {
-                        radius 0.005
-                        # subdivision 2
-                      }
-                    }
+                    USE CASTER_BALL
                   ]
-                  boundingObject Sphere {
-                    radius 0.008
-                    # subdivision 2
-                  }
+                  boundingObject USE CASTER_BALL_BOUND
                   physics Physics {
                     # density 30000
                   }
                 }
               }
-              DEF CASTER_TOP Transform {
-                translation 0 0.01075 0
-                children [
-                  DEF CASTER_TOP_CYLINDER Shape {
-                    appearance PBRAppearance {
-                      baseColor 0 0.0051864 0
-                      roughness 0.5
-                      metalness 0
-                    }
-                    geometry Cylinder {
-                      height 0.0215
-                      radius 0.01
-                    }
-                  }
-                ]
-              }
+              USE CASTER_TOP
             ]
           }
         ]
@@ -359,32 +282,26 @@ PROTO SBForklift [
             translation 0 0 0.03
             rotation 0 0 1 1.5708
             children [
-              Shape {
+              DEF SUPPORT_ROD Shape {
                 appearance PBRAppearance {}
-                geometry DEF rod Cylinder {
+                geometry Cylinder {
                   radius 0.004
                   height 0.3
                 }
               }
             ]
             name "Support rod 1"
-            boundingObject USE rod
+            boundingObject USE SUPPORT_ROD
             physics Physics {}
           }
           Solid {
             translation 0 0 0.08
             rotation 0 0 1 1.5708
             children [
-              Shape {
-                appearance PBRAppearance {}
-                geometry DEF rod Cylinder {
-                  radius 0.004
-                  height 0.3
-                }
-              }
+              USE SUPPORT_ROD
             ]
             name "Support rod 2"
-            boundingObject USE rod
+            boundingObject USE SUPPORT_ROD
             physics Physics {}
           }
           DEF GRABBER_LEFT Transform {
@@ -406,7 +323,7 @@ PROTO SBForklift [
                 ]
                 endPoint Solid {
                   children [
-                    DEF GRIPPER_ARM_LEFT Transform {
+                    DEF GRIPPER_ARM Transform {
                       translation 0 0 0.067
                       children [
                         Shape {
@@ -419,7 +336,7 @@ PROTO SBForklift [
                     }
                   ]
                   name "Gripper slider 1"
-                  boundingObject USE GRIPPER_ARM_LEFT
+                  boundingObject USE GRIPPER_ARM
                   physics Physics {
                     density -1
                     mass 0.1
@@ -447,20 +364,10 @@ PROTO SBForklift [
                 ]
                 endPoint Solid {
                   children [
-                    DEF GRIPPER_ARM_RIGHT Transform {
-                      translation 0 0 0.067
-                      children [
-                        Shape {
-                          appearance PBRAppearance {}
-                          geometry Box {
-                            size 0.012 0.05 0.2
-                          }
-                        }
-                      ]
-                    }
+                    USE GRIPPER_ARM
                   ]
                   name "Gripper slider 2"
-                  boundingObject USE GRIPPER_ARM_RIGHT
+                  boundingObject USE GRIPPER_ARM
                   physics Physics {
                     density -1
                     mass 0.1
