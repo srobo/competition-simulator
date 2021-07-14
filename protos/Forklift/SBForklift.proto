@@ -313,15 +313,15 @@ PROTO SBForklift [
               SliderJoint {
                 jointParameters JointParameters {
                   axis -1 0 0
-                  maxStop 0.135
-                  minStop 0
-                  position 0.01
+                  maxStop 0.124
+                  minStop -0.01
+                  position 0
                 }
                 device [
                   LinearMotor {
-                    name "Gripper Motor 1"
-                    minPosition 0.01
-                    maxPosition 0.134
+                    name "left gripper"
+                    minPosition -0.01
+                    maxPosition 0.124
                   }
                 ]
                 endPoint Solid {
@@ -386,15 +386,15 @@ PROTO SBForklift [
               SliderJoint {
                 jointParameters JointParameters {
                   axis 1 0 0
-                  maxStop 0.135
-                  minStop 0
-                  position 0.01
+                  maxStop 0.124
+                  minStop -0.01
+                  position 0
                 }
                 device [
                   LinearMotor {
-                    name "Gripper Motor 2"
-                    minPosition 0.01
-                    maxPosition 0.134
+                    name "right gripper"
+                    minPosition -0.01
+                    maxPosition 0.124
                   }
                 ]
                 endPoint Solid {
