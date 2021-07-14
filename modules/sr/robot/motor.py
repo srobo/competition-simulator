@@ -16,8 +16,8 @@ def init_motor_array(webot: Robot) -> 'List[Motor]':
             Wheel(webot, 'right wheel'),
         ),
         Motor(  # TODO: this is a bodge to enable grabber testing
-            LinearMotor(webot, 'left gripper'),
-            LinearMotor(webot, 'right gripper'),
+            Gripper(webot, ('left gripper', 'right gripper')),
+            None,
         ),
     ]
 
