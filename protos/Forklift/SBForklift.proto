@@ -28,7 +28,7 @@ PROTO SBForklift [
                 children [
                   DEF MOTOR_HOUSING Shape {
                     appearance PBRAppearance {
-                      baseColor 0 0.0051864 0
+                      baseColor 0.36 0.36 0.36
                       roughness 0.3
                       metalness 0
                     }
@@ -284,6 +284,8 @@ PROTO SBForklift [
             children [
               DEF SUPPORT_ROD Shape {
                 appearance PBRAppearance {
+                  baseColor 0.92 0.92 0.92
+                  roughness 0.3
                 }
                 geometry Cylinder {
                   radius 0.004
@@ -331,6 +333,9 @@ PROTO SBForklift [
                       children [
                         Shape {
                           appearance PBRAppearance {
+                            baseColor 0.25 0.35 0.235
+                            roughness 1
+                            metalness 0
                           }
                           geometry Box {
                             size 0.012 0.05 0.2
