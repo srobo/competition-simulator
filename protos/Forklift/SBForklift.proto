@@ -40,6 +40,7 @@ PROTO SBForklift [
                 ]
                 boundingObject USE MOTOR_HOUSING
                 physics Physics {
+                  density 8000  # steel
                 }
               }
               DEF LEFT_WHEEL HingeJoint {
@@ -94,6 +95,7 @@ PROTO SBForklift [
                 ]
                 boundingObject USE MOTOR_HOUSING
                 physics Physics {
+                  density 8000  # steel
                 }
               }
               DEF RIGHT_WHEEL HingeJoint {
@@ -196,6 +198,7 @@ PROTO SBForklift [
         ]
         boundingObject USE body_geo
         physics Physics {
+          # wood = ~700, leave at default
         }
       }
       DEF CASTERS Transform {
@@ -228,7 +231,7 @@ PROTO SBForklift [
                     # subdivision 2
                   }
                   physics Physics {
-                    # density 30000
+                    density 8000  # steel
                   }
                 }
               }
@@ -264,7 +267,7 @@ PROTO SBForklift [
                   ]
                   boundingObject USE CASTER_BALL_BOUND
                   physics Physics {
-                    # density 30000
+                    density 8000  # steel
                   }
                 }
               }
@@ -294,6 +297,7 @@ PROTO SBForklift [
             name "Support rod 1"
             boundingObject USE SUPPORT_ROD
             physics Physics {
+              density 8000  # steel
             }
           }
           Solid {
@@ -305,6 +309,7 @@ PROTO SBForklift [
             name "Support rod 2"
             boundingObject USE SUPPORT_ROD
             physics Physics {
+              density 8000  # steel
             }
           }
           DEF GRABBER_LEFT Transform {
@@ -373,8 +378,7 @@ PROTO SBForklift [
                   name "Gripper slider 1"
                   boundingObject USE GRIPPER_ARM
                   physics Physics {
-                    density -1
-                    mass 0.1
+                    # wood = ~700, leave at default
                   }
                 }
               }
@@ -410,8 +414,7 @@ PROTO SBForklift [
                   name "Gripper slider 2"
                   boundingObject USE GRIPPER_ARM
                   physics Physics {
-                    density -1
-                    mass 0.1
+                    # wood = ~700, leave at default
                   }
                 }
               }
@@ -491,6 +494,7 @@ PROTO SBForklift [
     model IS model
     boundingObject USE body_geo
     physics Physics {
+      # wood = ~700, leave at default
     }
     controller IS controller
     customData IS customData
