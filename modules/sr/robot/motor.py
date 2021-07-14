@@ -40,9 +40,10 @@ def translate(sr_speed_val: int, sr_motor: Union[Gripper, Wheel, LinearMotor]) -
 class Motor:
     """Represents a motor board."""
 
-    def __init__(self, m0: Union[Wheel, LinearMotor], m1: Union[Wheel, Gripper]) -> None:
+    def __init__(self, m0: Union[Wheel, LinearMotor, Gripper], m1: Union[Wheel, LinearMotor, Gripper, None]) -> None:
         self.m0 = MotorChannel(0, m0)
-        self.m1 = MotorChannel(1, m1)
+        if m1 is not None:
+            self.m1 = MotorChannel(1, m1)
 
 
 class MotorChannel:

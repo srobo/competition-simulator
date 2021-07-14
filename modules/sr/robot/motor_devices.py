@@ -53,8 +53,7 @@ class Gripper(MotorBase):
     Our default robot's gripper has its fingers attached to linear motors.
     This class allows you to control these as a single entity to open/close.
 
-    You should initialise with the motor_name as the two Webots motor names separated by
-    a pipe character (|)
+    You should initialise with the motor_name as a tuple of the two Webots motor names
     """
 
     def __init__(self, webot: Robot, motor_names: Tuple[str, str]) -> None:
