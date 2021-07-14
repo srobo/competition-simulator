@@ -134,67 +134,71 @@ PROTO SBForklift [
             translation 0 0.030 0
             name "base"
             children [
-              DEF body_core Transform {
-                translation 0 0 -0.085
+              DEF body_geo Group {
                 children [
-                  Shape {
-                    appearance DEF BODY_COLOUR PBRAppearance {
-                      baseColor IS flagColour
-                      roughness 0.3
-                      metalness 0
-                    }
-                    geometry Box {
-                      size 0.17 0.012 0.11
-                    }
+                  DEF body_core Transform {
+                    translation 0 0 -0.085
+                    children [
+                      Shape {
+                        appearance DEF BODY_COLOUR PBRAppearance {
+                          baseColor IS flagColour
+                          roughness 0.3
+                          metalness 0
+                        }
+                        geometry Box {
+                          size 0.17 0.012 0.11
+                        }
+                      }
+                    ]
                   }
-                ]
-              }
-              DEF body_front_spar Transform {
-                translation 0 0 -0.015
-                children [
-                  Shape {
-                    appearance USE BODY_COLOUR
-                    geometry Box {
-                      size 0.33 0.012 0.03
-                    }
+                  DEF body_front_spar Transform {
+                    translation 0 0 -0.015
+                    children [
+                      Shape {
+                        appearance USE BODY_COLOUR
+                        geometry Box {
+                          size 0.33 0.012 0.03
+                        }
+                      }
+                    ]
                   }
-                ]
-              }
-              DEF body_rear_spar Transform {
-                translation 0 0 -0.15
-                children [
-                  Shape {
-                    appearance USE BODY_COLOUR
-                    geometry Box {
-                      size 0.23 0.012 0.02
-                    }
+                  DEF body_rear_spar Transform {
+                    translation 0 0 -0.15
+                    children [
+                      Shape {
+                        appearance USE BODY_COLOUR
+                        geometry Box {
+                          size 0.23 0.012 0.02
+                        }
+                      }
+                    ]
                   }
-                ]
-              }
-              DEF body_left_arm Transform {
-                translation 0.1525 0.006 0.06
-                children [
-                  Shape {
-                    appearance USE BODY_COLOUR
-                    geometry Box {
-                      size 0.025 0.024 0.12
-                    }
+                  DEF body_left_arm Transform {
+                    translation 0.1525 0.006 0.06
+                    children [
+                      Shape {
+                        appearance USE BODY_COLOUR
+                        geometry Box {
+                          size 0.025 0.024 0.12
+                        }
+                      }
+                    ]
                   }
-                ]
-              }
-              DEF body_right_arm Transform {
-                translation -0.1525 0.006 0.06
-                children [
-                  Shape {
-                    appearance USE BODY_COLOUR
-                    geometry Box {
-                      size 0.025 0.024 0.12
-                    }
+                  DEF body_right_arm Transform {
+                    translation -0.1525 0.006 0.06
+                    children [
+                      Shape {
+                        appearance USE BODY_COLOUR
+                        geometry Box {
+                          size 0.025 0.024 0.12
+                        }
+                      }
+                    ]
                   }
                 ]
               }
             ]
-            boundingObject USE body_core
+            boundingObject USE body_geo
             physics Physics {
             }
           }
@@ -492,13 +496,9 @@ PROTO SBForklift [
     name IS model
     model IS model
     boundingObject Transform {
-      translation 0 0.030 -0.065
+      translation 0 0.030 0.015
       children [
-        Shape {
-          geometry Box {
-            size 0.17 0.012 0.16
-          }
-        }
+        USE body_geo
       ]
     }
     physics Physics {
