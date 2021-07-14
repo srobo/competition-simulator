@@ -329,7 +329,7 @@ PROTO SBForklift [
                 endPoint Solid {
                   children [
                     DEF GRIPPER_ARM Transform {
-                      translation 0 0 0.067
+                      translation 0 0 0.065
                       children [
                         Shape {
                           appearance PBRAppearance {
@@ -340,6 +340,34 @@ PROTO SBForklift [
                           geometry Box {
                             size 0.012 0.05 0.2
                           }
+                        }
+                      ]
+                    }
+                    DEF SLIDE_BEARINGS Group {
+                      children [
+                        Transform {
+                          translation 0.001 0 -0.025
+                          rotation 0 0 1 1.5708
+                          children [
+                            DEF SLIDE_BEARING Shape {
+                              appearance PBRAppearance {
+                                baseColor 0.6471 0.4863 0
+                                emissiveColor 0.6471 0.4863 0
+                                emissiveIntensity 0.4
+                              }
+                              geometry Cylinder {
+                                height 0.016
+                                radius 0.008
+                              }
+                            }
+                          ]
+                        }
+                        Transform {
+                          translation 0.001 0 0.025
+                          rotation 0 0 1 1.5708
+                          children [
+                            USE SLIDE_BEARING
+                          ]
                         }
                       ]
                     }
@@ -374,6 +402,12 @@ PROTO SBForklift [
                 endPoint Solid {
                   children [
                     USE GRIPPER_ARM
+                    Transform {
+                      rotation 0 0 1 3.14
+                      children [
+                        USE SLIDE_BEARINGS
+                      ]
+                    }
                   ]
                   name "Gripper slider 2"
                   boundingObject USE GRIPPER_ARM
