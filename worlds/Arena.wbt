@@ -26,9 +26,9 @@ DEF AMBIENT Background {
 }
 
 # Updating colours? Update `territory_controller.py`
-DEF ROBOT-0 SRRobot {
+DEF ROBOT-0 SBForklift {
   translation 0 0.005 -7
-  rotation 0 1 0 3.14
+  rotation 0 1 0 0
   controller "sr_controller"
   model "Robot0"
   flagColour 1 0 1
