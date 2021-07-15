@@ -327,6 +327,7 @@ PROTO SBForklift [
                     name "left gripper"
                     minPosition -0.01
                     maxPosition 0.124
+                    maxVelocity 0.5
                   }
                 ]
                 endPoint Solid {
@@ -399,6 +400,7 @@ PROTO SBForklift [
                     name "right gripper"
                     minPosition -0.01
                     maxPosition 0.124
+                    maxVelocity 0.5
                   }
                 ]
                 endPoint Solid {
