@@ -329,6 +329,9 @@ PROTO SBForklift [
                     maxPosition 0.124
                     maxVelocity 0.5
                   }
+                  PositionSensor {
+                    name "left gripper sensor"
+                  }
                 ]
                 endPoint Solid {
                   children [
@@ -401,6 +404,9 @@ PROTO SBForklift [
                     minPosition -0.01
                     maxPosition 0.124
                     maxVelocity 0.5
+                  }
+                  PositionSensor {
+                    name "right gripper sensor"
                   }
                 ]
                 endPoint Solid {
