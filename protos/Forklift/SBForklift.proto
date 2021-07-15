@@ -495,6 +495,25 @@ PROTO SBForklift [
             name "robot compass"
             rotation 0 1 0 0
           }
+          TouchSensor {
+            translation 0 0.03 -0.15
+            rotation 0 1 0 3.14
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.5 0 0
+                  roughness 0.7
+                }
+                geometry DEF BUMPER Box {
+                  size 0.2 0.01 0.01
+                }
+              }
+            ]
+            name "back bump sensor"
+            boundingObject Box {
+              size 0.2 0.01 0.03
+            }
+          }
         ]
       }
     ]
