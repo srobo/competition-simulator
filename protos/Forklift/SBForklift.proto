@@ -495,6 +495,147 @@ PROTO SBForklift [
             name "robot compass"
             rotation 0 1 0 0
           }
+          DEF DISTANCE_SENSORS Group {
+            children [
+              DEF left DistanceSensor {
+                translation 0.152 0.058 0
+                type "sonar"
+                numberOfRays 10
+                aperture 0.3
+                rotation 0 1 0 0
+                children [
+                  DEF GEO_DS Transform {
+                    rotation 1 -1 1 -2.0944
+                    children [
+                      Shape {
+                        appearance PBRAppearance {
+                          baseColor 0.1 0.1 1
+                          metalness 0
+                        }
+                        geometry Box {
+                          size 0.045 0.02 0.002
+                        }
+                      }
+                      Transform {
+                        translation -0.013 0 0.007
+                        rotation 1 0 0 1.5708
+                        children [
+                          DEF SONAR_TX Shape {
+                            appearance PBRAppearance {
+                              baseColor 0.92 0.92 0.92
+                              roughness 0.3
+                            }
+                            geometry Cylinder {
+                              radius 0.008
+                              height 0.012
+                            }
+                          }
+                        ]
+                      }
+                      Transform {
+                        translation 0.013 0 0.007
+                        rotation 1 0 0 1.5708
+                        children [
+                          USE SONAR_TX
+                        ]
+                      }
+                    ]
+                  }
+                ]
+                name "Left DS"
+                lookupTable [
+                  0 0 0
+                  2 1000 0
+                ]
+              }
+              DEF right DistanceSensor {
+                translation -0.152 0.058 0
+                type "sonar"
+                numberOfRays 10
+                aperture 0.3
+                rotation 0 1 0 3.1416
+                children [
+                  USE GEO_DS
+                ]
+                name "Right DS"
+                lookupTable [
+                  0 0 0
+                  2 1000 0
+                ]
+              }
+              DEF front_left DistanceSensor {
+                translation 0.152 0.07 0.122
+                type "sonar"
+                numberOfRays 10
+                aperture 0.3
+                rotation 0 1 0 -1.5708
+                children [
+                  USE GEO_DS
+                ]
+                name "Front Left DS"
+                lookupTable [
+                  0 0 0
+                  2 1000 0
+                ]
+              }
+              DEF front_right DistanceSensor {
+                translation -0.152 0.07 0.122
+                type "sonar"
+                numberOfRays 10
+                aperture 0.3
+                rotation 0 1 0 -1.5708
+                children [
+                  USE GEO_DS
+                ]
+                name "Front Right DS"
+                lookupTable [
+                  0 0 0
+                  2 1000 0
+                ]
+              }
+
+              DEF front DistanceSensor {
+                translation 0 0.055 0.011
+                type "sonar"
+                numberOfRays 10
+                aperture 0.3
+                rotation 0 1 0 -1.5708
+                children [
+                  Transform {
+                    rotation 1 0 0 -1.5708
+                    children [
+                      USE GEO_DS
+                    ]
+                  }
+                ]
+                name "Front DS"
+                lookupTable [
+                  0 0 0
+                  2 1000 0
+                ]
+              }
+              DEF rear DistanceSensor {
+                translation 0 0.046 -0.14
+                type "sonar"
+                numberOfRays 10
+                aperture 0.3
+                rotation 0 1 0 1.5708
+                children [
+                  Transform {
+                    rotation 1 0 0 -1.5708
+                    children [
+                      USE GEO_DS
+                    ]
+                  }
+                ]
+                name "Back DS"
+                lookupTable [
+                  0 0 0
+                  2 1000 0
+                ]
+              }
+            ]
+          }
           TouchSensor {
             translation 0 0.03 -0.15
             rotation 0 1 0 3.14
