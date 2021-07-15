@@ -497,12 +497,12 @@ PROTO SBForklift [
           }
           DEF DISTANCE_SENSORS Group {
             children [
-              DEF left DistanceSensor {
-                translation 0.152 0.058 0
+              DEF front_left DistanceSensor {
+                translation 0.152 0.07 0.122
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
-                rotation 0 1 0 0
+                rotation 0 1 0 -1.5708
                 children [
                   DEF GEO_DS Transform {
                     rotation 1 -1 1 -2.0944
@@ -542,36 +542,6 @@ PROTO SBForklift [
                     ]
                   }
                 ]
-                name "Left DS"
-                lookupTable [
-                  0 0 0
-                  2 1000 0
-                ]
-              }
-              DEF right DistanceSensor {
-                translation -0.152 0.058 0
-                type "sonar"
-                numberOfRays 10
-                aperture 0.3
-                rotation 0 1 0 3.1416
-                children [
-                  USE GEO_DS
-                ]
-                name "Right DS"
-                lookupTable [
-                  0 0 0
-                  2 1000 0
-                ]
-              }
-              DEF front_left DistanceSensor {
-                translation 0.152 0.07 0.122
-                type "sonar"
-                numberOfRays 10
-                aperture 0.3
-                rotation 0 1 0 -1.5708
-                children [
-                  USE GEO_DS
-                ]
                 name "Front Left DS"
                 lookupTable [
                   0 0 0
@@ -593,7 +563,36 @@ PROTO SBForklift [
                   2 1000 0
                 ]
               }
-
+              DEF left DistanceSensor {
+                translation 0.152 0.058 0
+                type "sonar"
+                numberOfRays 10
+                aperture 0.3
+                rotation 0 1 0 0
+                children [
+                  USE GEO_DS
+                ]
+                name "Left DS"
+                lookupTable [
+                  0 0 0
+                  2 1000 0
+                ]
+              }
+              DEF right DistanceSensor {
+                translation -0.152 0.058 0
+                type "sonar"
+                numberOfRays 10
+                aperture 0.3
+                rotation 0 1 0 3.1416
+                children [
+                  USE GEO_DS
+                ]
+                name "Right DS"
+                lookupTable [
+                  0 0 0
+                  2 1000 0
+                ]
+              }
               DEF front DistanceSensor {
                 translation 0 0.055 0.011
                 type "sonar"
