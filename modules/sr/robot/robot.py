@@ -132,8 +132,7 @@ class Robot:
         self._init_motors()
 
         # Ruggeduinos
-        # TODO: removing this is a bodge to enable forklift testing
-        # self._init_ruggeduinos()
+        self._init_ruggeduinos()
 
         # No camera for SR2021
 
