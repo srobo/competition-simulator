@@ -50,6 +50,14 @@ DEF ROBOT-1-forklift SBForklift {
   flagColour 1 1 0
   controllerArgs ["1", "forklift"]
 }
+DEF ROBOT-1-crane SRRobot {
+  translation -3 0.005 7
+  rotation 0 1 0 0
+  controller "sr_controller"
+  model "Robot1crane"
+  flagColour 1 0 1
+  controllerArgs ["1", "crane"]
+}
 
 
 Robot {
