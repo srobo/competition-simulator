@@ -42,7 +42,7 @@ DEF ROBOT-0-crane SRRobot {
   flagColour 1 0 1
   controllerArgs ["0", "crane"]
 }
-DEF ROBOT-1 SBForklift {
+DEF ROBOT-1-forklift SBForklift {
   translation 0 0.005 7
   rotation 0 1 0 3.14
   controller "sr_controller"
