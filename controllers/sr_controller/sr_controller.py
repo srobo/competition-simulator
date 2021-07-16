@@ -99,11 +99,15 @@ def get_robot_file(zone_id: int, robot_type: RobotTypes, mode: str) -> Path:
     print("No robot controller found for zone {} {}, copying example to {}.".format(
         zone_id,
         robot_type.value,
-        fallback_robot_file,
+        robot_file,
     ))
-    copyfile(str(EXAMPLE_CONTROLLER_BASE[robot_type]), str(fallback_robot_file))
 
-    return fallback_robot_file
+    (controller_utils.ARENA_ROOT / 'zone-0').mkdir(exist_ok=True)
+    (controller_utils.ARENA_ROOT / 'zone-1').mkdir(exist_ok=True)
+
+    copyfile(str(EXAMPLE_CONTROLLER_BASE[robot_type]), str(robot_file))
+
+    return robot_file
 
 
 def print_simulation_version() -> None:
