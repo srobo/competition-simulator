@@ -27,6 +27,7 @@ class Robot:
 
         self.mode = environ.get("SR_ROBOT_MODE", "dev")
         self.zone = int(environ.get("SR_ROBOT_ZONE", 0))
+        self.type = environ.get("SR_ROBOT_TYPE", "forklift")
         self.arena = "A"
         self.usbkey = path.normpath(path.join(environ["SR_ROBOT_FILE"], "../"))
 
@@ -63,6 +64,7 @@ class Robot:
         parts = [
             "Zone: {}".format(self.zone),
             "Mode: {}".format(self.mode),
+            "Type: {}".format(self.type),
         ]
 
         if user_code_version:
