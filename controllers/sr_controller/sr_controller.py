@@ -25,7 +25,11 @@ def get_robot_zone() -> int:
     return int(sys.argv[1])
 
 
-def get_robot_file(zone_id: int, mode: str) -> Path:
+def get_robot_type() -> str:
+    return sys.argv[2]
+
+
+def get_robot_file(zone_id: int, robot_type: str, mode: str) -> Path:
     """
     Get the path to the proper robot.py file for zone_id and mode, ensuring that
     it exists or exiting with a suitable error message.
@@ -43,9 +47,13 @@ def get_robot_file(zone_id: int, mode: str) -> Path:
           are found it copies an example into place (at the root) and uses that.
     """
 
-    robot_file = controller_utils.get_zone_robot_file_path(zone_id)
-    fallback_robot_file = controller_utils.ARENA_ROOT / "robot.py"
+    robot_file = controller_utils.get_zone_robot_file_path(zone_id, robot_type)
     strict_zones = STRICT_ZONES[mode]
+
+    if robot_type == 'crane':
+        fallback_robot_file = controller_utils.ARENA_ROOT / "crane.py"
+    else:
+        fallback_robot_file = controller_utils.ARENA_ROOT / "forklift.py"
 
     if (
         robot_file.exists() and
@@ -123,7 +131,8 @@ def reconfigure_environment(robot_file: Path) -> None:
 def main() -> None:
     robot_mode = controller_utils.get_robot_mode()
     robot_zone = get_robot_zone()
-    robot_file = get_robot_file(robot_zone, robot_mode).resolve()
+    robot_type = get_robot_type()
+    robot_file = get_robot_file(robot_zone, robot_type, robot_mode).resolve()
     log_filename = controller_utils.get_robot_log_filename(robot_zone)
 
     controller_utils.tee_streams(
@@ -131,7 +140,7 @@ def main() -> None:
         prefix=f'{robot_zone}| ',
     )
 
-    if robot_zone == 0:
+    if robot_zone == 0 and robot_type == 'forklift':
         # Only print once, but rely on Zone 0 always being run to ensure this is
         # always printed somewhere.
         print_simulation_version()
@@ -140,6 +149,7 @@ def main() -> None:
 
     # Pass through the various data our library needs
     os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
+    os.environ['SR_ROBOT_TYPE'] = robot_type
     os.environ['SR_ROBOT_MODE'] = robot_mode
     os.environ['SR_ROBOT_FILE'] = str(robot_file)
 

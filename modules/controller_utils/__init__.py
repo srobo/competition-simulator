@@ -168,12 +168,15 @@ def get_filename_safe_identifier() -> str:
         return now.isoformat().replace(':', '_')
 
 
-def get_zone_robot_file_path(zone_id: int) -> Path:
+def get_zone_robot_file_path(zone_id: int, robot_type: str = 'forklift') -> Path:
     """
     Return the path to the robot.py for the given zone, without checking for
     existence.
     """
-    return ARENA_ROOT / "zone-{}".format(zone_id) / "robot.py"
+    if robot_type == 'crane':
+        return ARENA_ROOT / "zone-{}".format(zone_id) / "crane.py"
+    else:
+        return ARENA_ROOT / "zone-{}".format(zone_id) / "forklift.py"
 
 
 def get_robot_log_filename(zone_id: int) -> str:
