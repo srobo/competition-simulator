@@ -26,6 +26,9 @@ if not ARENA_ROOT.is_absolute():
 
 NUM_ZONES = 2
 
+# TODO convert this to an enum
+robot_types = ('forklift', 'crane')
+
 GAME_DURATION_SECONDS = 120
 
 
