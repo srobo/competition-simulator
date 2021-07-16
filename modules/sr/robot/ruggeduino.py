@@ -14,20 +14,20 @@ def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
         "Front Right DS",
         "Left DS",
         "Right DS",
-        "Back Left DS",
-        "Back Right DS",
+        "Front DS",
+        "Back DS",
     ]
     switch_names = [
-        "front bump sensor",
+        # "front bump sensor",
         "back bump sensor",
     ]
-    led_names = [
-        "led 1",
-        "led 2",
-        "led 3",
-        "led 4",
-        "led 5",
-        "led 6",
+    led_names: List[str] = [
+        # "led 1",
+        # "led 2",
+        # "led 3",
+        # "led 4",
+        # "led 5",
+        # "led 6",
     ]
 
     analogue_input_array = [DistanceSensor(webot, name) for name in dist_sensor_names]

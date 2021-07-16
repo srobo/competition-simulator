@@ -63,7 +63,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: venv
-          key: deps-library-${{ hashfiles('libraries.txt') }}-v2
+          key: deps-library-${{ hashfiles('libraries.txt') }}-v3
       - name: Install Libraries
         run: |
           python3 -m venv venv
