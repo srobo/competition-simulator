@@ -135,11 +135,11 @@ def main() -> None:
     robot_zone = get_robot_zone()
     robot_type = get_robot_type()
     robot_file = get_robot_file(robot_zone, robot_type, robot_mode).resolve()
-    log_filename = controller_utils.get_robot_log_filename(robot_zone)
+    log_filename = controller_utils.get_robot_log_filename(robot_zone, robot_type)
 
     controller_utils.tee_streams(
         robot_file.parent / log_filename,
-        prefix=f'{robot_zone}| ',
+        prefix=f'{robot_zone} {robot_type}| ',
     )
 
     if robot_zone == 0 and robot_type == 'forklift':
