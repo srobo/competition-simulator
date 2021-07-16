@@ -9,17 +9,26 @@ from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
 SPEED_MAX = 100
 
 
-def init_motor_array(webot: Robot) -> 'List[Motor]':
-    return [
-        Motor(
-            Wheel(webot, 'left wheel'),
-            Wheel(webot, 'right wheel'),
-        ),
-        Motor(  # TODO: this is a bodge to enable grabber testing
-            Gripper(webot, ('left gripper', 'right gripper')),
-            None,
-        ),
-    ]
+def init_motor_array(webot: Robot, robot_type: str) -> 'List[Motor]':
+    if robot_type == 'forklift':
+        return [
+            Motor(
+                Wheel(webot, 'left wheel'),
+                Wheel(webot, 'right wheel'),
+            ),
+            Motor(  # TODO: this is a bodge to enable grabber testing
+                Gripper(webot, ('left gripper', 'right gripper')),
+                None,
+            ),
+        ]
+    else:
+        # TODO: placeholder crane motor board
+        return [
+            Motor(
+                Wheel(webot, 'left wheel'),
+                Wheel(webot, 'right wheel'),
+            ),
+        ]
 
 
 def translate(sr_speed_val: int, sr_motor: Union[Gripper, Wheel, LinearMotor]) -> float:

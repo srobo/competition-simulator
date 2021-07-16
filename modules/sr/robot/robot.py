@@ -145,16 +145,17 @@ class Robot:
         self._init_compass()
 
     def _init_motors(self) -> None:
-        self.motors = motor.init_motor_array(self.webot)
+        self.motors = motor.init_motor_array(self.webot, self.type)
 
     def _init_ruggeduinos(self) -> None:
-        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
+        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot, self.type)
 
     def _init_radio(self) -> None:
         self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
 
     def _init_compass(self) -> None:
-        self.compass = compass.Compass(self.webot)
+        if self.type == 'forklift':  # The crane lacks a compass
+            self.compass = compass.Compass(self.webot)
 
     def time(self) -> float:
         """
