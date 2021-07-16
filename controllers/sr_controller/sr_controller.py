@@ -13,7 +13,10 @@ sys.path.insert(1, str(REPO_ROOT / 'modules'))
 import controller_utils  # isort:skip
 from shared_utils import RobotTypes  # isort:skip
 
-EXAMPLE_CONTROLLER_FILE = REPO_ROOT / 'controllers/example_controller/example_controller.py'
+EXAMPLE_CONTROLLER_BASE = {
+    RobotTypes.FORKLIFT: REPO_ROOT / 'controllers/example_controller/example_forklift.py',
+    RobotTypes.CRANE: REPO_ROOT / 'controllers/example_controller/example_crane.py',
+}
 
 
 STRICT_ZONES = {
@@ -98,7 +101,7 @@ def get_robot_file(zone_id: int, robot_type: RobotTypes, mode: str) -> Path:
         robot_type.value,
         fallback_robot_file,
     ))
-    copyfile(str(EXAMPLE_CONTROLLER_FILE), str(fallback_robot_file))
+    copyfile(str(EXAMPLE_CONTROLLER_BASE[robot_type]), str(fallback_robot_file))
 
     return fallback_robot_file
 
