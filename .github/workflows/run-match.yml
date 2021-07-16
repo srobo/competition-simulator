@@ -52,7 +52,7 @@ jobs:
           # Convert the sleep comments to print statement so there's a way to
           # gauge progress and so that GitHub doesn't shut things down due to
           # lack of output (the latter is a theoretical concern).
-          sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_controller.py > forklift.py
+          sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_forklift.py > forklift.py
 
           # Have the robot code print success at the end, along with a unique identifier.
           echo "print('Success: $GITHUB_SHA')" >> forklift.py
