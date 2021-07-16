@@ -15,6 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
+from shared_utils import RobotTypes  # isort:skip
 import controller_utils  # isort:skip
 import webots_utils  # isort:skip
 
@@ -110,7 +111,7 @@ def get_robots(
     supervisor: Supervisor,
     *,
     skip_missing: bool = False
-) -> List[Tuple[int, str, Node]]:
+) -> List[Tuple[int, RobotTypes, Node]]:
     """
     Get a list of (zone id, robot node) tuples.
 
@@ -125,13 +126,16 @@ def get_robots(
     robots = []  # List[Tuple[int, Supervisor]]
 
     for zone_id in range(controller_utils.NUM_ZONES):
-        for robot_type in controller_utils.robot_types:
-            robot = supervisor.getFromDef(f"ROBOT-{zone_id}-{robot_type}")
+        for robot_type in RobotTypes:
+            robot = supervisor.getFromDef(f"ROBOT-{zone_id}-{robot_type.value}")
             if robot is None:
                 if skip_missing:
                     continue
 
-                msg = "Failed to get Webots node for zone {} {}".format(zone_id, robot_type)
+                msg = "Failed to get Webots node for zone {} {}".format(
+                    zone_id,
+                    robot_type.value,
+                )
                 print(msg)
                 raise ValueError(msg)
 

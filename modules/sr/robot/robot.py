@@ -4,6 +4,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
+from shared_utils import RobotTypes
 from sr.robot import motor, radio, compass, ruggeduino
 # Webots specific library
 from controller import Robot as WebotsRobot
@@ -27,7 +28,7 @@ class Robot:
 
         self.mode = environ.get("SR_ROBOT_MODE", "dev")
         self.zone = int(environ.get("SR_ROBOT_ZONE", 0))
-        self.type = environ.get("SR_ROBOT_TYPE", "forklift")
+        self.type = RobotTypes(environ.get("SR_ROBOT_TYPE", "forklift"))
         self.arena = "A"
         self.usbkey = path.normpath(path.join(environ["SR_ROBOT_FILE"], "../"))
 
@@ -64,7 +65,7 @@ class Robot:
         parts = [
             "Zone: {}".format(self.zone),
             "Mode: {}".format(self.mode),
-            "Type: {}".format(self.type),
+            "Type: {}".format(self.type.value),
         ]
 
         if user_code_version:
@@ -154,7 +155,7 @@ class Robot:
         self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
 
     def _init_compass(self) -> None:
-        if self.type == 'forklift':  # The crane lacks a compass
+        if self.type == RobotTypes.FORKLIFT:  # The crane lacks a compass
             self.compass = compass.Compass(self.webot)
 
     def time(self) -> float:

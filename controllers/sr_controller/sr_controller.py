@@ -11,6 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
+from shared_utils import RobotTypes  # isort:skip
 
 EXAMPLE_CONTROLLER_FILE = REPO_ROOT / 'controllers/example_controller/example_controller.py'
 
@@ -25,11 +26,11 @@ def get_robot_zone() -> int:
     return int(sys.argv[1])
 
 
-def get_robot_type() -> str:
-    return sys.argv[2]
+def get_robot_type() -> RobotTypes:
+    return RobotTypes(sys.argv[2])
 
 
-def get_robot_file(zone_id: int, robot_type: str, mode: str) -> Path:
+def get_robot_file(zone_id: int, robot_type: RobotTypes, mode: str) -> Path:
     """
     Get the path to the proper robot.py file for zone_id and mode, ensuring that
     it exists or exiting with a suitable error message.
@@ -50,7 +51,7 @@ def get_robot_file(zone_id: int, robot_type: str, mode: str) -> Path:
     robot_file = controller_utils.get_zone_robot_file_path(zone_id, robot_type)
     strict_zones = STRICT_ZONES[mode]
 
-    if robot_type == 'crane':
+    if robot_type == RobotTypes.CRANE:
         fallback_robot_file = controller_utils.ARENA_ROOT / "crane.py"
     else:
         fallback_robot_file = controller_utils.ARENA_ROOT / "forklift.py"
@@ -70,7 +71,7 @@ def get_robot_file(zone_id: int, robot_type: str, mode: str) -> Path:
         if robot_file.exists():
             return robot_file
 
-        print("No robot controller found for zone {} {}".format(zone_id, robot_type))
+        print("No robot controller found for zone {} {}".format(zone_id, robot_type.value))
 
         # Only in competition mode is it an error for a robot file to be missing.
         missing_file_is_error = mode == "comp"
@@ -83,7 +84,7 @@ def get_robot_file(zone_id: int, robot_type: str, mode: str) -> Path:
         "Unexpectedly handling fallback logic for zone {} in {} mode, type {}".format(
             zone_id,
             mode,
-            robot_type,
+            robot_type.value,
         )
 
     if robot_file.exists():
@@ -94,7 +95,7 @@ def get_robot_file(zone_id: int, robot_type: str, mode: str) -> Path:
 
     print("No robot controller found for zone {} {}, copying example to {}.".format(
         zone_id,
-        robot_type,
+        robot_type.value,
         fallback_robot_file,
     ))
     copyfile(str(EXAMPLE_CONTROLLER_FILE), str(fallback_robot_file))
@@ -139,10 +140,10 @@ def main() -> None:
 
     controller_utils.tee_streams(
         robot_file.parent / log_filename,
-        prefix=f'{robot_zone} {robot_type}| ',
+        prefix=f'{robot_zone} {robot_type.value}| ',
     )
 
-    if robot_zone == 0 and robot_type == 'forklift':
+    if robot_zone == 0 and robot_type == RobotTypes.FORKLIFT:
         # Only print once, but rely on Zone 0 always being run to ensure this is
         # always printed somewhere.
         print_simulation_version()
@@ -151,7 +152,7 @@ def main() -> None:
 
     # Pass through the various data our library needs
     os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
-    os.environ['SR_ROBOT_TYPE'] = robot_type
+    os.environ['SR_ROBOT_TYPE'] = robot_type.value
     os.environ['SR_ROBOT_MODE'] = robot_mode
     os.environ['SR_ROBOT_FILE'] = str(robot_file)
 

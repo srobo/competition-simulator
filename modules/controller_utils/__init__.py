@@ -9,6 +9,8 @@ import datetime
 from typing import IO, Dict, List, Optional, NamedTuple
 from pathlib import Path
 
+from shared_utils import RobotTypes
+
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -25,9 +27,6 @@ if not ARENA_ROOT.is_absolute():
 
 
 NUM_ZONES = 2
-
-# TODO convert this to an enum
-robot_types = ('forklift', 'crane')
 
 GAME_DURATION_SECONDS = 120
 
@@ -171,20 +170,20 @@ def get_filename_safe_identifier() -> str:
         return now.isoformat().replace(':', '_')
 
 
-def get_zone_robot_file_path(zone_id: int, robot_type: str = 'forklift') -> Path:
+def get_zone_robot_file_path(zone_id: int, robot_type: RobotTypes) -> Path:
     """
     Return the path to the robot.py for the given zone, without checking for
     existence.
     """
-    if robot_type == 'crane':
+    if robot_type == RobotTypes.CRANE:
         return ARENA_ROOT / "zone-{}".format(zone_id) / "crane.py"
     else:
         return ARENA_ROOT / "zone-{}".format(zone_id) / "forklift.py"
 
 
-def get_robot_log_filename(zone_id: int, robot_type: str) -> str:
+def get_robot_log_filename(zone_id: int, robot_type: RobotTypes) -> str:
     identifier = get_filename_safe_identifier()
-    return f'log-zone-{zone_id}-{robot_type}-{identifier}.txt'
+    return f'log-zone-{zone_id}-{robot_type.value}-{identifier}.txt'
 
 
 def get_competition_supervisor_log_filepath() -> Path:

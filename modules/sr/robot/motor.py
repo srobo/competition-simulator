@@ -1,6 +1,7 @@
 from typing import List, Union
 
 from controller import Robot
+from shared_utils import RobotTypes
 from sr.robot.utils import map_to_range
 from sr.robot.randomizer import add_jitter
 from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
@@ -9,8 +10,8 @@ from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
 SPEED_MAX = 100
 
 
-def init_motor_array(webot: Robot, robot_type: str) -> 'List[Motor]':
-    if robot_type == 'forklift':
+def init_motor_array(webot: Robot, robot_type: RobotTypes) -> 'List[Motor]':
+    if robot_type == RobotTypes.FORKLIFT:
         return [
             Motor(
                 Wheel(webot, 'left wheel'),
