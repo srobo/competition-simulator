@@ -19,10 +19,11 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
+from shared_utils import RobotTypes  # isort:skip
 
 
 def get_zone_path(zone_id: int) -> Path:
-    robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id)
+    robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id, RobotTypes.FORKLIFT)
     return robot_file.parent
 
 
@@ -139,7 +140,7 @@ def collate_logs(archives_dir: Path, match_data: controller_utils.MatchData) -> 
             # no team in this zone
             continue
 
-        for robot_type in controller_utils.robot_types:
+        for robot_type in RobotTypes:
             log_filname = controller_utils.get_robot_log_filename(zone_id, robot_type)
             log_path = get_zone_path(zone_id) / log_filname
 

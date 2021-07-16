@@ -4,10 +4,10 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from shared_utils import RobotTypes
 from sr.robot import motor, radio, compass, ruggeduino
 # Webots specific library
 from controller import Robot as WebotsRobot
+from shared_utils import RobotTypes
 
 
 class Robot:
