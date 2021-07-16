@@ -35,7 +35,7 @@ DEF ROBOT-0 SBForklift {
   controllerArgs "0"
 }
 DEF ROBOT-1 SBForklift {
-  translation 0 0 7
+  translation 0 0.005 7
   rotation 0 1 0 3.14
   controller "sr_controller"
   model "Robot1"
