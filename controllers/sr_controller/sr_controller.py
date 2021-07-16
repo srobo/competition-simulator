@@ -70,7 +70,7 @@ def get_robot_file(zone_id: int, robot_type: str, mode: str) -> Path:
         if robot_file.exists():
             return robot_file
 
-        print("No robot controller found for zone {}".format(zone_id))
+        print("No robot controller found for zone {} {}".format(zone_id, robot_type))
 
         # Only in competition mode is it an error for a robot file to be missing.
         missing_file_is_error = mode == "comp"
@@ -80,9 +80,10 @@ def get_robot_file(zone_id: int, robot_type: str, mode: str) -> Path:
     # fallback place. If that doesn't exist we copy an example into it.
 
     assert zone_id == 0 and mode == "dev", \
-        "Unexpectedly handling fallback logic for zone {} in {} mode".format(
+        "Unexpectedly handling fallback logic for zone {} in {} mode, type {}".format(
             zone_id,
             mode,
+            robot_type,
         )
 
     if robot_file.exists():
@@ -91,8 +92,9 @@ def get_robot_file(zone_id: int, robot_type: str, mode: str) -> Path:
     if fallback_robot_file.exists():
         return fallback_robot_file
 
-    print("No robot controller found for zone {}, copying example to {}.".format(
+    print("No robot controller found for zone {} {}, copying example to {}.".format(
         zone_id,
+        robot_type,
         fallback_robot_file,
     ))
     copyfile(str(EXAMPLE_CONTROLLER_FILE), str(fallback_robot_file))
@@ -145,7 +147,7 @@ def main() -> None:
         # always printed somewhere.
         print_simulation_version()
 
-    print("Using {} for Zone {}".format(robot_file, robot_zone))
+    print("Using {} for Zone {} {}".format(robot_file, robot_zone, robot_type))
 
     # Pass through the various data our library needs
     os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
