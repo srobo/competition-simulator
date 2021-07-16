@@ -42,10 +42,11 @@ class Motor:
 
     def __init__(
         self,
-        m0: Union[Wheel, LinearMotor, Gripper],
+        m0: Union[Wheel, LinearMotor, Gripper, None],
         m1: Union[Wheel, LinearMotor, Gripper, None],
     ) -> None:
-        self.m0 = MotorChannel(0, m0)
+        if m0 is not None:
+            self.m0 = MotorChannel(0, m0)
         if m1 is not None:
             self.m1 = MotorChannel(1, m1)
 
