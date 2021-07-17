@@ -132,7 +132,7 @@ def get_robots(
                 if skip_missing:
                     continue
 
-                msg = "Failed to get Webots node for zone {} {}".format(
+                msg = "Failed to get Webots node for zone {} and type {}".format(
                     zone_id,
                     robot_type.value,
                 )
