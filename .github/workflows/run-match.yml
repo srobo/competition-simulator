@@ -108,6 +108,6 @@ jobs:
           test "$LAST_LINE" == "1 forklift| Success: $GITHUB_SHA"
       - name: Validate success zone 1 crane
         run: |
-          LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-1-crane-match-42.txt)
+          LAST_LINE=$(tail --lines=1 archives/DEF/log-zone-1-crane-match-42.txt)
           set -x
           test "$LAST_LINE" == "1 crane| Success: $GITHUB_SHA"
