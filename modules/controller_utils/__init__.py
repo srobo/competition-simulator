@@ -175,10 +175,7 @@ def get_zone_robot_file_path(zone_id: int, robot_type: RobotType) -> Path:
     Return the path to the robot.py for the given zone, without checking for
     existence.
     """
-    if robot_type == RobotType.CRANE:
-        return ARENA_ROOT / "zone-{}".format(zone_id) / "crane.py"
-    else:
-        return ARENA_ROOT / "zone-{}".format(zone_id) / "forklift.py"
+    return ARENA_ROOT / "zone-{}".format(zone_id) / "{}.py".format(robot_type.value)
 
 
 def get_robot_log_filename(zone_id: int, robot_type: RobotType) -> str:

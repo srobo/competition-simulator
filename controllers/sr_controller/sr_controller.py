@@ -52,12 +52,8 @@ def get_robot_file(zone_id: int, robot_type: RobotType, mode: str) -> Path:
     """
 
     robot_file = controller_utils.get_zone_robot_file_path(zone_id, robot_type)
+    fallback_robot_file = controller_utils.ARENA_ROOT / f"{robot_type.value}.py"
     strict_zones = STRICT_ZONES[mode]
-
-    if robot_type == RobotType.CRANE:
-        fallback_robot_file = controller_utils.ARENA_ROOT / "crane.py"
-    else:
-        fallback_robot_file = controller_utils.ARENA_ROOT / "forklift.py"
 
     if (
         robot_file.exists() and
