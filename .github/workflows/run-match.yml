@@ -59,7 +59,7 @@ jobs:
           echo "print('Success: $GITHUB_SHA')" >> forklift.py
           echo "print('Success: $GITHUB_SHA')" >> crane.py
 
-          zip ABC.zip forklift.py
+          zip ABC.zip forklift.py crane.py
 
           # Make a second team to compete against
           cp ABC.zip DEF.zip
