@@ -1,16 +1,16 @@
 from typing import List
 
 from controller import Robot
-from shared_utils import RobotTypes
+from shared_utils import RobotType
 from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
 from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
 
 
-def init_ruggeduino_array(webot: Robot, robot_type: RobotTypes) -> 'List[Ruggeduino]':
+def init_ruggeduino_array(webot: Robot, robot_type: RobotType) -> 'List[Ruggeduino]':
     led_names: List[str]
 
     # The names in these arrays correspond to the names given to devices in Webots
-    if robot_type == RobotTypes.FORKLIFT:
+    if robot_type == RobotType.FORKLIFT:
         dist_sensor_names = [
             # Updating these? Also update controllers/example_controller/keyboard_controller.py
             "Front Left DS",

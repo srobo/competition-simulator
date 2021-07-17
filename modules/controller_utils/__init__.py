@@ -9,7 +9,7 @@ import datetime
 from typing import IO, Dict, List, Optional, NamedTuple
 from pathlib import Path
 
-from shared_utils import RobotTypes
+from shared_utils import RobotType
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -170,18 +170,18 @@ def get_filename_safe_identifier() -> str:
         return now.isoformat().replace(':', '_')
 
 
-def get_zone_robot_file_path(zone_id: int, robot_type: RobotTypes) -> Path:
+def get_zone_robot_file_path(zone_id: int, robot_type: RobotType) -> Path:
     """
     Return the path to the robot.py for the given zone, without checking for
     existence.
     """
-    if robot_type == RobotTypes.CRANE:
+    if robot_type == RobotType.CRANE:
         return ARENA_ROOT / "zone-{}".format(zone_id) / "crane.py"
     else:
         return ARENA_ROOT / "zone-{}".format(zone_id) / "forklift.py"
 
 
-def get_robot_log_filename(zone_id: int, robot_type: RobotTypes) -> str:
+def get_robot_log_filename(zone_id: int, robot_type: RobotType) -> str:
     identifier = get_filename_safe_identifier()
     return f'log-zone-{zone_id}-{robot_type.value}-{identifier}.txt'
 

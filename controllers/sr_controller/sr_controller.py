@@ -11,11 +11,11 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
-from shared_utils import RobotTypes  # isort:skip
+from shared_utils import RobotType  # isort:skip
 
 EXAMPLE_CONTROLLER_BASE = {
-    RobotTypes.FORKLIFT: REPO_ROOT / 'controllers/example_controller/example_forklift.py',
-    RobotTypes.CRANE: REPO_ROOT / 'controllers/example_controller/example_crane.py',
+    RobotType.FORKLIFT: REPO_ROOT / 'controllers/example_controller/example_forklift.py',
+    RobotType.CRANE: REPO_ROOT / 'controllers/example_controller/example_crane.py',
 }
 
 
@@ -29,11 +29,11 @@ def get_robot_zone() -> int:
     return int(sys.argv[1])
 
 
-def get_robot_type() -> RobotTypes:
-    return RobotTypes(sys.argv[2])
+def get_robot_type() -> RobotType:
+    return RobotType(sys.argv[2])
 
 
-def get_robot_file(zone_id: int, robot_type: RobotTypes, mode: str) -> Path:
+def get_robot_file(zone_id: int, robot_type: RobotType, mode: str) -> Path:
     """
     Get the path to the proper robot.py file for zone_id and mode, ensuring that
     it exists or exiting with a suitable error message.
@@ -54,7 +54,7 @@ def get_robot_file(zone_id: int, robot_type: RobotTypes, mode: str) -> Path:
     robot_file = controller_utils.get_zone_robot_file_path(zone_id, robot_type)
     strict_zones = STRICT_ZONES[mode]
 
-    if robot_type == RobotTypes.CRANE:
+    if robot_type == RobotType.CRANE:
         fallback_robot_file = controller_utils.ARENA_ROOT / "crane.py"
     else:
         fallback_robot_file = controller_utils.ARENA_ROOT / "forklift.py"
@@ -150,7 +150,7 @@ def main() -> None:
         prefix=f'{robot_zone} {robot_type.value}| ',
     )
 
-    if robot_zone == 0 and robot_type == RobotTypes.FORKLIFT:
+    if robot_zone == 0 and robot_type == RobotType.FORKLIFT:
         # Only print once, but rely on Zone 0 always being run to ensure this is
         # always printed somewhere.
         print_simulation_version()

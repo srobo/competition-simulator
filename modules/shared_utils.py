@@ -1,6 +1,6 @@
 from enum import Enum
 
 
-class RobotTypes(Enum):
+class RobotType(Enum):
     FORKLIFT = 'forklift'
     CRANE = 'crane'
