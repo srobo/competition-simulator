@@ -19,10 +19,12 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 import controller_utils  # isort:skip
+from shared_utils import RobotType  # isort:skip
 
 
 def get_zone_path(zone_id: int) -> Path:
-    robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id)
+    # All robot types have a common path so we just use the first enum option
+    robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id, RobotType.FORKLIFT)
     return robot_file.parent
 
 
@@ -139,13 +141,18 @@ def collate_logs(archives_dir: Path, match_data: controller_utils.MatchData) -> 
             # no team in this zone
             continue
 
-        log_filname = controller_utils.get_robot_log_filename(zone_id)
-        log_path = get_zone_path(zone_id) / log_filname
+        for robot_type in RobotType:
+            log_filname = controller_utils.get_robot_log_filename(zone_id, robot_type)
+            log_path = get_zone_path(zone_id) / log_filname
 
-        team_dir = archives_dir / tla
-        team_dir.mkdir(exist_ok=True)
+            if not log_path.exists():
+                # team did not use this robot
+                continue
 
-        shutil.copy(log_path, team_dir)
+            team_dir = archives_dir / tla
+            team_dir.mkdir(exist_ok=True)
+
+            shutil.copy(log_path, team_dir)
 
 
 def archive_match_file(archives_dir: Path, match_data: controller_utils.MatchData) -> None:

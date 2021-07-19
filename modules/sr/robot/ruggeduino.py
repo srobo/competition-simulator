@@ -1,34 +1,60 @@
 from typing import List
 
 from controller import Robot
+from shared_utils import RobotType
 from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
 from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
 
 
-def init_ruggeduino_array(webot: Robot) -> 'List[Ruggeduino]':
-    # The names in these arrays correspond to the names given to devices in Webots
+def init_ruggeduino_array(webot: Robot, robot_type: RobotType) -> 'List[Ruggeduino]':
+    led_names: List[str]
 
-    dist_sensor_names = [
-        # Updating these? Also update controllers/example_controller/keyboard_controller.py
-        "Front Left DS",
-        "Front Right DS",
-        "Left DS",
-        "Right DS",
-        "Front DS",
-        "Back DS",
-    ]
-    switch_names = [
-        # "front bump sensor",
-        "back bump sensor",
-    ]
-    led_names: List[str] = [
-        # "led 1",
-        # "led 2",
-        # "led 3",
-        # "led 4",
-        # "led 5",
-        # "led 6",
-    ]
+    # The names in these arrays correspond to the names given to devices in Webots
+    if robot_type == RobotType.FORKLIFT:
+        dist_sensor_names = [
+            # Updating these? Also update controllers/example_controller/keyboard_controller.py
+            "Front Left DS",
+            "Front Right DS",
+            "Left DS",
+            "Right DS",
+            "Front DS",
+            "Back DS",
+        ]
+        switch_names = [
+            # "front bump sensor",
+            "back bump sensor",
+        ]
+        led_names = [
+            # "led 1",
+            # "led 2",
+            # "led 3",
+            # "led 4",
+            # "led 5",
+            # "led 6",
+        ]
+    else:
+        # TODO: placeholder crane ruggeduino
+        dist_sensor_names = [
+            # Updating these? Also update controllers/example_controller/keyboard_controller.py
+            "Front Left DS",
+            "Front Right DS",
+            "Left DS",
+            "Right DS",
+            "Back Left DS",
+            "Back Right DS",
+        ]
+        switch_names = [
+            "front bump sensor",
+            "back bump sensor",
+        ]
+        led_names = [
+            "led 1",
+            "led 2",
+            "led 3",
+            "led 4",
+            "led 5",
+            "led 6",
+        ]
 
     analogue_input_array = [DistanceSensor(webot, name) for name in dist_sensor_names]
 

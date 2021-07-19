@@ -1,6 +1,7 @@
 from typing import List, Union
 
 from controller import Robot
+from shared_utils import RobotType
 from sr.robot.utils import map_to_range
 from sr.robot.randomizer import add_jitter
 from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
@@ -9,17 +10,26 @@ from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
 SPEED_MAX = 100
 
 
-def init_motor_array(webot: Robot) -> 'List[Motor]':
-    return [
-        Motor(
-            Wheel(webot, 'left wheel'),
-            Wheel(webot, 'right wheel'),
-        ),
-        Motor(  # TODO: this is a bodge to enable grabber testing
-            Gripper(webot, ('left gripper', 'right gripper')),
-            None,
-        ),
-    ]
+def init_motor_array(webot: Robot, robot_type: RobotType) -> 'List[Motor]':
+    if robot_type == RobotType.FORKLIFT:
+        return [
+            Motor(
+                Wheel(webot, 'left wheel'),
+                Wheel(webot, 'right wheel'),
+            ),
+            Motor(  # TODO: this is a bodge to enable grabber testing
+                Gripper(webot, ('left gripper', 'right gripper')),
+                None,
+            ),
+        ]
+    else:
+        # TODO: placeholder crane motor board
+        return [
+            Motor(
+                Wheel(webot, 'left wheel'),
+                Wheel(webot, 'right wheel'),
+            ),
+        ]
 
 
 def translate(sr_speed_val: int, sr_motor: Union[Gripper, Wheel, LinearMotor]) -> float:

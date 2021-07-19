@@ -44,7 +44,7 @@ jobs:
       - name: Install Webots
         run: |
           sudo apt-get install --yes ./webots.deb
-      - name: Prepare team code archive
+      - name: Prepare team code archives
         run: |
           mkdir archives
           cd archives
@@ -52,12 +52,17 @@ jobs:
           # Convert the sleep comments to print statement so there's a way to
           # gauge progress and so that GitHub doesn't shut things down due to
           # lack of output (the latter is a theoretical concern).
-          sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_controller.py > robot.py
+          sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_forklift.py > forklift.py
+          sed -r 's/# sleep(.*)/print("sleep\1")/' ../controllers/example_controller/example_crane.py > crane.py
 
           # Have the robot code print success at the end, along with a unique identifier.
-          echo "print('Success: $GITHUB_SHA')" >> robot.py
+          echo "print('Success: $GITHUB_SHA')" >> forklift.py
+          echo "print('Success: $GITHUB_SHA')" >> crane.py
 
-          zip ABC.zip robot.py
+          zip ABC.zip forklift.py crane.py
+
+          # Make a second team to compete against
+          cp ABC.zip DEF.zip
       - name: Cache libraries
         id: cache-library
         uses: actions/cache@v2
@@ -80,14 +85,29 @@ jobs:
       - name: Run match
         run: |
           source ./venv/bin/activate
-          xvfb-run script/run-comp-match archives 42 - ABC --duration 5 --resolution 1280 720
+          xvfb-run script/run-comp-match archives 42 ABC DEF --duration 5 --resolution 1280 720
       - name: Store archives
         uses: actions/upload-artifact@v2
         with:
           name: match-archives-${{ matrix.webots-version }}
           path: archives
-      - name: Validate success
+      - name: Validate success zone 0 forklift
         run: |
-          LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-1-match-42.txt)
+          LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-0-forklift-match-42.txt)
           set -x
-          test "$LAST_LINE" == "1| Success: $GITHUB_SHA"
+          test "$LAST_LINE" == "0 forklift| Success: $GITHUB_SHA"
+      - name: Validate success zone 0 crane
+        run: |
+          LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-0-crane-match-42.txt)
+          set -x
+          test "$LAST_LINE" == "0 crane| Success: $GITHUB_SHA"
+      - name: Validate success zone 1 forklift
+        run: |
+          LAST_LINE=$(tail --lines=1 archives/DEF/log-zone-1-forklift-match-42.txt)
+          set -x
+          test "$LAST_LINE" == "1 forklift| Success: $GITHUB_SHA"
+      - name: Validate success zone 1 crane
+        run: |
+          LAST_LINE=$(tail --lines=1 archives/DEF/log-zone-1-crane-match-42.txt)
+          set -x
+          test "$LAST_LINE" == "1 crane| Success: $GITHUB_SHA"
