@@ -149,7 +149,7 @@ def main() -> None:
         # this is always printed somewhere.
         print_simulation_version()
 
-    print(f"Using {robot_file} for Zone {robot_zone} {robot_type}")
+    print(f"Using {robot_file} for Zone {robot_zone} {robot_type.value}")
 
     # Pass through the various data our library needs
     os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
