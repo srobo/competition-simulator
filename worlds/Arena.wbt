@@ -35,7 +35,7 @@ DEF ROBOT-0-forklift SBForklift {
   controllerArgs ["0", "forklift"]
 }
 DEF ROBOT-0-crane SRRobot {
-  translation -2 0.005 -0.75
+  translation -1.25 0.005 -0.8
   rotation 0 1 0 3.14
   controller "sr_controller"
   model "Robot0crane"
@@ -51,7 +51,7 @@ DEF ROBOT-1-forklift SBForklift {
   controllerArgs ["1", "forklift"]
 }
 DEF ROBOT-1-crane SRRobot {
-  translation -2 0.005 0.75
+  translation -1.25 0.005 0.8
   rotation 0 1 0 0
   controller "sr_controller"
   model "Robot1crane"
@@ -212,60 +212,56 @@ DEF ARENA_BOUNDING Group {
     }
   ]
 }
-Group {
+Solid {  # Robot starting zones
   children [
-    Solid {  # Robot starting zones
+    Transform {  # Zone 0 inner
+      translation 2.55 0.002 -0.45
       children [
-        Transform {  # Zone 0 inner
-          translation 2.55 0.002 -0.45
-          children [
-            Shape {
-              appearance USE WALL_COLOUR
-              geometry DEF INNER_ZONE_GEO Plane {
-                size 0.9 0.9
-              }
-            }
-          ]
-        }
-        Transform {  # Zone 0 outer
-          translation 2.5 0.001 -0.5
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 1 0 1
-                roughness 1
-                metalness 0
-              }
-              geometry DEF OUTER_ZONE_GEO Plane {
-                size 1 1
-              }
-            }
-          ]
-        }
-        Transform {  # Zone 1 inner
-          translation 2.55 0.002 0.45
-          children [
-            Shape {
-              appearance USE WALL_COLOUR
-              geometry USE INNER_ZONE_GEO
-            }
-          ]
-        }
-        Transform {  # Zone 1 outer
-          translation 2.5 0.001 0.5
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 1 1 0
-                roughness 1
-                metalness 0
-              }
-              geometry USE OUTER_ZONE_GEO
-            }
-          ]
+        Shape {
+          appearance USE WALL_COLOUR
+          geometry DEF INNER_ZONE_GEO Plane {
+            size 0.9 0.9
+          }
         }
       ]
-      name "Robot Starting Zones"
+    }
+    Transform {  # Zone 0 outer
+      translation 2.5 0.001 -0.5
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 0 1
+            roughness 1
+            metalness 0
+          }
+          geometry DEF OUTER_ZONE_GEO Plane {
+            size 1 1
+          }
+        }
+      ]
+    }
+    Transform {  # Zone 1 inner
+      translation 2.55 0.002 0.45
+      children [
+        Shape {
+          appearance USE WALL_COLOUR
+          geometry USE INNER_ZONE_GEO
+        }
+      ]
+    }
+    Transform {  # Zone 1 outer
+      translation 2.5 0.001 0.5
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 1 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry USE OUTER_ZONE_GEO
+        }
+      ]
     }
   ]
+  name "Robot Starting Zones"
 }
