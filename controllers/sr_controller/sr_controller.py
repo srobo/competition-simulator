@@ -21,7 +21,7 @@ EXAMPLE_CONTROLLER_BASE = {
 
 STRICT_ZONES = {
     "dev": (1, 2, 3),
-    "dev-remote": (1, 2, 3),
+    "remote-dev": (1, 2, 3),
     "comp": (0, 1, 2, 3),
 }
 
@@ -80,7 +80,7 @@ def get_robot_file(zone_id: int, robot_type: RobotType, mode: str) -> Path:
     # For the non-strict zones (i.e: Zone 0 in development mode) we check in the
     # fallback place. If that doesn't exist we copy an example into it.
 
-    assert zone_id == 0 and mode in ["dev", "dev-remote"], \
+    assert zone_id == 0 and mode in ["dev", "remote-dev"], \
         "Unexpectedly handling fallback logic for zone {} in {} mode, type {}".format(
             zone_id,
             mode,

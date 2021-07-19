@@ -79,7 +79,7 @@ def propagate_exit_code(supervisor: Supervisor) -> Iterator[None]:
 
 
 def quit_if_development_mode() -> None:
-    if controller_utils.get_robot_mode() == 'dev-remote':
+    if controller_utils.get_robot_mode() == 'remote-dev':
         print("Entering remote development mode")
         run_dev_remote_mode()
         exit()
