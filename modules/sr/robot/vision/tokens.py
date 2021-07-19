@@ -115,7 +115,7 @@ class Face:
         self.name = name
 
     def __repr__(self) -> str:
-        return 'Face({!r}, {!r})'.format(self.token, self.name)
+        return f'Face({self.token!r}, {self.name!r})'
 
     def _filter_corners(self, corners: Mapping[str, Vector]) -> Dict[str, Vector]:
         return {
@@ -168,9 +168,8 @@ class Face:
     def is_visible_to_global_origin(self, angle_tolernace: float = 75) -> bool:
         if angle_tolernace > 90:
             raise ValueError(
-                "Refusing to allow faces with angles > 90 to be visible (asked for {})".format(
-                    angle_tolernace,
-                ),
+                "Refusing to allow faces with angles > 90 to be visible "
+                f"(asked for {angle_tolernace})",
             )
 
         direction_to_origin = -self.centre_global()

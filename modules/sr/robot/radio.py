@@ -86,9 +86,9 @@ class Target(NamedTuple):
 
     def __repr__(self) -> str:
         return '<{}: {}>'.format(type(self).__name__, ', '.join((
-            'info={}'.format(self.target_info),
-            'bearing={}'.format(self.bearing),
-            'strength={}'.format(self.signal_strength),
+            f'info={self.target_info}',
+            f'bearing={self.bearing}',
+            f'strength={self.signal_strength}',
         )))
 
 

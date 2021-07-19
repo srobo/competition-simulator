@@ -90,10 +90,10 @@ class Marker:
 
     def __repr__(self) -> str:
         return '<Marker: {}>'.format(', '.join((
-            'info={}'.format(self.info),
-            'centre={}'.format(self.centre),
-            'dist={}'.format(self.dist),
-            'orientation={}'.format(self.orientation),
+            f'info={self.info}',
+            f'centre={self.centre}',
+            f'dist={self.dist}',
+            f'orientation={self.orientation}',
         )))
 
     @property

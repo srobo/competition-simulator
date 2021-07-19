@@ -71,4 +71,4 @@ class Rectangle:
     def __repr__(self) -> str:
         (x_1, y_1), (x_2, y_2) = position, _ = self.corners
         size = (x_2 - x_1, y_2 - y_1)
-        return 'Rectangle({!r}, {!r})'.format(position, size)
+        return f'Rectangle({position!r}, {size!r})'

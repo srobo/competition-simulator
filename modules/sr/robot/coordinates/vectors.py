@@ -34,7 +34,7 @@ class Vector:
         return hash(self.data)
 
     def __repr__(self) -> str:
-        return 'Vector({!r})'.format(self.data)
+        return f'Vector({self.data!r})'
 
     def __len__(self) -> int:
         return len(self.data)
@@ -50,10 +50,7 @@ class Vector:
             return NotImplemented  # type: ignore[unreachable]
 
         if len(self) != len(other):
-            raise ValueError("Dimension mismatch: cannot add {} to {}".format(
-                len(self),
-                len(other),
-            ))
+            raise ValueError(f"Dimension mismatch: cannot add {len(self)} to {len(other)}")
 
         return Vector(x + y for x, y in zip(self.data, other.data))
 
@@ -88,10 +85,9 @@ class Vector:
             return NotImplemented  # type: ignore[unreachable]
 
         if len(self) != len(value):
-            raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
-                len(self),
-                len(value),
-            ))
+            raise ValueError(
+                f"Dimension mismatch: cannot multiply {len(self)} by {len(value)}",
+            )
 
         return sum(x * y for x, y in zip(self.data, value.data))
 
@@ -144,10 +140,8 @@ def angle_between(vec_a: Vector, vec_b: Vector) -> float:
 
     if len(vec_a) != 3 or len(vec_b) != 3:
         raise ValueError(
-            "Can only find angle between three-dimensional vectors, not {!r} and {!r}".format(
-                vec_a,
-                vec_b,
-            ),
+            "Can only find angle between three-dimensional vectors, "
+            f"not {vec_a!r} and {vec_b!r}",
         )
 
     if ZERO_3VECTOR in (vec_a, vec_b):

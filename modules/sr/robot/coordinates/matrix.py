@@ -20,7 +20,7 @@ class Matrix:
         lengths = set(len(x) for x in tuple_data)
 
         if len(lengths) != 1:
-            raise ValueError("Malformed input to Matrix: {!r}".format(tuple_data))
+            raise ValueError(f"Malformed input to Matrix: {tuple_data!r}")
 
         self.data = tuple_data
 
@@ -59,10 +59,9 @@ class Matrix:
             return NotImplemented  # type: ignore[unreachable]
 
         if self.dimensions != other.dimensions:
-            raise ValueError("Dimension mismatch: cannot add {} to {}".format(
-                self.dimensions,
-                other.dimensions,
-            ))
+            raise ValueError(
+                f"Dimension mismatch: cannot add {self.dimensions} to {other.dimensions}",
+            )
 
         return Matrix(
             (x + y for x, y in zip(row_self, row_other))
@@ -88,10 +87,9 @@ class Matrix:
         vector: Union[Vector, Tuple[float, ...]],
     ) -> Union[Vector, Tuple[float, ...]]:
         if len(vector) != self.dimensions[1]:
-            raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
-                self.dimensions,
-                len(vector),
-            ))
+            raise ValueError(
+                f"Dimension mismatch: cannot multiply {self.dimensions} by {len(vector)}",
+            )
 
         if isinstance(vector, Vector):
             data = vector.data
@@ -115,10 +113,10 @@ class Matrix:
             return NotImplemented  # type: ignore[unreachable]
 
         if self.dimensions != tuple(reversed(other.dimensions)):
-            raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
-                self.dimensions,
-                other.dimensions,
-            ))
+            raise ValueError(
+                f"Dimension mismatch: cannot multiply {self.dimensions} "
+                "by {other.dimensions}",
+            )
 
         return Matrix(
             (
