@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        webots-version: ["2020b-rev1", "2021a"]
+        webots-version: ["2021a", '2021b']
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.7
