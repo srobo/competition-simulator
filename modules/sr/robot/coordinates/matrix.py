@@ -1,6 +1,8 @@
 """
 Matrix utilities.
 """
+from __future__ import annotations
+
 from typing import Tuple, Union, Iterable, overload
 
 from .vectors import Vector
@@ -28,10 +30,10 @@ class Matrix:
     def dimensions(self) -> Tuple[int, int]:
         return len(self.data), len(self.data[0])
 
-    def transpose(self) -> 'Matrix':
+    def transpose(self) -> Matrix:
         return Matrix(zip(*self.data))
 
-    def __round__(self, precision: int) -> 'Matrix':
+    def __round__(self, precision: int) -> Matrix:
         return Matrix(
             (round(x, precision) for x in row)
             for row in self.data
@@ -51,10 +53,10 @@ class Matrix:
             ',\n    '.join(repr(x) for x in self.data),
         )
 
-    def __neg__(self) -> 'Matrix':
+    def __neg__(self) -> Matrix:
         return Matrix((-x for x in row) for row in self.data)
 
-    def __add__(self, other: 'Matrix') -> 'Matrix':
+    def __add__(self, other: Matrix) -> Matrix:
         if not isinstance(other, Matrix):
             return NotImplemented  # type: ignore[unreachable]
 
@@ -68,7 +70,7 @@ class Matrix:
             for row_self, row_other in zip(self.data, other.data)
         )
 
-    def __sub__(self, other: 'Matrix') -> 'Matrix':
+    def __sub__(self, other: Matrix) -> Matrix:
         if not isinstance(other, Matrix):
             return NotImplemented  # type: ignore[unreachable]
 
@@ -108,7 +110,7 @@ class Matrix:
 
     __rmul__ = __mul__
 
-    def __matmul__(self, other: 'Matrix') -> 'Matrix':
+    def __matmul__(self, other: Matrix) -> Matrix:
         if not isinstance(other, Matrix):
             return NotImplemented  # type: ignore[unreachable]
 

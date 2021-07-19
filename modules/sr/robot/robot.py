@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 import random
 from os import path, environ
@@ -43,7 +45,7 @@ class Robot:
             self.wait_start()
 
     @classmethod
-    def setup(cls) -> 'Robot':
+    def setup(cls) -> Robot:
         return cls(init=False)
 
     def init(self) -> None:

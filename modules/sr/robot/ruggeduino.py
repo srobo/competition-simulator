@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List
 
 from controller import Robot
@@ -6,7 +8,7 @@ from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
 from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
 
 
-def init_ruggeduino_array(webot: Robot, robot_type: RobotType) -> 'List[Ruggeduino]':
+def init_ruggeduino_array(webot: Robot, robot_type: RobotType) -> List[Ruggeduino]:
     led_names: List[str]
 
     # The names in these arrays correspond to the names given to devices in Webots

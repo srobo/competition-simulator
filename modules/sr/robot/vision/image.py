@@ -1,6 +1,7 @@
 """
 Utilities for working with "objects" as they appear on a flat image.
 """
+from __future__ import annotations
 
 from typing import Tuple
 
@@ -46,7 +47,7 @@ class Rectangle:
         (x_1, y_1), (x_2, y_2) = self.corners
         return max(y_1, y_2)
 
-    def overlaps(self, other: 'Rectangle') -> bool:
+    def overlaps(self, other: Rectangle) -> bool:
         # If one rectangle fully contains the other then we want the "outer" one
         # to be in `a`. this helps ensure that this is symetrical.
         a, b = (self, other) if self.x_min < other.x_min else (other, self)

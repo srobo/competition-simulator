@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 import math
 from typing import Dict, List, Mapping, NamedTuple
@@ -72,7 +74,7 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def face(self, name: FaceName) -> 'Face':
+    def face(self, name: FaceName) -> Face:
         """
         Get the named `Face` of the token.
 
@@ -93,7 +95,7 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def visible_faces(self, angle_tolernace: float = 75, is_2d: bool = False) -> 'List[Face]':
+    def visible_faces(self, angle_tolernace: float = 75, is_2d: bool = False) -> List[Face]:
         """
         Returns a list of the faces which are visible to the global origin.
         If a token should be considered 2D, only check its front and rear faces.

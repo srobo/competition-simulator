@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 import time
 import contextlib
@@ -175,7 +177,7 @@ def remove_unused_robots(supervisor: Supervisor) -> None:
         robot.remove()
 
 
-def get_simulation_run_mode(supervisor: Supervisor) -> 'SimulationMode':
+def get_simulation_run_mode(supervisor: Supervisor) -> SimulationMode:
     # webots 2020b is buggy and can raise TypeError when getDevice is passed a str
     if supervisor.getDevice("2021a-compatibility") is None:
         print(
