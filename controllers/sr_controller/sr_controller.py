@@ -147,8 +147,8 @@ def main() -> None:
     )
 
     if robot_zone == 0 and robot_type == RobotType.FORKLIFT:
-        # Only print once, but rely on Zone 0 always being run to ensure this is
-        # always printed somewhere.
+        # Only print once, but rely on Zone 0 forklift always being run to ensure
+        # this is always printed somewhere.
         print_simulation_version()
 
     print("Using {} for Zone {} {}".format(robot_file, robot_zone, robot_type))

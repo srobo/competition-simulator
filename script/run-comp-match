@@ -23,6 +23,7 @@ from shared_utils import RobotType  # isort:skip
 
 
 def get_zone_path(zone_id: int) -> Path:
+    # All robot types have a common path so we just use the first enum option
     robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id, RobotType.FORKLIFT)
     return robot_file.parent
 
