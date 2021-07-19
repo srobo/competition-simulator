@@ -265,3 +265,50 @@ Solid {  # Robot starting zones
   ]
   name "Robot Starting Zones"
 }
+
+DEF SHIP Transform {
+  translation -1.25 0 0
+  children [
+    Solid {
+      translation 1.25 0.25 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+          }
+          geometry DEF STACK_GEO Box {
+            size 1 0.5 1.5
+          }
+        }
+      ]
+      boundingObject USE STACK_GEO
+      name "Zone 0 Stack"
+    }
+    Solid {
+      translation -1.25 0.25 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+          }
+          geometry USE STACK_GEO
+        }
+      ]
+      boundingObject USE STACK_GEO
+      name "Zone 1 Stack"
+    }
+    Solid {
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+          }
+          geometry Plane {
+            size 1.5 1.5
+          }
+        }
+      ]
+      name "Deck"
+    }
+  ]
+}
