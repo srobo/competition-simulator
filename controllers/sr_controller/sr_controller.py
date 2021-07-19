@@ -151,7 +151,7 @@ def main() -> None:
         # this is always printed somewhere.
         print_simulation_version()
 
-    print("Using {} for Zone {} {}".format(robot_file, robot_zone, robot_type))
+    print("Using {} for Zone {} {}".format(robot_file, robot_zone, robot_type.value))
 
     # Pass through the various data our library needs
     os.environ['SR_ROBOT_ZONE'] = str(robot_zone)
