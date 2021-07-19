@@ -155,7 +155,7 @@ class Robot:
         self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
 
     def _init_compass(self) -> None:
-        if self.type == RobotType.FORKLIFT:  # The crane lacks a compass
+        if self.type != RobotType.CRANE:  # The crane lacks a compass
             self.compass = compass.Compass(self.webot)
 
     def time(self) -> float:
