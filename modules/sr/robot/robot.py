@@ -97,9 +97,10 @@ class Robot:
     def wait_start(self) -> None:
         "Wait for the start signal to happen"
 
-        if self.mode not in ["comp", "dev"]:
+        if self.mode not in ["comp", "dev", "dev-remote"]:
             raise Exception(
-                "mode of '%s' is not supported -- must be 'comp' or 'dev'" % self.mode,
+                "mode of '%s' is not supported -- must be 'comp', 'dev or 'dev-remote'"
+                % self.mode,
             )
         if self.zone < 0 or self.zone > 3:
             raise Exception(
