@@ -99,11 +99,11 @@ class Robot:
 
         if self.mode not in ["comp", "dev"]:
             raise Exception(
-                "mode of '%s' is not supported -- must be 'comp' or 'dev'" % self.mode,
+                f"mode of '{self.mode}' is not supported -- must be 'comp' or 'dev'",
             )
         if self.zone < 0 or self.zone > 3:
             raise Exception(
-                "zone must be in range 0-3 inclusive -- value of %i is invalid" % self.zone,
+                f"zone must be in range 0-3 inclusive -- value of {self.zone} is invalid",
             )
         if self.arena not in ["A", "B"]:
             raise Exception("arena must be A or B")
