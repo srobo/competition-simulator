@@ -39,7 +39,9 @@ PROTO SBForklift [
                     }
                   }
                 ]
-                boundingObject USE MOTOR_HOUSING
+                boundingObject DEF MOTOR_HOUSING_GEO Box {
+                  size 0.03 0.07 0.03
+                }
                 physics Physics {
                   density 8000  # steel
                 }
@@ -94,7 +96,7 @@ PROTO SBForklift [
                 children [
                   USE MOTOR_HOUSING
                 ]
-                boundingObject USE MOTOR_HOUSING
+                boundingObject USE MOTOR_HOUSING_GEO
                 physics Physics {
                   density 8000  # steel
                 }
@@ -301,7 +303,9 @@ PROTO SBForklift [
               }
             ]
             name "Support rod 1"
-            boundingObject USE SUPPORT_ROD
+            boundingObject DEF SUPPORT_ROD_GEO Box {
+              size 0.007 0.3 0.007
+            }
             physics Physics {
               density 8000  # steel
             }
@@ -313,7 +317,7 @@ PROTO SBForklift [
               USE SUPPORT_ROD
             ]
             name "Support rod 2"
-            boundingObject USE SUPPORT_ROD
+            boundingObject USE SUPPORT_ROD_GEO
             physics Physics {
               density 8000  # steel
             }
@@ -477,7 +481,9 @@ PROTO SBForklift [
             }
           }
         ]
-        boundingObject USE flag_pole
+        boundingObject Box {
+          size 0.02 0.2 0.02
+        }
         name "flag pole"
         physics Physics {
         }
