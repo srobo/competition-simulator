@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 import random
 from os import path, environ
@@ -43,7 +45,7 @@ class Robot:
             self.wait_start()
 
     @classmethod
-    def setup(cls) -> 'Robot':
+    def setup(cls) -> Robot:
         return cls(init=False)
 
     def init(self) -> None:
@@ -63,13 +65,13 @@ class Robot:
         user_code_version = self._get_user_code_info()
 
         parts = [
-            "Zone: {}".format(self.zone),
-            "Mode: {}".format(self.mode),
-            "Type: {}".format(self.type.value),
+            f"Zone: {self.zone}",
+            f"Mode: {self.mode}",
+            f"Type: {self.type.value}",
         ]
 
         if user_code_version:
-            parts.append("User code: {}".format(user_code_version))
+            parts.append(f"User code: {user_code_version}")
 
         print("Robot Initialized. {}.".format(", ".join(parts)))  # noqa:T001
 
@@ -83,7 +85,7 @@ class Robot:
 
         if duration_ms <= 0:
             raise ValueError(
-                "Duration must be greater than zero, not {!r}".format(duration_ms),
+                f"Duration must be greater than zero, not {duration_ms!r}",
             )
 
         with self._step_lock:
@@ -99,11 +101,11 @@ class Robot:
 
         if self.mode not in ["comp", "dev"]:
             raise Exception(
-                "mode of '%s' is not supported -- must be 'comp' or 'dev'" % self.mode,
+                f"mode of '{self.mode}' is not supported -- must be 'comp' or 'dev'",
             )
         if self.zone < 0 or self.zone > 3:
             raise Exception(
-                "zone must be in range 0-3 inclusive -- value of %i is invalid" % self.zone,
+                f"zone must be in range 0-3 inclusive -- value of {self.zone} is invalid",
             )
         if self.arena not in ["A", "B"]:
             raise Exception("arena must be A or B")

@@ -81,9 +81,8 @@ class Led:
     def write_value(self, value: bool) -> None:
         if not self._limiter.can_change():
             LOGGER.warning(
-                "Rate limited change to LED output (requested setting LED on pin %d to %r)",
-                self._pin_num,
-                value,
+                "Rate limited change to LED output (requested setting LED on pin "
+                f"{self._pin_num} to {value!r})",
             )
             return
 

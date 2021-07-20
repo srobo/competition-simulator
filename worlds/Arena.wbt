@@ -1,4 +1,4 @@
-#VRML_SIM R2020b utf8
+#VRML_SIM R2021b utf8
 WorldInfo {
   coordinateSystem "NUE"
   basicTimeStep 8
@@ -67,13 +67,6 @@ Robot {
   description "A supervisor 'robot' to help run the competition."
   controller "competition_supervisor"
   supervisor TRUE
-  children [
-    # this is a hack to detect if we are running on version 2020b
-    Connector {
-      name "2021a-compatibility"
-      type "passive"
-    }
-  ]
 }
 
 

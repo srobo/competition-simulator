@@ -23,7 +23,7 @@ def polar_from_cartesian(cartesian: Vector) -> PolarCoord:
     """
     if len(cartesian) != 3:
         raise ValueError(
-            "Can build polar coordinates for 3-vectors, not {!r}".format(cartesian),
+            f"Can build polar coordinates for 3-vectors, not {cartesian!r}",
         )
 
     x, y, z = cartesian.data
