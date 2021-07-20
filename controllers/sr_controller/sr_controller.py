@@ -80,11 +80,10 @@ def get_robot_file(zone_id: int, robot_type: RobotType, mode: str) -> Path:
     # For the non-strict zones (i.e: Zone 0 in development mode) we check in the
     # fallback place. If that doesn't exist we copy an example into it.
 
-    assert zone_id == 0 and mode in ["dev", "remote-dev"], \
-        (
-            f"Unexpectedly handling fallback logic for zone {zone_id} in {mode} "
-            f"mode, type {robot_type.value}"
-        )
+    assert zone_id == 0 and mode in ["dev", "remote-dev"], (
+        f"Unexpectedly handling fallback logic for zone {zone_id} in {mode} "
+        f"mode, type {robot_type.value}"
+    )
 
     if robot_file.exists():
         return robot_file
