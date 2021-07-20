@@ -1,6 +1,7 @@
 """
 Vector utilities.
 """
+from __future__ import annotations
 
 import math
 from typing import Union, Iterable, overload
@@ -34,44 +35,41 @@ class Vector:
         return hash(self.data)
 
     def __repr__(self) -> str:
-        return 'Vector({!r})'.format(self.data)
+        return f'Vector({self.data!r})'
 
     def __len__(self) -> int:
         return len(self.data)
 
-    def __round__(self, precision: int) -> 'Vector':
+    def __round__(self, precision: int) -> Vector:
         return Vector(round(x, precision) for x in self.data)
 
-    def __neg__(self) -> 'Vector':
+    def __neg__(self) -> Vector:
         return self * -1
 
-    def __add__(self, other: 'Vector') -> 'Vector':
+    def __add__(self, other: Vector) -> Vector:
         if not isinstance(other, Vector):
             return NotImplemented  # type: ignore[unreachable]
 
         if len(self) != len(other):
-            raise ValueError("Dimension mismatch: cannot add {} to {}".format(
-                len(self),
-                len(other),
-            ))
+            raise ValueError(f"Dimension mismatch: cannot add {len(self)} to {len(other)}")
 
         return Vector(x + y for x, y in zip(self.data, other.data))
 
-    def __sub__(self, other: 'Vector') -> 'Vector':
+    def __sub__(self, other: Vector) -> Vector:
         if not isinstance(other, Vector):
             return NotImplemented  # type: ignore[unreachable]
 
         return self.__add__(-other)
 
     @overload
-    def __mul__(self, other: float) -> 'Vector':
+    def __mul__(self, other: float) -> Vector:
         """
         Multiply vector by scalar.
         """
         ...
 
     @overload
-    def __mul__(self, other: 'Vector') -> float:
+    def __mul__(self, other: Vector) -> float:
         """
         Dot product between two vectors of equal length.
 
@@ -80,7 +78,7 @@ class Vector:
         """
         ...
 
-    def __mul__(self, value: 'Union[Vector, float]') -> 'Union[Vector, float]':
+    def __mul__(self, value: Union[Vector, float]) -> Union[Vector, float]:
         if isinstance(value, (float, int)):
             return Vector(value * x for x in self.data)
 
@@ -88,16 +86,15 @@ class Vector:
             return NotImplemented  # type: ignore[unreachable]
 
         if len(self) != len(value):
-            raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
-                len(self),
-                len(value),
-            ))
+            raise ValueError(
+                f"Dimension mismatch: cannot multiply {len(self)} by {len(value)}",
+            )
 
         return sum(x * y for x, y in zip(self.data, value.data))
 
     __rmul__ = __mul__
 
-    def __truediv__(self, other: float) -> 'Vector':
+    def __truediv__(self, other: float) -> Vector:
         if not isinstance(other, (float, int)):
             return NotImplemented  # type: ignore[unreachable]
 
@@ -144,10 +141,8 @@ def angle_between(vec_a: Vector, vec_b: Vector) -> float:
 
     if len(vec_a) != 3 or len(vec_b) != 3:
         raise ValueError(
-            "Can only find angle between three-dimensional vectors, not {!r} and {!r}".format(
-                vec_a,
-                vec_b,
-            ),
+            "Can only find angle between three-dimensional vectors, "
+            f"not {vec_a!r} and {vec_b!r}",
         )
 
     if ZERO_3VECTOR in (vec_a, vec_b):

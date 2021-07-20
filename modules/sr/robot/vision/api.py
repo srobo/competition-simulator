@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Tuple, Callable, Iterable, Sequence, TYPE_CHECKING
 
 from sr.robot.coordinates.vectors import Vector
@@ -11,9 +13,9 @@ if TYPE_CHECKING:
 
 
 def build_token_info(
-    recognition_object: 'CameraRecognitionObject',
+    recognition_object: CameraRecognitionObject,
     size: float,
-) -> Tuple[Token, Rectangle, 'CameraRecognitionObject']:
+) -> Tuple[Token, Rectangle, CameraRecognitionObject]:
     x, y, z = recognition_object.get_position()
 
     token = Token(
@@ -36,9 +38,9 @@ def build_token_info(
 
 
 def tokens_from_objects(
-    objects: 'Iterable[CameraRecognitionObject]',
-    get_size: 'Callable[[CameraRecognitionObject], float]',
-) -> Sequence[Tuple[Token, 'CameraRecognitionObject']]:
+    objects: Iterable[CameraRecognitionObject],
+    get_size: Callable[[CameraRecognitionObject], float],
+) -> Sequence[Tuple[Token, CameraRecognitionObject]]:
     """
     Constructs tokens from the given recognised objects, ignoring any which are
     judged not to be visible to the camera.

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Union
 
 from controller import Robot
@@ -10,7 +12,7 @@ from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
 SPEED_MAX = 100
 
 
-def init_motor_array(webot: Robot, robot_type: RobotType) -> 'List[Motor]':
+def init_motor_array(webot: Robot, robot_type: RobotType) -> List[Motor]:
     if robot_type == RobotType.FORKLIFT:
         return [
             Motor(

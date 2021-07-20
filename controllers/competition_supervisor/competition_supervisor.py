@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 import time
 import contextlib
@@ -23,7 +25,7 @@ import webots_utils  # isort:skip
 @contextlib.contextmanager
 def record_animation(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    print("Saving animation to {}".format(file_path))
+    print(f"Saving animation to {file_path}")
     supervisor.animationStartRecording(str(file_path))
     yield
     supervisor.animationStopRecording()
@@ -39,7 +41,7 @@ def record_video(supervisor: Supervisor, file_path: Path) -> Iterator[None]:
         yield
         return
     else:
-        print("Saving video to {}".format(file_path))
+        print(f"Saving video to {file_path}")
 
     supervisor.movieStartRecording(
         str(file_path),
@@ -132,9 +134,9 @@ def get_robots(
                 if skip_missing:
                     continue
 
-                msg = "Failed to get Webots node for zone {} and type {}".format(
-                    zone_id,
-                    robot_type.value,
+                msg = (
+                    f"Failed to get Webots node for zone {zone_id} "
+                    f"and type {robot_type.value}"
                 )
                 print(msg)
                 raise ValueError(msg)
@@ -152,7 +154,7 @@ def wait_until_robots_ready(supervisor: Supervisor) -> None:
         field = robot.getField('customData')
 
         if field.getSFString() != 'ready':
-            print("Waiting for {}".format(zone_id))
+            print(f"Waiting for {zone_id}")
             end_time = supervisor.getTime() + 5
             while field.getSFString() != 'ready':
                 # 5 second initialisation timeout
@@ -164,7 +166,7 @@ def wait_until_robots_ready(supervisor: Supervisor) -> None:
                     )
                 supervisor.step(time_step)
 
-        print("Zone {} ready".format(zone_id))
+        print(f"Zone {zone_id} ready")
 
 
 def remove_unused_robots(supervisor: Supervisor) -> None:
@@ -175,7 +177,7 @@ def remove_unused_robots(supervisor: Supervisor) -> None:
         robot.remove()
 
 
-def get_simulation_run_mode(supervisor: Supervisor) -> 'SimulationMode':
+def get_simulation_run_mode(supervisor: Supervisor) -> SimulationMode:
     # webots-2021a removed the RUN mode and now uses FAST
     return Supervisor.SIMULATION_MODE_FAST
 

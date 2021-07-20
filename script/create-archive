@@ -31,13 +31,13 @@ def main(args: argparse.Namespace) -> None:
     version = git('rev-parse', 'HEAD').strip()
     description = git('describe', '--always', '--tags').strip()
 
-    in_archive_directory_name = 'competition-simulator-{}'.format(description)
+    in_archive_directory_name = f'competition-simulator-{description}'
 
     git(
         'archive',
         'HEAD',
         '--prefix',
-        '{}/'.format(in_archive_directory_name),
+        f'{in_archive_directory_name}/',
         '--output',
         str(args.output_archive.resolve()),
     )
@@ -45,9 +45,9 @@ def main(args: argparse.Namespace) -> None:
     with ZipFile(args.output_archive, mode='a') as zipfile:
         # Add in the version of the simulation
         zipfile.writestr(
-            '{}/.simulation-rev'.format(in_archive_directory_name),
+            f'{in_archive_directory_name}/.simulation-rev',
             # Updating this? Also update the equivalent in create-ide-archive.
-            "{}\n{}\n".format(description, version),
+            f"{description}\n{version}\n",
         )
 
 

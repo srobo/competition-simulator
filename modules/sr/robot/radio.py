@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 import struct
 from math import pi, atan2
@@ -78,7 +80,7 @@ class Target(NamedTuple):
         signal_strength: float,
         target_info: TargetInfo,
         vector: Vector,
-    ) -> 'Target':
+    ) -> Target:
         x, _, z = vector.data  # 2-dimensional bearing in the xz plane, elevation is ignored
         bearing = pi - atan2(x, z)
         bearing = bearing - (2 * pi) if bearing > pi else bearing  # Normalize to (-pi, pi)
@@ -86,9 +88,9 @@ class Target(NamedTuple):
 
     def __repr__(self) -> str:
         return '<{}: {}>'.format(type(self).__name__, ', '.join((
-            'info={}'.format(self.target_info),
-            'bearing={}'.format(self.bearing),
-            'strength={}'.format(self.signal_strength),
+            f'info={self.target_info}',
+            f'bearing={self.bearing}',
+            f'strength={self.signal_strength}',
         )))
 
 
