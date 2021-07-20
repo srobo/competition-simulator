@@ -28,10 +28,9 @@ def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> 'Matr
 
     size = round(x ** 2 + y ** 2 + z ** 2, 5)
     if size != 1:
-        raise ValueError("Orientation vector {} is not a unit vector (length is {})".format(
-            orientation[:3],
-            size,
-        ))
+        raise ValueError(
+            f"Orientation vector {orientation[:3]} is not a unit vector (length is {size})",
+        )
 
     cos_theta = math.cos(theta)
     one_minus_cos_theta = 1 - cos_theta

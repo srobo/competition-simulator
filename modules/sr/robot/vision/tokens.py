@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import enum
 import math
 from typing import Dict, List, Mapping, NamedTuple
@@ -72,7 +74,7 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def face(self, name: FaceName) -> 'Face':
+    def face(self, name: FaceName) -> Face:
         """
         Get the named `Face` of the token.
 
@@ -93,7 +95,7 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def visible_faces(self, angle_tolernace: float = 75, is_2d: bool = False) -> 'List[Face]':
+    def visible_faces(self, angle_tolernace: float = 75, is_2d: bool = False) -> List[Face]:
         """
         Returns a list of the faces which are visible to the global origin.
         If a token should be considered 2D, only check its front and rear faces.
@@ -115,7 +117,7 @@ class Face:
         self.name = name
 
     def __repr__(self) -> str:
-        return 'Face({!r}, {!r})'.format(self.token, self.name)
+        return f'Face({self.token!r}, {self.name!r})'
 
     def _filter_corners(self, corners: Mapping[str, Vector]) -> Dict[str, Vector]:
         return {
@@ -168,9 +170,8 @@ class Face:
     def is_visible_to_global_origin(self, angle_tolernace: float = 75) -> bool:
         if angle_tolernace > 90:
             raise ValueError(
-                "Refusing to allow faces with angles > 90 to be visible (asked for {})".format(
-                    angle_tolernace,
-                ),
+                "Refusing to allow faces with angles > 90 to be visible "
+                f"(asked for {angle_tolernace})",
             )
 
         direction_to_origin = -self.centre_global()

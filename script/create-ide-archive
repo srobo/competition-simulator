@@ -64,7 +64,7 @@ def main(args: argparse.Namespace) -> None:
         zipfile.writestr(
             'competition-simulator/.simulation-rev',
             # Updating this? Also update the equivalent in create-archive.
-            "{}\n{}\n".format(description, version),
+            f"{description}\n{version}\n",
         )
 
         # Write in the user code

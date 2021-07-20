@@ -64,14 +64,14 @@ def get_robot_file(zone_id: int, robot_type: RobotType, mode: str) -> Path:
         exit(
             "Found robot controller in shared location and zone-0 location. "
             "Remove one of the controllers before running the simulation\n"
-            "{}\n{}".format(robot_file, fallback_robot_file),
+            f"{robot_file}\n{fallback_robot_file}",
         )
 
     if zone_id in strict_zones:
         if robot_file.exists():
             return robot_file
 
-        print("No robot controller found for zone {} {}".format(zone_id, robot_type.value))
+        print(f"No robot controller found for zone {zone_id} {robot_type.value}")
 
         # Only in competition mode is it an error for a robot file to be missing.
         missing_file_is_error = mode == "comp"
@@ -81,10 +81,9 @@ def get_robot_file(zone_id: int, robot_type: RobotType, mode: str) -> Path:
     # fallback place. If that doesn't exist we copy an example into it.
 
     assert zone_id == 0 and mode in ["dev", "remote-dev"], \
-        "Unexpectedly handling fallback logic for zone {} in {} mode, type {}".format(
-            zone_id,
-            mode,
-            robot_type.value,
+        (
+            f"Unexpectedly handling fallback logic for zone {zone_id} in {mode} "
+            f"mode, type {robot_type.value}"
         )
 
     if robot_file.exists():
@@ -93,11 +92,10 @@ def get_robot_file(zone_id: int, robot_type: RobotType, mode: str) -> Path:
     if fallback_robot_file.exists():
         return fallback_robot_file
 
-    print("No robot controller found for zone {} {}, copying example to {}.".format(
-        zone_id,
-        robot_type.value,
-        robot_file,
-    ))
+    print(
+        f"No robot controller found for zone {zone_id} {robot_type.value}, "
+        "copying example to {robot_file}.",
+    )
 
     (controller_utils.ARENA_ROOT / 'zone-0').mkdir(exist_ok=True)
     (controller_utils.ARENA_ROOT / 'zone-1').mkdir(exist_ok=True)
@@ -111,14 +109,14 @@ def print_simulation_version() -> None:
     version_path = (REPO_ROOT / '.simulation-rev')
     if version_path.exists():
         description, revision = version_path.read_text().splitlines()
-        version = "{} (rev {})".format(description, revision)
+        version = f"{description} (rev {revision})"
     else:
         version = subprocess.check_output(
             ['git', 'describe', '--always', '--tags'],
             cwd=str(REPO_ROOT.resolve()),
         ).decode().strip()
 
-    print("Running simulator version {}".format(version))
+    print(f"Running simulator version {version}")
 
 
 def reconfigure_environment(robot_file: Path) -> None:
@@ -152,7 +150,7 @@ def main() -> None:
         # this is always printed somewhere.
         print_simulation_version()
 
-    print("Using {} for Zone {} {}".format(robot_file, robot_zone, robot_type))
+    print(f"Using {robot_file} for Zone {robot_zone} {robot_type.value}")
 
     # Pass through the various data our library needs
     os.environ['SR_ROBOT_ZONE'] = str(robot_zone)

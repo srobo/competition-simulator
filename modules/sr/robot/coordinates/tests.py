@@ -239,7 +239,7 @@ class VectorTests(unittest.TestCase):
                 a, b = case
                 self.assertTrue(
                     vectors.are_same_direction(a, b),
-                    "{0} should be the same direction as {1}".format(a, b),
+                    f"{a} should be the same direction as {b}",
                 )
 
     def test_not_same_direction(self) -> None:
@@ -254,7 +254,7 @@ class VectorTests(unittest.TestCase):
                 a, b = case
                 self.assertFalse(
                     vectors.are_same_direction(a, b),
-                    "{0} should not be the same direction as {1}".format(a, b),
+                    f"{a} should not be the same direction as {b}",
                 )
 
     def test_unit_vector(self) -> None:
@@ -270,7 +270,7 @@ class VectorTests(unittest.TestCase):
                 self.assertEqual(
                     expected,
                     unit_vec,
-                    "Wrong unit vector for {0}.".format(vec),
+                    f"Wrong unit vector for {vec}.",
                 )
 
     def test_vector_sum(self) -> None:
@@ -308,7 +308,7 @@ class VectorTests(unittest.TestCase):
                 self.assertEqual(
                     expected,
                     cp,
-                    "Wrong cross product {0} × {1}.".format(vec_a, vec_b),
+                    f"Wrong cross product {vec_a} × {vec_b}.",
                 )
 
                 # Also check the other way around, which is defined as the reverse
@@ -317,7 +317,7 @@ class VectorTests(unittest.TestCase):
                 self.assertEqual(
                     expected_rev,
                     cp_rev,
-                    "Wrong cross product {0} × {1}.".format(vec_b, vec_a),
+                    f"Wrong cross product {vec_b} × {vec_a}.",
                 )
 
     def test_dot_product_self(self) -> None:
