@@ -199,10 +199,6 @@ PROTO SBForklift [
             ]
           }
         ]
-        boundingObject USE body_geo
-        physics Physics {
-          # wood = ~700, leave at default
-        }
       }
       DEF CASTERS Transform {
         translation 0 0.0025 0.1
