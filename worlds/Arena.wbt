@@ -90,6 +90,13 @@ DEF TOKEN_CTRL Robot {
     }
   ]
 }
+Robot {
+  translation 0 0 0
+  name "token-scorer"
+  description "A supervisor 'robot' to monitor the location of tokens."
+  controller "token_scorer"
+  supervisor TRUE
+}
 
 DEF LIGHT_CTRL Robot {
   translation 0 0 0
