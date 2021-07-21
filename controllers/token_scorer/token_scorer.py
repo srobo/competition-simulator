@@ -44,6 +44,8 @@ ZONE_0_STACK_SCORING_ZONE = (Point(-0.75, 0.5), Point(0.75, -0.5))
 ZONE_1_STACK_SCORING_ZONE = (Point(-0.75, -2), Point(0.75, -3))
 
 TOKENS: List[Token] = [
+    Token(Owner.ZONE_0, 1),
+    Token(Owner.ZONE_1, 4),
 ]
 
 
