@@ -93,7 +93,7 @@ def get_robot_file(zone_id: int, robot_type: RobotType, mode: str) -> Path:
 
     print(
         f"No robot controller found for zone {zone_id} {robot_type.value}, "
-        "copying example to {robot_file}.",
+        f"copying example to {robot_file}.",
     )
 
     (controller_utils.ARENA_ROOT / 'zone-0').mkdir(exist_ok=True)
