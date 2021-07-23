@@ -6,10 +6,10 @@ WorldInfo {
 Viewpoint {
   # the combined rotation of 0, -1, 0, 1.5708 & -1, 0, 0, 1
   orientation -0.43231 -0.79134 -0.43231 1.80272
-  position -11.5 17.6 0
+  position -9.5 14.3 0
   # top view:
   #orientation -0.57735 -0.57735 -0.57735 2.09440
-  #position 0 20.5 0
+  #position 0 16.5 0
   near 0.1
 }
 DEF SUN DirectionalLight {
@@ -25,17 +25,17 @@ DEF AMBIENT Background {
   luminosity 0.35
 }
 
-# Updating colours? Update `territory_controller.py`
+# Updating colours? Update `???_controller.py`
 DEF ROBOT-0-forklift SBForklift {
-  translation 0 0.005 -7
-  rotation 0 1 0 0
+  translation 2.5 0.005 -0.5
+  rotation 0 1 0 3.9270
   controller "sr_controller"
   model "Robot0forklift"
   flagColour 1 0 1
   controllerArgs ["0", "forklift"]
 }
 DEF ROBOT-0-crane SRRobot {
-  translation -3 0.005 -7
+  translation -1.25 0.005 -0.8
   rotation 0 1 0 3.14
   controller "sr_controller"
   model "Robot0crane"
@@ -43,19 +43,19 @@ DEF ROBOT-0-crane SRRobot {
   controllerArgs ["0", "crane"]
 }
 DEF ROBOT-1-forklift SBForklift {
-  translation 0 0.005 7
-  rotation 0 1 0 3.14
+  translation 2.5 0.005 0.5
+  rotation 0 1 0 5.4978
   controller "sr_controller"
   model "Robot1"
   flagColour 1 1 0
   controllerArgs ["1", "forklift"]
 }
 DEF ROBOT-1-crane SRRobot {
-  translation -3 0.005 7
+  translation -1.25 0.005 0.8
   rotation 0 1 0 0
   controller "sr_controller"
   model "Robot1crane"
-  flagColour 1 0 1
+  flagColour 1 1 0
   controllerArgs ["1", "crane"]
 }
 
@@ -68,386 +68,8 @@ Robot {
   controller "competition_supervisor"
   supervisor TRUE
 }
-Robot {
-  rotation 0 1 0 -1.5708
-  name "territory_controller"
-  description "A supervisor 'robot' to handle claiming of territories"
-  controller "territory_controller"
-  supervisor TRUE
-  children [
-    DEF PN SRTerritory {
-      translation -4.2 0 -1.8
-      territoryName "PNTerritory"
-      emitterName "PNEmitter"
-      receiverName "PNReceiver"
-      textureName "../textures/territory-labels/PN.png"
-    }
-    DEF EY SRTerritory {
-      translation -1.95 0 -0.75
-      territoryName "EYTerritory"
-      emitterName "EYEmitter"
-      receiverName "EYReceiver"
-      textureName "../textures/territory-labels/EY.png"
-    }
-    DEF BE SRTerritory {
-      translation 0 0 1.5
-      territoryName "BETerritory"
-      emitterName "BEEmitter"
-      receiverName "BEReceiver"
-      textureName "../textures/territory-labels/BE.png"
-    }
-    DEF PO SRTerritory {
-      translation 1.95 0 -0.75
-      territoryName "POTerritory"
-      emitterName "POEmitter"
-      receiverName "POReceiver"
-      textureName "../textures/territory-labels/PO.png"
-    }
-    DEF YL SRTerritory {
-      translation 4.2 0 -1.8
-      territoryName "YLTerritory"
-      emitterName "YLEmitter"
-      receiverName "YLReceiver"
-      textureName "../textures/territory-labels/YL.png"
-    }
-    DEF BG SRTerritory {
-      translation -4.2 0 0
-      territoryName "BGTerritory"
-      emitterName "BGEmitter"
-      receiverName "BGReceiver"
-      textureName "../textures/territory-labels/BG.png"
-    }
-    DEF OX SRTerritory {
-      translation -6.6 0 3
-      territoryName "OXTerritory"
-      emitterName "OXEmitter"
-      receiverName "OXReceiver"
-      textureName "../textures/territory-labels/OX.png"
-    }
-    DEF TS SRTerritory {
-      translation -2.75 0 2.75
-      territoryName "TSTerritory"
-      emitterName "TSEmitter"
-      receiverName "TSReceiver"
-      textureName "../textures/territory-labels/TS.png"
-    }
-    DEF VB SRTerritory {
-      translation -1.95 0 0.75
-      territoryName "VBTerritory"
-      emitterName "VBEmitter"
-      receiverName "VBReceiver"
-      textureName "../textures/territory-labels/VB.png"
-    }
-    DEF HV SRTerritory {
-      translation 4.2 0 0
-      territoryName "HVTerritory"
-      emitterName "HVEmitter"
-      receiverName "HVReceiver"
-      textureName "../textures/territory-labels/HV.png"
-    }
-    DEF BN SRTerritory {
-      translation  6.6 0 3
-      territoryName "BNTerritory"
-      emitterName "BNEmitter"
-      receiverName "BNReceiver"
-      textureName "../textures/territory-labels/BN.png"
-    }
-    DEF SW SRTerritory {
-      translation 2.75 0 2.75
-      territoryName "SWTerritory"
-      emitterName "SWEmitter"
-      receiverName "SWReceiver"
-      textureName "../textures/territory-labels/SW.png"
-    }
-    DEF SZ SRTerritory {
-      translation 1.95 0 0.75
-      territoryName "SZTerritory"
-      emitterName "SZEmitter"
-      receiverName "SZReceiver"
-      textureName "../textures/territory-labels/SZ.png"
-    }
-    DEF FL SRTerritory {
-      translation 0 0 -3
-      territoryName "FLTerritory"
-      emitterName "FLEmitter"
-      receiverName "FLReceiver"
-      textureName "../textures/territory-labels/FL.png"
-    }
-    DEF YT SRTerritory {
-      translation 0 0 -1.5
-      territoryName "YTTerritory"
-      emitterName "YTEmitter"
-      receiverName "YTReceiver"
-      textureName "../textures/territory-labels/YT.png"
-    }
-    DEF HA SRTerritory {
-      territoryName "HATerritory"
-      emitterName "HAEmitter"
-      receiverName "HAReceiver"
-      textureName "../textures/territory-labels/HA.png"
-    }
-    DEF PL SRTerritory {
-      translation 0 0 3
-      territoryName "PLTerritory"
-      emitterName "PLEmitter"
-      receiverName "PLReceiver"
-      textureName "../textures/territory-labels/PL.png"
-    }
-    DEF TH SRTerritory {
-      translation -6.6 0 -3
-      territoryName "THTerritory"
-      emitterName "THEmitter"
-      receiverName "THReceiver"
-      textureName "../textures/territory-labels/TH.png"
-    }
-    DEF SF SRTerritory {
-      translation 6.6 0 -3
-      territoryName "SFTerritory"
-      emitterName "SFEmitter"
-      receiverName "SFReceiver"
-      textureName "../textures/territory-labels/SF.png"
-    }
-    Transform {
-      translation 0 -0.0015 0
-      children [
-        DEF PN-EY SRLink {
-          translation -3.075 0 -1.275
-          rotation 0 1 0 1.1342
-          size 0.2 2.5
-          linkName "link PN-EY"
-        }
-        DEF BG-VB SRLink {
-          translation -3.075 0 0.375
-          rotation 0 1 0 1.249
-          size 0.2 2.4
-          linkName "link BG-VB"
-        }
-        DEF OX-VB SRLink {
-          translation -4.275 0 1.875
-          rotation 0 1 0 2.0215
-          size 0.2 5.2
-          linkName "link OX-VB"
-        }
-        DEF OX-TS SRLink {
-          translation -4.625 0 2.875
-          rotation 0 1 0 1.6356
-          size 0.2 3.9
-          linkName "link OX-TS"
-        }
-        DEF EY-VB SRLink {
-          translation -1.95 0 0
-          rotation 0 1 0 0
-          size 0.2 1.5
-          linkName "link EY-VB"
-        }
-        DEF TH-PN SRLink {
-          translation -5.4 0 -2.4
-          rotation 0 1 0 1.1071
-          size 0.2 2.7
-          linkName "link TH-PN"
-        }
-        DEF VB-PL SRLink {
-          translation -0.975 0 1.875
-          rotation 0 1 0 0.7141
-          size 0.2 3
-          linkName "link VB-PL"
-        }
-        DEF VB-BE SRLink {
-          translation -0.975 0 1.125
-          rotation 0 1 0 1.2036
-          size 0.2 2.1
-          linkName "link VB-BE"
-        }
-        DEF EY-FL SRLink {
-          translation -0.975 0 -1.875
-          rotation 0 1 0 2.4275
-          size 0.2 3
-          linkName "link EY-FL"
-        }
 
-        DEF YT-HA SRLink {
-          translation 0 0 -0.75
-          rotation 0 1 0 0
-          size 0.2 1.5
-          linkName "link YT-HA"
-        }
-        DEF HA-BE SRLink {
-          translation 0 0 0.75
-          rotation 0 1 0 0
-          size 0.2 1.5
-          linkName "link HA-BE"
-        }
 
-        DEF PO-YL SRLink {
-          translation 3.075 0 -1.275
-          rotation 0 1 0 2.0074
-          size 0.2 2.5
-          linkName "link PO-YL"
-        }
-        DEF SZ-HV SRLink {
-          translation 3.075 0 0.375
-          rotation 0 1 0 1.8925
-          size 0.2 2.4
-          linkName "link SZ-HV"
-        }
-        DEF SZ-BN SRLink {
-          translation 4.275 0 1.875
-          rotation 0 1 0 1.1201
-          size 0.2 5.2
-          linkName "link SZ-BN"
-        }
-        DEF SW-BN SRLink {
-          translation 4.275 0 2.875
-          rotation 0 1 0 1.506
-          size 0.2 3.9
-          linkName "link SW-BN"
-        }
-        DEF PO-SZ SRLink {
-          translation 1.95 0 0
-          rotation 0 1 0 0
-          size 0.2 1.5
-          linkName "link PO-SZ"
-        }
-        DEF YL-SF SRLink {
-          translation 5.4 0 -2.4
-          rotation 0 1 0 2.0344
-          size 0.2 2.7
-          linkName "link YL-SF"
-        }
-        DEF PL-SZ SRLink {
-          translation 0.975 0 1.875
-          rotation 0 1 0 2.4275
-          size 0.2 3
-          linkName "link PL-SZ"
-        }
-        DEF BE-SZ SRLink {
-          translation 0.975 0 1.125
-          rotation 0 1 0 1.938
-          size 0.2 2.1
-          linkName "link BE-SZ"
-        }
-        DEF FL-PO SRLink {
-          translation 0.975 0 -1.875
-          rotation 0 1 0 0.7141
-          size 0.2 3
-          linkName "link FL-PO"
-        }
-
-        DEF z0-PN SRLink {
-          translation -5.6 0 -0.9
-          rotation 0 1 0 2.1421
-          size 0.2 3.3
-          linkName "link z0-PN"
-        }
-        DEF z0-BG SRLink {
-          translation -5.6 0 0
-          rotation 0 1 0 1.5708
-          size 0.2 2.8
-          linkName "link z0-BG"
-        }
-        DEF z0-OX SRLink {
-          translation -6.8 0 1.5
-          rotation 0 1 0 0.1326
-          size 0.2 3
-          linkName "link z0-OX"
-        }
-        DEF z1-YL SRLink {
-          translation 5.6 0 -0.9
-          rotation 0 1 0 -2.1421
-          size 0.2 3.3
-          linkName "link z1-YL"
-        }
-        DEF z1-HV SRLink {
-          translation 5.6 0 0
-          rotation 0 1 0 -1.5708
-          size 0.2 2.8
-          linkName "link z1-HV"
-        }
-        DEF z1-BN SRLink {
-          translation 6.8 0 1.5
-          rotation 0 1 0 -0.1326
-          size 0.2 3
-          linkName "link z1-BN"
-        }
-      ]
-    }
-    Transform {
-      translation -2.3 0.31 -3
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 1 0 1
-            roughness 1
-            metalness 0
-          }
-          geometry Plane {
-            size 1 0.7
-          }
-        }
-        Display {
-          name "SCORE_DISPLAY_0"
-          translation 0 0.01 0
-          height 64
-          width 96
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 1 1 1
-                roughness 1
-                metalness 0
-                baseColorMap ImageTexture {}
-              }
-              geometry Plane {
-                size 0.9 0.6
-              }
-            }
-          ]
-        }
-      ]
-    }
-    Transform {
-      translation 2.3 0.31 -3
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 1 1 0
-            roughness 1
-            metalness 0
-          }
-          geometry Plane {
-            size 1 0.7
-          }
-        }
-        Display {
-          name "SCORE_DISPLAY_1"
-          translation 0 0.01 0
-          height 64
-          width 96
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 1 1 1
-                roughness 1
-                metalness 0
-                baseColorMap ImageTexture {}
-              }
-              geometry Plane {
-                size 0.9 0.6
-              }
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-DEF WALL_CTRL Robot {
-  translation 0 0 0
-  name "wall_controller"
-  description "A supervisor 'robot' to handle moving walls"
-  controller "wall_controller"
-  supervisor TRUE
-}
 DEF LIGHT_CTRL Robot {
   translation 0 0 0
   name "lighting_controller"
@@ -456,131 +78,68 @@ DEF LIGHT_CTRL Robot {
   supervisor TRUE
 }
 
-Transform {
-  rotation 0 1 0 -1.5708
-
+DEF ARENA_WALLS Group {
   children [
-    Solid {  # North-West Arena Triangle
+    Solid {  # North Wall
+      translation 3.075 0.15 0
       children [
         DEF SHAPE Shape {
-          appearance PBRAppearance {
+          appearance DEF WALL_COLOUR PBRAppearance {
             baseColor 0.095395215 0.22841774 0.8000001
             roughness 1
             metalness 0
           }
-          geometry IndexedFaceSet {
-            coord Coordinate {
-              point [
-                -2.1 0 -2.2
-                -0.5 0 -3.75
-                -0.5 0.3 -3.75
-                -2.1 0.3 -2.2
-                -5.5 0.3 -3.75
-                -5.5 0 -3.75
-              ]
-            }
-            coordIndex [
-              0, 1, 2, 3, -1,
-              0, 3, 4, 5, -1,
-              4, 3, 2
-            ]
+          geometry Box {
+            size 0.15 0.3 12.3
           }
         }
       ]
-      name "North-West Arena Triangle"
       boundingObject USE SHAPE
+      name "North Wall"
     }
-    Solid {  # North-East Arena Triangle
+    Solid {  # South Wall
+      translation -3.075 0.15 0
       children [
         DEF SHAPE Shape {
-          appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
-            roughness 1
-            metalness 0
-          }
-          geometry IndexedFaceSet {
-            coord Coordinate {
-              point [
-                2.1 0 -2.2
-                5.5 0 -3.75
-                5.5 0.3 -3.75
-                2.1 0.3 -2.2
-                0.5 0.3 -3.75
-                0.5 0 -3.75
-              ]
-            }
-            coordIndex [
-              0, 1, 2, 3, -1,
-              0, 3, 4, 5, -1,
-              4, 3, 2
-            ]
+          appearance USE WALL_COLOUR
+          geometry Box {
+            size 0.15 0.3 12.3
           }
         }
       ]
-      name "North-East Arena Triangle"
       boundingObject USE SHAPE
+      name "South Wall"
     }
-    DEF west_moving_triangle Solid {  # South-West Arena Triangle
+    Solid {  # East Wall
+      translation 0 0.15 6.075
       children [
         DEF SHAPE Shape {
-          appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
-            roughness 1
-            metalness 0
-          }
-          geometry IndexedFaceSet {
-            coord Coordinate {
-              point [
-                -3.8 0 1
-                -5.425 0 1
-                -5.425 0.3 1
-                -3.8 0.3 1
-                -5.425 0.3 2.25
-                -5.425 0 2.25
-              ]
-            }
-            coordIndex [
-              0, 1, 2, 3, -1,
-              0, 3, 4, 5, -1,
-              4, 3, 2
-            ]
+          appearance USE WALL_COLOUR
+          geometry Box {
+            size 6 0.3 0.15
           }
         }
-
       ]
-      name "South-West Arena Triangle"
       boundingObject USE SHAPE
+      name "East Wall"
     }
-    DEF east_moving_triangle Solid {  # South-East Arena Triangle
+    Solid {  # West Wall
+      translation 0 0.15 -6.075
       children [
         DEF SHAPE Shape {
-          appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
-            roughness 1
-            metalness 0
-          }
-          geometry IndexedFaceSet {
-            coord Coordinate {
-              point [
-                3.8 0 1
-                5.425 0 2.25
-                5.425 0.3 2.25
-                3.8 0.3 1
-                5.425 0.3 1
-                5.425 0 1
-              ]
-            }
-            coordIndex [
-              0, 1, 2, 3, -1,
-              0, 3, 4, 5, -1,
-              4, 3, 2
-            ]
+          appearance USE WALL_COLOUR
+          geometry Box {
+            size 6 0.3 0.15
           }
         }
       ]
-      name "South-East Arena Triangle"
       boundingObject USE SHAPE
+      name "West Wall"
     }
+  ]
+}
+DEF ARENA_BOUNDING Group {
+  children [
     Solid {  # Floor
       translation 0 -0.002 0
       children [
@@ -591,303 +150,158 @@ Transform {
             metalness 0
           }
           geometry Plane {
-            size 15 7.5
+            size 6 12
           }
         }
       ]
       name "Floor"
       boundingObject USE FLOOR
+      locked TRUE
     }
-    Solid {  # Robot Corners
+    Solid {  # Ceiling
+      rotation 1 0 0 3.1419
+      translation 0 2 0
+      boundingObject Plane {
+        size 6 12
+      }
+      name "Top boundary"
+      locked TRUE
+    }
+    Solid {  # West bound
+      rotation 1 0 0 1.5708
+      translation 0 1 -6
+      boundingObject Plane {
+        size 6 2
+      }
+      name "West boundary"
+      locked TRUE
+    }
+    Solid {  # East bound
+      rotation 1 0 0 -1.5708
+      translation 0 1 6
+      boundingObject Plane {
+        size 6 2
+      }
+      name "East boundary"
+      locked TRUE
+    }
+    Solid {  # North bound
+      rotation 0 0 1 1.5708
+      translation 3 1 0
+      boundingObject Plane {
+        size 2 12
+      }
+      name "North boundary"
+      locked TRUE
+    }
+    Solid {  # South bound
+      rotation 0 0 1 -1.5708
+      translation -3 1 0
+      boundingObject Plane {
+        size 2 12
+      }
+      name "South boundary"
+      locked TRUE
+    }
+  ]
+}
+Solid {  # Robot starting zones
+  children [
+    Transform {  # Zone 0 inner
+      translation 2.55 0.002 -0.45
       children [
-        # Zone 0 inner
-        Transform {
-          translation -7.05 0.0015 0
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry Plane {
-                size 0.9 0.9
-              }
-            }
-          ]
-        }
-        # Zone 0 outer
-        Transform {
-          translation -7 0.001 0
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 1 0 1
-                roughness 1
-                metalness 0
-              }
-              geometry Plane {
-                size 1 1.1
-              }
-            }
-          ]
-        }
-        # Zone 1 inner
-        Transform {
-          translation 7.05 0.0015 0
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.095395215 0.22841774 0.8000001
-                roughness 1
-                metalness 0
-              }
-              geometry Plane {
-                size 0.9 0.9
-              }
-            }
-          ]
-        }
-        # Zone 1 outer
-        Transform {
-          translation 7 0.001 0
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 1 1 0
-                roughness 1
-                metalness 0
-              }
-              geometry Plane {
-                size 1 1.1
-              }
-            }
-          ]
+        Shape {
+          appearance USE WALL_COLOUR
+          geometry DEF INNER_ZONE_GEO Plane {
+            size 0.9 0.9
+          }
         }
       ]
-      name "Robot Corners"
     }
-    Solid {  # West Wall
-      translation -7.575 0.15 0
+    Transform {  # Zone 0 outer
+      translation 2.5 0.001 -0.5
       children [
-        DEF SHAPE Shape {
+        Shape {
           appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
+            baseColor 1 0 1
             roughness 1
             metalness 0
           }
-          geometry Box {
-            size 0.15 0.4 7.5
+          geometry DEF OUTER_ZONE_GEO Plane {
+            size 1 1
           }
         }
       ]
-      boundingObject USE SHAPE
-      name "West Wall"
     }
-    Solid {  # East Wall
-      translation 7.575 0.15 0
+    Transform {  # Zone 1 inner
+      translation 2.55 0.002 0.45
       children [
-        DEF SHAPE Shape {
+        Shape {
+          appearance USE WALL_COLOUR
+          geometry USE INNER_ZONE_GEO
+        }
+      ]
+    }
+    Transform {  # Zone 1 outer
+      translation 2.5 0.001 0.5
+      children [
+        Shape {
           appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
+            baseColor 1 1 0
             roughness 1
             metalness 0
           }
-          geometry Box {
-            size 0.15 0.4 7.5
-          }
-        }
-      ]
-      boundingObject USE SHAPE
-      name "East Wall"
-    }
-    Solid {  # North Wall
-      translation 0 0.15 3.825
-      children [
-        DEF SHAPE Shape {
-          appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
-            roughness 1
-            metalness 0
-          }
-          geometry Box {
-            size 15.3 0.4 0.15
-          }
-        }
-      ]
-      boundingObject USE SHAPE
-      name "North Wall"
-    }
-    Solid {  # South Wall
-      translation 0 0.15 -3.825
-      children [
-        DEF SHAPE Shape {
-          appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
-            roughness 1
-            metalness 0
-          }
-          geometry Box {
-            size 15.3 0.4 0.15
-          }
-        }
-      ]
-      boundingObject USE SHAPE
-      name "South Wall"
-    }
-    DEF west_moving_wall Solid {
-      translation -5.5 0.15 -0.25
-      children [
-        DEF SHAPE Shape {
-          appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
-            roughness 1
-            metalness 0
-          }
-          geometry Box {
-            size 0.15 0.3 5
-          }
-        }
-      ]
-      boundingObject USE SHAPE
-      name "West Moving Wall"
-    }
-    DEF east_moving_wall Solid {
-      translation 5.5 0.15 -0.25
-      children [
-        DEF SHAPE Shape {
-          appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
-            roughness 1
-            metalness 0
-          }
-          geometry Box {
-            size 0.15 0.3 5
-          }
-        }
-      ]
-      boundingObject USE SHAPE
-      name "East Moving Wall"
-    }
-    Solid {  # Center Wall
-      translation 0 0.15 0
-      children [
-        DEF SHAPE Shape {
-          appearance PBRAppearance {
-            baseColor 0.095395215 0.22841774 0.8000001
-            roughness 1
-            metalness 0
-          }
-          geometry Box {
-            size 7 0.3 0.15
-          }
-        }
-      ]
-      boundingObject USE SHAPE
-      name "Center Wall"
-    }
-    Transform {
-      translation 0 -0.001 0
-      children [
-        Solid {
-          name "T2 border"
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.6902 0.5529 0.3412
-              }
-              geometry Cylinder {
-                height 0.001
-                radius 0.6
-              }
-            }
-          ]
-        }
-        Solid {
-          name "T1 border"
-          translation 0 0 -1.5
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.6471 0.4863 0
-                emissiveColor 0.6471 0.4863 0
-                emissiveIntensity 0.4
-              }
-              geometry Cylinder {
-                height 0.001
-                radius 0.6
-              }
-            }
-          ]
-        }
-        Solid {
-          name "T0 border"
-          translation 0 0 -3
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.6902 0.5529 0.3412
-              }
-              geometry Cylinder {
-                height 0.001
-                radius 0.6
-              }
-            }
-          ]
-        }
-        Solid {
-          name "T4 border"
-          translation -6.6 0 -3
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.6902 0.5529 0.3412
-              }
-              geometry Cylinder {
-                height 0.001
-                radius 0.6
-              }
-            }
-          ]
-        }
-        Solid {
-          name "T5 border"
-          translation 6.6 0 -3
-          children [
-            Shape {
-              appearance PBRAppearance {
-                baseColor 0.6902 0.5529 0.3412
-              }
-              geometry Cylinder {
-                height 0.001
-                radius 0.6
-              }
-            }
-          ]
+          geometry USE OUTER_ZONE_GEO
         }
       ]
     }
   ]
+  name "Robot Starting Zones"
 }
 
-DirectionalLight {  # HA light
-  direction -10 -15.2 0
-  intensity 0.03
-}
-DirectionalLight {  # YT light
-  direction -147 -200 0
-  intensity 0.2
-  castShadows TRUE
-}
-DirectionalLight {  # FL light
-  direction -1240 -1500 0
-  intensity 0.03
-}
-DirectionalLight {  # TH light
-  direction -101 -122 46
-  intensity 0.03
-}
-DirectionalLight {  # SF light
-  direction -101 -122 -46
-  intensity 0.03
+DEF SHIP Transform {
+  translation -1.25 0 0
+  children [
+    Solid {
+      translation 1.25 0.25 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+          }
+          geometry DEF STACK_GEO Box {
+            size 1 0.5 1.5
+          }
+        }
+      ]
+      boundingObject USE STACK_GEO
+      name "Zone 0 Stack"
+    }
+    Solid {
+      translation -1.25 0.25 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+          }
+          geometry USE STACK_GEO
+        }
+      ]
+      boundingObject USE STACK_GEO
+      name "Zone 1 Stack"
+    }
+    Solid {
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+          }
+          geometry Plane {
+            size 1.5 1.5
+          }
+        }
+      ]
+      name "Deck"
+    }
+  ]
 }
