@@ -194,6 +194,7 @@ def run_match(supervisor: Supervisor) -> None:
     # First signal the robot controllers that they're able to start ...
     for _, _, robot in get_robots(supervisor, skip_missing=True):
         inform_start(robot)
+    inform_start(webots_utils.node_from_def(supervisor, 'WALL_CTRL'))
     inform_start(webots_utils.node_from_def(supervisor, 'LIGHT_CTRL'))
 
     # ... then un-pause the simulation, so they all start together
