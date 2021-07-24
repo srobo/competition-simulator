@@ -1,0 +1,154 @@
+#VRML_OBJ R2021b utf8
+PROTO SBCrane [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFString controller ""
+  field SFString model ""
+  field SFString customData ""
+  field SFColor flagColour 1 1 1
+  field MFString controllerArgs []
+  field SFFloat initX 0
+  field SFFloat initY 0
+  field SFFloat initZ 0
+  field SFFloat maxY 2
+]
+{
+  Robot {
+    selfCollision FALSE
+    translation IS translation
+    rotation IS rotation
+    controllerArgs IS controllerArgs
+    children [
+      SliderJoint {
+        jointParameters JointParameters {
+          axis 1 0 0
+          minStop -1.75
+          maxStop 1.75
+          position IS initX
+        }
+        device [
+          LinearMotor {
+            name "bridge motor"
+            minPosition -1.75
+            maxPosition 1.75
+            maxVelocity 2
+            sound ""
+          }
+          PositionSensor {
+            name "bridge position sensor"
+          }
+        ]
+        endPoint Solid {
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor IS flagColour
+                roughness 1
+                metalness 0
+              }
+              geometry Box {
+                size 0.1 0.1 1.5
+              }
+            }
+            SliderJoint {
+              jointParameters JointParameters {
+                axis 0 0 1
+                minStop -0.7
+                maxStop 0.7
+                position IS initZ
+              }
+              device [
+                LinearMotor {
+                  name "trolley motor"
+                  minPosition -0.7
+                  maxPosition 0.7
+                  maxVelocity 2
+                  sound ""
+                }
+                PositionSensor {
+                  name "trolley position sensor"
+                }
+              ]
+              endPoint Solid {
+                translation 0 -0.075 0
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.35 0.35 0.35
+                      roughness 1
+                      metalness 0
+                    }
+                    geometry Box {
+                      size 0.1 0.05 0.1
+                    }
+                  }
+                  SliderJoint {
+                    jointParameters JointParameters {
+                      axis 0 -1 0
+                      minStop -0.01
+                      maxStop IS maxY
+                      position IS initY
+                    }
+                    device [
+                      LinearMotor {
+                        name "hoist motor"
+                        minPosition 0
+                        maxPosition IS maxY
+                        maxVelocity 2
+                        sound ""
+                        muscles Muscle {
+                          volume 1e-04
+                          startOffset 0 0.12 0
+                          endOffset 0 -0.025 0
+                        }
+                      }
+                      PositionSensor {
+                        name "hoist position sensor"
+                      }
+                    ]
+                    endPoint Solid {
+                      translation 0 -0.05 0
+                      children [
+                        Shape {
+                          appearance PBRAppearance {
+                            baseColor IS flagColour
+                            roughness 1
+                            metalness 0
+                          }
+                          geometry DEF hook_geo Box {
+                            size 0.05 0.05 0.05
+                          }
+                        }
+                        Connector {
+                          type "active"
+                          distanceTolerance 0.1
+                          axisTolerance 0.7854
+                          rotationTolerance 0
+                          numberOfRotations 0
+                          tensileStrength 10
+                          shearStrength 10
+                          name "Crane Connector"
+                        }
+                      ]
+                      boundingObject USE hook_geo
+                      physics Physics {
+                        # density 8000  # steel
+                      }
+                      name "hook"
+                    }
+                  }
+                ]
+                name "trolley"
+              }
+            }
+          ]
+          name "bridge beam"
+        }
+      }
+    ]
+    name IS model
+    model IS model
+    controller IS controller
+    customData IS customData
+  }
+}
