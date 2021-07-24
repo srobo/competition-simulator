@@ -141,6 +141,22 @@ PROTO SBCrane [
                                       shearStrength 10
                                       name "Crane Connector"
                                     }
+                                    Receiver {
+                                      type "radio"
+                                      name "robot receiver"
+                                      bufferSize 30
+                                      channel 1
+                                      directionNoise 0.05
+                                      signalStrengthNoise 0.03
+                                    }
+                                    TouchSensor {
+                                      translation 0 -0.025 0
+                                      rotation 0 1 0 0
+                                      name "hook touch sensor"
+                                      boundingObject Box {
+                                        size 0.05 0.01 0.05
+                                      }
+                                    }
                                   ]
                                   boundingObject USE hook_geo
                                   physics Physics {
