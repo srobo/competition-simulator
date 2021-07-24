@@ -34,9 +34,9 @@ DEF ROBOT-0-forklift SBForklift {
   flagColour 1 0 1
   controllerArgs ["0", "forklift"]
 }
-DEF ROBOT-0-crane SRRobot {
-  translation -1.25 0.005 -0.8
-  rotation 0 1 0 3.14
+DEF ROBOT-0-crane SBCrane {
+  translation -1.25 2 0
+  initPos 1.5 0 -0.5
   controller "sr_controller"
   model "Robot0crane"
   flagColour 1 0 1
@@ -50,9 +50,9 @@ DEF ROBOT-1-forklift SBForklift {
   flagColour 1 1 0
   controllerArgs ["1", "forklift"]
 }
-DEF ROBOT-1-crane SRRobot {
-  translation -1.25 0.005 0.8
-  rotation 0 1 0 0
+DEF ROBOT-1-crane SBCrane {
+  translation -1.25 2 0
+  initPos -1.5 0 0.5
   controller "sr_controller"
   model "Robot1crane"
   flagColour 1 1 0
