@@ -9,6 +9,8 @@ from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
 
 
 def init_ruggeduino_array(webot: Robot, robot_type: RobotType) -> List[Ruggeduino]:
+    dist_sensor_names: List[str]
+    switch_names: List[str]
     led_names: List[str]
 
     # The names in these arrays correspond to the names given to devices in Webots
@@ -35,27 +37,12 @@ def init_ruggeduino_array(webot: Robot, robot_type: RobotType) -> List[Ruggeduin
             # "led 6",
         ]
     else:
-        # TODO: placeholder crane ruggeduino
         dist_sensor_names = [
-            # Updating these? Also update controllers/example_controller/keyboard_controller.py
-            "Front Left DS",
-            "Front Right DS",
-            "Left DS",
-            "Right DS",
-            "Back Left DS",
-            "Back Right DS",
         ]
         switch_names = [
-            "front bump sensor",
-            "back bump sensor",
+            "hook touch sensor",
         ]
         led_names = [
-            "led 1",
-            "led 2",
-            "led 3",
-            "led 4",
-            "led 5",
-            "led 6",
         ]
 
     analogue_input_array = [DistanceSensor(webot, name) for name in dist_sensor_names]

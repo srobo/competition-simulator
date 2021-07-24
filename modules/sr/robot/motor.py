@@ -25,11 +25,14 @@ def init_motor_array(webot: Robot, robot_type: RobotType) -> List[Motor]:
             ),
         ]
     else:
-        # TODO: placeholder crane motor board
         return [
             Motor(
-                Wheel(webot, 'left wheel'),
-                Wheel(webot, 'right wheel'),
+                LinearMotor(webot, "bridge motor"),
+                LinearMotor(webot, "trolley motor"),
+            ),
+            Motor(
+                LinearMotor(webot, "hoist motor"),
+                None,
             ),
         ]
 
