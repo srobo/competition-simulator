@@ -22,15 +22,15 @@ PROTO SBCrane [
       SliderJoint {
         jointParameters JointParameters {
           axis 1 0 0
-          minStop -1.75
-          maxStop 1.75
+          minStop -1.7
+          maxStop 1.7
           position IS initX
         }
         device [
           LinearMotor {
             name "bridge motor"
-            minPosition -1.75
-            maxPosition 1.75
+            minPosition -1.7
+            maxPosition 1.7
             maxVelocity 2
             sound ""
           }
@@ -39,6 +39,7 @@ PROTO SBCrane [
           }
         ]
         endPoint Solid {
+          translation 0 0.15 0  # Shift origin to be the lower face of the hook shape
           children [
             Shape {
               appearance PBRAppearance {
