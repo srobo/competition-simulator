@@ -1,4 +1,5 @@
 #VRML_OBJ R2021b utf8
+# tags: static
 PROTO SBCrane [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
@@ -7,9 +8,7 @@ PROTO SBCrane [
   field SFString customData ""
   field SFColor flagColour 1 1 1
   field MFString controllerArgs []
-  field SFFloat initX 0
-  field SFFloat initY 0
-  field SFFloat initZ 0
+  field SFVec3f initPos 0 0 0
   field SFFloat maxY 2
 ]
 {
@@ -24,7 +23,7 @@ PROTO SBCrane [
           axis 1 0 0
           minStop -1.7
           maxStop 1.7
-          position IS initX
+          position %{=fields.initPos.value.x}%
         }
         device [
           LinearMotor {
@@ -39,7 +38,8 @@ PROTO SBCrane [
           }
         ]
         endPoint Solid {
-          translation 0 0.15 0  # Shift origin to be the lower face of the hook shape
+          # Shift origin to be the lower face of the hook shape
+          translation %{=fields.initPos.value.x}% 0.15 0
           children [
             Shape {
               appearance PBRAppearance {
@@ -56,7 +56,7 @@ PROTO SBCrane [
                 axis 0 0 1
                 minStop -0.7
                 maxStop 0.7
-                position IS initZ
+                position %{=fields.initPos.value.z}%
               }
               device [
                 LinearMotor {
@@ -71,7 +71,7 @@ PROTO SBCrane [
                 }
               ]
               endPoint Solid {
-                translation 0 -0.075 0
+                translation 0 -0.075 %{=fields.initPos.value.z}%
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -93,7 +93,7 @@ PROTO SBCrane [
                             axis 0 -1 0
                             minStop -0.01
                             maxStop IS maxY
-                            position IS initY
+                            position %{=fields.initPos.value.y}%
                           }
                           device [
                             LinearMotor {
@@ -113,7 +113,7 @@ PROTO SBCrane [
                             }
                           ]
                           endPoint Solid {
-                            translation 0 -0.025 0
+                            translation 0 %{=-0.025-fields.initPos.value.y}% 0
                             children [
                               BallJoint {  # allow the hook to tilt
                                 jointParameters BallJointParameters {
