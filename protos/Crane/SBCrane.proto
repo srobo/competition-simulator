@@ -83,59 +83,78 @@ PROTO SBCrane [
                       size 0.1 0.05 0.1
                     }
                   }
-                  SliderJoint {
-                    jointParameters JointParameters {
-                      axis 0 -1 0
-                      minStop -0.01
-                      maxStop IS maxY
-                      position IS initY
+                  BallJoint {  # allow the cable to tilt
+                    jointParameters BallJointParameters {
                     }
-                    device [
-                      LinearMotor {
-                        name "hoist motor"
-                        minPosition 0
-                        maxPosition IS maxY
-                        maxVelocity 2
-                        sound ""
-                        muscles Muscle {
-                          volume 1e-04
-                          startOffset 0 0.12 0
-                          endOffset 0 -0.025 0
-                        }
-                      }
-                      PositionSensor {
-                        name "hoist position sensor"
-                      }
-                    ]
                     endPoint Solid {
-                      translation 0 -0.05 0
                       children [
-                        Shape {
-                          appearance PBRAppearance {
-                            baseColor IS flagColour
-                            roughness 1
-                            metalness 0
+                        SliderJoint {
+                          jointParameters JointParameters {
+                            axis 0 -1 0
+                            minStop -0.01
+                            maxStop IS maxY
+                            position IS initY
                           }
-                          geometry DEF hook_geo Box {
-                            size 0.05 0.05 0.05
+                          device [
+                            LinearMotor {
+                              name "hoist motor"
+                              minPosition 0
+                              maxPosition IS maxY
+                              maxVelocity 2
+                              sound ""
+                              muscles Muscle {
+                                volume 1e-04
+                                startOffset 0 0.12 0
+                                endOffset 0 -0.025 0
+                              }
+                            }
+                            PositionSensor {
+                              name "hoist position sensor"
+                            }
+                          ]
+                          endPoint Solid {
+                            translation 0 -0.025 0
+                            children [
+                              BallJoint {  # allow the hook to tilt
+                                jointParameters BallJointParameters {
+                                }
+                                endPoint Solid {
+                                  translation 0 -0.025 0
+                                  children [
+                                    Shape {
+                                      appearance PBRAppearance {
+                                        baseColor IS flagColour
+                                        roughness 1
+                                        metalness 0
+                                      }
+                                      geometry DEF hook_geo Box {
+                                        size 0.05 0.05 0.05
+                                      }
+                                    }
+                                    Connector {
+                                      type "active"
+                                      distanceTolerance 0.1
+                                      axisTolerance 0.7854
+                                      rotationTolerance 0
+                                      numberOfRotations 0
+                                      tensileStrength 10
+                                      shearStrength 10
+                                      name "Crane Connector"
+                                    }
+                                  ]
+                                  boundingObject USE hook_geo
+                                  physics Physics {
+                                    # density 8000  # steel
+                                  }
+                                  name "hook"
+                                }
+                              }
+                            ]
+                            name "hook pivot"
                           }
-                        }
-                        Connector {
-                          type "active"
-                          distanceTolerance 0.1
-                          axisTolerance 0.7854
-                          rotationTolerance 0
-                          numberOfRotations 0
-                          tensileStrength 10
-                          shearStrength 10
-                          name "Crane Connector"
                         }
                       ]
-                      boundingObject USE hook_geo
-                      physics Physics {
-                        # density 8000  # steel
-                      }
-                      name "hook"
+                      name "cable pivot"
                     }
                   }
                 ]
