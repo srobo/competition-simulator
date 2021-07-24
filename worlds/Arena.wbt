@@ -305,3 +305,68 @@ DEF SHIP Transform {
     }
   ]
 }
+
+DEF CRANE_GANTRY Group {
+  children [
+    Solid {
+      translation 0.45 1.1 -0.8
+      children [
+        DEF pillar Shape {
+          appearance PBRAppearance {
+          }
+          geometry Box {
+            size 0.1 2.2 0.1
+          }
+        }
+      ]
+      boundingObject USE pillar
+      name "NW pillar"
+    }
+    Solid {
+      translation 0.45 1.1 0.8
+      children [
+        USE pillar
+      ]
+      boundingObject USE pillar
+      name "NE pillar"
+    }
+    Solid {
+      translation -2.95 1.1 0.8
+      children [
+        USE pillar
+      ]
+      boundingObject USE pillar
+      name "SE pillar"
+    }
+    Solid {
+      translation -2.95 1.1 -0.8
+      children [
+        USE pillar
+      ]
+      boundingObject USE pillar
+      name "SW pillar"
+    }
+    Solid {
+      translation -1.25 2.15 -0.8
+      children [
+        DEF gantry Shape {
+          appearance PBRAppearance {
+          }
+          geometry Box {
+            size 3.4 0.1 0.1
+          }
+        }
+      ]
+      boundingObject USE gantry
+      name "West gantry"
+    }
+    Solid {
+      translation -1.25 2.15 0.8
+      children [
+        USE gantry
+      ]
+      boundingObject USE gantry
+      name "East gantry"
+    }
+  ]
+}
