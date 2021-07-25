@@ -117,6 +117,7 @@ PROTO SBCrane [
                             children [
                               BallJoint {  # allow the hook to tilt
                                 jointParameters BallJointParameters {
+                                  dampingConstant 0.5
                                 }
                                 endPoint Solid {
                                   translation 0 -0.025 0
@@ -139,8 +140,8 @@ PROTO SBCrane [
                                       axisTolerance 0.7854
                                       rotationTolerance 0
                                       numberOfRotations 0
-                                      tensileStrength 30
-                                      shearStrength 10
+                                      tensileStrength 35
+                                      shearStrength 20
                                       snap FALSE
                                       name "Crane Connector"
                                       unilateralUnlock TRUE
