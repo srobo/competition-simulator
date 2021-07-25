@@ -132,14 +132,19 @@ PROTO SBCrane [
                                       }
                                     }
                                     Connector {
+                                      translation 0 -0.03 0
+                                      rotation 1 0 0 1.5708
                                       type "active"
                                       distanceTolerance 0.1
                                       axisTolerance 0.7854
                                       rotationTolerance 0
                                       numberOfRotations 0
-                                      tensileStrength 10
+                                      tensileStrength 30
                                       shearStrength 10
+                                      snap FALSE
                                       name "Crane Connector"
+                                      unilateralUnlock TRUE
+                                      unilateralLock TRUE
                                     }
                                     Receiver {
                                       type "radio"
