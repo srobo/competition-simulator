@@ -9,7 +9,7 @@ PROTO SBCrane [
   field SFColor flagColour 1 1 1
   field MFString controllerArgs []
   field SFVec3f initPos 0 0 0
-  field SFFloat maxY 2
+  field SFFloat maxY 1.5
 ]
 {
   Robot {

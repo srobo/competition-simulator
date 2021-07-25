@@ -35,8 +35,7 @@ DEF ROBOT-0-forklift SBForklift {
   controllerArgs ["0", "forklift"]
 }
 DEF ROBOT-0-crane SBCrane {
-  translation -1.25 2 0
-  initPos 1.5 0 -0.5
+  translation -1.25 1.5 0
   controller "sr_controller"
   model "Robot0crane"
   flagColour 1 0 1
@@ -51,8 +50,7 @@ DEF ROBOT-1-forklift SBForklift {
   controllerArgs ["1", "forklift"]
 }
 DEF ROBOT-1-crane SBCrane {
-  translation -1.25 2 0
-  initPos -1.5 0 0.5
+  translation -1.25 1.5 0
   controller "sr_controller"
   model "Robot1crane"
   flagColour 1 1 0
@@ -309,13 +307,13 @@ DEF SHIP Transform {
 DEF CRANE_GANTRY Group {
   children [
     Solid {
-      translation 0.45 1.1 -0.8
+      translation 0.45 0.85 -0.8
       children [
         DEF pillar Shape {
           appearance PBRAppearance {
           }
           geometry Box {
-            size 0.1 2.2 0.1
+            size 0.1 1.7 0.1
           }
         }
       ]
@@ -323,7 +321,7 @@ DEF CRANE_GANTRY Group {
       name "NW pillar"
     }
     Solid {
-      translation 0.45 1.1 0.8
+      translation 0.45 0.85 0.8
       children [
         USE pillar
       ]
@@ -331,7 +329,7 @@ DEF CRANE_GANTRY Group {
       name "NE pillar"
     }
     Solid {
-      translation -2.95 1.1 0.8
+      translation -2.95 0.85 0.8
       children [
         USE pillar
       ]
@@ -339,7 +337,7 @@ DEF CRANE_GANTRY Group {
       name "SE pillar"
     }
     Solid {
-      translation -2.95 1.1 -0.8
+      translation -2.95 0.85 -0.8
       children [
         USE pillar
       ]
@@ -347,13 +345,13 @@ DEF CRANE_GANTRY Group {
       name "SW pillar"
     }
     Solid {
-      translation -1.25 2.15 -0.8
+      translation -1.25 1.65 -0.8
       children [
         DEF gantry Shape {
           appearance PBRAppearance {
           }
           geometry Box {
-            size 3.4 0.1 0.1
+            size 3.3 0.1 0.1
           }
         }
       ]
@@ -361,7 +359,7 @@ DEF CRANE_GANTRY Group {
       name "West gantry"
     }
     Solid {
-      translation -1.25 2.15 0.8
+      translation -1.25 1.65 0.8
       children [
         USE gantry
       ]
