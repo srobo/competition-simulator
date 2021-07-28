@@ -108,6 +108,19 @@ PROTO SBToken [
         maxRange 2.5
         channel 1
       }
+      # Shape {
+      #   appearance PBRAppearance {
+      #     baseColorMap ImageTexture {
+      #       url "../textures/coverage.png"
+      #     }
+      #     roughness 1
+      #   }
+      #   geometry DEF TOWER Cylinder {
+      #     height 0.5
+      #     radius 2.5
+      #     side FALSE
+      #   }
+      # }
     ]
     name IS tokenName
     model IS tokenName
