@@ -1,6 +1,8 @@
 #VRML_OBJ R2021b utf8
 # tags: static
 
+# This harness allows the token to move and rotate in all 3 axis while still being inside
+# a single robot to allow the controller to access the emitter of every token
 PROTO SBTokenHarness [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
