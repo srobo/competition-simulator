@@ -115,7 +115,7 @@ while True:
             print()
 
         elif key_ascii == key_grab_open:
-            grabber_power = 100
+            grabber_power = 1
 
         elif key_ascii == key_grab_close:
             grabber_power = -1

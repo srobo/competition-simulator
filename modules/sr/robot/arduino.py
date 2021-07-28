@@ -86,6 +86,7 @@ def init_arduino(webot: Robot, robot_type: RobotType) -> Arduino:
     ]
     digital_input_dict: ARDUINO_DEVICES_TYPE = {index: sensor for index, sensor in enumerate(
         digital_sensors,
+        start=Arduino.DIGITAL_PIN_START,
     )}
 
     limiter = OutputFrequencyLimiter(webot)
