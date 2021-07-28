@@ -180,6 +180,15 @@ PROTO SBCrane [
                               }
                             ]
                             name "hook pivot"
+                            physics Physics {
+                              density -1
+                              mass 0.1
+                              centerOfMass 0 0 0
+                              inertiaMatrix [
+                                1 1 1
+                                0 0 0
+                              ]
+                            }
                           }
                         }
                       ]
