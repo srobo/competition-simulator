@@ -57,18 +57,24 @@ class Motor:
         m0: Union[Wheel, LinearMotor, Gripper, None],
         m1: Union[Wheel, LinearMotor, Gripper, None],
     ) -> None:
-        if m0 is not None:
-            self.m0 = MotorChannel(0, m0)
-        if m1 is not None:
-            self.m1 = MotorChannel(1, m1)
+        self.m0 = MotorChannel(0, m0)
+        self.m1 = MotorChannel(1, m1)
 
-        self.motors = [self.m0, self.m1]
+        self.motors = [
+            self.m0,
+            self.m1,
+        ]
 
 
 class MotorChannel:
     """Represents a motor output channel."""
 
-    def __init__(self, channel: int, sr_motor: Union[Gripper, Wheel, LinearMotor]) -> None:
+    def __init__(self, channel: int, sr_motor: Union[
+        Gripper,
+        Wheel,
+        LinearMotor,
+        None,
+    ]) -> None:
         self.channel = channel
         # Private shadow of use_brake
         # self._use_brake = True # TODO create new thread for non-braking slowdown
@@ -94,7 +100,8 @@ class MotorChannel:
         elif value < -SPEED_MAX:
             value = -SPEED_MAX
 
-        self.sr_motor.set_speed(translate(value, self.sr_motor))
+        if self.sr_motor:
+            self.sr_motor.set_speed(translate(value, self.sr_motor))
 
     ''''@property
     def use_brake(self) -> bool:

@@ -18,6 +18,9 @@ class AnaloguePin(Enum):
     A5 = "A5"
 
 
+ARDUINO_DEVICES_TYPE = Dict[Union[AnaloguePin, int], Union[DistanceSensor, Microswitch, Led]]
+
+
 def init_arduino(webot: Robot, robot_type: RobotType) -> Arduino:
     led_names: List[str]
 
@@ -72,7 +75,7 @@ def init_arduino(webot: Robot, robot_type: RobotType) -> Arduino:
         DistanceSensor(webot, name)
         for name in dist_sensor_names
     ]
-    analogue_input_dict = {key: sensor for key, sensor in zip(
+    analogue_input_dict: ARDUINO_DEVICES_TYPE = {key: sensor for key, sensor in zip(
         AnaloguePin,
         analouge_sensors,
     )}
@@ -81,7 +84,7 @@ def init_arduino(webot: Robot, robot_type: RobotType) -> Arduino:
         Microswitch(webot, name)
         for name in switch_names
     ]
-    digital_input_dict = {index: sensor for index, sensor in enumerate(
+    digital_input_dict: ARDUINO_DEVICES_TYPE = {index: sensor for index, sensor in enumerate(
         digital_sensors,
     )}
 
@@ -94,7 +97,7 @@ def init_arduino(webot: Robot, robot_type: RobotType) -> Arduino:
         )
     ]
 
-    digital_output_dict = {index: output for index, output in enumerate(
+    digital_output_dict: ARDUINO_DEVICES_TYPE = {index: output for index, output in enumerate(
         digital_outputs,
         start=Arduino.DIGITAL_PIN_START + len(digital_input_dict),
     )}
@@ -112,7 +115,7 @@ class Arduino:
 
     def __init__(
         self,
-        devices: Dict[Union[AnaloguePin, int], Union[DistanceSensor, Microswitch, Led]],
+        devices: ARDUINO_DEVICES_TYPE,
     ) -> None:
         self.pins = devices
 
