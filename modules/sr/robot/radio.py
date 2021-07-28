@@ -50,15 +50,15 @@ class StationCode(str, enum.Enum):
 
 
 class TargetInfo(NamedTuple):
-    station_code: StationCode
+    token_code: int
     owned_by: Optional[Claimant]
 
 
 def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
     try:
-        station_code, owned_by = struct.unpack("!2sb", message)
+        token_code, owned_by = struct.unpack("!bb", message)
         return TargetInfo(
-            station_code=StationCode(station_code.decode('ascii')),
+            token_code=token_code,
             owned_by=None if owned_by == UNCLAIMED else Claimant(owned_by),
         )
     except ValueError:
