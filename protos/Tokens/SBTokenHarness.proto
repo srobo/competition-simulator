@@ -1,0 +1,62 @@
+#VRML_OBJ R2021b utf8
+# tags: static
+
+PROTO SBTokenHarness [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFString tokenName ""
+  field SFString emitterName ""
+  field SFColor zoneColour 1 1 1
+]
+{
+  SliderJoint {
+    jointParameters JointParameters {
+      axis 1 0 0
+    }
+    endPoint Solid {
+      name %{= '"' .. fields.tokenName.value .. ' X"'}%
+      children [
+        SliderJoint {
+          jointParameters JointParameters {
+            axis 0 0 1
+          }
+          endPoint Solid {
+            name %{= '"' .. fields.tokenName.value .. ' Z"'}%
+            children [
+              SliderJoint {
+                jointParameters JointParameters {
+                  axis 0 1 0
+                }
+                endPoint Solid {
+                  translation IS translation
+                  rotation IS rotation
+                  name %{= '"' .. fields.tokenName.value .. ' Y"'}%
+                  children [
+                    BallJoint {
+                      endPoint DEF %{= fields.tokenName.value}% SBToken {
+                        tokenName IS tokenName
+                        emitterName IS emitterName
+                        zoneColour IS zoneColour
+                      }
+                    }
+                  ]
+                  physics DEF harness_physics Physics {
+                    density -1
+                    mass 0.1
+                    centerOfMass 0 0 0
+                    inertiaMatrix [
+                      1 1 1
+                      0 0 0
+                    ]
+                  }
+                }
+              }
+            ]
+            physics USE harness_physics
+          }
+        }
+      ]
+      physics USE harness_physics
+    }
+  }
+}
