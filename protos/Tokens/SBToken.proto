@@ -7,8 +7,8 @@ PROTO SBToken [
   field SFColor zoneColour 1 1 1
   field SFFloat connectorDistance 0.13
   field SFFloat connectorAngle 0.7854
-  field SFFloat connectorStrength 10
-  field SFFloat connectorShear 10
+  field SFFloat connectorStrength 35
+  field SFFloat connectorShear 20
 ]
 {
   Solid {
@@ -37,6 +37,7 @@ PROTO SBToken [
             numberOfRotations 0
             tensileStrength IS connectorStrength
             shearStrength IS connectorShear
+            snap FALSE
             name "South Connector"
           }
           Connector {  # North connector
@@ -49,6 +50,7 @@ PROTO SBToken [
             numberOfRotations 0
             tensileStrength IS connectorStrength
             shearStrength IS connectorShear
+            snap FALSE
             name "North Connector"
           }
           Connector {  # East connector
@@ -61,6 +63,7 @@ PROTO SBToken [
             numberOfRotations 0
             tensileStrength IS connectorStrength
             shearStrength IS connectorShear
+            snap FALSE
             name "East Connector"
           }
           Connector {  # West connector
@@ -73,6 +76,7 @@ PROTO SBToken [
             numberOfRotations 0
             tensileStrength IS connectorStrength
             shearStrength IS connectorShear
+            snap FALSE
             name "West Connector"
           }
           Connector {  # Top connector
@@ -85,6 +89,7 @@ PROTO SBToken [
             numberOfRotations 0
             tensileStrength IS connectorStrength
             shearStrength IS connectorShear
+            snap FALSE
             name "Top Connector"
           }
           Connector {  # Bottom connector
@@ -97,6 +102,7 @@ PROTO SBToken [
             numberOfRotations 0
             tensileStrength IS connectorStrength
             shearStrength IS connectorShear
+            snap FALSE
             name "Bottom Connector"
           }
         ]
