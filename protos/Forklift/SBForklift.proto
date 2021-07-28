@@ -35,10 +35,13 @@ PROTO SBForklift [
                     geometry Cylinder {
                       height 0.07
                       radius 0.015
+                      subdivision 12
                     }
                   }
                 ]
-                boundingObject USE MOTOR_HOUSING
+                boundingObject DEF MOTOR_HOUSING_GEO Box {
+                  size 0.03 0.07 0.03
+                }
                 physics Physics {
                   density 8000  # steel
                 }
@@ -52,6 +55,7 @@ PROTO SBForklift [
                   RotationalMotor {
                     name "left wheel"
                     maxVelocity 12.3
+                    sound ""
                   }
                   PositionSensor {
                     name "left wheel sensor"
@@ -93,7 +97,7 @@ PROTO SBForklift [
                 children [
                   USE MOTOR_HOUSING
                 ]
-                boundingObject USE MOTOR_HOUSING
+                boundingObject USE MOTOR_HOUSING_GEO
                 physics Physics {
                   density 8000  # steel
                 }
@@ -107,6 +111,7 @@ PROTO SBForklift [
                   RotationalMotor {
                     name "right wheel"
                     maxVelocity 12.3
+                    sound ""
                   }
                   PositionSensor {
                     name "right wheel sensor"
@@ -196,10 +201,6 @@ PROTO SBForklift [
             ]
           }
         ]
-        boundingObject USE body_geo
-        physics Physics {
-          # wood = ~700, leave at default
-        }
       }
       DEF CASTERS Transform {
         translation 0 0.0025 0.1
@@ -247,6 +248,8 @@ PROTO SBForklift [
                     geometry Cylinder {
                       height 0.0215
                       radius 0.01
+                      subdivision 12
+                      top FALSE
                     }
                   }
                 ]
@@ -291,11 +294,16 @@ PROTO SBForklift [
                 geometry Cylinder {
                   radius 0.004
                   height 0.3
+                  subdivision 12
+                  top FALSE
+                  bottom FALSE
                 }
               }
             ]
             name "Support rod 1"
-            boundingObject USE SUPPORT_ROD
+            boundingObject DEF SUPPORT_ROD_GEO Box {
+              size 0.007 0.3 0.007
+            }
             physics Physics {
               density 8000  # steel
             }
@@ -307,7 +315,7 @@ PROTO SBForklift [
               USE SUPPORT_ROD
             ]
             name "Support rod 2"
-            boundingObject USE SUPPORT_ROD
+            boundingObject USE SUPPORT_ROD_GEO
             physics Physics {
               density 8000  # steel
             }
@@ -328,6 +336,7 @@ PROTO SBForklift [
                     minPosition -0.01
                     maxPosition 0.124
                     maxVelocity 0.5
+                    sound ""
                   }
                   PositionSensor {
                     name "left gripper sensor"
@@ -365,6 +374,7 @@ PROTO SBForklift [
                               geometry Cylinder {
                                 height 0.016
                                 radius 0.008
+                                subdivision 16
                               }
                             }
                           ]
@@ -404,6 +414,7 @@ PROTO SBForklift [
                     minPosition -0.01
                     maxPosition 0.124
                     maxVelocity 0.5
+                    sound ""
                   }
                   PositionSensor {
                     name "right gripper sensor"
@@ -465,10 +476,14 @@ PROTO SBForklift [
             geometry DEF flag_pole Cylinder {
               height 0.2
               radius 0.01
+              subdivision 12
+              bottom FALSE
             }
           }
         ]
-        boundingObject USE flag_pole
+        boundingObject Box {
+          size 0.02 0.2 0.02
+        }
         name "flag pole"
         physics Physics {
         }
@@ -528,6 +543,8 @@ PROTO SBForklift [
                             geometry Cylinder {
                               radius 0.008
                               height 0.012
+                              subdivision 16
+                              bottom FALSE
                             }
                           }
                         ]
