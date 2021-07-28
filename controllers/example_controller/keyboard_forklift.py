@@ -1,4 +1,6 @@
-from sr.robot import Robot, AnaloguePin
+from typing import cast, Union
+
+from sr.robot import Robot, AnaloguePin, Microswitch, DistanceSensor
 from controller import Keyboard
 
 # Any keys still pressed in the following period will be handled again
@@ -32,14 +34,16 @@ def print_sensors(robot: Robot) -> None:
         "Rear",
     ]
 
+    pin: Union[int, AnaloguePin] = 0
+
     print(f"Distance sensor readings at {robot.time():.2f}s:")
     for pin, name in zip(AnaloguePin, distance_sensor_names):
-        dist = R.arduino.pins[pin].analouge_value
+        dist = cast(DistanceSensor, R.arduino.pins[pin]).analogue_value
         print(f"{pin} {name: <12}: {dist:.2f}")
 
     print("Touch sensor readings:")
     for pin, name in enumerate(touch_sensor_names, 2):
-        touching = R.arduino.pins[pin].digital_state
+        touching = cast(Microswitch, R.arduino.pins[pin]).digital_state
         print(f"{pin} {name: <6}: {touching}")
 
     print()

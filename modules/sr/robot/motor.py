@@ -62,8 +62,7 @@ class Motor:
         if m1 is not None:
             self.m1 = MotorChannel(1, m1)
 
-    def __getitem__(self, item: int) -> MotorChannel:
-        return [self.m0, self.m1][item]
+        self.motors = [self.m0, self.m1]
 
 
 class MotorChannel:

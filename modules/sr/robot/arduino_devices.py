@@ -82,11 +82,11 @@ class Led:
         self._value = False
 
     @property
-    def digital_state(self) -> None:
+    def digital_state(self) -> bool:
         return self._value
 
     @digital_state.setter
-    def digital_state(self, value: bool):
+    def digital_state(self, value: bool) -> None:
         if not self._limiter.can_change():
             LOGGER.warning(
                 "Rate limited change to LED output (requested setting LED on pin "

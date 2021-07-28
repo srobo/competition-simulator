@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Dict
+from typing import Dict, List, Union
 
 from controller import Robot
 from shared_utils import RobotType
@@ -18,7 +18,7 @@ class AnaloguePin(Enum):
     A5 = "A5"
 
 
-def init_arduino_array(webot: Robot, robot_type: RobotType) -> List[Arduino]:
+def init_arduino(webot: Robot, robot_type: RobotType) -> Arduino:
     led_names: List[str]
 
     # The names in these arrays correspond to the names given to devices in Webots
@@ -73,8 +73,8 @@ def init_arduino_array(webot: Robot, robot_type: RobotType) -> List[Arduino]:
         for name in dist_sensor_names
     ]
     analogue_input_dict = {key: sensor for key, sensor in zip(
-        analouge_sensors,
         AnaloguePin,
+        analouge_sensors,
     )}
 
     digital_sensors = [
@@ -99,11 +99,11 @@ def init_arduino_array(webot: Robot, robot_type: RobotType) -> List[Arduino]:
         start=Arduino.DIGITAL_PIN_START + len(digital_input_dict),
     )}
 
-    return [Arduino({
+    return Arduino({
         **analogue_input_dict,
         **digital_input_dict,
         **digital_output_dict,
-    })]
+    })
 
 
 class Arduino:
@@ -112,7 +112,7 @@ class Arduino:
 
     def __init__(
         self,
-        devices: Dict
+        devices: Dict[Union[AnaloguePin, int], Union[DistanceSensor, Microswitch, Led]],
     ) -> None:
         self.pins = devices
 

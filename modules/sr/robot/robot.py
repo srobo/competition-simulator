@@ -6,7 +6,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, radio, compass, arduino
+from sr.robot import motor, radio, arduino, compass
 # Webots specific library
 from controller import Robot as WebotsRobot
 from shared_utils import RobotType
@@ -151,7 +151,7 @@ class Robot:
         self.motor_boards = motor.init_motor_array(self.webot, self.type)
 
     def _init_arduino(self) -> None:
-        self.arduino = arduino.init_arduino_array(self.webot, self.type)
+        self.arduino = arduino.init_arduino(self.webot, self.type)
 
     def _init_radio(self) -> None:
         self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
