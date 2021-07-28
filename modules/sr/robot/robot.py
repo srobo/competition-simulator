@@ -6,7 +6,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, radio, compass, ruggeduino
+from sr.robot import motor, radio, arduino, compass
 # Webots specific library
 from controller import Robot as WebotsRobot
 from shared_utils import RobotType
@@ -137,7 +137,7 @@ class Robot:
         self._init_motors()
 
         # Ruggeduinos
-        self._init_ruggeduinos()
+        self._init_arduino()
 
         # No camera for SR2021
 
@@ -148,10 +148,10 @@ class Robot:
         self._init_compass()
 
     def _init_motors(self) -> None:
-        self.motors = motor.init_motor_array(self.webot, self.type)
+        self.motor_boards = motor.init_motor_array(self.webot, self.type)
 
-    def _init_ruggeduinos(self) -> None:
-        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot, self.type)
+    def _init_arduino(self) -> None:
+        self.arduino = arduino.init_arduino(self.webot, self.type)
 
     def _init_radio(self) -> None:
         self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
@@ -183,3 +183,7 @@ class Robot:
         # do any cleanup if Webots tells us the simulation is terminating. When
         # webots kills the process all the proper tidyup will happen anyway.
         self.webots_step_and_should_continue(duration_ms)
+
+    @property
+    def is_competition(self) -> bool:
+        return self.mode == 'comp'
