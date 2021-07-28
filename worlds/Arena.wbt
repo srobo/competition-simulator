@@ -69,6 +69,14 @@ Robot {
   supervisor TRUE
 }
 
+DEF TOKEN_CTRL Robot {
+  name "token_controller"
+  description "A supervisor 'robot' to handle token activities"
+  controller "token_controller"
+  supervisor TRUE
+  children [
+  ]
+}
 
 DEF LIGHT_CTRL Robot {
   translation 0 0 0
