@@ -117,7 +117,21 @@ PROTO SBCrane [
                             children [
                               BallJoint {  # allow the hook to tilt
                                 jointParameters BallJointParameters {
-                                  dampingConstant 0.5
+                                  minStop -0.7854
+                                  maxStop 0.7854
+                                  dampingConstant 0.05
+                                }
+                                jointParameters2 JointParameters {
+                                  axis 1 0 0
+                                  minStop -0.7854
+                                  maxStop 0.7854
+                                  dampingConstant 0.05
+                                }
+                                jointParameters3 JointParameters {
+                                  axis 0 0 1
+                                  minStop -0.7854
+                                  maxStop 0.7854
+                                  dampingConstant 0.05
                                 }
                                 endPoint Solid {
                                   translation 0 -0.025 0
