@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import enum
 import struct
-from math import pi, atan2
+from math import atan2
 from typing import List, Optional, NamedTuple
 from threading import Lock
 
@@ -82,8 +82,9 @@ class Target(NamedTuple):
         vector: Vector,
     ) -> Target:
         x, _, z = vector.data  # 2-dimensional bearing in the xz plane, elevation is ignored
-        bearing = pi - atan2(x, z)
-        bearing = bearing - (2 * pi) if bearing > pi else bearing  # Normalize to (-pi, pi)
+        # Webots uses z-forward orientation for the bearing but the default receiver
+        # orientation is x-forward so this converts that to (-pi, pi) with 0 facing forward
+        bearing = -atan2(x, z)
         return cls(bearing=bearing, signal_strength=signal_strength, target_info=target_info)
 
     def __repr__(self) -> str:
