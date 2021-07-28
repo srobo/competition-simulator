@@ -195,6 +195,9 @@ def archive_match_recordings(archives_dir: Path) -> None:
         # The textures are always the same, so we don't really care if they're
         # already there.
         pass
+    except FileNotFoundError:
+        # If the world contains no image textures the folder is not created
+        pass
 
 
 def parse_args() -> argparse.Namespace:
