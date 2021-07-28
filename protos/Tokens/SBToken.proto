@@ -3,7 +3,7 @@ PROTO SBToken [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
   field SFString tokenName ""
-  # field SFString emitterName ""
+  field SFString emitterName ""
   field SFColor zoneColour 1 1 1
   field SFFloat connectorDistance 0.13
   field SFFloat connectorAngle 0.7854
@@ -101,13 +101,13 @@ PROTO SBToken [
           }
         ]
       }
-      # Emitter {
-      #   type "radio"
-      #   name IS emitterName
-      #   range 2.5
-      #   maxRange 2.5
-      #   channel 1
-      # }
+      Emitter {
+        type "radio"
+        name IS emitterName
+        range 2.5
+        maxRange 2.5
+        channel 1
+      }
     ]
     name IS tokenName
     model IS tokenName
