@@ -1,14 +1,24 @@
 from __future__ import annotations
 
-from typing import List
+from enum import Enum
+from typing import List, Dict
 
 from controller import Robot
 from shared_utils import RobotType
-from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
+from sr.robot.arduino_devices import Led, Microswitch, DistanceSensor
 from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
 
 
-def init_ruggeduino_array(webot: Robot, robot_type: RobotType) -> List[Ruggeduino]:
+class AnaloguePin(Enum):
+    A0 = "A0"
+    A1 = "A1"
+    A2 = "A2"
+    A3 = "A3"
+    A4 = "A4"
+    A5 = "A5"
+
+
+def init_arduino_array(webot: Robot, robot_type: RobotType) -> List[Arduino]:
     led_names: List[str]
 
     # The names in these arrays correspond to the names given to devices in Webots
@@ -58,50 +68,53 @@ def init_ruggeduino_array(webot: Robot, robot_type: RobotType) -> List[Ruggeduin
             "led 6",
         ]
 
-    analogue_input_array = [DistanceSensor(webot, name) for name in dist_sensor_names]
+    analouge_sensors = [
+        DistanceSensor(webot, name)
+        for name in dist_sensor_names
+    ]
+    analogue_input_dict = {key: sensor for key, sensor in zip(
+        analouge_sensors,
+        AnaloguePin,
+    )}
 
-    digital_input_array = [Microswitch(webot, name) for name in switch_names]
+    digital_sensors = [
+        Microswitch(webot, name)
+        for name in switch_names
+    ]
+    digital_input_dict = {index: sensor for index, sensor in enumerate(
+        digital_sensors,
+    )}
 
     limiter = OutputFrequencyLimiter(webot)
-    digital_output_array = [
+    digital_outputs = [
         Led(webot, name, limiter, pin)
         for pin, name in enumerate(
             led_names,
-            start=Ruggeduino.DIGITAL_PIN_START + len(digital_input_array),
+            start=Arduino.DIGITAL_PIN_START + len(digital_input_dict),
         )
     ]
 
-    return [Ruggeduino(analogue_input_array, digital_input_array, digital_output_array)]
+    digital_output_dict = {index: output for index, output in enumerate(
+        digital_outputs,
+        start=Arduino.DIGITAL_PIN_START + len(digital_input_dict),
+    )}
+
+    return [Arduino({
+        **analogue_input_dict,
+        **digital_input_dict,
+        **digital_output_dict,
+    })]
 
 
-class Ruggeduino:
+class Arduino:
 
     DIGITAL_PIN_START = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 
     def __init__(
         self,
-        analogue_input_array: List[DistanceSensor],
-        digital_input_array: List[Microswitch],
-        digital_output_array: List[Led],
+        devices: Dict
     ) -> None:
-        self.analogue_input_array = analogue_input_array
-        self.digital_input_array = digital_input_array
-        self.digital_output_array = digital_output_array
-
-    def digital_read(self, pin: int) -> bool:
-        """Read an digital input"""
-        return self.digital_input_array[pin - Ruggeduino.DIGITAL_PIN_START].read_value()
-
-    def digital_write(self, pin: int, level: bool) -> None:
-        """Write a digital output"""
-        array_index = pin - Ruggeduino.DIGITAL_PIN_START - len(self.digital_input_array)
-        if array_index < 0:
-            raise IndexError(f"Sorry pin {pin} can't be written to")
-        return self.digital_output_array[array_index].write_value(level)
-
-    def analogue_read(self, pin: int) -> float:
-        """Read an analogue input"""
-        return self.analogue_input_array[pin].read_value()
+        self.pins = devices
 
     # pin_mode not present as the pins have fixed behaviours
     # in the simulator.

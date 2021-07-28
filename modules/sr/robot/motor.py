@@ -9,7 +9,7 @@ from sr.robot.randomizer import add_jitter
 from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
 
 # The maximum value that the motor board will accept
-SPEED_MAX = 100
+SPEED_MAX = 1
 
 
 def init_motor_array(webot: Robot, robot_type: RobotType) -> List[Motor]:
@@ -61,6 +61,9 @@ class Motor:
             self.m0 = MotorChannel(0, m0)
         if m1 is not None:
             self.m1 = MotorChannel(1, m1)
+
+    def __getitem__(self, item: int) -> MotorChannel:
+        return [self.m0, self.m1][item]
 
 
 class MotorChannel:

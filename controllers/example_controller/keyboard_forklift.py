@@ -1,4 +1,4 @@
-from sr.robot import Robot
+from sr.robot import Robot, AnaloguePin
 from controller import Keyboard
 
 # Any keys still pressed in the following period will be handled again
@@ -33,13 +33,13 @@ def print_sensors(robot: Robot) -> None:
     ]
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
-    for pin, name in enumerate(distance_sensor_names):
-        dist = R.ruggeduinos[0].analogue_read(pin)
+    for pin, name in zip(AnaloguePin, distance_sensor_names):
+        dist = R.arduino.pins[pin].analouge_value
         print(f"{pin} {name: <12}: {dist:.2f}")
 
     print("Touch sensor readings:")
     for pin, name in enumerate(touch_sensor_names, 2):
-        touching = R.ruggeduinos[0].digital_read(pin)
+        touching = R.arduino.pins[pin].digital_state
         print(f"{pin} {name: <6}: {touching}")
 
     print()
@@ -125,9 +125,9 @@ while True:
         left_power = max(min(left_power * 2, 100), -100)
         right_power = max(min(right_power * 2, 100), -100)
 
-    R.motors[0].m0.power = left_power
-    R.motors[0].m1.power = right_power
+    R.motor_boards[0].motors[0].power = left_power
+    R.motor_boards[0].motors[0].power = right_power
 
-    R.motors[1].m0.power = grabber_power
+    R.motor_boards[1].motors[1].power = grabber_power
 
     R.sleep(KEYBOARD_SAMPLING_PERIOD / 1000)
