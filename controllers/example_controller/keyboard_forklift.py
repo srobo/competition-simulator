@@ -74,8 +74,8 @@ while True:
 
     boost = False
 
-    left_power = 0
-    right_power = 0
+    left_power: float = 0
+    right_power: float = 0
     grabber_power = 0
 
     while key != NO_KEY_PRESSED:
@@ -87,20 +87,20 @@ while True:
             boost = True
 
         if key_ascii == key_forward:
-            left_power += 50
-            right_power += 50
+            left_power += 0.5
+            right_power += 0.5
 
         elif key_ascii == key_reverse:
-            left_power += -50
-            right_power += -50
+            left_power += -0.5
+            right_power += -0.5
 
         elif key_ascii == key_left:
-            left_power -= 25
-            right_power += 25
+            left_power -= 0.25
+            right_power += 0.25
 
         elif key_ascii == key_right:
-            left_power += 25
-            right_power -= 25
+            left_power += 0.25
+            right_power -= 0.25
 
         elif key_ascii == key_sense:
             print_sensors(R)
@@ -118,20 +118,20 @@ while True:
             grabber_power = 100
 
         elif key_ascii == key_grab_close:
-            grabber_power = -100
+            grabber_power = -1
 
         # Work our way through all the enqueued key presses before dropping
         # out to the timestep
         key = keyboard.getKey()
 
     if boost:
-        # double power values but constrain to [-100, 100]
-        left_power = max(min(left_power * 2, 100), -100)
-        right_power = max(min(right_power * 2, 100), -100)
+        # double power values but constrain to [-1, 1]
+        left_power = max(min(left_power * 2, 1), -1)
+        right_power = max(min(right_power * 2, 1), -1)
 
     R.motor_boards[0].motors[0].power = left_power
-    R.motor_boards[0].motors[0].power = right_power
+    R.motor_boards[0].motors[1].power = right_power
 
-    R.motor_boards[1].motors[1].power = grabber_power
+    R.motor_boards[1].motors[0].power = grabber_power
 
     R.sleep(KEYBOARD_SAMPLING_PERIOD / 1000)
