@@ -22,6 +22,28 @@ CONTROLS = {
 }
 
 
+def print_sensors(robot: Robot) -> None:
+    encoder_sensor_names = [
+        "Bridge (north-south)",
+        "Trolley (left-right)",
+        "Hoist (up-down)",
+    ]
+
+    touching = cast(Microswitch, R.arduino.pins[2]).digital_state
+    print(f"Grabber touching: {touching}")
+
+    transmitters = R.radio.sweep()
+    print("Found transmitter(s):")
+
+    for transmitter in transmitters:
+        print(transmitter)
+
+    print("Encoder readings:")
+    for encoder, name in enumerate(encoder_sensor_names):
+        displacement = R.encoders[encoder].displacement
+        print(f"{encoder} {name: <20}: {displacement:.2f}m")
+
+
 R = Robot()
 
 keyboard = Keyboard()
@@ -87,16 +109,7 @@ while True:
                 R.connector.lock = True
 
         elif key_ascii == key_sense:
-            touching = cast(Microswitch, R.arduino.pins[2]).digital_state
-            print(f"Grabber touching: {touching}")
-
-            transmitters = R.radio.sweep()
-            print("Found transmitter(s):")
-
-            for transmitter in transmitters:
-                print(transmitter)
-
-            print()
+            print_sensors(R)
 
         # Work our way through all the enqueued key presses before dropping
         # out to the timestep
