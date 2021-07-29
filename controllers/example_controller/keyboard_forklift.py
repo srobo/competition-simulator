@@ -33,6 +33,13 @@ def print_sensors(robot: Robot) -> None:
     touch_sensor_names = [
         "Rear",
     ]
+    encoder_sensor_names = [
+        "Left Wheel",
+        "Right Wheel",
+
+        "Left Gripper",
+        "Right Gripper",
+    ]
 
     pin: Union[int, AnaloguePin] = 0
 
@@ -45,6 +52,15 @@ def print_sensors(robot: Robot) -> None:
     for pin, name in enumerate(touch_sensor_names, 2):
         touching = cast(Microswitch, R.arduino.pins[pin]).digital_state
         print(f"{pin} {name: <6}: {touching}")
+
+    print("Encoder readings:")
+    for encoder, name in enumerate(encoder_sensor_names[:2]):
+        rotation = R.encoders[encoder].rotation
+        print(f"{encoder} {name: <20}: {rotation:.2f} rad")
+
+    for encoder, name in enumerate(encoder_sensor_names[2:], 2):
+        displacement = R.encoders[encoder].displacement
+        print(f"{encoder} {name: <20}: {displacement:.2f}m")
 
     print()
 
