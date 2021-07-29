@@ -29,16 +29,6 @@ class Encoder:
         self._encoder = get_robot_device(webot, sensor_name, PositionSensor)
         self._encoder.enable(int(webot.getBasicTimeStep()))
 
-    @property
-    def rotation(self) -> float:
-        raise NotImplementedError("This sensor does not support measuring rotations.")
-
-    @property
-    def displacement(self) -> float:
-        raise NotImplementedError(
-            "This sensor does not support measuring linear displacement.",
-        )
-
 
 class RotaryEncoder(Encoder):
     @property
