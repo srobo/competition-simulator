@@ -6,7 +6,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, radio, arduino, compass
+from sr.robot import motor, radio, arduino, compass, connector
 # Webots specific library
 from controller import Robot as WebotsRobot
 from shared_utils import RobotType
@@ -147,6 +147,9 @@ class Robot:
         # Compass
         self._init_compass()
 
+        # Connector
+        self._init_connector()
+
     def _init_motors(self) -> None:
         self.motor_boards = motor.init_motor_array(self.webot, self.type)
 
@@ -159,6 +162,10 @@ class Robot:
     def _init_compass(self) -> None:
         if self.type != RobotType.CRANE:  # The crane lacks a compass
             self.compass = compass.Compass(self.webot)
+
+    def _init_connector(self) -> None:
+        if self.type == RobotType.CRANE:
+            self.connector = connector.Connector(self.webot)
 
     def time(self) -> float:
         """
