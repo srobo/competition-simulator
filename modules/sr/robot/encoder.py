@@ -41,9 +41,6 @@ class Encoder:
 
 
 class RotaryEncoder(Encoder):
-    def __init__(self, webot: Robot, sensor_name: str):
-        super().__init__(webot, sensor_name)
-
     @property
     def rotation(self) -> float:
         """
@@ -53,9 +50,6 @@ class RotaryEncoder(Encoder):
 
 
 class LinearEncoder(Encoder):
-    def __init__(self, webot: Robot, sensor_name: str):
-        super().__init__(webot, sensor_name)
-
     @property
     def displacement(self) -> float:
         """
