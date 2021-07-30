@@ -2,23 +2,28 @@ from controller import Robot, Connector as WebotsConnector
 from sr.robot.utils import get_robot_device
 
 
-class Connector:
+class Magnet:
     def __init__(self, webot: Robot):
         self._connector = get_robot_device(webot, "Crane Connector", WebotsConnector)
         self._connector.enablePresence(int(webot.getBasicTimeStep()))
 
-    def is_locked(self) -> bool:
+    @property
+    def energised(self) -> bool:
         """
         Get the current lock state of the connector. This does not indicate
         whether a physical connection has been successfully made.
         """
         return self._connector.isLocked()
 
-    def lock(self) -> None:
-        self._connector.lock()
-
-    def unlock(self) -> None:
-        self._connector.unlock()
+    @energised.setter
+    def energised(self, value: bool) -> None:
+        if value:
+            if self.nearby():
+                # Only lock the connector if the is a token in range
+                self._connector.lock()
+        else:
+            self._connector.unlock()
+        pass
 
     def nearby(self) -> bool:
         """
