@@ -81,9 +81,29 @@ def propagate_exit_code(supervisor: Supervisor) -> Iterator[None]:
 
 
 def quit_if_development_mode() -> None:
+    if controller_utils.get_robot_mode() == 'remote-dev':
+        print("Entering remote development mode")
+        run_dev_remote_mode()
+        exit()
     if controller_utils.get_robot_mode() != 'comp':
         print("Development mode, exiting competition supervisor")
         exit()
+
+
+def run_dev_remote_mode() -> None:
+    controller_utils.tee_streams(
+        controller_utils.get_competition_supervisor_log_filepath(),
+    )
+
+    supervisor = Supervisor()
+
+    with propagate_exit_code(supervisor):
+        supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
+
+        recording_stem = controller_utils.get_recording_stem()
+
+        with record_animation(supervisor, recording_stem.with_suffix('.html')):
+            run_match(supervisor, do_inform_start=False)
 
 
 def check_required_libraries(path: Path) -> None:
@@ -186,16 +206,17 @@ def inform_start(node: Node) -> None:
     node.getField('customData').setSFString('start')
 
 
-def run_match(supervisor: Supervisor) -> None:
+def run_match(supervisor: Supervisor, do_inform_start: bool = True) -> None:
     print("===========")
     print("Match start")
     print("===========")
 
-    # First signal the robot controllers that they're able to start ...
-    for _, _, robot in get_robots(supervisor, skip_missing=True):
-        inform_start(robot)
-    inform_start(webots_utils.node_from_def(supervisor, 'WALL_CTRL'))
-    inform_start(webots_utils.node_from_def(supervisor, 'LIGHT_CTRL'))
+    if do_inform_start:
+        # First signal the robot controllers that they're able to start ...
+        for _, _, robot in get_robots(supervisor, skip_missing=True):
+            inform_start(robot)
+        inform_start(webots_utils.node_from_def(supervisor, 'WALL_CTRL'))
+        inform_start(webots_utils.node_from_def(supervisor, 'LIGHT_CTRL'))
 
     # ... then un-pause the simulation, so they all start together
     supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
