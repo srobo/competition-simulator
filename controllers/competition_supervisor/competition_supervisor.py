@@ -217,7 +217,6 @@ def run_match(supervisor: Supervisor, do_inform_start: bool = True) -> None:
             inform_start(robot)
         inform_start(webots_utils.node_from_def(supervisor, 'LIGHT_CTRL'))
 
-
     # ... then un-pause the simulation, so they all start together
     supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
 
