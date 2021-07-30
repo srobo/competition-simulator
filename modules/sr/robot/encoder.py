@@ -1,13 +1,16 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Union
 
 from controller import Robot, PositionSensor
 from shared_utils import RobotType
 from sr.robot.utils import get_robot_device
 
 
-def init_encoder_array(webot: Robot, robot_type: RobotType) -> List[Encoder]:
+def init_encoder_array(
+    webot: Robot,
+    robot_type: RobotType,
+) -> List[Union[RotaryEncoder, LinearEncoder]]:
     if robot_type == RobotType.FORKLIFT:
         return [
             RotaryEncoder(webot, 'left wheel sensor'),
@@ -24,13 +27,11 @@ def init_encoder_array(webot: Robot, robot_type: RobotType) -> List[Encoder]:
         ]
 
 
-class Encoder:
+class RotaryEncoder:
     def __init__(self, webot: Robot, sensor_name: str):
         self._encoder = get_robot_device(webot, sensor_name, PositionSensor)
         self._encoder.enable(int(webot.getBasicTimeStep()))
 
-
-class RotaryEncoder(Encoder):
     @property
     def rotation(self) -> float:
         """
@@ -39,7 +40,11 @@ class RotaryEncoder(Encoder):
         return self._encoder.getValue()
 
 
-class LinearEncoder(Encoder):
+class LinearEncoder:
+    def __init__(self, webot: Robot, sensor_name: str):
+        self._encoder = get_robot_device(webot, sensor_name, PositionSensor)
+        self._encoder.enable(int(webot.getBasicTimeStep()))
+
     @property
     def displacement(self) -> float:
         """

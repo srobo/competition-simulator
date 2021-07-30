@@ -1,6 +1,6 @@
 from typing import cast
 
-from sr.robot import Robot, Microswitch
+from sr.robot import Robot, Microswitch, LinearEncoder
 from controller import Keyboard
 
 # Any keys still pressed in the following period will be handled again
@@ -40,7 +40,7 @@ def print_sensors(robot: Robot) -> None:
 
     print("Encoder readings:")
     for encoder, name in enumerate(encoder_sensor_names):
-        displacement = R.encoders[encoder].displacement
+        displacement = cast(LinearEncoder, R.encoders[encoder]).displacement
         print(f"{encoder} {name: <20}: {displacement:.2f}m")
 
 
