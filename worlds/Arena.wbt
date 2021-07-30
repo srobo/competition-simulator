@@ -69,6 +69,27 @@ Robot {
   supervisor TRUE
 }
 
+DEF TOKEN_CTRL Robot {
+  name "token_controller"
+  description "A supervisor 'robot' to handle token activities"
+  controller "token_controller"
+  supervisor TRUE
+  selfCollision TRUE  # Allow tokens to collide with each other
+  children [
+    SBTokenHarness {
+      tokenName "ZONE_0_1"
+      emitterName "ZONE_0_1 Emitter"
+      translation 1.5 0.13 1
+      zoneColour 1 0 1
+    }
+    SBTokenHarness {
+      tokenName "ZONE_1_4"
+      emitterName "ZONE_1_4 Emitter"
+      translation 1.5 0.13 -1
+      zoneColour 1 1 0
+    }
+  ]
+}
 
 DEF LIGHT_CTRL Robot {
   translation 0 0 0
