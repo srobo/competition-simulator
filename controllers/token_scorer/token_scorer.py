@@ -1,17 +1,19 @@
 import sys
 import enum
-from typing import Dict, List, Tuple, NamedTuple
+import struct
+from math import cos, sin, sqrt, atan2
+from typing import cast, Dict, List, Tuple, NamedTuple
 from pathlib import Path
 
 # Webots specific library
-from controller import Field, Supervisor
+from controller import Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
-from webots_utils import node_from_def  # isort:skip
+from sr.robot.utils import get_robot_device  # isort:skip
 import controller_utils  # isort:skip
 
 SCORE_UPDATES_PER_SECOND = 10
@@ -21,7 +23,7 @@ PLATFORM_EXTRA_TOKEN_VALUE = 1
 
 
 class Point(NamedTuple):
-    # We are only tracking tokens on a 2D plane
+    # We are only tracking tokens on a 2D plane, with Y as north
     x: float
     y: float
 
@@ -129,12 +131,13 @@ class TokenScorer:
             code: 0 for code in TOKENS
         }
 
-        self._token_location_fields: Dict[Token, Field] = {
-            code: node_from_def(
-                self._robot,
-                f'{code.owner.name}_{code.id}',
-            ).getField('translation') for code in TOKENS
+        self._scoring_receivers: Dict[Receiver, Point] = {
+            get_robot_device(self._robot, 'token scorer', Receiver): Point(0, -1.25),
         }
+
+        timestep = int(self._robot.getBasicTimeStep())
+        for receiver in self._scoring_receivers.keys():
+            receiver.enable(timestep)
 
     def token_in_zone(self, token_location: Point, zone: Tuple[Point, Point]) -> bool:
         # zone[0] < zone[1]
@@ -164,25 +167,88 @@ class TokenScorer:
 
     def get_token_location(
         self,
-        token_code: Token,
+        token_vector: Tuple[float, float, float],
+        signal_strength: float,
+        receiver_location: Point,
     ) -> Point:
-        position = self._token_location_fields[token_code].getSFVec3f()
-        # remap the Webots coordinate system to a 2D plane with Y pointing north
-        return Point(position[2], position[0])
+        token_distance = 1 / sqrt(signal_strength)
+        # bearing from north
+        token_bearing = atan2(token_vector[2], token_vector[0])
+
+        # calculate the ratio between direct distance and distance in a 2D plane
+        height_offset_multiplier = cos(atan2(
+            token_vector[1],
+            sqrt(token_vector[2] ** 2 + token_vector[0] ** 2),
+        ))
+
+        position = (
+            token_distance * sin(token_bearing) * height_offset_multiplier,
+            token_distance * cos(token_bearing) * height_offset_multiplier,
+        )
+        # map to a 2D plane with Y pointing north
+        return Point(position[0] + receiver_location[0], position[1] + receiver_location[1])
+
+    def process_detected_token(
+        self,
+        data: bytes,
+        token_vector: Tuple[float, float, float],
+        signal_strength: float,
+        receiver_location: Point,
+    ) -> Token:
+        token_code, owner = struct.unpack("!bb", data)
+        token = Token(Owner(owner), token_code)
+
+        position = self.get_token_location(
+            token_vector,
+            signal_strength,
+            receiver_location,
+        )
+
+        print(f"Token {token} @ {position}")
+        token_value = self.get_token_value(owner, position)
+
+        if token_value != self._token_statuses[token]:
+            # token has moved between scoring zones
+            self._claim_log.log_token_value_change(
+                token,
+                token_value,
+                self._robot.getTime(),
+            )
+            self._token_statuses[token] = token_value
+
+        return token
 
     def process_token_locations(self) -> None:
-        for token_code in TOKENS:
-            position = self.get_token_location(token_code)
-            token_value = self.get_token_value(token_code.owner, position)
+        observed_tokens: List[Token] = []
 
-            if token_value != self._token_statuses[token_code]:
-                # token has moved between scoring zones
-                self._claim_log.log_token_value_change(
-                    token_code,
-                    token_value,
-                    self._robot.getTime(),
-                )
-            self._token_statuses[token_code] = token_value
+        for receiver, receiver_location in self._scoring_receivers.items():
+            while receiver.getQueueLength():
+                try:
+                    data = receiver.getData()
+                    vector = receiver.getEmitterDirection()
+                    signal_strength = receiver.getSignalStrength()
+                    observed_tokens.append(
+                        self.process_detected_token(
+                            data,
+                            cast(Tuple[float, float, float], vector),
+                            signal_strength,
+                            receiver_location,
+                        )
+                    )
+                finally:
+                    # Always advance to the next packet in queue:
+                    # if there has been an exception, it is safer to advance to the next.
+                    receiver.nextPacket()
+
+        # remove score from tokens that are outside the scorable zone
+        for token in TOKENS:
+            if token in observed_tokens:
+                continue
+
+            if self._token_statuses[token] == 0:
+                continue
+
+            self._token_statuses[token] = 0
 
     def main(self) -> None:
         token_scan_step = 1000 / SCORE_UPDATES_PER_SECOND
