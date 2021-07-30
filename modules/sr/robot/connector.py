@@ -7,20 +7,18 @@ class Connector:
         self._connector = get_robot_device(webot, "Crane Connector", WebotsConnector)
         self._connector.enablePresence(int(webot.getBasicTimeStep()))
 
-    @property
-    def lock(self) -> bool:
+    def is_locked(self) -> bool:
         """
         Get the current lock state of the connector. This does not indicate
         whether a physical connection has been successfully made.
         """
         return self._connector.isLocked()
 
-    @lock.setter
-    def lock(self, value: bool) -> None:
-        if value:
-            self._connector.lock()
-        else:
-            self._connector.unlock()
+    def lock(self) -> None:
+        self._connector.lock()
+
+    def unlock(self) -> None:
+        self._connector.unlock()
 
     def nearby(self) -> bool:
         """
