@@ -157,6 +157,7 @@ PROTO SBCrane [
                                       tensileStrength 35
                                       shearStrength 20
                                       snap FALSE
+                                      autoLock TRUE
                                       name "Crane Connector"
                                       unilateralUnlock TRUE
                                       unilateralLock TRUE

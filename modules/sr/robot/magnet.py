@@ -18,12 +18,9 @@ class Magnet:
     @energised.setter
     def energised(self, value: bool) -> None:
         if value:
-            if self.nearby():
-                # Only lock the connector if the is a token in range
-                self._connector.lock()
+            self._connector.lock()
         else:
             self._connector.unlock()
-        pass
 
     def nearby(self) -> bool:
         """
