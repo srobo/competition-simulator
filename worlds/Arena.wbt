@@ -333,14 +333,3 @@ DEF SHIP Transform {
     }
   ]
 }
-
-DEF ZONE_0_1 SBToken {
-  tokenName "zone 0 token 1"
-  translation 1.5 0.13 1
-  zoneColour 1 0 1
-}
-DEF ZONE_1_4 SBToken {
-  tokenName "zone 1 token 4"
-  translation 1.5 0.13 -1
-  zoneColour 1 1 0
-}
