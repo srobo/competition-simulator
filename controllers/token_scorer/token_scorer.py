@@ -204,7 +204,6 @@ class TokenScorer:
             receiver_location,
         )
 
-        print(f"Token {token} @ {position}")
         token_value = self.get_token_value(owner, position)
 
         if token_value != self._token_statuses[token]:
@@ -233,7 +232,7 @@ class TokenScorer:
                             cast(Tuple[float, float, float], vector),
                             signal_strength,
                             receiver_location,
-                        )
+                        ),
                     )
                 finally:
                     # Always advance to the next packet in queue:
