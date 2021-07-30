@@ -48,27 +48,12 @@ def init_arduino(webot: Robot, robot_type: RobotType) -> Arduino:
             # "led 6",
         ]
     else:
-        # TODO: placeholder crane ruggeduino
         dist_sensor_names = [
-            # Updating these? Also update controllers/example_controller/keyboard_controller.py
-            "Front Left DS",
-            "Front Right DS",
-            "Left DS",
-            "Right DS",
-            "Back Left DS",
-            "Back Right DS",
         ]
         switch_names = [
-            "front bump sensor",
-            "back bump sensor",
+            "hook touch sensor",
         ]
         led_names = [
-            "led 1",
-            "led 2",
-            "led 3",
-            "led 4",
-            "led 5",
-            "led 6",
         ]
 
     analouge_sensors = [

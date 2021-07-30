@@ -1,4 +1,3 @@
-import re
 import sys
 import enum
 import random
@@ -13,7 +12,6 @@ from territory_controller import (
     ActionTimer,
     StationCode,
     TerritoryRoot,
-    TERRITORY_LINKS,
     AttachedTerritories,
 )
 
@@ -180,22 +178,6 @@ class TestAdjacentTerritories(unittest.TestCase):
         claim_log = ClaimLog(record_arena_actions=False)
         self.attached_territories = AttachedTerritories(claim_log)
 
-    def test_all_links_in_set(self) -> None:
-        'test all territory links from Arena.wbt are in TERRITORY_LINKS'
-        arena_links = set()
-        with (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r') as f:
-            for line in f.readlines():
-                if 'SRLink' in line:
-                    arena_links.add(re.sub(r'.*DEF (.*) SRLink .*\n', r'\1', line))
-
-        territory_links_strs = {'-'.join(link) for link in TERRITORY_LINKS}
-
-        self.assertEqual(
-            arena_links,
-            territory_links_strs,
-            'TERRITORY_LINKS differs from links in Arena.wbt',
-        )
-
     def test_all_territories_linked(self) -> None:
         'test every territory exists in keys'
         station_codes = {station.value for station in StationCode}
@@ -234,23 +216,6 @@ class TestMatchingStationCode(unittest.TestCase):
             station_codes,
             radio_station_codes,
             "StationCode enums differ between territory_controller and sr.robot.radio",
-        )
-
-    def test_matches_arena_file(self) -> None:
-        "test StationCode matches SRTerritory nodes in Arena.wbt"
-
-        arena_territories = set()
-        with (REPO_ROOT / 'worlds' / 'Arena.wbt').open('r') as f:
-            for line in f.readlines():
-                if 'SRTerritory' in line:
-                    arena_territories.add(re.sub(r'.*DEF (.*) SRTerritory .*\n', r'\1', line))
-
-        station_codes = {station.value for station in StationCode}
-
-        self.assertEqual(
-            station_codes,
-            arena_territories,
-            "StationCode values differs from territories in Arena.wbt",
         )
 
 

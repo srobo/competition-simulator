@@ -1,0 +1,130 @@
+#VRML_OBJ R2021b utf8
+PROTO SBToken [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFString tokenName ""
+  # field SFString emitterName ""
+  field SFColor zoneColour 1 1 1
+  field SFFloat connectorDistance 0.13
+  field SFFloat connectorAngle 0.7854
+  field SFFloat connectorStrength 35
+  field SFFloat connectorShear 20
+]
+{
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Shape {
+        appearance DEF TOKEN_APPEARANCE PBRAppearance {
+          baseColor IS zoneColour
+          roughness 1
+          metalness 0
+        }
+        geometry DEF TOKEN_GEOMETRY Box {
+          size 0.26 0.26 0.26
+        }
+      }
+      Group {
+        children [
+          Connector {  # South connector
+            translation -0.13 0 0
+            rotation 0 1 0 -1.5708
+            type "passive"
+            distanceTolerance IS connectorDistance
+            axisTolerance IS connectorAngle
+            rotationTolerance 0
+            numberOfRotations 0
+            tensileStrength IS connectorStrength
+            shearStrength IS connectorShear
+            snap FALSE
+            name "South Connector"
+          }
+          Connector {  # North connector
+            translation 0.13 0 0
+            rotation 0 1 0 1.5708
+            type "passive"
+            distanceTolerance IS connectorDistance
+            axisTolerance IS connectorAngle
+            rotationTolerance 0
+            numberOfRotations 0
+            tensileStrength IS connectorStrength
+            shearStrength IS connectorShear
+            snap FALSE
+            name "North Connector"
+          }
+          Connector {  # East connector
+            translation 0 0 0.13
+            rotation 0 1 0 0
+            type "passive"
+            distanceTolerance IS connectorDistance
+            axisTolerance IS connectorAngle
+            rotationTolerance 0
+            numberOfRotations 0
+            tensileStrength IS connectorStrength
+            shearStrength IS connectorShear
+            snap FALSE
+            name "East Connector"
+          }
+          Connector {  # West connector
+            translation 0 0 -0.13
+            rotation 0 1 0 3.1416
+            type "passive"
+            distanceTolerance IS connectorDistance
+            axisTolerance IS connectorAngle
+            rotationTolerance 0
+            numberOfRotations 0
+            tensileStrength IS connectorStrength
+            shearStrength IS connectorShear
+            snap FALSE
+            name "West Connector"
+          }
+          Connector {  # Top connector
+            translation 0 0.13 0
+            rotation 1 0 0 -1.5708
+            type "passive"
+            distanceTolerance IS connectorDistance
+            axisTolerance IS connectorAngle
+            rotationTolerance 0
+            numberOfRotations 0
+            tensileStrength IS connectorStrength
+            shearStrength IS connectorShear
+            snap FALSE
+            name "Top Connector"
+          }
+          Connector {  # Bottom connector
+            translation 0 -0.13 0
+            rotation 1 0 0 1.5708
+            type "passive"
+            distanceTolerance IS connectorDistance
+            axisTolerance IS connectorAngle
+            rotationTolerance 0
+            numberOfRotations 0
+            tensileStrength IS connectorStrength
+            shearStrength IS connectorShear
+            snap FALSE
+            name "Bottom Connector"
+          }
+        ]
+      }
+      # Emitter {
+      #   type "radio"
+      #   name IS emitterName
+      #   range 2.5
+      #   maxRange 2.5
+      #   channel 1
+      # }
+    ]
+    name IS tokenName
+    model IS tokenName
+    boundingObject USE TOKEN_GEOMETRY
+    physics Physics {
+      density -1
+      mass 0.200
+    }
+    recognitionColors [
+      1 1 1
+    ]
+  }
+
+}
