@@ -101,12 +101,12 @@ while True:
             hoist_power = 0.25
 
         elif key_ascii == key_grab:
-            if R.connector.lock:
+            if R.connector.is_locked():
                 print("Unlocking connector")
-                R.connector.lock = False
+                R.connector.lock()
             else:
                 print("Locking connector")
-                R.connector.lock = True
+                R.connector.unlock()
 
         elif key_ascii == key_sense:
             print_sensors(R)
