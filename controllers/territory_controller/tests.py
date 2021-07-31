@@ -1,9 +1,7 @@
-import sys
 import enum
 import random
 import unittest
 from typing import Dict, List, Union, Mapping
-from pathlib import Path
 from unittest.mock import Mock, patch
 
 from territory_controller import (
@@ -14,13 +12,6 @@ from territory_controller import (
     TerritoryRoot,
     AttachedTerritories,
 )
-
-# Root directory of the SR webots simulator (equivalent to the root of the git repo)
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-
-sys.path.insert(1, str(REPO_ROOT / 'modules'))
-
-from sr.robot.radio import StationCode as RadioStationCode  # isort:skip
 
 
 class MockStationCode(str, enum.Enum):
@@ -205,18 +196,6 @@ class TestAdjacentTerritories(unittest.TestCase):
                 links,
                 f'Zone 1 starting zone incorrectly appears in {station.value} links',
             )
-
-
-class TestMatchingStationCode(unittest.TestCase):
-
-    def test_radio_matches_territory_controller(self) -> None:
-        station_codes = {station.value for station in StationCode}
-        radio_station_codes = {station.value for station in RadioStationCode}
-        self.assertEqual(
-            station_codes,
-            radio_station_codes,
-            "StationCode enums differ between territory_controller and sr.robot.radio",
-        )
 
 
 class TestLiveScoring(unittest.TestCase):
