@@ -229,6 +229,11 @@ class TokenScorer:
             if self._token_statuses[token] == 0:
                 continue
 
+            self._claim_log.log_token_value_change(
+                token,
+                0,
+                self._robot.getTime(),
+            )
             self._token_statuses[token] = 0
 
     def main(self) -> None:
