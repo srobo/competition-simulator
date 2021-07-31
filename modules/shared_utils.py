@@ -10,6 +10,7 @@ class RobotType(Enum):
 class Owner(IntEnum):
     ZONE_0 = 0
     ZONE_1 = 1
+    BEACON = -1
 
 
 class Token(NamedTuple):
@@ -21,6 +22,10 @@ class Token(NamedTuple):
 
 
 TOKENS: List[Token] = [
+    Token(Owner.BEACON, 100),
+    Token(Owner.BEACON, 101),
+    Token(Owner.BEACON, 102),
+    Token(Owner.BEACON, 103),
     Token(Owner.ZONE_0, 1),
     Token(Owner.ZONE_1, 4),
 ]
