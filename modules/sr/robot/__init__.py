@@ -1,5 +1,5 @@
 import sr.robot._version_check  # noqa
-from sr.robot.radio import Claimant, StationCode
+from shared_utils import Owner, Token
 from sr.robot.robot import Robot
 from sr.robot.camera import (
     MarkerType,
@@ -10,9 +10,9 @@ from sr.robot.camera import (
 
 __all__ = (
     'Robot',
-    'Claimant',
+    'Owner',
+    'Token',
     'MarkerType',
-    'StationCode',
     'MARKER_ARENA',
     'MARKER_TOKEN_GOLD',
     'MARKER_TOKEN_SILVER',
