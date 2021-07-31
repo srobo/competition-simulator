@@ -145,6 +145,17 @@ class TokenScorer:
         self.ship_zone = order_zone_points(ship_zone)
         self.stack_zones = [order_zone_points(zone_0_stack), order_zone_points(zone_1_stack)]
 
+        self.score_displays = {
+            Owner.ZONE_0: (
+                SevenSeg(self._robot, 'Score 0 low'),
+                SevenSeg(self._robot, 'Score 0 high'),
+            ),
+            Owner.ZONE_1: (
+                SevenSeg(self._robot, 'Score 1 low'),
+                SevenSeg(self._robot, 'Score 1 high'),
+            ),
+        }
+
         self._token_statuses: Dict[Token, int] = {
             code: 0 for code in TOKENS
         }
@@ -289,10 +300,26 @@ class TokenScorer:
 
         return zone_scores
 
+    def update_displayed_scores(self) -> None:
+        scores = self.get_scores()
+
+        for zone, score in scores.items():
+            display = self.score_displays[zone]
+
+            score_low = score % 10
+            score_high = int(score / 10)
+
+            display[0].set_value(score_low)
+            display[1].set_value(score_high)
+
     def main(self) -> None:
         token_scan_step = 1000 / SCORE_UPDATES_PER_SECOND
         while True:
             self.process_token_locations()
+            if self._claim_log.is_dirty():
+                self.update_displayed_scores()
+
+            self._claim_log.record_captures()
             self._robot.step(int(token_scan_step))
 
 

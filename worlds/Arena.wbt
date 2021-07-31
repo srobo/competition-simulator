@@ -108,6 +108,56 @@ Robot {
         }
       ]
     }
+    SevenSeg {
+      translation 2.2 0 -5.5
+      baseName "Score 0 high"
+      baseColour 0.095395215 0.22841774 0.8000001
+    }
+    SevenSeg {
+      translation 2.2 0 -4.7
+      baseName "Score 0 low"
+      baseColour 0.095395215 0.22841774 0.8000001
+    }
+    SevenSeg {
+      translation 2.2 0 4.7
+      baseName "Score 1 high"
+      baseColour 0.095395215 0.22841774 0.8000001
+    }
+    SevenSeg {
+      translation 2.2 0 5.5
+      baseName "Score 1 low"
+      baseColour 0.095395215 0.22841774 0.8000001
+    }
+    Transform {
+      translation 2.2 -0.001 -5.1
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry Plane {
+            size 1.5 1.7
+          }
+        }
+      ]
+    }
+    Transform {
+      translation 2.2 -0.001 5.1
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.095395215 0.22841774 0.8000001
+            roughness 1
+            metalness 0
+          }
+          geometry Plane {
+            size 1.5 1.7
+          }
+        }
+      ]
+    }
   ]
 }
 
