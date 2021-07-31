@@ -236,6 +236,23 @@ class TokenScorer:
             )
             self._token_statuses[token] = 0
 
+    def get_scores(self) -> Dict[Owner, int]:
+        """
+        Get the current scores.
+
+        The returned dict will always include all the claimants as keys.
+        """
+        zone_scores: Dict[Owner, int] = {}
+
+        for zone in Owner.zones():
+            zone_scores[zone] = sum(
+                value
+                for token, value in self._token_statuses.items()
+                if token.owner == zone
+            )
+
+        return zone_scores
+
     def main(self) -> None:
         token_scan_step = 1000 / SCORE_UPDATES_PER_SECOND
         while True:

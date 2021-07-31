@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from enum import Enum, IntEnum
-from typing import List, NamedTuple
+from typing import Set, List, NamedTuple
 
 
 class RobotType(Enum):
@@ -10,6 +12,13 @@ class RobotType(Enum):
 class Owner(IntEnum):
     ZONE_0 = 0
     ZONE_1 = 1
+
+    @classmethod
+    def zones(cls) -> Set[Owner]:
+        return {  # noqa: C416
+            owner
+            for owner in cls
+        }
 
 
 class Token(NamedTuple):
