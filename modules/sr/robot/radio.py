@@ -6,7 +6,7 @@ from typing import List, Optional, NamedTuple
 from threading import Lock
 
 from controller import Robot, Emitter, Receiver
-from shared_utils import Owner, Token
+from shared_utils import Owner, TargetInfo, TargetType
 from sr.robot.utils import get_robot_device
 from sr.robot.coordinates import Vector
 
@@ -14,10 +14,11 @@ from sr.robot.coordinates import Vector
 BROADCASTS_PER_SECOND = 10
 
 
-def parse_radio_message(message: bytes, zone: int) -> Optional[Token]:
+def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
     try:
-        token_code, owner = struct.unpack("!bb", message)
-        return Token(
+        token_type, token_code, owner = struct.unpack("!bBb", message)
+        return TargetInfo(
+            type=TargetType(token_type),
             owner=Owner(owner),
             id=token_code,
         )
@@ -32,13 +33,13 @@ class Target(NamedTuple):
     """
     bearing: float
     signal_strength: float
-    target_info: Token
+    target_info: TargetInfo
 
     @classmethod
     def from_vector(
         cls,
         signal_strength: float,
-        target_info: Token,
+        target_info: TargetInfo,
         vector: Vector,
     ) -> Target:
         x, _, z = vector.data  # 2-dimensional bearing in the xz plane, elevation is ignored

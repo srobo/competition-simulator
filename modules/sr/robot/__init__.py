@@ -1,5 +1,5 @@
 import sr.robot._version_check  # noqa
-from shared_utils import Owner, Token
+from shared_utils import Owner, TargetInfo
 from sr.robot.robot import Robot
 from sr.robot.camera import (
     MarkerType,
@@ -11,8 +11,8 @@ from sr.robot.camera import (
 __all__ = (
     'Robot',
     'Owner',
-    'Token',
     'MarkerType',
+    'TargetInfo',
     'MARKER_ARENA',
     'MARKER_TOKEN_GOLD',
     'MARKER_TOKEN_SILVER',
