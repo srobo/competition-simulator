@@ -5,7 +5,7 @@ from typing import cast, Dict, List, Tuple, NamedTuple
 from pathlib import Path
 
 # Webots specific library
-from controller import Receiver, Supervisor
+from controller import LED, Robot, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -94,6 +94,42 @@ def order_zone_points(zone: Tuple[Point, Point]) -> Tuple[Point, Point]:
         Point(min(zone[0].x, zone[1].x), min(zone[0].y, zone[1].y)),
         Point(max(zone[0].x, zone[1].x), max(zone[0].y, zone[1].y)),
     )
+
+
+class SevenSeg:
+    """
+    A driver to display a decimal digit on 7 LEDs
+
+    ┌─0─┐
+    5   1
+    ├─6─┤
+    4   2
+    └─3─┘
+    """
+    lut = [
+        (True, True, True, True, True, True, False),  # 0
+        (False, True, True, False, False, False, False),  # 1
+        (True, True, False, True, True, False, True),  # 2
+        (True, True, True, True, False, False, True),  # 3
+        (False, True, True, False, False, True, True),  # 4
+        (True, False, True, True, False, True, True),  # 5
+        (True, False, True, True, True, True, True),  # 6
+        (True, True, True, False, False, False, False),  # 7
+        (True, True, True, True, True, True, True),  # 8
+        (True, True, True, True, False, True, True),  # 9
+    ]
+
+    def __init__(self, webot: Robot, led_basename: str):
+        self._leds = [
+            get_robot_device(webot, f'{led_basename} {led}', LED)
+            for led in range(7)
+        ]
+
+    def set_value(self, value: int) -> None:
+        if value < 0 or value > 9:
+            raise ValueError(f"{value} cannot be represented on a seven segment digit")
+        for i in range(7):
+            self._leds[i].set(self.lut[value][i])
 
 
 class TokenScorer:

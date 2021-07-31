@@ -1,0 +1,138 @@
+#VRML_OBJ R2021b utf8
+# tags: static
+
+PROTO SevenSeg [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFString baseName ""
+  field MFColor ledColour [1 1 1]
+  field SFColor baseColour 0 0 0
+
+]
+{
+  Transform {
+    translation IS translation
+    rotation IS rotation
+    children [
+      LED {
+        translation 0.55 0.01 0
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor IS baseColour
+              metalness 0
+              emissiveIntensity 100
+            }
+            geometry DEF HORZ_SEG_GEO Plane {
+              size 0.1 0.5
+            }
+          }
+        ]
+        name %{= '"' .. fields.baseName.value .. ' 0"'}%
+        color IS ledColour
+      }
+      LED {
+        translation 0.275 0.01 0.275
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor IS baseColour
+              metalness 0
+              emissiveIntensity 100
+            }
+            geometry DEF VIRT_SEG_GEO Plane {
+              size 0.5 0.1
+            }
+          }
+        ]
+        name %{= '"' .. fields.baseName.value .. ' 1"'}%
+        color IS ledColour
+      }
+      LED {
+        translation -0.275 0.01 0.275
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor IS baseColour
+              metalness 0
+              emissiveIntensity 100
+            }
+            geometry USE VIRT_SEG_GEO
+          }
+        ]
+        name %{= '"' .. fields.baseName.value .. ' 2"'}%
+        color IS ledColour
+      }
+      LED {
+        translation -0.55 0.01 0
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor IS baseColour
+              metalness 0
+              emissiveIntensity 100
+            }
+            geometry USE HORZ_SEG_GEO
+          }
+        ]
+        name %{= '"' .. fields.baseName.value .. ' 3"'}%
+        color IS ledColour
+      }
+      LED {
+        translation -0.275 0.01 -0.275
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor IS baseColour
+              metalness 0
+              emissiveIntensity 100
+            }
+            geometry USE VIRT_SEG_GEO
+          }
+        ]
+        name %{= '"' .. fields.baseName.value .. ' 4"'}%
+        color IS ledColour
+      }
+      LED {
+        translation 0.275 0.01 -0.275
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor IS baseColour
+              metalness 0
+              emissiveIntensity 100
+            }
+            geometry USE VIRT_SEG_GEO
+          }
+        ]
+        name %{= '"' .. fields.baseName.value .. ' 5"'}%
+        color IS ledColour
+      }
+      LED {
+        translation 0 0.01 0
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor IS baseColour
+              metalness 0
+              emissiveIntensity 100
+            }
+            geometry USE HORZ_SEG_GEO
+          }
+        ]
+        name %{= '"' .. fields.baseName.value .. ' 6"'}%
+        color IS ledColour
+      }
+      Shape {
+        appearance PBRAppearance {
+          baseColor IS baseColour
+          roughness 1
+          metalness 0
+        }
+        geometry Plane {
+          size 1.3 0.7
+        }
+      }
+    ]
+  }
+}
