@@ -1,5 +1,4 @@
 import sys
-import enum
 import struct
 from math import cos, sin, sqrt, atan2
 from typing import cast, Dict, List, Tuple, NamedTuple
@@ -14,6 +13,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 from sr.robot.utils import get_robot_device  # isort:skip
+from shared_utils import Owner, Token, TOKENS  # isort:skip
 import controller_utils  # isort:skip
 
 SCORE_UPDATES_PER_SECOND = 10
@@ -28,27 +28,9 @@ class Point(NamedTuple):
     y: float
 
 
-class Owner(enum.IntEnum):
-    ZONE_0 = 0
-    ZONE_1 = 1
-
-
-class Token(NamedTuple):
-    owner: Owner
-    id: int  # noqa: A003
-
-    def __repr__(self) -> str:
-        return f'<{self.owner.name}:{self.id}>'
-
-
 SHIP_SCORING_ZONE = (Point(-0.75, 0.5), Point(0.75, -3))
 ZONE_0_STACK_SCORING_ZONE = (Point(-0.75, 0.5), Point(0.75, -0.5))
 ZONE_1_STACK_SCORING_ZONE = (Point(-0.75, -2), Point(0.75, -3))
-
-TOKENS: List[Token] = [
-    Token(Owner.ZONE_0, 1),
-    Token(Owner.ZONE_1, 4),
-]
 
 
 class ClaimLogEntry(NamedTuple):

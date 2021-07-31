@@ -1,7 +1,6 @@
 import sys
-import enum
 import struct
-from typing import Dict, List, NamedTuple
+from typing import Dict
 from pathlib import Path
 
 # Webots specific library
@@ -13,28 +12,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 from sr.robot.utils import get_robot_device  # isort:skip
+from shared_utils import Token, TOKENS  # isort:skip
 
 
 BROADCASTS_PER_SECOND = 10
-
-
-class Owner(enum.IntEnum):
-    ZONE_0 = 0
-    ZONE_1 = 1
-
-
-class Token(NamedTuple):
-    owner: Owner
-    id: int  # noqa: A003
-
-    def __repr__(self) -> str:
-        return f'<{self.owner.name}:{self.id}>'
-
-
-TOKENS: List[Token] = [
-    Token(Owner.ZONE_0, 1),
-    Token(Owner.ZONE_1, 4),
-]
 
 
 class TokenController:
