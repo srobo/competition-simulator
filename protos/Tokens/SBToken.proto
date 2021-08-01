@@ -5,7 +5,7 @@ PROTO SBToken [
   field SFString tokenName ""
   field SFString emitterName ""
   field SFColor zoneColour 1 1 1
-  field SFFloat connectorDistance 0.13
+  field SFFloat connectorDistance 0.088
   field SFFloat connectorAngle 0.7854
   field SFFloat connectorStrength 35
   field SFFloat connectorShear 20
@@ -22,13 +22,13 @@ PROTO SBToken [
           metalness 0
         }
         geometry DEF TOKEN_GEOMETRY Box {
-          size 0.26 0.26 0.26
+          size 0.175 0.175 0.175
         }
       }
       Group {
         children [
           Connector {  # South connector
-            translation -0.13 0 0
+            translation -0.0875 0 0
             rotation 0 1 0 -1.5708
             type "passive"
             distanceTolerance IS connectorDistance
@@ -41,7 +41,7 @@ PROTO SBToken [
             name "South Connector"
           }
           Connector {  # North connector
-            translation 0.13 0 0
+            translation 0.0875 0 0
             rotation 0 1 0 1.5708
             type "passive"
             distanceTolerance IS connectorDistance
@@ -54,7 +54,7 @@ PROTO SBToken [
             name "North Connector"
           }
           Connector {  # East connector
-            translation 0 0 0.13
+            translation 0 0 0.0875
             rotation 0 1 0 0
             type "passive"
             distanceTolerance IS connectorDistance
@@ -67,7 +67,7 @@ PROTO SBToken [
             name "East Connector"
           }
           Connector {  # West connector
-            translation 0 0 -0.13
+            translation 0 0 -0.0875
             rotation 0 1 0 3.1416
             type "passive"
             distanceTolerance IS connectorDistance
@@ -80,7 +80,7 @@ PROTO SBToken [
             name "West Connector"
           }
           Connector {  # Top connector
-            translation 0 0.13 0
+            translation 0 0.0875 0
             rotation 1 0 0 -1.5708
             type "passive"
             distanceTolerance IS connectorDistance
@@ -93,7 +93,7 @@ PROTO SBToken [
             name "Top Connector"
           }
           Connector {  # Bottom connector
-            translation 0 -0.13 0
+            translation 0 -0.0875 0
             rotation 1 0 0 1.5708
             type "passive"
             distanceTolerance IS connectorDistance
