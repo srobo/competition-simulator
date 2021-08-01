@@ -329,6 +329,7 @@ PROTO SBForklift [
                   maxStop 0.124
                   minStop -0.01
                   position 0
+                  staticFriction 20
                 }
                 device [
                   LinearMotor {
@@ -336,6 +337,7 @@ PROTO SBForklift [
                     minPosition -0.01
                     maxPosition 0.124
                     maxVelocity 0.5
+                    maxForce 25
                     sound ""
                   }
                   PositionSensor {
@@ -407,6 +409,7 @@ PROTO SBForklift [
                   maxStop 0.124
                   minStop -0.01
                   position 0
+                  staticFriction 20
                 }
                 device [
                   LinearMotor {
@@ -414,6 +417,7 @@ PROTO SBForklift [
                     minPosition -0.01
                     maxPosition 0.124
                     maxVelocity 0.5
+                    maxForce 25
                     sound ""
                   }
                   PositionSensor {
