@@ -22,5 +22,19 @@ class Token(NamedTuple):
 
 TOKENS: List[Token] = [
     Token(Owner.ZONE_0, 1),
-    Token(Owner.ZONE_1, 4),
+    Token(Owner.ZONE_0, 2),
+    Token(Owner.ZONE_0, 3),
+    Token(Owner.ZONE_0, 4),
+    Token(Owner.ZONE_0, 5),
+    Token(Owner.ZONE_0, 6),
+    Token(Owner.ZONE_0, 7),
+    Token(Owner.ZONE_0, 8),
+    Token(Owner.ZONE_1, 9),
+    Token(Owner.ZONE_1, 10),
+    Token(Owner.ZONE_1, 11),
+    Token(Owner.ZONE_1, 12),
+    Token(Owner.ZONE_1, 13),
+    Token(Owner.ZONE_1, 14),
+    Token(Owner.ZONE_1, 15),
+    Token(Owner.ZONE_1, 16),
 ]
