@@ -147,7 +147,7 @@ PROTO SBCrane [
                                       }
                                     }
                                     Connector {
-                                      translation 0 -0.03 0
+                                      translation 0 -0.025 0
                                       rotation 1 0 0 1.5708
                                       type "active"
                                       distanceTolerance 0.1
