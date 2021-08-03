@@ -134,6 +134,10 @@ PROTO SBToken [
     physics Physics {
       density -1
       mass 0.200
+      damping Damping {
+        linear 0.4
+        angular 0.4
+      }
     }
     recognitionColors [
       1 1 1
