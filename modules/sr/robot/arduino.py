@@ -51,7 +51,6 @@ def init_arduino(webot: Robot, robot_type: RobotType) -> Arduino:
         dist_sensor_names = [
         ]
         switch_names = [
-            "hook touch sensor",
         ]
         led_names = [
         ]
