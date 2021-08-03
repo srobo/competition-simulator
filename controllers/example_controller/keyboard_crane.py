@@ -1,6 +1,6 @@
 from typing import cast
 
-from sr.robot import Robot, Microswitch, LinearEncoder
+from sr.robot import Robot, LinearEncoder
 from controller import Keyboard
 
 # Any keys still pressed in the following period will be handled again
@@ -28,9 +28,6 @@ def print_sensors(robot: Robot) -> None:
         "Trolley (left-right)",
         "Hoist (up-down)",
     ]
-
-    touching = cast(Microswitch, R.arduino.pins[2]).digital_state
-    print(f"Grabber touching: {touching}")
 
     transmitters = R.radio.sweep()
     print("Found transmitter(s):")
