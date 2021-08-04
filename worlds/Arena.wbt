@@ -175,6 +175,26 @@ DEF TOKEN_CTRL Robot {
     }
   ]
 }
+Robot {
+  translation 0 0 0
+  name "token-scorer"
+  description "A supervisor 'robot' to monitor the location of tokens."
+  controller "token_scorer"
+  supervisor TRUE
+  children [
+    Transform {
+      translation -1.25 0 0
+      children [
+        Receiver {
+          type "radio"
+          name "token scorer"
+          bufferSize 60
+          channel 1
+        }
+      ]
+    }
+  ]
+}
 
 DEF LIGHT_CTRL Robot {
   translation 0 0 0
