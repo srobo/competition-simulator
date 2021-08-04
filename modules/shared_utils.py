@@ -24,7 +24,7 @@ class TargetInfo(NamedTuple):
     id: int  # noqa: A003
 
     def __repr__(self) -> str:
-        return f'<{self.type.name}, Owner={self.owner.name}, id={self.id}>'
+        return f'<{self.type.name}, owner={self.owner.name}, id={self.id}>'
 
 
 TOKENS: List[TargetInfo] = [
