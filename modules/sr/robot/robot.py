@@ -6,7 +6,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, radio, compass, ruggeduino
+from sr.robot import motor, radio, magnet, arduino, compass, encoder
 # Webots specific library
 from controller import Robot as WebotsRobot
 from shared_utils import RobotType
@@ -99,9 +99,10 @@ class Robot:
     def wait_start(self) -> None:
         "Wait for the start signal to happen"
 
-        if self.mode not in ["comp", "dev"]:
+        if self.mode not in ["comp", "dev", "remote-dev"]:
             raise Exception(
-                f"mode of '{self.mode}' is not supported -- must be 'comp' or 'dev'",
+                f"mode of '{self.mode}' is not supported -- must be 'comp', "
+                "'dev or 'remote-dev'",
             )
         if self.zone < 0 or self.zone > 3:
             raise Exception(
@@ -137,7 +138,7 @@ class Robot:
         self._init_motors()
 
         # Ruggeduinos
-        self._init_ruggeduinos()
+        self._init_arduino()
 
         # No camera for SR2021
 
@@ -147,11 +148,17 @@ class Robot:
         # Compass
         self._init_compass()
 
-    def _init_motors(self) -> None:
-        self.motors = motor.init_motor_array(self.webot, self.type)
+        # Crane Magnet
+        self._init_magnet()
 
-    def _init_ruggeduinos(self) -> None:
-        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot, self.type)
+        # Position encoders
+        self._init_encoders()
+
+    def _init_motors(self) -> None:
+        self.motor_boards = motor.init_motor_array(self.webot, self.type)
+
+    def _init_arduino(self) -> None:
+        self.arduino = arduino.init_arduino(self.webot, self.type)
 
     def _init_radio(self) -> None:
         self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
@@ -159,6 +166,13 @@ class Robot:
     def _init_compass(self) -> None:
         if self.type != RobotType.CRANE:  # The crane lacks a compass
             self.compass = compass.Compass(self.webot)
+
+    def _init_magnet(self) -> None:
+        if self.type == RobotType.CRANE:
+            self.magnet = magnet.Magnet(self.webot)
+
+    def _init_encoders(self) -> None:
+        self.encoders = encoder.init_encoder_array(self.webot, self.type)
 
     def time(self) -> float:
         """
@@ -183,3 +197,7 @@ class Robot:
         # do any cleanup if Webots tells us the simulation is terminating. When
         # webots kills the process all the proper tidyup will happen anyway.
         self.webots_step_and_should_continue(duration_ms)
+
+    @property
+    def is_competition(self) -> bool:
+        return self.mode == 'comp'
