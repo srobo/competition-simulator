@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import enum
 import struct
 from math import atan2
 from typing import List, Optional, NamedTuple
 from threading import Lock
 
 from controller import Robot, Receiver
+from shared_utils import Owner, TargetInfo, TargetType
 from sr.robot.utils import get_robot_device
 from sr.robot.coordinates import Vector
 
@@ -14,52 +14,13 @@ from sr.robot.coordinates import Vector
 BROADCASTS_PER_SECOND = 10
 
 
-# Updating? Update territory_controller.py too.
-# UNCLAIMED is used on the wire protocol, but not exposed to competitors. We use
-# `None` to signify that no-one owns a station.
-UNCLAIMED = -1
-
-
-# Note: this version of this enum deliberately doesn't include `UNCLAIMED`
-class Claimant(enum.IntEnum):
-    ZONE_0 = 0
-    ZONE_1 = 1
-
-
-# Updating? Update territory_controller.py too.
-class StationCode(str, enum.Enum):
-    PN = 'PN'
-    EY = 'EY'
-    BE = 'BE'
-    PO = 'PO'
-    YL = 'YL'
-    BG = 'BG'
-    TS = 'TS'
-    OX = 'OX'
-    VB = 'VB'
-    SZ = 'SZ'
-    SW = 'SW'
-    BN = 'BN'
-    HV = 'HV'
-    FL = 'FL'
-    YT = 'YT'
-    HA = 'HA'
-    PL = 'PL'
-    TH = 'TH'
-    SF = 'SF'
-
-
-class TargetInfo(NamedTuple):
-    token_code: int
-    owned_by: Optional[Claimant]
-
-
 def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
     try:
-        token_code, owned_by = struct.unpack("!bb", message)
+        token_type, token_code, owner = struct.unpack("!bBb", message)
         return TargetInfo(
-            token_code=token_code,
-            owned_by=None if owned_by == UNCLAIMED else Claimant(owned_by),
+            type=TargetType(token_type),
+            owner=Owner(owner),
+            id=token_code,
         )
     except ValueError:
         print(f"Robot starting in zone {zone} received malformed message.")  # noqa:T001

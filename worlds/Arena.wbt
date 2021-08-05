@@ -76,6 +76,38 @@ DEF TOKEN_CTRL Robot {
   supervisor TRUE
   selfCollision TRUE  # Allow tokens to collide with each other
   children [
+    Emitter {
+      translation 3 0 -3
+      name "BEACON_100 Emitter"
+      type "radio"
+      range 4.5
+      maxRange 4.5
+      channel 1
+    }
+    Emitter {
+      translation 3 0 3
+      name "BEACON_101 Emitter"
+      type "radio"
+      range 4.5
+      maxRange 4.5
+      channel 1
+    }
+    Emitter {
+      translation -3 0 3
+      name "BEACON_102 Emitter"
+      type "radio"
+      range 4.5
+      maxRange 4.5
+      channel 1
+    }
+    Emitter {
+      translation -3 0 -3
+      name "BEACON_103 Emitter"
+      type "radio"
+      range 4.5
+      maxRange 4.5
+      channel 1
+    }
     SBTokenHarness {
       tokenName "ZONE_0_1"
       emitterName "ZONE_0_1 Emitter"
