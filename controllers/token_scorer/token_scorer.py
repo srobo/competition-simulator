@@ -291,7 +291,7 @@ class TokenScorer:
         """
         zone_scores: Dict[Owner, int] = {}
 
-        for zone in Owner.zones():
+        for zone in Owner:
             zone_scores[zone] = sum(
                 value
                 for token, value in self._token_statuses.items()
