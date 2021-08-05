@@ -1,4 +1,13 @@
-from sr.robot import Robot
+from typing import cast, Union
+
+from sr.robot import (
+    Robot,
+    AnaloguePin,
+    Microswitch,
+    LinearEncoder,
+    RotaryEncoder,
+    DistanceSensor,
+)
 from controller import Keyboard
 
 # Any keys still pressed in the following period will be handled again
@@ -31,16 +40,34 @@ def print_sensors(robot: Robot) -> None:
     touch_sensor_names = [
         "Rear",
     ]
+    encoder_sensor_names = [
+        "Left Wheel",
+        "Right Wheel",
+
+        "Left Gripper",
+        "Right Gripper",
+    ]
+
+    pin: Union[int, AnaloguePin] = 0
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
-    for pin, name in enumerate(distance_sensor_names):
-        dist = R.ruggeduinos[0].analogue_read(pin)
+    for pin, name in zip(AnaloguePin, distance_sensor_names):
+        dist = cast(DistanceSensor, R.arduino.pins[pin]).analogue_value
         print(f"{pin} {name: <12}: {dist:.2f}")
 
     print("Touch sensor readings:")
     for pin, name in enumerate(touch_sensor_names, 2):
-        touching = R.ruggeduinos[0].digital_read(pin)
+        touching = cast(Microswitch, R.arduino.pins[pin]).digital_state
         print(f"{pin} {name: <6}: {touching}")
+
+    print("Encoder readings:")
+    for encoder, name in enumerate(encoder_sensor_names[:2]):
+        rotation = cast(RotaryEncoder, R.encoders[encoder]).rotation
+        print(f"{encoder} {name: <20}: {rotation:.2f} rad")
+
+    for encoder, name in enumerate(encoder_sensor_names[2:], 2):
+        displacement = cast(LinearEncoder, R.encoders[encoder]).displacement
+        print(f"{encoder} {name: <20}: {displacement:.2f}m")
 
     print()
 
@@ -70,8 +97,8 @@ while True:
 
     boost = False
 
-    left_power = 0
-    right_power = 0
+    left_power: float = 0
+    right_power: float = 0
     grabber_power = 0
 
     while key != NO_KEY_PRESSED:
@@ -83,20 +110,20 @@ while True:
             boost = True
 
         if key_ascii == key_forward:
-            left_power += 50
-            right_power += 50
+            left_power += 0.5
+            right_power += 0.5
 
         elif key_ascii == key_reverse:
-            left_power += -50
-            right_power += -50
+            left_power += -0.5
+            right_power += -0.5
 
         elif key_ascii == key_left:
-            left_power -= 25
-            right_power += 25
+            left_power -= 0.25
+            right_power += 0.25
 
         elif key_ascii == key_right:
-            left_power += 25
-            right_power -= 25
+            left_power += 0.25
+            right_power -= 0.25
 
         elif key_ascii == key_sense:
             print_sensors(R)
@@ -111,23 +138,23 @@ while True:
             print()
 
         elif key_ascii == key_grab_open:
-            grabber_power = 100
+            grabber_power = 1
 
         elif key_ascii == key_grab_close:
-            grabber_power = -100
+            grabber_power = -1
 
         # Work our way through all the enqueued key presses before dropping
         # out to the timestep
         key = keyboard.getKey()
 
     if boost:
-        # double power values but constrain to [-100, 100]
-        left_power = max(min(left_power * 2, 100), -100)
-        right_power = max(min(right_power * 2, 100), -100)
+        # double power values but constrain to [-1, 1]
+        left_power = max(min(left_power * 2, 1), -1)
+        right_power = max(min(right_power * 2, 1), -1)
 
-    R.motors[0].m0.power = left_power
-    R.motors[0].m1.power = right_power
+    R.motor_boards[0].motors[0].power = left_power
+    R.motor_boards[0].motors[1].power = right_power
 
-    R.motors[1].m0.power = grabber_power
+    R.motor_boards[1].motors[0].power = grabber_power
 
     R.sleep(KEYBOARD_SAMPLING_PERIOD / 1000)

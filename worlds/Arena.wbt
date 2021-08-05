@@ -34,9 +34,9 @@ DEF ROBOT-0-forklift SBForklift {
   flagColour 1 0 1
   controllerArgs ["0", "forklift"]
 }
-DEF ROBOT-0-crane SRRobot {
-  translation -1.25 0.005 -0.8
-  rotation 0 1 0 3.14
+DEF ROBOT-0-crane SBCrane {
+  translation -1.25 1.5 0
+  initPos 1.5 0 -0.5
   controller "sr_controller"
   model "Robot0crane"
   flagColour 1 0 1
@@ -50,9 +50,9 @@ DEF ROBOT-1-forklift SBForklift {
   flagColour 1 1 0
   controllerArgs ["1", "forklift"]
 }
-DEF ROBOT-1-crane SRRobot {
-  translation -1.25 0.005 0.8
-  rotation 0 1 0 0
+DEF ROBOT-1-crane SBCrane {
+  translation -1.25 1.5 0
+  initPos -1.5 0 0.5
   controller "sr_controller"
   model "Robot1crane"
   flagColour 1 1 0
@@ -111,13 +111,98 @@ DEF TOKEN_CTRL Robot {
     SBTokenHarness {
       tokenName "ZONE_0_1"
       emitterName "ZONE_0_1 Emitter"
-      translation 1.5 0.13 1
+      translation -2.25 0.09 -5
       zoneColour 1 0 1
     }
     SBTokenHarness {
-      tokenName "ZONE_1_4"
-      emitterName "ZONE_1_4 Emitter"
-      translation 1.5 0.13 -1
+      tokenName "ZONE_1_13"
+      emitterName "ZONE_1_13 Emitter"
+      translation -1.8 0.09 -3.5
+      zoneColour 1 1 0
+    }
+    SBTokenHarness {
+      tokenName "ZONE_1_14"
+      emitterName "ZONE_1_14 Emitter"
+      translation -2.25 0.09 -2
+      zoneColour 1 1 0
+    }
+    SBTokenHarness {
+      tokenName "ZONE_1_15"
+      emitterName "ZONE_1_15 Emitter"
+      translation -0.25 0.09 -4.25
+      zoneColour 1 1 0
+    }
+    SBTokenHarness {
+      tokenName "ZONE_0_2"
+      emitterName "ZONE_0_2 Emitter"
+      translation -0.6 0.09 -2.75
+      zoneColour 1 0 1
+    }
+    SBTokenHarness {
+      tokenName "ZONE_0_3"
+      emitterName "ZONE_0_3 Emitter"
+      translation 0.8 0.09 -4.8
+      zoneColour 1 0 1
+    }
+    SBTokenHarness {
+      tokenName "ZONE_1_16"
+      emitterName "ZONE_1_16 Emitter"
+      translation 1.5 0.09 -2.75
+      zoneColour 1 1 0
+    }
+    SBTokenHarness {
+      tokenName "ZONE_0_4"
+      emitterName "ZONE_0_4 Emitter"
+      translation 0.75 0.09 -1.5
+      zoneColour 1 0 1
+    }
+
+    SBTokenHarness {
+      tokenName "ZONE_1_9"
+      emitterName "ZONE_1_9 Emitter"
+      translation -2.25 0.09 5
+      zoneColour 1 1 0
+    }
+    SBTokenHarness {
+      tokenName "ZONE_0_5"
+      emitterName "ZONE_0_5 Emitter"
+      translation -1.8 0.09 3.5
+      zoneColour 1 0 1
+    }
+    SBTokenHarness {
+      tokenName "ZONE_0_6"
+      emitterName "ZONE_0_6 Emitter"
+      translation -2.25 0.09 2
+      zoneColour 1 0 1
+    }
+    SBTokenHarness {
+      tokenName "ZONE_0_7"
+      emitterName "ZONE_0_7 Emitter"
+      translation -0.25 0.09 4.25
+      zoneColour 1 0 1
+    }
+    SBTokenHarness {
+      tokenName "ZONE_1_10"
+      emitterName "ZONE_1_10 Emitter"
+      translation -0.6 0.09 2.75
+      zoneColour 1 1 0
+    }
+    SBTokenHarness {
+      tokenName "ZONE_1_11"
+      emitterName "ZONE_1_11 Emitter"
+      translation 0.8 0.09 4.8
+      zoneColour 1 1 0
+    }
+    SBTokenHarness {
+      tokenName "ZONE_0_8"
+      emitterName "ZONE_0_8 Emitter"
+      translation 1.5 0.09 2.75
+      zoneColour 1 0 1
+    }
+    SBTokenHarness {
+      tokenName "ZONE_1_12"
+      emitterName "ZONE_1_12 Emitter"
+      translation 0.75 0.09 1.5
       zoneColour 1 1 0
     }
   ]
@@ -375,6 +460,71 @@ DEF SHIP Transform {
         }
       ]
       name "Deck"
+    }
+  ]
+}
+
+DEF CRANE_GANTRY Group {
+  children [
+    Solid {
+      translation 0.45 0.85 -0.8
+      children [
+        DEF pillar Shape {
+          appearance PBRAppearance {
+          }
+          geometry Box {
+            size 0.1 1.7 0.1
+          }
+        }
+      ]
+      boundingObject USE pillar
+      name "NW pillar"
+    }
+    Solid {
+      translation 0.45 0.85 0.8
+      children [
+        USE pillar
+      ]
+      boundingObject USE pillar
+      name "NE pillar"
+    }
+    Solid {
+      translation -2.95 0.85 0.8
+      children [
+        USE pillar
+      ]
+      boundingObject USE pillar
+      name "SE pillar"
+    }
+    Solid {
+      translation -2.95 0.85 -0.8
+      children [
+        USE pillar
+      ]
+      boundingObject USE pillar
+      name "SW pillar"
+    }
+    Solid {
+      translation -1.25 1.65 -0.8
+      children [
+        DEF gantry Shape {
+          appearance PBRAppearance {
+          }
+          geometry Box {
+            size 3.3 0.1 0.1
+          }
+        }
+      ]
+      boundingObject USE gantry
+      name "West gantry"
+    }
+    Solid {
+      translation -1.25 1.65 0.8
+      children [
+        USE gantry
+      ]
+      boundingObject USE gantry
+      name "East gantry"
     }
   ]
 }

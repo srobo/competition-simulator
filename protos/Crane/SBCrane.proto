@@ -1,0 +1,212 @@
+#VRML_OBJ R2021b utf8
+# tags: static
+PROTO SBCrane [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFString controller ""
+  field SFString model ""
+  field SFString customData ""
+  field SFColor flagColour 1 1 1
+  field MFString controllerArgs []
+  field SFVec3f initPos 0 0 0
+  field SFFloat maxY 1.5
+]
+{
+  Robot {
+    selfCollision FALSE
+    translation IS translation
+    rotation IS rotation
+    controllerArgs IS controllerArgs
+    children [
+      SliderJoint {
+        jointParameters JointParameters {
+          axis 1 0 0
+          minStop -1.7
+          maxStop 1.7
+          position %{=fields.initPos.value.x}%
+        }
+        device [
+          LinearMotor {
+            name "bridge motor"
+            minPosition -1.7
+            maxPosition 1.7
+            maxVelocity 2
+            sound ""
+          }
+          PositionSensor {
+            name "bridge position sensor"
+          }
+        ]
+        endPoint Solid {
+          # Shift origin to be the lower face of the hook shape
+          translation %{=fields.initPos.value.x}% 0.15 0
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor IS flagColour
+                roughness 1
+                metalness 0
+              }
+              geometry Box {
+                size 0.1 0.1 1.5
+              }
+            }
+            SliderJoint {
+              jointParameters JointParameters {
+                axis 0 0 1
+                minStop -0.7
+                maxStop 0.7
+                position %{=fields.initPos.value.z}%
+              }
+              device [
+                LinearMotor {
+                  name "trolley motor"
+                  minPosition -0.7
+                  maxPosition 0.7
+                  maxVelocity 2
+                  sound ""
+                }
+                PositionSensor {
+                  name "trolley position sensor"
+                }
+              ]
+              endPoint Solid {
+                translation 0 -0.075 %{=fields.initPos.value.z}%
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.35 0.35 0.35
+                      roughness 1
+                      metalness 0
+                    }
+                    geometry Box {
+                      size 0.1 0.05 0.1
+                    }
+                  }
+                  BallJoint {  # allow the cable to tilt
+                    jointParameters BallJointParameters {
+                    }
+                    endPoint Solid {
+                      children [
+                        SliderJoint {
+                          jointParameters JointParameters {
+                            axis 0 -1 0
+                            minStop -0.01
+                            maxStop IS maxY
+                            position %{=fields.initPos.value.y}%
+                          }
+                          device [
+                            LinearMotor {
+                              name "hoist motor"
+                              minPosition 0
+                              maxPosition IS maxY
+                              maxVelocity 2
+                              sound ""
+                              muscles Muscle {
+                                volume 1e-04
+                                startOffset 0 0.12 0
+                                endOffset 0 -0.025 0
+                              }
+                            }
+                            PositionSensor {
+                              name "hoist position sensor"
+                            }
+                          ]
+                          endPoint Solid {
+                            translation 0 %{=-0.025-fields.initPos.value.y}% 0
+                            children [
+                              BallJoint {  # allow the hook to tilt
+                                jointParameters BallJointParameters {
+                                  minStop -0.7854
+                                  maxStop 0.7854
+                                  dampingConstant 0.05
+                                }
+                                jointParameters2 JointParameters {
+                                  axis 1 0 0
+                                  minStop -0.7854
+                                  maxStop 0.7854
+                                  dampingConstant 0.05
+                                }
+                                jointParameters3 JointParameters {
+                                  axis 0 0 1
+                                  minStop -0.7854
+                                  maxStop 0.7854
+                                  dampingConstant 0.05
+                                }
+                                endPoint Solid {
+                                  translation 0 -0.025 0
+                                  children [
+                                    Shape {
+                                      appearance PBRAppearance {
+                                        baseColor IS flagColour
+                                        roughness 1
+                                        metalness 0
+                                      }
+                                      geometry DEF hook_geo Box {
+                                        size 0.05 0.05 0.05
+                                      }
+                                    }
+                                    Connector {
+                                      translation 0 -0.025 0
+                                      rotation 1 0 0 1.5708
+                                      type "active"
+                                      distanceTolerance 0.1
+                                      axisTolerance 0.7854
+                                      rotationTolerance 0
+                                      numberOfRotations 0
+                                      tensileStrength 35
+                                      shearStrength 20
+                                      snap FALSE
+                                      autoLock TRUE
+                                      name "Crane Connector"
+                                      unilateralUnlock TRUE
+                                      unilateralLock TRUE
+                                    }
+                                    Receiver {
+                                      type "radio"
+                                      name "robot receiver"
+                                      bufferSize 30
+                                      channel 1
+                                      directionNoise 0.05
+                                      signalStrengthNoise 0.03
+                                    }
+                                  ]
+                                  boundingObject USE hook_geo
+                                  physics Physics {
+                                    # density 8000  # steel
+                                  }
+                                  name "hook"
+                                }
+                              }
+                            ]
+                            name "hook pivot"
+                            physics Physics {
+                              density -1
+                              mass 0.1
+                              centerOfMass 0 0 0
+                              inertiaMatrix [
+                                1 1 1
+                                0 0 0
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                      name "cable pivot"
+                    }
+                  }
+                ]
+                name "trolley"
+              }
+            }
+          ]
+          name "bridge beam"
+        }
+      }
+    ]
+    name IS model
+    model IS model
+    controller IS controller
+    customData IS customData
+  }
+}

@@ -189,12 +189,13 @@ def archive_match_recordings(archives_dir: Path) -> None:
     for path in recording_stem.parent.glob(f'{recording_stem.name}.*'):
         shutil.copy(path, recordings_dir)
 
-    try:
-        shutil.copytree(recording_stem.parent / 'textures', recordings_dir / 'textures')
-    except FileExistsError:
-        # The textures are always the same, so we don't really care if they're
-        # already there.
-        pass
+    if (recording_stem.parent / 'textures').is_dir():
+        try:
+            shutil.copytree(recording_stem.parent / 'textures', recordings_dir / 'textures')
+        except FileExistsError:
+            # The textures are always the same, so we don't really care if they're
+            # already there.
+            pass
 
 
 def parse_args() -> argparse.Namespace:
