@@ -19,7 +19,7 @@ import controller_utils  # isort:skip
 SCORE_UPDATES_PER_SECOND = 10
 
 FLOOR_TOKEN_VALUE = 1
-PLATFORM_EXTRA_TOKEN_VALUE = 1
+PLATFORM_EXTRA_TOKEN_VALUE = 2
 
 
 class Point(NamedTuple):
