@@ -304,7 +304,10 @@ class TokenScorer:
         scores = self.get_scores()
 
         for zone, score in scores.items():
-            display = self.score_displays[zone]
+            try:
+                display = self.score_displays[zone]
+            except KeyError:
+                continue
 
             score_digits = (score % 10, int(score / 10))
 
