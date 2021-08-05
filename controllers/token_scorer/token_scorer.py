@@ -306,11 +306,10 @@ class TokenScorer:
         for zone, score in scores.items():
             display = self.score_displays[zone]
 
-            score_low = score % 10
-            score_high = int(score / 10)
+            score_digits = (score % 10, int(score / 10))
 
-            display[0].set_value(score_low)
-            display[1].set_value(score_high)
+            display[0].set_value(score_digits[0])
+            display[1].set_value(score_digits[1])
 
     def main(self) -> None:
         token_scan_step = 1000 / SCORE_UPDATES_PER_SECOND
