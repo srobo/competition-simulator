@@ -13,7 +13,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 from sr.robot.utils import get_robot_device  # isort:skip
-from shared_utils import Owner, Token, TOKENS  # isort:skip
+from shared_utils import Owner, TOKENS, TargetInfo, TargetType  # isort:skip
 import controller_utils  # isort:skip
 
 SCORE_UPDATES_PER_SECOND = 10
@@ -34,7 +34,7 @@ ZONE_1_STACK_SCORING_ZONE = (Point(-0.75, -2), Point(0.75, -3))
 
 
 class ClaimLogEntry(NamedTuple):
-    token_code: Token
+    token_code: TargetInfo
     token_value: int
     claim_time: float
 
@@ -53,7 +53,7 @@ class ClaimLog:
 
     def log_token_value_change(
         self,
-        token_code: Token,
+        token_code: TargetInfo,
         token_value: int,
         claim_time: float,
     ) -> None:
@@ -156,7 +156,7 @@ class TokenScorer:
             ),
         }
 
-        self._token_statuses: Dict[Token, int] = {
+        self._token_statuses: Dict[TargetInfo, int] = {
             code: 0 for code in TOKENS
         }
 
@@ -223,9 +223,9 @@ class TokenScorer:
         token_vector: Tuple[float, float, float],
         signal_strength: float,
         receiver_location: Point,
-    ) -> Token:
-        token_code, owner = struct.unpack("!bb", data)
-        token = Token(Owner(owner), token_code)
+    ) -> TargetInfo:
+        token_type, token_code, owner = struct.unpack("!bBb", data)
+        token = TargetInfo(TargetType(token_type), Owner(owner), token_code)
 
         position = self.get_token_location(
             token_vector,
@@ -247,7 +247,7 @@ class TokenScorer:
         return token
 
     def process_token_locations(self) -> None:
-        observed_tokens: List[Token] = []
+        observed_tokens: List[TargetInfo] = []
 
         for receiver, receiver_location in self._scoring_receivers.items():
             while receiver.getQueueLength():

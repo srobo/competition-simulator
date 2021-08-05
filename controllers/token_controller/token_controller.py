@@ -12,7 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
 from sr.robot.utils import get_robot_device  # isort:skip
-from shared_utils import Token, TOKENS  # isort:skip
+from shared_utils import TOKENS, TargetInfo, TargetType  # isort:skip
 
 
 BROADCASTS_PER_SECOND = 10
@@ -20,7 +20,7 @@ BROADCASTS_PER_SECOND = 10
 
 class TokenController:
 
-    _emitters: Dict[Token, Emitter]
+    _emitters: Dict[TargetInfo, Emitter]
 
     def __init__(self) -> None:
         self._robot = Supervisor()
@@ -32,13 +32,25 @@ class TokenController:
                 Emitter,
             )
             for code in TOKENS
+            if code.type == TargetType.CONTAINER
         }
+
+        self._emitters.update({
+            code: get_robot_device(
+                self._robot,
+                f'BEACON_{code.id} Emitter',
+                Emitter,
+            )
+            for code in TOKENS
+            if code.type == TargetType.BEACON
+        })
 
     def transmit_pulses(self) -> None:
         for token_code, emitter in self._emitters.items():
             emitter.send(
                 struct.pack(
-                    "!bb",
+                    "!bBb",
+                    int(token_code.type),
                     token_code.id,
                     int(token_code.owner),
                 ),
