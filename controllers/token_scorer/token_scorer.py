@@ -5,7 +5,7 @@ from typing import cast, Dict, List, Tuple, NamedTuple
 from pathlib import Path
 
 # Webots specific library
-from controller import Receiver, Supervisor
+from controller import LED, Robot, Receiver, Supervisor
 
 # Root directory of the SR webots simulator (equivalent to the root of the git repo)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -19,7 +19,7 @@ import controller_utils  # isort:skip
 SCORE_UPDATES_PER_SECOND = 10
 
 FLOOR_TOKEN_VALUE = 1
-PLATFORM_EXTRA_TOKEN_VALUE = 1
+PLATFORM_EXTRA_TOKEN_VALUE = 2
 
 
 class Point(NamedTuple):
@@ -96,6 +96,42 @@ def order_zone_points(zone: Tuple[Point, Point]) -> Tuple[Point, Point]:
     )
 
 
+class SevenSeg:
+    """
+    A driver to display a decimal digit on 7 LEDs
+
+    ┌─0─┐
+    5   1
+    ├─6─┤
+    4   2
+    └─3─┘
+    """
+    lut = [
+        (True, True, True, True, True, True, False),  # 0
+        (False, True, True, False, False, False, False),  # 1
+        (True, True, False, True, True, False, True),  # 2
+        (True, True, True, True, False, False, True),  # 3
+        (False, True, True, False, False, True, True),  # 4
+        (True, False, True, True, False, True, True),  # 5
+        (True, False, True, True, True, True, True),  # 6
+        (True, True, True, False, False, False, False),  # 7
+        (True, True, True, True, True, True, True),  # 8
+        (True, True, True, True, False, True, True),  # 9
+    ]
+
+    def __init__(self, webot: Robot, led_basename: str):
+        self._leds = [
+            get_robot_device(webot, f'{led_basename} {led}', LED)
+            for led in range(7)
+        ]
+
+    def set_value(self, value: int) -> None:
+        if value < 0 or value > 9:
+            raise ValueError(f"{value} cannot be represented on a seven segment digit")
+        for i in range(7):
+            self._leds[i].set(self.lut[value][i])
+
+
 class TokenScorer:
     def __init__(
         self,
@@ -108,6 +144,17 @@ class TokenScorer:
         self._robot = Supervisor()
         self.ship_zone = order_zone_points(ship_zone)
         self.stack_zones = [order_zone_points(zone_0_stack), order_zone_points(zone_1_stack)]
+
+        self.score_displays = {
+            Owner.ZONE_0: (
+                SevenSeg(self._robot, 'Score 0 low'),
+                SevenSeg(self._robot, 'Score 0 high'),
+            ),
+            Owner.ZONE_1: (
+                SevenSeg(self._robot, 'Score 1 low'),
+                SevenSeg(self._robot, 'Score 1 high'),
+            ),
+        }
 
         self._token_statuses: Dict[TargetInfo, int] = {
             code: 0 for code in TOKENS
@@ -236,10 +283,45 @@ class TokenScorer:
             )
             self._token_statuses[token] = 0
 
+    def get_scores(self) -> Dict[Owner, int]:
+        """
+        Get the current scores.
+
+        The returned dict will always include all the claimants as keys.
+        """
+        zone_scores: Dict[Owner, int] = {}
+
+        for zone in Owner:
+            zone_scores[zone] = sum(
+                value
+                for token, value in self._token_statuses.items()
+                if token.owner == zone
+            )
+
+        return zone_scores
+
+    def update_displayed_scores(self) -> None:
+        scores = self.get_scores()
+
+        for zone, score in scores.items():
+            try:
+                display = self.score_displays[zone]
+            except KeyError:
+                continue
+
+            score_digits = (score % 10, int(score / 10))
+
+            display[0].set_value(score_digits[0])
+            display[1].set_value(score_digits[1])
+
     def main(self) -> None:
         token_scan_step = 1000 / SCORE_UPDATES_PER_SECOND
         while True:
             self.process_token_locations()
+            if self._claim_log.is_dirty():
+                self.update_displayed_scores()
+
+            self._claim_log.record_captures()
             self._robot.step(int(token_scan_step))
 
 
