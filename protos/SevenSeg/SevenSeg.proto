@@ -21,7 +21,6 @@ PROTO SevenSeg [
             appearance PBRAppearance {
               baseColor IS baseColour
               metalness 0
-              emissiveIntensity 100
             }
             geometry DEF HORZ_SEG_GEO Plane {
               size 0.1 0.5
@@ -38,7 +37,6 @@ PROTO SevenSeg [
             appearance PBRAppearance {
               baseColor IS baseColour
               metalness 0
-              emissiveIntensity 100
             }
             geometry DEF VIRT_SEG_GEO Plane {
               size 0.5 0.1
@@ -55,7 +53,6 @@ PROTO SevenSeg [
             appearance PBRAppearance {
               baseColor IS baseColour
               metalness 0
-              emissiveIntensity 100
             }
             geometry USE VIRT_SEG_GEO
           }
@@ -70,7 +67,6 @@ PROTO SevenSeg [
             appearance PBRAppearance {
               baseColor IS baseColour
               metalness 0
-              emissiveIntensity 100
             }
             geometry USE HORZ_SEG_GEO
           }
@@ -85,7 +81,6 @@ PROTO SevenSeg [
             appearance PBRAppearance {
               baseColor IS baseColour
               metalness 0
-              emissiveIntensity 100
             }
             geometry USE VIRT_SEG_GEO
           }
@@ -100,7 +95,6 @@ PROTO SevenSeg [
             appearance PBRAppearance {
               baseColor IS baseColour
               metalness 0
-              emissiveIntensity 100
             }
             geometry USE VIRT_SEG_GEO
           }
@@ -115,7 +109,6 @@ PROTO SevenSeg [
             appearance PBRAppearance {
               baseColor IS baseColour
               metalness 0
-              emissiveIntensity 100
             }
             geometry USE HORZ_SEG_GEO
           }
