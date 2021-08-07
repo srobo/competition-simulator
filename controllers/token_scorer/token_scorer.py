@@ -25,7 +25,7 @@ PLATFORM_EXTRA_TOKEN_VALUE = 2
 
 class Point(NamedTuple):
     # We are only tracking tokens on a 2D plane, with Y as north.
-    # Values are in meters.
+    # Values are in metres.
     x: float
     y: float
 
