@@ -12,7 +12,6 @@ import contextlib
 import subprocess
 from typing import Iterator
 from pathlib import Path
-from datetime import datetime
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -108,7 +107,7 @@ def archive_match_outputs(archives_dir: Path, match_logs: str) -> None:
     Copy the recordings and logs to the output directory.
     """
 
-    output_dir = archives_dir / "output" / datetime.now().strftime('%c')
+    output_dir = archives_dir / "output" / controller_utils.get_filename_safe_identifier()
     output_dir.mkdir(exist_ok=True, parents=True)
 
     (output_dir / "logs.txt").write_text(match_logs)
@@ -150,7 +149,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    with temporary_arena_root(datetime.now().isoformat().replace(':', '_')):
+    with temporary_arena_root(controller_utils.get_filename_safe_identifier()):
         prepare_match(args.source_dir)
 
         match_logs = run_match()
