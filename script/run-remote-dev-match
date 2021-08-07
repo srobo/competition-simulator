@@ -108,7 +108,7 @@ def archive_match_outputs(archives_dir: Path, match_logs: str) -> None:
     Copy the recordings and logs to the output directory.
     """
 
-    output_dir = archives_dir / "output" / datetime.now().isoformat().replace(':', '_')
+    output_dir = archives_dir / "output" / datetime.now().strftime('%c')
     output_dir.mkdir(exist_ok=True, parents=True)
 
     (output_dir / "logs.txt").write_text(match_logs)
