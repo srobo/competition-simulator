@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+"""
+A script to run a remote dev match.
+"""
+
+import os
+import sys
+import shutil
+import argparse
+import tempfile
+import contextlib
+import subprocess
+from typing import Iterator
+from pathlib import Path
+from datetime import datetime
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+sys.path.insert(1, str(REPO_ROOT / 'modules'))
+
+import controller_utils  # isort:skip
+from shared_utils import RobotType  # isort:skip
+
+
+def get_zone_path(zone_id: int) -> Path:
+    # All robot types have a common path so we just use the first enum option
+    robot_file: Path = controller_utils.get_zone_robot_file_path(zone_id, RobotType.FORKLIFT)
+    return robot_file.parent
+
+
+@contextlib.contextmanager
+def temporary_arena_root(suffix: str) -> Iterator[None]:
+    original_arena_root = controller_utils.ARENA_ROOT
+    with tempfile.TemporaryDirectory(suffix=suffix) as tmpdir_name:
+        print(f"Using {tmpdir_name!r} as the arena")  # noqa:T001
+        os.environ['ARENA_ROOT'] = tmpdir_name
+        controller_utils.ARENA_ROOT = Path(tmpdir_name)
+        try:
+            yield
+        finally:
+            os.environ['ARENA_ROOT'] = str(original_arena_root)
+            controller_utils.ARENA_ROOT = original_arena_root
+
+
+def prepare_match(source_dir: Path) -> None:
+    controller_utils.get_mode_file().write_text('remote-dev\n')
+
+    # Copy the zone files into the right place
+    for zone_id in [0, 1]:
+        zone_path = get_zone_path(zone_id)
+        zone_source = source_dir / f"zone-{zone_id}"
+        if zone_source.is_dir():
+            shutil.copytree(source_dir / f"zone-{zone_id}", zone_path)
+
+
+def print_error(message: str, *, strong: bool = False) -> None:
+    BOLD = '\033[1m' if strong else ''
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    return print(f"{BOLD}{FAIL}{message}{ENDC}")  # noqa:T001
+
+
+def print_fatal(message: str) -> None:
+    return print_error(message, strong=True)
+
+
+def run_match() -> str:
+    try:
+        return subprocess.check_output([
+            'webots',
+            '--batch',
+            '--stdout',
+            '--stderr',
+            '--minimize',
+            '--mode=realtime',
+            str(REPO_ROOT / 'worlds' / 'Arena.wbt'),
+        ], stderr=subprocess.STDOUT, universal_newlines=True)
+    except FileNotFoundError:
+        print_fatal(
+            "Could not find webots. Check that you have it installed and on your PATH",
+        )
+        exit(1)
+    except subprocess.CalledProcessError as e:
+        try:
+            log_text = controller_utils.get_competition_supervisor_log_filepath().read_text()
+        except FileNotFoundError:
+            print_fatal(
+                f"Simulation errored (exit code {e.returncode}). "
+                "No supervisor logs were found - Webots may have crashed.",
+            )
+        else:
+            # There are potentially a large number of lines in the logs and any
+            # errors are likely to be at the end of the logs. Additionally, the
+            # user's focus is initially likely to be at the end of the output.
+            # To ensure that failures are clear we therefore put the message that
+            # there was a failure last in the output (and in bold).
+            print_error(log_text)
+            print_fatal(
+                f"Simulation errored (exit code {e.returncode}). "
+                f"Competition supervisor logs are above.",
+            )
+
+        exit(1)
+
+
+def archive_match_outputs(archives_dir: Path, match_logs: str) -> None:
+    """
+    Copy the recordings and logs to the output directory.
+    """
+
+    output_dir = archives_dir / "output" / datetime.now().isoformat().replace(':', '_')
+    output_dir.mkdir(exist_ok=True, parents=True)
+
+    (output_dir / "logs.txt").write_text(match_logs)
+
+    recording_dir = controller_utils.get_recording_stem().parent
+
+    # We don't want to rely on the recordings going into a directory which only
+    # contains recording data, so instead we copy explicitly the things which we
+    # know will have been output.
+
+    for path in recording_dir.glob('*'):
+        shutil.copy(path, output_dir)
+
+    textures_dir = recording_dir / 'textures'
+
+    # If we don't have textures, the directory won't exist.
+    if textures_dir.is_dir():
+        shutil.copytree(textures_dir, output_dir / 'textures')
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'source_dir',
+        help=(
+            "The directory containing the teams' robot code. This directory "
+            "will also be used as the root for storing the resulting logs and "
+            "recordings."
+        ),
+        type=Path,
+    )
+    parser.add_argument(
+        '--duration',
+        help="The duration of the match (in seconds).",
+        type=int,
+        default=controller_utils.GAME_DURATION_SECONDS,
+    )
+    return parser.parse_args()
+
+
+def main(args: argparse.Namespace) -> None:
+    with temporary_arena_root(datetime.now().isoformat().replace(':', '_')):
+        prepare_match(args.source_dir)
+
+        match_logs = run_match()
+
+        archive_match_outputs(args.source_dir, match_logs)
+
+
+if __name__ == '__main__':
+    main(parse_args())

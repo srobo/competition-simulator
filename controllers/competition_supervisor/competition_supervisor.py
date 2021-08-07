@@ -81,29 +81,9 @@ def propagate_exit_code(supervisor: Supervisor) -> Iterator[None]:
 
 
 def quit_if_development_mode() -> None:
-    if controller_utils.get_robot_mode() == 'remote-dev':
-        print("Entering remote development mode")
-        run_dev_remote_mode()
-        exit()
-    if controller_utils.get_robot_mode() != 'comp':
+    if controller_utils.get_robot_mode() == 'dev':
         print("Development mode, exiting competition supervisor")
         exit()
-
-
-def run_dev_remote_mode() -> None:
-    controller_utils.tee_streams(
-        controller_utils.get_competition_supervisor_log_filepath(),
-    )
-
-    supervisor = Supervisor()
-
-    with propagate_exit_code(supervisor):
-        supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
-
-        recording_stem = controller_utils.get_recording_stem()
-
-        with record_animation(supervisor, recording_stem.with_suffix('.html')):
-            run_match(supervisor, do_inform_start=False)
 
 
 def check_required_libraries(path: Path) -> None:
@@ -254,8 +234,12 @@ def main() -> None:
         recording_stem = controller_utils.get_recording_stem()
 
         with record_animation(supervisor, recording_stem.with_suffix('.html')):
-            with record_video(supervisor, recording_stem.with_suffix('.mp4')):
+            # Don't record video in remote dev
+            if controller_utils.get_robot_mode() == 'remote-dev':
                 run_match(supervisor)
+            else:
+                with record_video(supervisor, recording_stem.with_suffix('.mp4')):
+                    run_match(supervisor)
 
 
 if __name__ == '__main__':
