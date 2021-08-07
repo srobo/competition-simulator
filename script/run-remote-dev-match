@@ -41,15 +41,15 @@ def temporary_arena_root(suffix: str) -> Iterator[None]:
             controller_utils.ARENA_ROOT = original_arena_root
 
 
-def prepare_match(source_dir: Path) -> None:
+def prepare_match(code_dir: Path) -> None:
     controller_utils.get_mode_file().write_text('remote-dev\n')
 
     # Copy the zone files into the right place
     for zone_id in [0, 1]:
         zone_path = get_zone_path(zone_id)
-        zone_source = source_dir / f"zone-{zone_id}"
+        zone_source = code_dir / f"zone-{zone_id}"
         if zone_source.is_dir():
-            shutil.copytree(source_dir / f"zone-{zone_id}", zone_path)
+            shutil.copytree(code_dir / f"zone-{zone_id}", zone_path)
 
 
 def print_error(message: str, *, strong: bool = False) -> None:
@@ -102,12 +102,12 @@ def run_match() -> str:
         exit(1)
 
 
-def archive_match_outputs(archives_dir: Path, match_logs: str) -> None:
+def archive_match_outputs(code_dir: Path, match_logs: str) -> None:
     """
     Copy the recordings and logs to the output directory.
     """
 
-    output_dir = archives_dir / "output" / controller_utils.get_filename_safe_identifier()
+    output_dir = code_dir / "output" / controller_utils.get_filename_safe_identifier()
     output_dir.mkdir(exist_ok=True, parents=True)
 
     (output_dir / "logs.txt").write_text(match_logs)
@@ -131,7 +131,7 @@ def archive_match_outputs(archives_dir: Path, match_logs: str) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'source_dir',
+        'code_dir',
         help=(
             "The directory containing the teams' robot code. This directory "
             "will also be used as the root for storing the resulting logs and "
@@ -150,11 +150,11 @@ def parse_args() -> argparse.Namespace:
 
 def main(args: argparse.Namespace) -> None:
     with temporary_arena_root(controller_utils.get_filename_safe_identifier()):
-        prepare_match(args.source_dir)
+        prepare_match(args.code_dir)
 
         match_logs = run_match()
 
-        archive_match_outputs(args.source_dir, match_logs)
+        archive_match_outputs(args.code_dir, match_logs)
 
 
 if __name__ == '__main__':
