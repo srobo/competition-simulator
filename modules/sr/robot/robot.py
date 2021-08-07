@@ -120,7 +120,7 @@ class Robot:
             self._timestep * random.randint(8, 20),
         )
 
-        if self.mode == 'comp':
+        if self.mode in ['comp', 'remote-dev']:
             # Interact with the supervisor "robot" to wait for the start of the match.
             self.webot.setCustomData('ready')
             while (
