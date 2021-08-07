@@ -172,7 +172,7 @@ PROTO SBCrane [
                                     }
                                     DistanceSensor {
                                       translation 0 -0.025 0
-                                      rotation 0 0 1 -1.5707
+                                      rotation 0 0 1 -1.5708
                                       type "sonar"
                                       numberOfRays 10
                                       aperture 0.3
