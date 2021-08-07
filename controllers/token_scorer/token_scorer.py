@@ -108,7 +108,7 @@ class ClaimLog:
     ) -> None:
         self._record_log_entry(ClaimLogEntry(token_code, location, claim_time))
         print(  # noqa:T001
-            f"{token_code} NOW AT {location.name} TO {token_code.owner.name} "
+            f"{token_code} OWNED BY {token_code.owner.name} NOW AT {location.name} "
             f"AT {claim_time}s",
         )
 
