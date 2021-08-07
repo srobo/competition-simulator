@@ -1,4 +1,5 @@
 import sys
+import enum
 import struct
 from math import cos, sin, sqrt, atan2
 from typing import cast, Dict, List, Tuple, NamedTuple
@@ -23,19 +24,67 @@ PLATFORM_EXTRA_TOKEN_VALUE = 2
 
 
 class Point(NamedTuple):
-    # We are only tracking tokens on a 2D plane, with Y as north
+    # We are only tracking tokens on a 2D plane, with Y as north.
+    # Values are in meters.
     x: float
     y: float
 
 
-SHIP_SCORING_ZONE = (Point(-0.75, 0.5), Point(0.75, -3))
-ZONE_0_STACK_SCORING_ZONE = (Point(-0.75, 0.5), Point(0.75, -0.5))
-ZONE_1_STACK_SCORING_ZONE = (Point(-0.75, -2), Point(0.75, -3))
+class ScoringLocation(enum.Enum):
+    """
+    A rectangular axis-aligned location used for scoring.
+
+    The enum is ordered from least specific location to most specific.
+    """
+
+    def __init__(self, points: int, owner: Owner, coordinates: Tuple[Point, Point]) -> None:
+        self._points = points
+        self.owner = owner
+        self._coordinates = coordinates
+
+        self.x_min = min(x for x, _ in self._coordinates)
+        self.x_max = max(x for x, _ in self._coordinates)
+        self.y_min = min(y for _, y in self._coordinates)
+        self.y_max = max(y for _, y in self._coordinates)
+
+    @property
+    def slug(self) -> str:
+        return self.name.lower()
+
+    def get_points(self, token_owner: Owner) -> int:
+        if (
+            # Shared spaces, everyone gets points for their tokens
+            self.owner == Owner.NULL or
+            # Owned spaces, just the owner points for their tokens
+            self.owner == token_owner
+        ):
+            return self._points
+        return 0
+
+    def contains(self, point: Point) -> bool:
+        x, y = point
+        return (
+            self.x_min <= x <= self.x_max and
+            self.y_min <= y <= self.y_max
+        )
+
+    def __repr__(self) -> str:
+        return (
+            f'<ScoringLocation: {self.name} {self._points} points for tokens '
+            f'owned by {self.owner}>'
+        )
+
+    ARENA = 0, Owner.NULL, (Point(-6, -3), Point(6, 3))
+
+    DOCKING_AREA = 1, Owner.NULL, (Point(-0.75, 0.5), Point(0.75, -3))
+
+    ZONE_0_RAISED_AREA = 3, Owner.ZONE_0, (Point(-0.75, 0.5), Point(0.75, -0.5))
+    ZONE_1_RAISED_AREA = 3, Owner.ZONE_1, (Point(-0.75, -2), Point(0.75, -3))
 
 
 class ClaimLogEntry(NamedTuple):
     token_code: TargetInfo
-    token_value: int
+    location: ScoringLocation
     claim_time: float
 
 
@@ -51,15 +100,15 @@ class ClaimLog:
         self._log.append(entry)
         self._log_is_dirty = True
 
-    def log_token_value_change(
+    def log_location_change(
         self,
         token_code: TargetInfo,
-        token_value: int,
+        location: ScoringLocation,
         claim_time: float,
     ) -> None:
-        self._record_log_entry(ClaimLogEntry(token_code, token_value, claim_time))
+        self._record_log_entry(ClaimLogEntry(token_code, location, claim_time))
         print(  # noqa:T001
-            f"{token_code} NOW WORTH {token_value} TO {token_code.owner.name} "
+            f"{token_code} NOW AT {location.name} TO {token_code.owner.name} "
             f"AT {claim_time}s",
         )
 
@@ -76,7 +125,7 @@ class ClaimLog:
             {
                 'zone': claim.token_code.owner.value,
                 'token_index': claim.token_code.id,
-                'token_value': claim.token_value,
+                'location': claim.location.slug,
                 'time': claim.claim_time,
             }
             for claim in self._log
@@ -133,17 +182,9 @@ class SevenSeg:
 
 
 class TokenScorer:
-    def __init__(
-        self,
-        claim_log: ClaimLog,
-        ship_zone: Tuple[Point, Point],
-        zone_0_stack: Tuple[Point, Point],
-        zone_1_stack: Tuple[Point, Point],
-    ) -> None:
+    def __init__(self, claim_log: ClaimLog) -> None:
         self._claim_log = claim_log
         self._robot = Supervisor()
-        self.ship_zone = order_zone_points(ship_zone)
-        self.stack_zones = [order_zone_points(zone_0_stack), order_zone_points(zone_1_stack)]
 
         self.score_displays = {
             Owner.ZONE_0: (
@@ -156,8 +197,8 @@ class TokenScorer:
             ),
         }
 
-        self._token_statuses: Dict[TargetInfo, int] = {
-            code: 0 for code in TOKENS
+        self._token_locations: Dict[TargetInfo, ScoringLocation] = {
+            code: ScoringLocation.ARENA for code in TOKENS
         }
 
         self._scoring_receivers: Dict[Receiver, Point] = {
@@ -168,33 +209,7 @@ class TokenScorer:
         for receiver in self._scoring_receivers.keys():
             receiver.enable(timestep)
 
-    def token_in_zone(self, token_location: Point, zone: Tuple[Point, Point]) -> bool:
-        # zone[0] < zone[1]
-        if token_location.x < zone[0].x or zone[1].x < token_location.x:
-            # token is outside the zone in the x-direction
-            return False
-        if token_location.y < zone[0].y or zone[1].y < token_location.y:
-            # token is outside the zone in the x-direction
-            return False
-
-        return True
-
-    def get_token_value(
-        self,
-        owner: Owner,
-        location: Point,
-    ) -> int:
-        value = 0
-
-        if self.token_in_zone(location, self.ship_zone):
-            value = FLOOR_TOKEN_VALUE
-
-        if self.token_in_zone(location, self.stack_zones[owner]):
-            value += PLATFORM_EXTRA_TOKEN_VALUE
-
-        return value
-
-    def get_token_location(
+    def get_token_position(
         self,
         token_vector: Tuple[float, float, float],
         signal_strength: float,
@@ -217,6 +232,14 @@ class TokenScorer:
         # map to a 2D plane with Y pointing north
         return Point(position[0] + receiver_location[0], position[1] + receiver_location[1])
 
+    def resolve_location(self, position: Point) -> ScoringLocation:
+        for location in reversed(ScoringLocation):
+            if location.contains(position):
+                return location
+
+        print(f"WARNING: Position {position} is outside the arena!")  # noqa:T001
+        return ScoringLocation.ARENA
+
     def process_detected_token(
         self,
         data: bytes,
@@ -227,22 +250,21 @@ class TokenScorer:
         token_type, token_code, owner = struct.unpack("!bBb", data)
         token = TargetInfo(TargetType(token_type), Owner(owner), token_code)
 
-        position = self.get_token_location(
+        position = self.get_token_position(
             token_vector,
             signal_strength,
             receiver_location,
         )
+        location = self.resolve_location(position)
 
-        token_value = self.get_token_value(owner, position)
-
-        if token_value != self._token_statuses[token]:
+        if location != self._token_locations[token]:
             # token has moved between scoring zones
-            self._claim_log.log_token_value_change(
+            self._claim_log.log_location_change(
                 token,
-                token_value,
+                location,
                 self._robot.getTime(),
             )
-            self._token_statuses[token] = token_value
+            self._token_locations[token] = location
 
         return token
 
@@ -273,15 +295,15 @@ class TokenScorer:
             if token in observed_tokens:
                 continue
 
-            if self._token_statuses[token] == 0:
+            if self._token_locations[token] == ScoringLocation.ARENA:
                 continue
 
-            self._claim_log.log_token_value_change(
+            self._claim_log.log_location_change(
                 token,
-                0,
+                ScoringLocation.ARENA,
                 self._robot.getTime(),
             )
-            self._token_statuses[token] = 0
+            self._token_locations[token] = ScoringLocation.ARENA
 
     def get_scores(self) -> Dict[Owner, int]:
         """
@@ -293,8 +315,8 @@ class TokenScorer:
 
         for zone in Owner:
             zone_scores[zone] = sum(
-                value
-                for token, value in self._token_statuses.items()
+                location.get_points(zone)
+                for token, location in self._token_locations.items()
                 if token.owner == zone
             )
 
@@ -330,10 +352,5 @@ if __name__ == "__main__":
         controller_utils.get_match_file().exists() and
         controller_utils.get_robot_mode() == 'comp'
     ))
-    token_scorer = TokenScorer(
-        claim_log,
-        SHIP_SCORING_ZONE,
-        ZONE_0_STACK_SCORING_ZONE,
-        ZONE_1_STACK_SCORING_ZONE,
-    )
+    token_scorer = TokenScorer(claim_log)
     token_scorer.main()
