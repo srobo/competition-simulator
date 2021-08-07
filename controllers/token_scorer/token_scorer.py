@@ -137,14 +137,6 @@ class ClaimLog:
         return self._log_is_dirty
 
 
-def order_zone_points(zone: Tuple[Point, Point]) -> Tuple[Point, Point]:
-    'Sort points so the first point has the lower x and y coordinates'
-    return (
-        Point(min(zone[0].x, zone[1].x), min(zone[0].y, zone[1].y)),
-        Point(max(zone[0].x, zone[1].x), max(zone[0].y, zone[1].y)),
-    )
-
-
 class SevenSeg:
     """
     A driver to display a decimal digit on 7 LEDs
