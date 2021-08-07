@@ -110,10 +110,13 @@ def print_simulation_version() -> None:
         description, revision = version_path.read_text().splitlines()
         version = f"{description} (rev {revision})"
     else:
-        version = subprocess.check_output(
-            ['git', 'describe', '--always', '--tags'],
-            cwd=str(REPO_ROOT.resolve()),
-        ).decode().strip()
+        try:
+            version = subprocess.check_output(
+                ['git', 'describe', '--always', '--tags'],
+                cwd=str(REPO_ROOT.resolve()),
+            ).decode().strip()
+        except subprocess.CalledProcessError:
+            version = "UNKNOWN"
 
     print(f"Running simulator version {version}")
 
