@@ -1,6 +1,6 @@
 from typing import cast
 
-from sr.robot import Robot, LinearEncoder
+from sr.robot import Robot, AnaloguePin, LinearEncoder, DistanceSensor
 from controller import Keyboard
 
 # Any keys still pressed in the following period will be handled again
@@ -28,6 +28,7 @@ def print_sensors(robot: Robot) -> None:
         "Trolley (left-right)",
         "Hoist (up-down)",
     ]
+    distance_sensor_names = ["Hook DS"]
 
     transmitters = R.radio.sweep()
     print("Found transmitter(s):")
@@ -39,6 +40,11 @@ def print_sensors(robot: Robot) -> None:
     for encoder, name in enumerate(encoder_sensor_names):
         displacement = cast(LinearEncoder, R.encoders[encoder]).displacement
         print(f"{encoder} {name: <20}: {displacement:.2f}m")
+
+    print(f"Distance sensor readings at {robot.time():.2f}s:")
+    for pin, name in zip(AnaloguePin, distance_sensor_names):
+        dist = cast(DistanceSensor, R.arduino.pins[pin]).analogue_value
+        print(f"{pin} {name: <12}: {dist:.2f}")
 
 
 R = Robot()

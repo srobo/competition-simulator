@@ -48,12 +48,9 @@ def init_arduino(webot: Robot, robot_type: RobotType) -> Arduino:
             # "led 6",
         ]
     else:
-        dist_sensor_names = [
-        ]
-        switch_names = [
-        ]
-        led_names = [
-        ]
+        dist_sensor_names = ["Hook DS"]
+        switch_names = []
+        led_names = []
 
     analouge_sensors = [
         DistanceSensor(webot, name)

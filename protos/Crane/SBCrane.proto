@@ -170,6 +170,18 @@ PROTO SBCrane [
                                       directionNoise 0.05
                                       signalStrengthNoise 0.03
                                     }
+                                    DistanceSensor {
+                                      translation 0 -0.025 0
+                                      rotation 0 0 1 -1.5708
+                                      type "sonar"
+                                      numberOfRays 10
+                                      aperture 0.3
+                                      name "Hook DS"
+                                      lookupTable [
+                                        0 0 0
+                                        0.5 1000 0
+                                      ]
+                                    }
                                   ]
                                   boundingObject USE hook_geo
                                   physics Physics {
