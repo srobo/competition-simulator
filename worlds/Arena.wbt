@@ -498,6 +498,44 @@ DEF SHIP Transform {
       boundingObject USE STACK_GEO
       name "Zone 1 Stack"
     }
+    Transform {
+      translation -1.8 0 0
+      children [
+        Transform {
+          children [
+            Solid {
+              translation -0.5 0.25 0
+              rotation 0 1 0 0.785
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    roughness 1
+                  }
+                  geometry Box {
+                    size 1.06 0.5 1.06
+                  }
+                }
+              ]
+              name "Ship Bow"
+            }
+          ]
+        }
+        Solid {
+          translation 0 0.25 0
+          children [
+            Shape {
+              appearance PBRAppearance {
+                roughness 1
+              }
+              geometry Box {
+                size 1 0.5 1.5
+              }
+            }
+          ]
+          name "Ship Forward"
+        }
+      ]
+    }
     Solid {
       children [
         Shape {
