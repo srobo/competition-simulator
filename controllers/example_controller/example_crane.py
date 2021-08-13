@@ -5,10 +5,10 @@ R = Robot()
 print("I found {} transmitter(s):".format(len(R.radio.sweep())))
 
 # motor board 0, channel 0 to half power forward
-R.motor_boards[0].motors[0].power = 50
+R.motor_boards[0].motors[0].power = 0.5
 
 # motor board 0, channel 1 to half power forward
-R.motor_boards[0].motors[1].power = 50
+R.motor_boards[0].motors[1].power = 0.5
 
 # sleep for 1 second
 R.sleep(1)
@@ -23,19 +23,19 @@ R.motor_boards[0].motors[1].power = 0
 R.sleep(2)
 
 # motor board 0, channel 0 to half power backward
-R.motor_boards[0].motors[0].power = -50
+R.motor_boards[0].motors[0].power = -0.5
 
 # motor board 0, channel 1 to half power forward
-R.motor_boards[0].motors[1].power = 50
+R.motor_boards[0].motors[1].power = 0.5
 
 # sleep for 0.75 seconds
 R.sleep(0.75)
 
 # motor board 0, channel 0 to half power forward
-R.motor_boards[0].motors[0].power = 50
+R.motor_boards[0].motors[0].power = 0.5
 
 # motor board 0, channel 1 to half power forward
-R.motor_boards[0].motors[1].power = 50
+R.motor_boards[0].motors[1].power = 0.5
 
 # sleep for 1 second
 R.sleep(1)
