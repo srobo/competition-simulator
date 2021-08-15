@@ -6,7 +6,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, radio, magnet, arduino, compass, encoder
+from sbot import motor, radio, magnet, arduino, compass, encoder
 # Webots specific library
 from controller import Robot as WebotsRobot
 from shared_utils import RobotType

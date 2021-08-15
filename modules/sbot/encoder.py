@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import List, Union
 
 from controller import Robot, PositionSensor
+from sbot.utils import get_robot_device
 from shared_utils import RobotType
-from sr.robot.utils import get_robot_device
 
 
 def init_encoder_array(

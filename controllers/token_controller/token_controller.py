@@ -11,7 +11,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
-from sr.robot.utils import get_robot_device  # isort:skip
+from sbot.utils import get_robot_device  # isort:skip
 from shared_utils import TOKENS, TargetInfo, TargetType  # isort:skip
 
 

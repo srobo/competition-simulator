@@ -1,15 +1,15 @@
-import sr.robot._version_check  # noqa
-from shared_utils import Owner, TargetInfo
-from sr.robot.robot import Robot
-from sr.robot.camera import (
+import sbot._version_check  # noqa
+from sbot.robot import Robot
+from sbot.camera import (
     MarkerType,
     MARKER_ARENA,
     MARKER_TOKEN_GOLD,
     MARKER_TOKEN_SILVER,
 )
-from sr.robot.arduino import AnaloguePin
-from sr.robot.encoder import LinearEncoder, RotaryEncoder
-from sr.robot.arduino_devices import Microswitch, DistanceSensor
+from sbot.arduino import AnaloguePin
+from sbot.encoder import LinearEncoder, RotaryEncoder
+from shared_utils import Owner, TargetInfo
+from sbot.arduino_devices import Microswitch, DistanceSensor
 
 __all__ = (
     'Robot',

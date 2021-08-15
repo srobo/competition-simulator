@@ -1,8 +1,8 @@
 from math import tau, atan2
 
 from controller import Robot, Compass as WebotsCompass
-from sr.robot.utils import get_robot_device
-from sr.robot.randomizer import add_independent_jitter
+from sbot.utils import get_robot_device
+from sbot.randomizer import add_independent_jitter
 
 
 class Compass:

@@ -4,8 +4,8 @@ from enum import Enum
 from typing import List, Optional, NamedTuple
 
 from controller import Robot
-from sr.robot.vision import Face, Orientation, tokens_from_objects
-from sr.robot.coordinates import Point
+from sbot.vision import Face, Orientation, tokens_from_objects
+from sbot.coordinates import Point
 
 MARKER_MODEL_RE = re.compile(r"^[AGS]\d{0,2}$")
 

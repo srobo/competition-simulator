@@ -1,4 +1,4 @@
-from sr.robot import *
+from sbot import *
 
 R = Robot()
 
