@@ -50,4 +50,6 @@ TOKENS: List[TargetInfo] = [
     TargetInfo(TargetType.CONTAINER, Owner.ZONE_1, 14),
     TargetInfo(TargetType.CONTAINER, Owner.ZONE_1, 15),
     TargetInfo(TargetType.CONTAINER, Owner.ZONE_1, 16),
+    TargetInfo(TargetType.CONTAINER, Owner.ZONE_0, 17),
+    TargetInfo(TargetType.CONTAINER, Owner.ZONE_1, 18),
 ]
