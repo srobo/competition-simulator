@@ -1,6 +1,6 @@
 from typing import cast
 
-from sr.robot import Robot, AnaloguePin, LinearEncoder, DistanceSensor
+from sbot import Robot, AnaloguePin, LinearEncoder, DistanceSensor
 from controller import Keyboard
 
 # Any keys still pressed in the following period will be handled again

@@ -1,6 +1,6 @@
 from typing import cast, Union
 
-from sr.robot import (
+from sbot import (
     Robot,
     AnaloguePin,
     Microswitch,

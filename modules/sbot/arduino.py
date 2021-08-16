@@ -5,8 +5,8 @@ from typing import Dict, List, Union
 
 from controller import Robot
 from shared_utils import RobotType
-from sr.robot.arduino_devices import Led, Microswitch, DistanceSensor
-from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
+from sbot.arduino_devices import Led, Microswitch, DistanceSensor
+from sbot.output_frequency_limiter import OutputFrequencyLimiter
 
 
 class AnaloguePin(Enum):

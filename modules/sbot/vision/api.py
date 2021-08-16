@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import List, Tuple, Callable, Iterable, Sequence, TYPE_CHECKING
 
-from sr.robot.coordinates.vectors import Vector
+from sbot.coordinates.vectors import Vector
 
 from .image import Rectangle
 from .tokens import Token

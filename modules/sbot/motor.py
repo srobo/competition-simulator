@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import List, Union
 
 from controller import Robot
+from sbot.utils import map_to_range
 from shared_utils import RobotType
-from sr.robot.utils import map_to_range
-from sr.robot.randomizer import add_jitter
-from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
+from sbot.randomizer import add_jitter
+from sbot.motor_devices import Wheel, Gripper, LinearMotor
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 1

@@ -1,5 +1,5 @@
 from controller import Robot, Connector as WebotsConnector
-from sr.robot.utils import get_robot_device
+from sbot.utils import get_robot_device
 
 
 class Magnet:
