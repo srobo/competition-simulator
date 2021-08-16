@@ -206,14 +206,14 @@ DEF TOKEN_CTRL Robot {
       zoneColour 1 1 0
     }
     SBTokenHarness {
-      tokenName "ZONE_0_17"
-      emitterName "ZONE_0_17 Emitter"
+      tokenName "ZONE_1_17"
+      emitterName "ZONE_1_17 Emitter"
       translation -1.55 0.09 0
       zoneColour 1 1 0
     }
     SBTokenHarness {
-      tokenName "ZONE_1_18"
-      emitterName "ZONE_1_18 Emitter"
+      tokenName "ZONE_0_18"
+      emitterName "ZONE_0_18 Emitter"
       translation -0.95 0.09 0
       zoneColour 1 0 1
     }
