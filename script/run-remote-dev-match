@@ -52,20 +52,9 @@ def prepare_match(code_dir: Path) -> None:
             shutil.copytree(code_dir / f"zone-{zone_id}", zone_path)
 
 
-def print_error(message: str, *, strong: bool = False) -> None:
-    BOLD = '\033[1m' if strong else ''
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    return print(f"{BOLD}{FAIL}{message}{ENDC}")  # noqa:T001
-
-
-def print_fatal(message: str) -> None:
-    return print_error(message, strong=True)
-
-
-def run_match() -> str:
+def run_match() -> subprocess.CompletedProcess[str]:
     try:
-        return subprocess.check_output([
+        return subprocess.run([
             'webots',
             '--batch',
             '--stdout',
@@ -73,36 +62,18 @@ def run_match() -> str:
             '--minimize',
             '--mode=realtime',
             str(REPO_ROOT / 'worlds' / 'Arena.wbt'),
-        ], stderr=subprocess.STDOUT, universal_newlines=True)
+        ], stderr=subprocess.STDOUT, universal_newlines=True, stdout=subprocess.PIPE)
     except FileNotFoundError:
-        print_fatal(
+        print(  # noqa:T001
             "Could not find webots. Check that you have it installed and on your PATH",
         )
         exit(1)
-    except subprocess.CalledProcessError as e:
-        try:
-            log_text = controller_utils.get_competition_supervisor_log_filepath().read_text()
-        except FileNotFoundError:
-            print_fatal(
-                f"Simulation errored (exit code {e.returncode}). "
-                "No supervisor logs were found - Webots may have crashed.",
-            )
-        else:
-            # There are potentially a large number of lines in the logs and any
-            # errors are likely to be at the end of the logs. Additionally, the
-            # user's focus is initially likely to be at the end of the output.
-            # To ensure that failures are clear we therefore put the message that
-            # there was a failure last in the output (and in bold).
-            print_error(log_text)
-            print_fatal(
-                f"Simulation errored (exit code {e.returncode}). "
-                f"Competition supervisor logs are above.",
-            )
-
-        exit(1)
 
 
-def archive_match_outputs(code_dir: Path, match_logs: str) -> None:
+def archive_match_outputs(
+    code_dir: Path,
+    completed_match: subprocess.CompletedProcess[str],
+) -> None:
     """
     Copy the recordings and logs to the output directory.
     """
@@ -110,16 +81,17 @@ def archive_match_outputs(code_dir: Path, match_logs: str) -> None:
     output_dir = code_dir / "output" / controller_utils.get_filename_safe_identifier()
     output_dir.mkdir(exist_ok=True, parents=True)
 
-    (output_dir / "logs.txt").write_text(match_logs)
+    (output_dir / "logs.txt").write_text(completed_match.stdout)
 
     recording_dir = controller_utils.get_recording_stem().parent
 
     # We don't want to rely on the recordings going into a directory which only
     # contains recording data, so instead we copy explicitly the things which we
     # know will have been output.
-
-    for path in recording_dir.glob('*'):
-        shutil.copy(path, output_dir)
+    # In the event of an error, recordings won't exist
+    if recording_dir.is_dir():
+        for path in recording_dir.glob('*'):
+            shutil.copy(path, output_dir)
 
     textures_dir = recording_dir / 'textures'
 
@@ -152,9 +124,11 @@ def main(args: argparse.Namespace) -> None:
     with temporary_arena_root(controller_utils.get_filename_safe_identifier()):
         prepare_match(args.code_dir)
 
-        match_logs = run_match()
+        completed_match = run_match()
 
-        archive_match_outputs(args.code_dir, match_logs)
+        archive_match_outputs(args.code_dir, completed_match)
+
+        exit(completed_match.returncode)  # Cascade exit code
 
 
 if __name__ == '__main__':
