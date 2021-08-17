@@ -62,7 +62,7 @@ def run_match() -> subprocess.CompletedProcess[str]:
             '--minimize',
             '--mode=realtime',
             str(REPO_ROOT / 'worlds' / 'Arena.wbt'),
-        ], stderr=subprocess.STDOUT, universal_newlines=True)
+        ], stderr=subprocess.STDOUT, universal_newlines=True, stdout=subprocess.PIPE)
     except FileNotFoundError:
         print(  # noqa:T001
             "Could not find webots. Check that you have it installed and on your PATH",
