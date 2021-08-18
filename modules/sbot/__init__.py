@@ -8,7 +8,7 @@ from sbot.camera import (
 )
 from sbot.arduino import AnaloguePin
 from sbot.encoder import LinearEncoder, RotaryEncoder
-from shared_utils import Owner, TargetInfo
+from shared_utils import Owner, TargetInfo, TargetType
 from sbot.arduino_devices import Microswitch, DistanceSensor
 
 __all__ = (
@@ -21,6 +21,7 @@ __all__ = (
     'Owner',
     'RotaryEncoder',
     'TargetInfo',
+    'TargetType',
     'MARKER_ARENA',
     'MARKER_TOKEN_GOLD',
     'MARKER_TOKEN_SILVER',
