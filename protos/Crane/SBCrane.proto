@@ -83,128 +83,86 @@ PROTO SBCrane [
                       size 0.1 0.05 0.1
                     }
                   }
-                  BallJoint {  # allow the cable to tilt
-                    jointParameters BallJointParameters {
+                  SliderJoint {
+                    jointParameters JointParameters {
+                      axis 0 -1 0
+                      minStop -0.01
+                      maxStop IS maxY
+                      position %{=fields.initPos.value.y}%
                     }
+                    device [
+                      LinearMotor {
+                        name "hoist motor"
+                        minPosition 0
+                        maxPosition IS maxY
+                        maxVelocity 2
+                        sound ""
+                        muscles Muscle {
+                          volume 1e-04
+                          startOffset 0 0.12 0
+                          endOffset 0 -0.025 0
+                        }
+                      }
+                      PositionSensor {
+                        name "hoist position sensor"
+                      }
+                    ]
                     endPoint Solid {
+                      translation 0 %{=-0.025-fields.initPos.value.y}% 0
                       children [
-                        SliderJoint {
-                          jointParameters JointParameters {
-                            axis 0 -1 0
-                            minStop -0.01
-                            maxStop IS maxY
-                            position %{=fields.initPos.value.y}%
+                        Shape {
+                          appearance PBRAppearance {
+                            baseColor IS flagColour
+                            roughness 1
+                            metalness 0
                           }
-                          device [
-                            LinearMotor {
-                              name "hoist motor"
-                              minPosition 0
-                              maxPosition IS maxY
-                              maxVelocity 2
-                              sound ""
-                              muscles Muscle {
-                                volume 1e-04
-                                startOffset 0 0.12 0
-                                endOffset 0 -0.025 0
-                              }
-                            }
-                            PositionSensor {
-                              name "hoist position sensor"
-                            }
-                          ]
-                          endPoint Solid {
-                            translation 0 %{=-0.025-fields.initPos.value.y}% 0
-                            children [
-                              BallJoint {  # allow the hook to tilt
-                                jointParameters BallJointParameters {
-                                  minStop -0.7854
-                                  maxStop 0.7854
-                                  dampingConstant 0.05
-                                }
-                                jointParameters2 JointParameters {
-                                  axis 1 0 0
-                                  minStop -0.7854
-                                  maxStop 0.7854
-                                  dampingConstant 0.05
-                                }
-                                jointParameters3 JointParameters {
-                                  axis 0 0 1
-                                  minStop -0.7854
-                                  maxStop 0.7854
-                                  dampingConstant 0.05
-                                }
-                                endPoint Solid {
-                                  translation 0 -0.025 0
-                                  children [
-                                    Shape {
-                                      appearance PBRAppearance {
-                                        baseColor IS flagColour
-                                        roughness 1
-                                        metalness 0
-                                      }
-                                      geometry DEF hook_geo Box {
-                                        size 0.05 0.05 0.05
-                                      }
-                                    }
-                                    Connector {
-                                      translation 0 -0.025 0
-                                      rotation 1 0 0 1.5708
-                                      type "active"
-                                      distanceTolerance 0.1
-                                      axisTolerance 0.7854
-                                      rotationTolerance 0
-                                      numberOfRotations 0
-                                      tensileStrength 35
-                                      shearStrength 20
-                                      snap FALSE
-                                      autoLock TRUE
-                                      name "Crane Connector"
-                                      unilateralUnlock TRUE
-                                      unilateralLock TRUE
-                                    }
-                                    Receiver {
-                                      type "radio"
-                                      name "robot receiver"
-                                      bufferSize 30
-                                      channel 1
-                                      directionNoise 0.05
-                                      signalStrengthNoise 0.03
-                                    }
-                                    DistanceSensor {
-                                      translation 0 -0.025 0
-                                      rotation 0 0 1 -1.5708
-                                      type "sonar"
-                                      numberOfRays 10
-                                      aperture 0.3
-                                      name "Hook DS"
-                                      lookupTable [
-                                        0 0 0
-                                        0.5 1000 0
-                                      ]
-                                    }
-                                  ]
-                                  boundingObject USE hook_geo
-                                  physics Physics {
-                                    # density 8000  # steel
-                                  }
-                                  name "hook"
-                                }
-                              }
-                            ]
-                            name "hook pivot"
-                            physics Physics {
-                              density -1
-                              mass 0.1
-                              centerOfMass 0 0 0
-                              inertiaMatrix [
-                                1 1 1
-                                0 0 0
-                              ]
-                            }
+                          geometry DEF hook_geo Box {
+                            size 0.05 0.05 0.05
                           }
                         }
+                        Connector {
+                          translation 0 -0.025 0
+                          rotation 1 0 0 1.5708
+                          type "active"
+                          distanceTolerance 0.1
+                          axisTolerance 0.7854
+                          rotationTolerance 0
+                          numberOfRotations 0
+                          tensileStrength 35
+                          shearStrength 20
+                          snap FALSE
+                          autoLock TRUE
+                          name "Crane Connector"
+                          unilateralUnlock TRUE
+                          unilateralLock TRUE
+                        }
+                        Receiver {
+                          translation 0 -0.025 0
+                          type "radio"
+                          name "robot receiver"
+                          bufferSize 30
+                          channel 1
+                          directionNoise 0.05
+                          signalStrengthNoise 0.03
+                        }
+                        DistanceSensor {
+                          translation 0 -0.025 0
+                          rotation 0 0 1 -1.5708
+                          type "sonar"
+                          numberOfRays 10
+                          aperture 0.3
+                          name "Hook DS"
+                          lookupTable [
+                            0 0 0
+                            0.5 1000 0
+                          ]
+                        }
                       ]
-                      name "cable pivot"
+                      boundingObject USE hook_geo
+                      physics Physics {
+                        density 2000  # steel
+                      }
+                      name "hook"
                     }
                   }
                 ]
