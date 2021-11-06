@@ -17,9 +17,9 @@ class Robot:
     by calling the `sleep` method.
     """
 
-    def __init__(self, quiet: bool = False, init: bool = True) -> None:
+    def __init__(self, auto_start: bool = False, verbose: bool = True) -> None:
         self._initialised = False
-        self._quiet = quiet
+        self._quiet = not verbose
 
         self.webot = WebotsRobot()
         # returns a float, but should always actually be an integer value
@@ -36,13 +36,9 @@ class Robot:
         # thread, but not both.
         self._step_lock = Lock()
 
-        if init:
-            self.init()
+        self.init()
+        if not auto_start:
             self.wait_start()
-
-    @classmethod
-    def setup(cls) -> 'Robot':
-        return cls(init=False)
 
     def init(self) -> None:
         self._init_devs()
