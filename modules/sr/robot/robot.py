@@ -4,7 +4,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, radio, compass, ruggeduino
+from sr.robot import motor, power, servos, ruggeduino
 # Webots specific library
 from controller import Robot as WebotsRobot
 
@@ -124,31 +124,35 @@ class Robot:
     def _init_devs(self) -> None:
         "Initialise the attributes for accessing devices"
 
+        # Power boards
+        self._init_power_board()
+
         # Motor boards
         self._init_motors()
+
+        # Servo boards
+        self._init_servos()
 
         # Ruggeduinos
         self._init_ruggeduinos()
 
         # No camera for SR2021
 
-        # Radio
-        self._init_radio()
-
-        # Compass
-        self._init_compass()
+    def _init_power_board(self) -> None:
+        self.power_board = power.init_power_board(self.webot)
 
     def _init_motors(self) -> None:
-        self.motors = motor.init_motor_array(self.webot)
+        self.motor_boards = motor.init_motor_array(self.webot)
+        if len(self.motor_boards) == 1:
+            self.motor_board = list(self.motor_boards.values())[0]
+
+    def _init_servos(self) -> None:
+        self.servo_board = servos.init_servo_board(self.webot)
 
     def _init_ruggeduinos(self) -> None:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
-
-    def _init_radio(self) -> None:
-        self.radio = radio.Radio(self.webot, self.zone, self._step_lock)
-
-    def _init_compass(self) -> None:
-        self.compass = compass.Compass(self.webot)
+        if len(self.ruggeduinos) == 1:
+            self.ruggeduino = list(self.ruggeduinos.values())[0]
 
     def time(self) -> float:
         """
