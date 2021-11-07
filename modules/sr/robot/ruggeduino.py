@@ -79,7 +79,7 @@ def init_ruggeduino_array(webot: Robot) -> 'Dict[str, Ruggeduino]':
     }
 
     return {
-        '0123456789': Ruggeduino({
+        '1234567890': Ruggeduino({
             **analogue_input_dict,
             **digital_input_dict,
             **digital_output_dict,
