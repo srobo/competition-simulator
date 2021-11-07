@@ -25,10 +25,8 @@ DEF AMBIENT Background {
   luminosity 0.35
 }
 
-# Updating colours? Update `territory_controller.py`
-DEF ROBOT-0 SRRobot {
+DEF ROBOT-0 Robot_2022 {
   translation 0 0 -2
-  rotation 0 1 0 3.14
   controller "sr_controller"
   model "Robot0"
   flagColour 1 0 1
