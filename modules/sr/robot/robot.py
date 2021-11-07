@@ -147,7 +147,9 @@ class Robot:
             self.motor_board = list(self.motor_boards.values())[0]
 
     def _init_servos(self) -> None:
-        self.servo_board = servos.init_servo_board(self.webot)
+        self.servo_boards = servos.init_servo_board(self.webot)
+        if len(self.servo_boards) == 1:
+            self.servo_board = list(self.servo_boards.values())[0]
 
     def _init_ruggeduinos(self) -> None:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)

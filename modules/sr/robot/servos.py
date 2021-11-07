@@ -25,7 +25,7 @@ class Servo:
         return self._position
 
     @position.setter
-    def set_position(self, value: Union[None, float]) -> None:
+    def position(self, value: Union[None, float]) -> None:
         if value is not None:
             self._position = value
             self._servo.set_position(value)
@@ -43,7 +43,7 @@ class ServoDevice:
         self.webot_motor.setPosition(map_to_range(
             -1,
             1,
-            self.min_position,
-            self.max_position,
+            self.min_position + 0.001,
+            self.max_position - 0.001,
             position,
         ))
