@@ -34,10 +34,12 @@ class OutputGroup:
         }
 
     def power_on(self) -> None:
-        pass
+        for output in self._outputs.values():
+            output.is_enabled = True
 
     def power_off(self) -> None:
-        pass
+        for output in self._outputs.values():
+            output.is_enabled = False
 
     def __getitem__(self, index: Outputs) -> 'Output':
         return self._outputs[index]
