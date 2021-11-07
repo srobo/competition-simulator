@@ -54,7 +54,7 @@ PROTO Robot_2022 [
                 device [
                   RotationalMotor {
                     name "left wheel"
-                    maxVelocity 12.3
+                    maxVelocity 25
                     sound ""
                   }
                   PositionSensor {
@@ -110,7 +110,7 @@ PROTO Robot_2022 [
                 device [
                   RotationalMotor {
                     name "right wheel"
-                    maxVelocity 12.3
+                    maxVelocity 25
                     sound ""
                   }
                   PositionSensor {
