@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Union
+from typing import Union, Iterator
 
 from controller import Robot
 
@@ -19,20 +19,34 @@ def init_power_board(webot: Robot) -> 'Power':
 
 class Power:
     def __init__(self) -> None:
+        self.outputs = OutputGroup()
+        self.battery_sensor = BatterySensor()
+        self.piezo = Piezo()
+
+
+class OutputGroup:
+    def __init__(self) -> None:
         output_array = [Output() for _ in Outputs]
-        self.outputs = {
+        self._outputs = {
             key: value
             for key, value
             in zip(Outputs, output_array)
         }
-        self.battery_sensor = BatterySensor()
-        self.piezo = Piezo()
 
     def power_on(self) -> None:
         pass
 
     def power_off(self) -> None:
         pass
+
+    def __getitem__(self, index: Outputs) -> 'Output':
+        return self._outputs[index]
+
+    def __iter__(self) -> 'Iterator[Output]':
+        return iter(self._outputs.values())
+
+    def __len__(self) -> int:
+        return len(self._outputs)
 
 
 class Output:
@@ -44,7 +58,7 @@ class Output:
         return self._enabled
 
     @is_enabled.setter
-    def enable_output(self, enable: bool) -> None:
+    def is_enabled(self, enable: bool) -> None:
         self._enabled = enable
 
     @property
