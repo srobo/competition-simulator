@@ -237,7 +237,7 @@ class TestMatchingStationCode(unittest.TestCase):
             "StationCode enums differ between territory_controller and sr.robot3.radio",
         )
 
-    @unittest.skip("Territory controller no used with current arena")
+    @unittest.skip("Territory controller not used with current arena")
     def test_matches_arena_file(self) -> None:
         "test StationCode matches SRTerritory nodes in Arena.wbt"
 
