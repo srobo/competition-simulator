@@ -2,8 +2,8 @@ from enum import Enum
 from typing import Dict, Union
 
 from controller import Robot
-from sr.robot.ruggeduino_devices import Led, Microswitch, DistanceSensor
-from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
+from sr.robot3.ruggeduino_devices import Led, Microswitch, DistanceSensor
+from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 
 OUTPUT = 0
 INPUT = 1

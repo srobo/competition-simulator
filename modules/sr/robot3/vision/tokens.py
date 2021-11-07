@@ -2,9 +2,9 @@ import enum
 import math
 from typing import Dict, List, Mapping, NamedTuple
 
-from sr.robot.coordinates import vectors
-from sr.robot.coordinates.matrix import Matrix
-from sr.robot.coordinates.vectors import Vector
+from sr.robot3.coordinates import vectors
+from sr.robot3.coordinates.matrix import Matrix
+from sr.robot3.coordinates.vectors import Vector
 
 TOKEN_SIZE = 1
 

@@ -4,7 +4,7 @@ from os import path, environ
 from typing import Optional
 from threading import Lock
 
-from sr.robot import motor, power, servos, ruggeduino
+from sr.robot3 import motor, power, servos, ruggeduino
 # Webots specific library
 from controller import Robot as WebotsRobot
 

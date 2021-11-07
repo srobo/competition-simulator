@@ -22,7 +22,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
-from sr.robot.radio import StationCode as RadioStationCode  # isort:skip
+from sr.robot3.radio import StationCode as RadioStationCode  # isort:skip
 
 
 class MockStationCode(str, enum.Enum):
@@ -234,7 +234,7 @@ class TestMatchingStationCode(unittest.TestCase):
         self.assertEqual(
             station_codes,
             radio_station_codes,
-            "StationCode enums differ between territory_controller and sr.robot.radio",
+            "StationCode enums differ between territory_controller and sr.robot3.radio",
         )
 
     @unittest.skip("Territory controller no used with current arena")

@@ -5,8 +5,8 @@ from typing import List, Optional, NamedTuple
 from threading import Lock
 
 from controller import Robot, Emitter, Receiver
-from sr.robot.utils import get_robot_device
-from sr.robot.coordinates import Vector
+from sr.robot3.utils import get_robot_device
+from sr.robot3.coordinates import Vector
 
 # Updating? Update territory_controller.py too.
 BROADCASTS_PER_SECOND = 10

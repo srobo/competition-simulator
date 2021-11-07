@@ -1,9 +1,9 @@
 from typing import Dict, Union
 
 from controller import Robot
-from sr.robot.utils import map_to_range
-from sr.robot.randomizer import add_jitter
-from sr.robot.motor_devices import Wheel, Gripper, LinearMotor
+from sr.robot3.utils import map_to_range
+from sr.robot3.randomizer import add_jitter
+from sr.robot3.motor_devices import Wheel, Gripper, LinearMotor
 
 # The maximum value that the motor board will accept
 SPEED_MAX = 1.0

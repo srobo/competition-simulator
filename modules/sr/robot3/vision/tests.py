@@ -4,8 +4,8 @@ import math
 import unittest
 from typing import Tuple, Sequence
 
-from sr.robot.coordinates import vectors
-from sr.robot.coordinates.vectors import Vector
+from sr.robot3.coordinates import vectors
+from sr.robot3.coordinates.vectors import Vector
 
 from .image import Rectangle
 from .tokens import Token, FaceName, Orientation

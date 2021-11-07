@@ -1,7 +1,7 @@
 from typing import Dict, List, Union
 
 from controller import Motor, Robot
-from sr.robot.utils import map_to_range, get_robot_device
+from sr.robot3.utils import map_to_range, get_robot_device
 
 
 def init_servo_board(webot: Robot) -> 'Dict[str, ServoBoard]':

@@ -1,14 +1,14 @@
-import sr.robot._version_check  # noqa
-from sr.robot.motor import BRAKE, COAST
-from sr.robot.power import Note, Outputs
-from sr.robot.robot import Robot
-from sr.robot.camera import (
+import sr.robot3._version_check  # noqa
+from sr.robot3.motor import BRAKE, COAST
+from sr.robot3.power import Note, Outputs
+from sr.robot3.robot import Robot
+from sr.robot3.camera import (
     MarkerType,
     MARKER_ARENA,
     MARKER_TOKEN_GOLD,
     MARKER_TOKEN_SILVER,
 )
-from sr.robot.ruggeduino import INPUT, OUTPUT, AnaloguePin, INPUT_PULLUP
+from sr.robot3.ruggeduino import INPUT, OUTPUT, AnaloguePin, INPUT_PULLUP
 
 OUT_H0 = Outputs.OUT_H0
 OUT_H1 = Outputs.OUT_H1

@@ -6,9 +6,9 @@ from controller import (
     TouchSensor,
     DistanceSensor as WebotsDistanceSensor,
 )
-from sr.robot.utils import map_to_range, get_robot_device
-from sr.robot.randomizer import add_jitter
-from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
+from sr.robot3.utils import map_to_range, get_robot_device
+from sr.robot3.randomizer import add_jitter
+from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 
 LOGGER = logging.getLogger(__name__)
 

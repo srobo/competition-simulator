@@ -1,4 +1,4 @@
-from sr.robot import *
+from sr.robot3 import *
 
 R = Robot()
 

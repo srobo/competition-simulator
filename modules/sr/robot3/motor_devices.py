@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from controller import Motor, Robot
-from sr.robot.utils import get_robot_device
+from sr.robot3.utils import get_robot_device
 
 
 class MotorBase:

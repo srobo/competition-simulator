@@ -1,8 +1,8 @@
 from typing import cast
 
-from sr.robot import *
+from sr.robot3 import *
 from controller import Keyboard
-from sr.robot.ruggeduino_devices import Microswitch, DistanceSensor
+from sr.robot3.ruggeduino_devices import Microswitch, DistanceSensor
 
 # Any keys still pressed in the following period will be handled again
 # leading to repeated claim attempts or printing sensors multiple times
