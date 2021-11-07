@@ -56,7 +56,11 @@ class Motor:
 class MotorChannel:
     """Represents a motor output channel."""
 
-    def __init__(self, channel: int, sr_motor: Union[Gripper, Wheel, LinearMotor, None]) -> None:
+    def __init__(
+        self,
+        channel: int,
+        sr_motor: Union[Gripper, Wheel, LinearMotor, None],
+    ) -> None:
         self.channel = channel
         # Private shadow of use_brake
         # self._use_brake = True # TODO create new thread for non-braking slowdown

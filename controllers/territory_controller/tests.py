@@ -180,6 +180,7 @@ class TestAdjacentTerritories(unittest.TestCase):
         claim_log = ClaimLog(record_arena_actions=False)
         self.attached_territories = AttachedTerritories(claim_log)
 
+    @unittest.skip("Territory controller no used with current arena")
     def test_all_links_in_set(self) -> None:
         'test all territory links from Arena.wbt are in TERRITORY_LINKS'
         arena_links = set()
@@ -236,6 +237,7 @@ class TestMatchingStationCode(unittest.TestCase):
             "StationCode enums differ between territory_controller and sr.robot.radio",
         )
 
+    @unittest.skip("Territory controller no used with current arena")
     def test_matches_arena_file(self) -> None:
         "test StationCode matches SRTerritory nodes in Arena.wbt"
 

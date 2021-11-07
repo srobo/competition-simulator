@@ -1,5 +1,8 @@
-from sr.robot import Robot
+from typing import cast
+
+from sr.robot import *
 from controller import Keyboard
+from sr.robot.ruggeduino_devices import Microswitch, DistanceSensor
 
 # Any keys still pressed in the following period will be handled again
 # leading to repeated claim attempts or printing sensors multiple times
@@ -19,26 +22,26 @@ CONTROLS = {
 
 
 def print_sensors(robot: Robot) -> None:
-    distance_sensor_names = [
-        "Front Left",
-        "Front Right",
-        "Left",
-        "Right",
-        "Front",
-        "Back",
-    ]
+    distance_sensor_names = {
+        A0: "Front Left",
+        A1: "Front Right",
+        A2: "Left",
+        A3: "Right",
+        A4: "Front",
+        A5: "Back",
+    }
     touch_sensor_names = [
         "Rear",
     ]
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
-    for pin, name in enumerate(distance_sensor_names):
-        dist = R.ruggeduino.analogue_read(pin)
-        print(f"{pin} {name: <12}: {dist:.2f}")
+    for Apin, name in distance_sensor_names.items():
+        dist = cast(DistanceSensor, R.ruggeduino.pins[Apin]).analogue_read()
+        print(f"{Apin} {name: <12}: {dist:.2f}")
 
     print("Touch sensor readings:")
     for pin, name in enumerate(touch_sensor_names, 2):
-        touching = R.ruggeduino.digital_read(pin)
+        touching = cast(Microswitch, R.ruggeduino.pins[pin]).digital_read()
         print(f"{pin} {name: <6}: {touching}")
 
     print()

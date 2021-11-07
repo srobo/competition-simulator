@@ -83,7 +83,7 @@ def init_ruggeduino_array(webot: Robot) -> 'Dict[str, Ruggeduino]':
             **analogue_input_dict,
             **digital_input_dict,
             **digital_output_dict,
-        })
+        }),
     }
 
 
