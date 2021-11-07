@@ -34,7 +34,7 @@ class DistanceSensor:
             self.webot_sensor.getValue(),
         )
 
-    def read_value(self) -> float:
+    def analogue_read(self) -> float:
         """
         Returns the distance measured by the sensor, in metres.
         """
@@ -54,7 +54,7 @@ class Microswitch:
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def read_value(self) -> bool:
+    def digital_read(self) -> bool:
         """
         Returns whether or not the touch sensor is in contact with something.
         """
@@ -78,7 +78,7 @@ class Led:
         self._limiter = limiter
         self._pin_num = pin_num
 
-    def write_value(self, value: bool) -> None:
+    def digital_write(self, value: bool) -> None:
         if not self._limiter.can_change():
             LOGGER.warning(
                 "Rate limited change to LED output (requested setting LED on pin %d to %r)",
