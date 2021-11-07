@@ -6,7 +6,7 @@ from sr.robot.utils import map_to_range, get_robot_device
 
 def init_servo_board(webot: Robot) -> 'Dict[str, ServoBoard]':
     return {
-        'srXYZ1': ServoBoard([Servo(webot, 'test servo')]),
+        # 'srXYZ1': ServoBoard([Servo(webot, 'test servo')]),
     }
 
 
