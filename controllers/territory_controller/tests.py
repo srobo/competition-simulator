@@ -22,7 +22,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
-from sr.robot.radio import StationCode as RadioStationCode  # isort:skip
+from sr.robot3.radio import StationCode as RadioStationCode  # isort:skip
 
 
 class MockStationCode(str, enum.Enum):
@@ -180,6 +180,7 @@ class TestAdjacentTerritories(unittest.TestCase):
         claim_log = ClaimLog(record_arena_actions=False)
         self.attached_territories = AttachedTerritories(claim_log)
 
+    @unittest.skip("Territory controller no used with current arena")
     def test_all_links_in_set(self) -> None:
         'test all territory links from Arena.wbt are in TERRITORY_LINKS'
         arena_links = set()
@@ -233,9 +234,10 @@ class TestMatchingStationCode(unittest.TestCase):
         self.assertEqual(
             station_codes,
             radio_station_codes,
-            "StationCode enums differ between territory_controller and sr.robot.radio",
+            "StationCode enums differ between territory_controller and sr.robot3.radio",
         )
 
+    @unittest.skip("Territory controller not used with current arena")
     def test_matches_arena_file(self) -> None:
         "test StationCode matches SRTerritory nodes in Arena.wbt"
 

@@ -24,7 +24,7 @@ if not ARENA_ROOT.is_absolute():
     raise ValueError(f"'ARENA_ROOT' must be an absolute path, got '{ARENA_ROOT}'")
 
 
-NUM_ZONES = 2
+NUM_ZONES = 1
 
 GAME_DURATION_SECONDS = 120
 

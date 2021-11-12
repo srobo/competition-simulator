@@ -6,14 +6,25 @@ from controller import (
     TouchSensor,
     DistanceSensor as WebotsDistanceSensor,
 )
-from sr.robot.utils import map_to_range, get_robot_device
-from sr.robot.randomizer import add_jitter
-from sr.robot.output_frequency_limiter import OutputFrequencyLimiter
+from sr.robot3.utils import map_to_range, get_robot_device
+from sr.robot3.randomizer import add_jitter
+from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DistanceSensor:
+class RuggeduinoDevice:
+    def analogue_read(self) -> float:
+        raise NotImplementedError()
+
+    def digital_read(self) -> bool:
+        raise NotImplementedError()
+
+    def digital_write(self, value: bool) -> None:
+        raise NotImplementedError()
+
+
+class DistanceSensor(RuggeduinoDevice):
     """
     A standard Webots distance sensor,  we convert the distance to metres.
     """
@@ -34,7 +45,7 @@ class DistanceSensor:
             self.webot_sensor.getValue(),
         )
 
-    def read_value(self) -> float:
+    def analogue_read(self) -> float:
         """
         Returns the distance measured by the sensor, in metres.
         """
@@ -45,7 +56,7 @@ class DistanceSensor:
         )
 
 
-class Microswitch:
+class Microswitch(RuggeduinoDevice):
     """
     A standard Webots touch sensor.
     """
@@ -54,14 +65,14 @@ class Microswitch:
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def read_value(self) -> bool:
+    def digital_read(self) -> bool:
         """
         Returns whether or not the touch sensor is in contact with something.
         """
         return self.webot_sensor.getValue() > 0
 
 
-class Led:
+class Led(RuggeduinoDevice):
     """
     A standard Webots LED.
     The value is a boolean to switch the LED on (True) or off (False).
@@ -78,7 +89,7 @@ class Led:
         self._limiter = limiter
         self._pin_num = pin_num
 
-    def write_value(self, value: bool) -> None:
+    def digital_write(self, value: bool) -> None:
         if not self._limiter.can_change():
             LOGGER.warning(
                 "Rate limited change to LED output (requested setting LED on pin %d to %r)",

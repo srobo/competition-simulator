@@ -1,47 +1,22 @@
-from sr.robot import *
+from sr.robot3 import *
 
 R = Robot()
 
-print("I found {} transmitter(s):".format(len(R.radio.sweep())))
+distance = R.ruggeduino.pins[A5].analogue_read()
+print(f"Rear ultrasound distance: {distance} meters")
 
-# motor board 0, channel 0 to half power forward
-R.motors[0].m0.power = 50
+# first motor board, channel 0 to half power forward
+R.motor_board.motors[0].power = 0.5
 
-# motor board 0, channel 1 to half power forward
-R.motors[0].m1.power = 50
+# motor board "srABC1", channel 1 to half power forward
+# using the syntax to access multiple motor boards
+R.motor_boards['srABC1'].motors[1].power = 0.5
 
-# sleep for 1 second
-R.sleep(1)
-
-# motor board 0, channel 0 to stopped
-R.motors[0].m0.power = 0
-
-# motor board 0, channel 1 to stopped
-R.motors[0].m1.power = 0
-
-# sleep for 2 seconds
+# sleep for 2 second
 R.sleep(2)
 
-# motor board 0, channel 0 to half power backward
-R.motors[0].m0.power = -50
+# first motor board, channel 0 to stopped
+R.motor_board.motors[0].power = 0
 
-# motor board 0, channel 1 to half power forward
-R.motors[0].m1.power = 50
-
-# sleep for 0.75 seconds
-R.sleep(0.75)
-
-# motor board 0, channel 0 to half power forward
-R.motors[0].m0.power = 50
-
-# motor board 0, channel 1 to half power forward
-R.motors[0].m1.power = 50
-
-# sleep for 1 second
-R.sleep(1)
-
-# motor board 0, channel 0 to stopped
-R.motors[0].m0.power = 0
-
-# motor board 0, channel 1 to stopped
-R.motors[0].m1.power = 0
+# first motor board, channel 1 to stopped
+R.motor_board.motors[1].power = 0
