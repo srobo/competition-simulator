@@ -142,3 +142,8 @@ Solid {  # West Wall
   boundingObject USE SHAPE
   name "West Wall"
 }
+
+TinCan {
+  translation 0 0.05 -1.6
+  tokenName "A Can"
+}
