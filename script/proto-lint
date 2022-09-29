@@ -19,7 +19,7 @@ def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
     old_lines: List[str] = []
     new_lines: List[str] = []
 
-    print(f"Linting {file}")  # noqa: T001
+    print(f"Linting {file}")  # noqa: T201
 
     with file.open('r') as f:
         for line in f.readlines():
@@ -54,7 +54,7 @@ def lint_file(file: Path, inplace: bool, print_diffs: bool) -> bool:
         if print_diffs:
             sys.stdout.writelines(diff)
         else:
-            print("  Linting issues found")  # noqa: T001
+            print("  Linting issues found")  # noqa: T201
 
         if inplace:
             with file.open('w') as f:

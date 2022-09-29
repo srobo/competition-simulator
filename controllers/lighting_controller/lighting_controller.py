@@ -140,7 +140,7 @@ class LightingController:
         return self.duration - self.current_match_time()
 
     def start_lighting_effect(self, effect: LightingEffect) -> None:
-        print(  # noqa: T001
+        print(  # noqa: T201
             f"Running lighting effect: {effect.name} @ {self.current_match_time()}",
         )
 
@@ -150,7 +150,7 @@ class LightingController:
                 self.set_node_intensity(self.light_nodes[light.light_def], light.intensity)
                 self.set_node_colour(self.light_nodes[light.light_def], light.colour)
 
-            print(f"Lighting effect '{effect.name}' complete")  # noqa: T001
+            print(f"Lighting effect '{effect.name}' complete")  # noqa: T201
 
         else:
             steps = int((effect.fade_time * 1000) / self.timestep)
@@ -219,7 +219,7 @@ class LightingController:
                 self.set_node_intensity(fade.light, fade.effect.intensity)
                 self.set_node_colour(fade.light, fade.effect.colour)
 
-                print(f"Lighting effect for '{fade.effect.light_def}' complete")  # noqa: T001
+                print(f"Lighting effect for '{fade.effect.light_def}' complete")  # noqa: T201
 
                 self.lighting_fades.remove(fade)  # remove completed fade
 
@@ -227,9 +227,9 @@ class LightingController:
         if controller_utils.get_robot_mode() != 'comp':
             return
 
-        print('Scheduled cues:')  # noqa: T001
+        print('Scheduled cues:')  # noqa: T201
         for cue in self.cue_stack:
-            print(cue)  # noqa: T001
+            print(cue)  # noqa: T201
 
         # run pre-start snap changes
         for cue in self.cue_stack.copy():

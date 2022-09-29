@@ -50,7 +50,7 @@ def construct_match_data(args: argparse.Namespace) -> controller_utils.MatchData
 def temporary_arena_root(suffix: str) -> Iterator[None]:
     original_arena_root = controller_utils.ARENA_ROOT
     with tempfile.TemporaryDirectory(suffix=suffix) as tmpdir_name:
-        print(f"Using {tmpdir_name!r} as the arena")  # noqa:T001
+        print(f"Using {tmpdir_name!r} as the arena")  # noqa: T201
         os.environ['ARENA_ROOT'] = tmpdir_name
         controller_utils.ARENA_ROOT = Path(tmpdir_name)
         try:
@@ -83,7 +83,7 @@ def print_error(message: str, *, strong: bool = False) -> None:
     BOLD = '\033[1m' if strong else ''
     FAIL = '\033[91m'
     ENDC = '\033[0m'
-    return print(f"{BOLD}{FAIL}{message}{ENDC}")  # noqa:T001
+    return print(f"{BOLD}{FAIL}{message}{ENDC}")  # noqa: T201
 
 
 def print_fatal(message: str) -> None:

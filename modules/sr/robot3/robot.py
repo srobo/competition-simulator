@@ -64,7 +64,7 @@ class Robot:
         if user_code_version:
             parts.append("User code: {}".format(user_code_version))
 
-        print("Robot Initialized. {}.".format(", ".join(parts)))  # noqa:T001
+        print("Robot Initialized. {}.".format(", ".join(parts)))  # noqa: T201
 
     def webots_step_and_should_continue(self, duration_ms: int) -> bool:
         """
@@ -101,7 +101,7 @@ class Robot:
         if self.arena not in ["A", "B"]:
             raise Exception("arena must be A or B")
 
-        print("Waiting for start signal.")  # noqa:T001
+        print("Waiting for start signal.")  # noqa: T201
 
         # Always advance time by a little bit. This simulates the real-world
         # condition that the wait-start mechanism would always wait for the
@@ -119,7 +119,7 @@ class Robot:
             ):
                 pass
 
-        print("Starting")  # noqa:T001
+        print("Starting")  # noqa: T201
 
     def _init_devs(self) -> None:
         "Initialise the attributes for accessing devices"

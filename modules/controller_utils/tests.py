@@ -129,8 +129,8 @@ class TestSimpleTee(unittest.TestCase):
                     with mock.patch('pathlib.Path.open', return_value=f):
                         tee_streams(Path(f.name), prefix='prefix:')
 
-                    print('To Stdout')  # noqa:T001
-                    print('To Stderr', file=sys.stderr)  # noqa:T001
+                    print('To Stdout')  # noqa: T201
+                    print('To Stderr', file=sys.stderr)  # noqa: T201
 
             self.assertEqual(
                 'prefix:To Stdout\n',

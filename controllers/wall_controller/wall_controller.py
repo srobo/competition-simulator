@@ -34,7 +34,7 @@ def move_walls_after(seconds: int) -> None:
     # wait for the walls to start moving in ms
     robot.step(seconds * 1000)
 
-    print('Moving arena walls')  # noqa: T001
+    print('Moving arena walls')  # noqa: T201
     for wall in walls:
         wall.setVelocity(LINEAR_DOWNWARDS)
 

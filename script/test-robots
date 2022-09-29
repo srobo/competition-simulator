@@ -37,7 +37,7 @@ def run_robot_match(
     subprocess_timeout: Optional[float],
 ) -> bool:
     try:
-        print(f"Running match for {tla}")  # noqa:T001
+        print(f"Running match for {tla}")  # noqa: T201
 
         num_empty_zones = NUM_ZONES - 1
         match_args = [
@@ -60,16 +60,16 @@ def run_robot_match(
             text=True,
         )
 
-        print(f"Completed match for {tla}")  # noqa:T001
+        print(f"Completed match for {tla}")  # noqa: T201
 
     except subprocess.CalledProcessError as match_errors:
-        print(match_errors.output)  # noqa: T001
-        print(f"Failed on team {tla}")  # noqa:T001
+        print(match_errors.output)  # noqa: T201
+        print(f"Failed on team {tla}")  # noqa: T201
         return False
     except subprocess.TimeoutExpired as match_timeout:
         # This appears to be a bug where TimeoutExpired always returns bytes
-        print(match_timeout.output.decode())  # noqa: T001
-        print(f"Timeout on team {tla}")  # noqa:T001
+        print(match_timeout.output.decode())  # noqa: T201
+        print(f"Timeout on team {tla}")  # noqa: T201
         return False
     return True
 
@@ -115,7 +115,7 @@ def main(args: argparse.Namespace) -> None:
         match_duration = time.time() - start_time
         subprocess_timeout = EXCESS_SUBPROCESS_TIMEOUT + match_duration
 
-        print(f"Timeout set to : {subprocess_timeout:.1f}")  # noqa:T001
+        print(f"Timeout set to : {subprocess_timeout:.1f}")  # noqa: T201
 
         for team in archives.glob('*.zip'):
             tla = team.stem
@@ -127,7 +127,7 @@ def main(args: argparse.Namespace) -> None:
             if not run_robot_match(run_comp_match, archives, tla, subprocess_timeout):
                 failed_tlas.append(tla)
 
-    print("Failing TLAs:", ', '.join(failed_tlas))  # noqa: T001
+    print("Failing TLAs:", ', '.join(failed_tlas))  # noqa: T201
 
 
 if __name__ == '__main__':
