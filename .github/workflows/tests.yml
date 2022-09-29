@@ -67,18 +67,23 @@ jobs:
         path: venv
         key: deps-py${{ matrix.python-version }}-${{ matrix.test-os }}-${{ hashfiles('all-requirements.txt') }}-v3
 
-    - name: Install Dependencies - Posix
+    - name: Create virtualenv - Posix
       if: matrix.test-os != 'windows-latest'
       run: |
         python3 -m venv venv
         venv/bin/pip install -U pip
-        venv/bin/pip install -r all-requirements.txt
-    - name: Install Dependencies - Windows
+        echo ACTIVATE_PATH=venv/bin/activate >> $GITHUB_ENV
+    - name: Create virtualenv - Windows
       if: matrix.test-os == 'windows-latest'
       run: |
         py -m venv venv
         source venv/Scripts/activate
         py -m pip install -U pip
+        echo ACTIVATE_PATH=venv/Scripts/activate >> $GITHUB_ENV
+
+    - name: Install Dependencies
+      run: |
+        source $ACTIVATE_PATH
         pip install -r all-requirements.txt
 
     - name: Define scripts to test
@@ -91,8 +96,7 @@ jobs:
       env:
         SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
       run: |
-        [ -f venv/bin/activate ] && source venv/bin/activate
-        [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
+        source $ACTIVATE_PATH
 
         # Ignore TODOs on CI, for now, even though we do want them
         # highlighted in development.
@@ -103,20 +107,17 @@ jobs:
         SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
       if: ${{ always() }}
       run: |
-        [ -f venv/bin/activate ] && source venv/bin/activate
-        [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
+        source $ACTIVATE_PATH
         ./script/typing/check $SCRIPTS
 
     - name: Test with unittest
       if: ${{ always() }}
       run: |
-        [ -f venv/bin/activate ] && source venv/bin/activate
-        [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
+        source $ACTIVATE_PATH
         ./script/testing/test
 
     - name: Lint proto files
       if: ${{ always() }}
       run: |
-        [ -f venv/bin/activate ] && source venv/bin/activate
-        [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
+        source $ACTIVATE_PATH
         ./script/proto-lint worlds/Arena.wbt protos/**/*.proto
