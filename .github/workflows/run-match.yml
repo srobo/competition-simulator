@@ -24,25 +24,31 @@ jobs:
     strategy:
       matrix:
         webots-version: ["2021b"]
+
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
           python-version: 3.7
+
       - name: Install dependencies
         run: |
           export DEBIAN_FRONTEND=noninteractive
           sudo apt-get update
           sudo apt-get install --yes wget zip pulseaudio xvfb
           pulseaudio -D
+
       - name: Download Webots
         run: |
           wget -O ./webots.deb \
           https://github.com/cyberbotics/webots/releases/download/R${{ matrix.webots-version }}/webots_${{ matrix.webots-version }}_amd64.deb
+
       - name: Install Webots
         run: |
           sudo apt-get install --yes ./webots.deb
+
       - name: Prepare team code archive
         run: |
           mkdir archives
@@ -57,17 +63,20 @@ jobs:
           echo "print('Success: $GITHUB_SHA')" >> robot.py
 
           zip ABC.zip robot.py
+
       - name: Cache libraries
         id: cache-library
         uses: actions/cache@v2
         with:
           path: venv
           key: deps-library-${{ hashfiles('libraries.txt') }}-v2
+
       - name: Install Libraries
         run: |
           python3 -m venv venv
           venv/bin/pip install -U pip
           venv/bin/pip install -r libraries.txt
+
       - name: Hide overlays
         run: |
           # pre-run webots to generate the config file
@@ -76,15 +85,18 @@ jobs:
             s/\(hideAllCameraOverlays\)=.*/\1=true/
             s/\(hideAllDisplayOverlays\)=.*/\1=true/
             ' ~/.config/Cyberbotics/Webots-*.conf
+
       - name: Run match
         run: |
           source ./venv/bin/activate
           xvfb-run script/run-comp-match archives 42 ABC --duration 5 --resolution 1280 720
+
       - name: Store archives
         uses: actions/upload-artifact@v2
         with:
           name: match-archives-${{ matrix.webots-version }}
           path: archives
+
       - name: Validate success of zone 0
         run: |
           LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-0-match-42.txt)

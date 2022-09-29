@@ -33,11 +33,14 @@ jobs:
         shell: bash
 
     steps:
+
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Build checksum file
       run: |
         declare -a FILES=(
@@ -49,18 +52,21 @@ jobs:
           echo "# $f" >> all-requirements.txt
           cat $f >> all-requirements.txt
         done
+
     - name: Patch Windows python3
       if: matrix.test-os == 'windows-latest'
       run: |
         if ! command -v python3 &> /dev/null; then
           ln -s $(which python) /usr/bin/python3
         fi
+
     - name: Cache dependencies
       uses: actions/cache@v2
       id: cache-dep
       with:
         path: venv
         key: deps-py${{ matrix.python-version }}-${{ matrix.test-os }}-${{ hashfiles('all-requirements.txt') }}-v3
+
     - name: Install Dependencies - Posix
       if: matrix.test-os != 'windows-latest'
       run: |
@@ -74,11 +80,13 @@ jobs:
         source venv/Scripts/activate
         py -m pip install -U pip
         pip install -r all-requirements.txt
+
     - name: Define scripts to test
       id: define_scripts
       run: |
         SCRIPTS=$(find script -type f | grep -vE "/(linting/|testing/|typing/|check$)" | tr "\n" " ")
         echo "##[set-output name=SCRIPTS;]$SCRIPTS"
+
     - name: Lint with flake8
       env:
         SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
@@ -89,6 +97,7 @@ jobs:
         # Ignore TODOs on CI, for now, even though we do want them
         # highlighted in development.
         ./script/linting/lint $SCRIPTS --extend-ignore=T000
+
     - name: Typecheck with Mypy
       env:
         SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
@@ -97,12 +106,14 @@ jobs:
         [ -f venv/bin/activate ] && source venv/bin/activate
         [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
         ./script/typing/check $SCRIPTS
+
     - name: Test with unittest
       if: ${{ always() }}
       run: |
         [ -f venv/bin/activate ] && source venv/bin/activate
         [ -f venv/Scripts/activate ] && source ./venv/Scripts/activate
         ./script/testing/test
+
     - name: Lint proto files
       if: ${{ always() }}
       run: |
