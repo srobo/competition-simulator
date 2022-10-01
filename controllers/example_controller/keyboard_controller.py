@@ -100,9 +100,11 @@ while True:
 
         elif key_ascii == key_grab_open:
             R.servo_board.servos[0].position = -1
+            R.servo_board.servos[1].position = -1
 
         elif key_ascii == key_grab_close:
             R.servo_board.servos[0].position = 1
+            R.servo_board.servos[1].position = 1
 
         # Work our way through all the enqueued key presses before dropping
         # out to the timestep
