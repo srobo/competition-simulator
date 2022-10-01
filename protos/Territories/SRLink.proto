@@ -19,7 +19,7 @@ PROTO SRLink [
           metalness 0
         }
         geometry Plane {
-          size IS size
+          size
         }
       }
     ]
