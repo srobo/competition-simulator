@@ -38,54 +38,15 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Build checksum file
-        run: |
-          declare -a FILES=(
-            "script/linting/requirements.txt"
-            "script/typing/requirements.txt"
-          )
-          for f in ${FILES[@]}
-          do
-            echo "# $f" >> all-requirements.txt
-            cat $f >> all-requirements.txt
-          done
-
-      - name: Patch Windows python3
-        if: matrix.test-os == 'windows-latest'
-        run: |
-          if ! command -v python3 &> /dev/null; then
-            ln -s $(which python) /usr/bin/python3
-          fi
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        id: cache-dep
-        with:
-          path: venv
-          key: deps-py${{ matrix.python-version }}-${{ matrix.test-os }}-${{ hashfiles('all-requirements.txt') }}-v3
-
-      - name: Create virtualenv - Posix
-        if: matrix.test-os != 'windows-latest'
-        run: |
-          python3 -m venv venv
-          venv/bin/pip install -U pip
-          echo ACTIVATE_PATH=venv/bin/activate >> $GITHUB_ENV
-      - name: Create virtualenv - Windows
-        if: matrix.test-os == 'windows-latest'
-        run: |
-          py -m venv venv
-          source venv/Scripts/activate
-          py -m pip install -U pip
-          echo ACTIVATE_PATH=venv/Scripts/activate >> $GITHUB_ENV
+          cache: pip
+          cache-dependency-path: '**/requirements.txt'
 
       - name: Install Dependencies
         run: |
-          source $ACTIVATE_PATH
-          pip install -r all-requirements.txt
+          pip install -r script/linting/requirements.txt -r script/typing/requirements.txt
 
       - name: Define scripts to test
         id: define_scripts
@@ -97,8 +58,6 @@ jobs:
         env:
           SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
         run: |
-          source $ACTIVATE_PATH
-
           # Ignore TODOs on CI, for now, even though we do want them
           # highlighted in development.
           ./script/linting/lint $SCRIPTS --extend-ignore=T000
@@ -108,17 +67,14 @@ jobs:
           SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
         if: ${{ always() }}
         run: |
-          source $ACTIVATE_PATH
           ./script/typing/check $SCRIPTS
 
       - name: Test with unittest
         if: ${{ always() }}
         run: |
-          source $ACTIVATE_PATH
           ./script/testing/test
 
       - name: Lint proto files
         if: ${{ always() }}
         run: |
-          source $ACTIVATE_PATH
           ./script/proto-lint worlds/Arena.wbt protos/**/*.proto
