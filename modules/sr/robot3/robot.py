@@ -3,11 +3,14 @@ from __future__ import annotations
 import math
 import random
 from os import path, environ
+from typing import TypeVar, Collection
 from threading import Lock
 
 from sr.robot3 import motor, power, servos, ruggeduino
 # Webots specific library
 from controller import Robot as WebotsRobot
+
+T = TypeVar('T')
 
 
 class Robot:
@@ -147,18 +150,31 @@ class Robot:
 
     def _init_motors(self) -> None:
         self.motor_boards = motor.init_motor_array(self.webot)
-        if len(self.motor_boards) == 1:
-            self.motor_board = list(self.motor_boards.values())[0]
 
     def _init_servos(self) -> None:
         self.servo_boards = servos.init_servo_board(self.webot)
-        if len(self.servo_boards) == 1:
-            self.servo_board = list(self.servo_boards.values())[0]
 
     def _init_ruggeduinos(self) -> None:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
-        if len(self.ruggeduinos) == 1:
-            self.ruggeduino = list(self.ruggeduinos.values())[0]
+
+    def _singular(self, elements: Collection[T], name: str) -> T:
+        num = len(elements)
+        if num != 1:
+            raise ValueError(f"Expected exactly one {name} to be connected, but found {num}")
+        x, = elements
+        return x
+
+    @property
+    def motor_board(self) -> motor.MotorBoard:
+        return self._singular(self.motor_boards.values(), 'motor board')
+
+    @property
+    def ruggeduino(self) -> ruggeduino.Ruggeduino:
+        return self._singular(self.ruggeduinos.values(), 'ruggeduino')
+
+    @property
+    def servo_board(self) -> servos.ServoBoard:
+        return self._singular(self.servo_boards.values(), 'servo board')
 
     def time(self) -> float:
         """
