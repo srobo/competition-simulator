@@ -1,6 +1,5 @@
-#VRML_OBJ R2020a utf8
+#VRML_SIM R2022b utf8
 # tags: static
-
 PROTO SRTerritory [
   field SFVec3f translation 0 0 0
   field SFString territoryName ""
@@ -31,7 +30,7 @@ PROTO SRTerritory [
                 }
               }
               Transform {
-                translation 0 0.005 0.25
+                translation -0.25 0 0.005
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -52,10 +51,10 @@ PROTO SRTerritory [
           }
           Solid {
             name "Territory tower"
-            translation 0 0.2 0
+            translation 0 0 0.2
             children [
               LED {
-                translation 0 -0.175 0
+                translation 0 0 -0.175
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -76,7 +75,7 @@ PROTO SRTerritory [
                 gradual TRUE
               }
               LED {
-                translation 0 -0.125 0
+                translation 0 0 -0.125
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -93,7 +92,7 @@ PROTO SRTerritory [
                 gradual TRUE
               }
               LED {
-                translation 0 -0.075 0
+                translation 0 0 -0.075
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -110,7 +109,7 @@ PROTO SRTerritory [
                 gradual TRUE
               }
               LED {
-                translation 0 -0.025 0
+                translation 0 0 -0.025
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -127,7 +126,7 @@ PROTO SRTerritory [
                 gradual TRUE
               }
               LED {
-                translation 0 0.025 0
+                translation 0 0 0.025
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -144,7 +143,7 @@ PROTO SRTerritory [
                 gradual TRUE
               }
               LED {
-                translation 0 0.075 0
+                translation 0 0 0.075
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -161,7 +160,7 @@ PROTO SRTerritory [
                 gradual TRUE
               }
               LED {
-                translation 0 0.125 0
+                translation 0 0 0.125
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -178,7 +177,7 @@ PROTO SRTerritory [
                 gradual TRUE
               }
               LED {
-                translation 0 0.175 0
+                translation 0 0 0.175
                 children [
                   Shape {
                     appearance PBRAppearance {
@@ -201,7 +200,7 @@ PROTO SRTerritory [
             }
           }
           Transform{
-            translation 0 0.25 0
+            translation 0 0 0.25
             children [
               Receiver {
                 type "radio"
