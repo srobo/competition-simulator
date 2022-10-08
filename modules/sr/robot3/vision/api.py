@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import List, Tuple, Callable, Iterable, Sequence, TYPE_CHECKING
 
 from sr.robot3.coordinates.vectors import Vector

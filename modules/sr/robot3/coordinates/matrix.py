@@ -1,6 +1,9 @@
 """
 Matrix utilities.
 """
+
+from __future__ import annotations
+
 from typing import Tuple, Union, Iterable, overload
 
 from .vectors import Vector

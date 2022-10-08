@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from math import tau, atan2
 
 from controller import Robot, Compass as WebotsCompass

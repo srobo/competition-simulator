@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import NamedTuple
 
 from .polar import PolarCoord, polar_from_cartesian

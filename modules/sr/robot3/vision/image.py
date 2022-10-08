@@ -2,6 +2,8 @@
 Utilities for working with "objects" as they appear on a flat image.
 """
 
+from __future__ import annotations
+
 from typing import Tuple
 
 # Units are pixels

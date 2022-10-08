@@ -5,6 +5,8 @@ Convert from Webots' (x, y, z, θ) axis-angle orientation to a slightly more
 competitor-friendly format.
 """
 
+from __future__ import annotations
+
 import math
 import argparse
 from typing import NamedTuple

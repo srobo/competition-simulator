@@ -3,6 +3,9 @@ The controller for altering arena lighting provided by a DirectionalLight and a 
 Currently doesn't support:
 - Timed pre-match lighting changes
 """
+
+from __future__ import annotations
+
 import sys
 from typing import Dict, List, Tuple, Optional, NamedTuple
 from pathlib import Path

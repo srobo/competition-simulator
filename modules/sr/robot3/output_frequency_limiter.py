@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from controller import Robot
 
 # Allow up to two changes per second

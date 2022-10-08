@@ -3,6 +3,8 @@ To better reflect reality, we add a little randomness to robot inputs and output
 This prevents the simulation from providing unrealistic perfection.
 """
 
+from __future__ import annotations
+
 import random
 from typing import TypeVar
 

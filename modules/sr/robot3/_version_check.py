@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 
 # Provide a nicer check that the user has the right version of Python than
