@@ -1,4 +1,4 @@
-import sr.robot3._version_check  # noqa
+import sr.robot3._version_check  # noqa: F401
 from sr.robot3.motor import BRAKE, COAST
 from sr.robot3.power import Note, Outputs
 from sr.robot3.robot import Robot
