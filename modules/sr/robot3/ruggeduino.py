@@ -7,9 +7,19 @@ from controller import Robot
 from sr.robot3.ruggeduino_devices import Led, Microswitch, DistanceSensor
 from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 
-OUTPUT = 0
-INPUT = 1
-INPUT_PULLUP = 2
+
+class GPIOPinMode(IntEnum):
+    """Hardware modes that a GPIO pin can be set to."""
+
+    DIGITAL_INPUT = 0  #: The digital state of the pin can be read
+    DIGITAL_INPUT_PULLUP = 1  #: Same as DIGITAL_INPUT but internal pull-up is enabled
+    DIGITAL_INPUT_PULLDOWN = 2  #: Same as DIGITAL_INPUT but internal pull-down is enabled
+    DIGITAL_OUTPUT = 3  #: The digital state of the pin can be set.
+
+    ANALOGUE_INPUT = 4  #: The analogue voltage of the pin can be read.
+    ANALOGUE_OUTPUT = 5  #: The analogue voltage of the pin can be set using a DAC.
+
+    PWM_OUTPUT = 6  #: A PWM output signal can be created on the pin.
 
 
 class AnaloguePin(IntEnum):
