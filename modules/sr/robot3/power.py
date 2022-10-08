@@ -15,11 +15,11 @@ class Outputs(Enum):
     OUT_L3 = 'L3'
 
 
-def init_power_board(webot: Robot) -> Power:
-    return Power()
+def init_power_board(webot: Robot) -> PowerBoard:
+    return PowerBoard()
 
 
-class Power:
+class PowerBoard:
     def __init__(self) -> None:
         self.outputs = OutputGroup()
         self.battery_sensor = BatterySensor()

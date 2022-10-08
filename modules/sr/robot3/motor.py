@@ -12,9 +12,9 @@ COAST = 0
 BRAKE = 0
 
 
-def init_motor_array(webot: Robot) -> dict[str, Motor]:
+def init_motor_array(webot: Robot) -> dict[str, MotorBoard]:
     return {
-        'srABC1': Motor(
+        'srABC1': MotorBoard(
             Wheel(webot, 'left wheel'),
             Wheel(webot, 'right wheel'),
         ),
@@ -36,7 +36,7 @@ def translate(sr_speed_val: float, sr_motor: Gripper | Wheel | LinearMotor) -> f
     )
 
 
-class Motor:
+class MotorBoard:
     """Represents a motor board."""
 
     def __init__(
