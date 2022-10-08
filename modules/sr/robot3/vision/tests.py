@@ -285,7 +285,7 @@ class TransformationTests(unittest.TestCase):
 
     def assertPositions(
         self,
-        vectors: Sequence[Tuple[str, SimpleVector, WebotsOrientation]],
+        vectors: Sequence[tuple[str, SimpleVector, WebotsOrientation]],
     ) -> None:
         for position, expected_vector, input_orientation in vectors:
             with self.subTest(position):

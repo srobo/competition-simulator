@@ -21,7 +21,7 @@ class WebotsOrientation(NamedTuple):
     theta: float
 
 
-def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> 'Matrix':
+def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> Matrix:
     x, y, z, theta = orientation
 
     # Seemingly webots' y is upside down versus Wikipedia's. Note: this also

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Type, TypeVar
+from typing import TypeVar
 
 from controller import Robot, Device
 
@@ -18,7 +18,7 @@ def map_to_range(
     return ((value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
 
-def get_robot_device(robot: Robot, name: str, kind: Type[TDevice]) -> TDevice:
+def get_robot_device(robot: Robot, name: str, kind: type[TDevice]) -> TDevice:
     device = robot.getDevice(name)
     if not isinstance(device, kind):
         raise TypeError

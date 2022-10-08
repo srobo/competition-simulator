@@ -4,7 +4,7 @@ Matrix utilities.
 
 from __future__ import annotations
 
-from typing import Tuple, Union, Iterable, overload
+from typing import Iterable, overload
 
 from .vectors import Vector
 
@@ -28,13 +28,13 @@ class Matrix:
         self.data = tuple_data
 
     @property
-    def dimensions(self) -> Tuple[int, int]:
+    def dimensions(self) -> tuple[int, int]:
         return len(self.data), len(self.data[0])
 
-    def transpose(self) -> 'Matrix':
+    def transpose(self) -> Matrix:
         return Matrix(zip(*self.data))
 
-    def __round__(self, precision: int) -> 'Matrix':
+    def __round__(self, precision: int) -> Matrix:
         return Matrix(
             (round(x, precision) for x in row)
             for row in self.data
@@ -54,10 +54,10 @@ class Matrix:
             ',\n    '.join(repr(x) for x in self.data),
         )
 
-    def __neg__(self) -> 'Matrix':
+    def __neg__(self) -> Matrix:
         return Matrix((-x for x in row) for row in self.data)
 
-    def __add__(self, other: 'Matrix') -> 'Matrix':
+    def __add__(self, other: Matrix) -> Matrix:
         if not isinstance(other, Matrix):
             return NotImplemented  # type: ignore[unreachable]
 
@@ -72,7 +72,7 @@ class Matrix:
             for row_self, row_other in zip(self.data, other.data)
         )
 
-    def __sub__(self, other: 'Matrix') -> 'Matrix':
+    def __sub__(self, other: Matrix) -> Matrix:
         if not isinstance(other, Matrix):
             return NotImplemented  # type: ignore[unreachable]
 
@@ -83,13 +83,13 @@ class Matrix:
         ...
 
     @overload
-    def __mul__(self, vector: Tuple[float, ...]) -> Tuple[float, ...]:
+    def __mul__(self, vector: tuple[float, ...]) -> tuple[float, ...]:
         ...
 
     def __mul__(
         self,
-        vector: Union[Vector, Tuple[float, ...]],
-    ) -> Union[Vector, Tuple[float, ...]]:
+        vector: Vector | tuple[float, ...],
+    ) -> Vector | tuple[float, ...]:
         if len(vector) != self.dimensions[1]:
             raise ValueError("Dimension mismatch: cannot multiply {} by {}".format(
                 self.dimensions,
@@ -113,7 +113,7 @@ class Matrix:
 
     __rmul__ = __mul__
 
-    def __matmul__(self, other: 'Matrix') -> 'Matrix':
+    def __matmul__(self, other: Matrix) -> Matrix:
         if not isinstance(other, Matrix):
             return NotImplemented  # type: ignore[unreachable]
 

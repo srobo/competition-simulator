@@ -3,7 +3,6 @@ from __future__ import annotations
 import math
 import random
 from os import path, environ
-from typing import Optional
 from threading import Lock
 
 from sr.robot3 import motor, power, servos, ruggeduino
@@ -47,7 +46,7 @@ class Robot:
         self._initialised = True
         self.display_info()
 
-    def _get_user_code_info(self) -> Optional[str]:
+    def _get_user_code_info(self) -> str | None:
         user_version_path = path.join(self.usbkey, '.user-rev')
         if path.exists(user_version_path):
             with open(user_version_path) as f:

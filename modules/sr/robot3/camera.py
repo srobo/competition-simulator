@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 import threading
 from enum import Enum
-from typing import List, Optional, NamedTuple
+from typing import NamedTuple
 
 from controller import Robot
 from sr.robot3.vision import Face, Orientation, tokens_from_objects
@@ -50,7 +50,7 @@ MARKER_TYPE_SIZE = {
 }
 
 
-def parse_marker_info(model_id: str) -> Optional[MarkerInfo]:
+def parse_marker_info(model_id: str) -> MarkerInfo | None:
     """
     Parse the model id of a maker model into a `MarkerInfo`.
 
@@ -103,7 +103,7 @@ class Marker:
         return Point.from_vector(self._face.centre_global())
 
     @property
-    def vertices(self) -> List[Point]:
+    def vertices(self) -> list[Point]:
         """
         A list of 4 `Point` instances, each representing the position of the
         black corners of the marker.
@@ -139,7 +139,7 @@ class Camera:
 
         self._lock = lock
 
-    def see(self) -> List[Marker]:
+    def see(self) -> list[Marker]:
         """
         Identify items which the camera can see and return a list of `Marker`
         instances describing them.
@@ -155,7 +155,7 @@ class Camera:
             self._webot.step(self._timestep)
             return self._see()
 
-    def _see(self) -> List[Marker]:
+    def _see(self) -> list[Marker]:
         object_infos = {}
 
         for recognition_object in self.camera.getRecognitionObjects():

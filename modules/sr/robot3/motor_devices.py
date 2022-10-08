@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Tuple
-
 from controller import Motor, Robot
 from sr.robot3.utils import get_robot_device
 
@@ -59,7 +57,7 @@ class Gripper(MotorBase):
     a pipe character (|)
     """
 
-    def __init__(self, webot: Robot, motor_names: Tuple[str, str]) -> None:
+    def __init__(self, webot: Robot, motor_names: tuple[str, str]) -> None:
         self.webot = webot
         self.gripper_motors = [
             LinearMotor(self.webot, name) for name in motor_names

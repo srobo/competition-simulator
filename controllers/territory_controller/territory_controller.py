@@ -5,7 +5,7 @@ import enum
 import struct
 import logging
 import collections
-from typing import Set, Dict, List, Tuple, Union, Mapping, Callable
+from typing import Tuple, Mapping, Callable
 from pathlib import Path
 from collections import defaultdict
 from dataclasses import dataclass
@@ -34,7 +34,7 @@ class Claimant(enum.IntEnum):
     ZONE_1 = 1
 
     @classmethod
-    def zones(cls) -> Set[Claimant]:
+    def zones(cls) -> set[Claimant]:
         return {
             claimant
             for claimant in cls
@@ -80,13 +80,13 @@ EXTRA_VALUE_TERRITORIES = {
 }
 
 # Updating? Update `Arena.wbt` too
-ZONE_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
+ZONE_COLOURS: dict[Claimant, tuple[float, float, float]] = {
     Claimant.ZONE_0: (1, 0, 1),
     Claimant.ZONE_1: (1, 1, 0),
     Claimant.UNCLAIMED: (0.34191456, 0.34191436, 0.34191447),
 }
 
-LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
+LINK_COLOURS: dict[Claimant, tuple[float, float, float]] = {
     Claimant.ZONE_0: (0.5, 0, 0.5),
     Claimant.ZONE_1: (0.6, 0.6, 0),
     Claimant.UNCLAIMED: (0.25, 0.25, 0.25),
@@ -94,7 +94,7 @@ LINK_COLOURS: Dict[Claimant, Tuple[float, float, float]] = {
 
 NUM_TOWER_LEDS = 8
 
-TERRITORY_LINKS: Set[Tuple[Union[StationCode, TerritoryRoot], StationCode]] = {
+TERRITORY_LINKS: set[tuple[StationCode | TerritoryRoot, StationCode]] = {
     (StationCode.PN, StationCode.EY),  # PN-EY
     (StationCode.BG, StationCode.VB),  # BG-VB
     (StationCode.OX, StationCode.VB),  # OX-VB
@@ -136,11 +136,11 @@ class ClaimLog:
     def __init__(self, record_arena_actions: bool) -> None:
         self._record_arena_actions = record_arena_actions
 
-        self._station_statuses: Dict[StationCode, Claimant] = {
+        self._station_statuses: dict[StationCode, Claimant] = {
             code: Claimant.UNCLAIMED for code in StationCode
         }
 
-        self._log: List[ClaimLogEntry] = []
+        self._log: list[ClaimLogEntry] = []
         # Starting with a dirty log ensures the structure is written for every match.
         self._log_is_dirty = True
 
@@ -211,10 +211,10 @@ class AttachedTerritories:
 
     def calculate_adjacent_territories(
         self,
-    ) -> Dict[Union[StationCode, TerritoryRoot], Set[StationCode]]:
-        adjacent_zones: Dict[
-            Union[StationCode, TerritoryRoot],
-            Set[StationCode],
+    ) -> dict[StationCode | TerritoryRoot, set[StationCode]]:
+        adjacent_zones: dict[
+            StationCode | TerritoryRoot,
+            set[StationCode],
         ] = defaultdict(set)
 
         for source, dest in TERRITORY_LINKS:
@@ -229,9 +229,9 @@ class AttachedTerritories:
 
     def get_attached_territories(
         self,
-        station_code: Union[StationCode, TerritoryRoot],
+        station_code: StationCode | TerritoryRoot,
         claimant: Claimant,
-        claimed_stations: Set[StationCode],
+        claimed_stations: set[StationCode],
     ) -> None:
         for station in self.adjacent_zones[station_code]:
             if self._claim_log.get_claimant(station) != claimant:
@@ -245,9 +245,9 @@ class AttachedTerritories:
             claimed_stations.add(station)
             self.get_attached_territories(station, claimant, claimed_stations)
 
-    def build_attached_capture_trees(self) -> Tuple[Set[StationCode], Set[StationCode]]:
-        zone_0_territories: Set[StationCode] = set()
-        zone_1_territories: Set[StationCode] = set()
+    def build_attached_capture_trees(self) -> tuple[set[StationCode], set[StationCode]]:
+        zone_0_territories: set[StationCode] = set()
+        zone_1_territories: set[StationCode] = set()
 
         # the territory lists are passed by reference and populated by the functions
         self.get_attached_territories(TerritoryRoot.z0, Claimant.ZONE_0, zone_0_territories)
@@ -258,7 +258,7 @@ class AttachedTerritories:
         self,
         station_code: StationCode,
         attempting_claim: Claimant,
-        connected_territories: Tuple[Set[StationCode], Set[StationCode]],
+        connected_territories: tuple[set[StationCode], set[StationCode]],
     ) -> bool:
         if attempting_claim == Claimant.UNCLAIMED:
             # This condition shouldn't occur and
@@ -277,11 +277,11 @@ class AttachedTerritories:
         return False
 
 
-def set_node_colour(node: Node, colour: Tuple[float, float, float]) -> None:
+def set_node_colour(node: Node, colour: tuple[float, float, float]) -> None:
     node.getField('zoneColour').setSFColor(list(colour))
 
 
-def convert_to_led_colour(colour_tuple: Tuple[float, float, float]) -> int:
+def convert_to_led_colour(colour_tuple: tuple[float, float, float]) -> int:
     scaled_colour = (colour * 255 for colour in colour_tuple)
     return int.from_bytes(struct.pack('!BBB', *scaled_colour), 'big')
 
@@ -300,8 +300,8 @@ class ActionTimer:
         self._duration = action_duration
         self._duration_upper = action_duration * 1.1
         self._duration_lower = action_duration * 0.9
-        self._action_starts: Dict[Tuple[StationCode, Claimant], float] = {}
-        self._prev_progress: Dict[Tuple[StationCode, Claimant], float] = {}
+        self._action_starts: dict[tuple[StationCode, Claimant], float] = {}
+        self._prev_progress: dict[tuple[StationCode, Claimant], float] = {}
         # progress_callback is called on each timestep for each active action
         # the third argument is the current progress through the action
         # or TIMER_COMPLETE/TIMER_EXPIRE when the action is finished
@@ -367,8 +367,8 @@ class ActionTimer:
 
 class TerritoryController:
 
-    _emitters: Dict[StationCode, Emitter]
-    _receivers: Dict[StationCode, Receiver]
+    _emitters: dict[StationCode, Emitter]
+    _receivers: dict[StationCode, Receiver]
 
     def __init__(self, claim_log: ClaimLog, attached_territories: AttachedTerritories) -> None:
         self._claim_log = claim_log
@@ -396,7 +396,7 @@ class TerritoryController:
         for claimant in Claimant.zones():
             self.set_score_display(claimant, 0)
 
-    def set_node_colour(self, node_id: str, new_colour: Tuple[float, float, float]) -> None:
+    def set_node_colour(self, node_id: str, new_colour: tuple[float, float, float]) -> None:
         node = self._robot.getFromDef(node_id)
         if node is None:
             logging.error(f"Failed to fetch node {node_id}")
@@ -425,7 +425,7 @@ class TerritoryController:
 
     def prune_detached_stations(
         self,
-        connected_territories: Tuple[Set[StationCode], Set[StationCode]],
+        connected_territories: tuple[set[StationCode], set[StationCode]],
         claim_time: float,
     ) -> None:
         broken_links = False  # skip regenerating capture trees unless something changed

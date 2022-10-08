@@ -24,7 +24,7 @@ class AnaloguePin(Enum):
 ARDUINO_DEVICES_TYPE = Dict[Union[AnaloguePin, int], Union[DistanceSensor, Microswitch, Led]]
 
 
-def init_ruggeduino_array(webot: Robot) -> 'Dict[str, Ruggeduino]':
+def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
     # The names in these arrays correspond to the names given to devices in Webots
 
     dist_sensor_names = [

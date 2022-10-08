@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-from typing import Dict, List, Union
-
 from controller import Motor, Robot
 from sr.robot3.utils import map_to_range, get_robot_device
 
 
-def init_servo_board(webot: Robot) -> 'Dict[str, ServoBoard]':
+def init_servo_board(webot: Robot) -> dict[str, ServoBoard]:
     return {
         'srXYZ2': ServoBoard([
             Servo(webot, 'left gripper'),
@@ -16,7 +14,7 @@ def init_servo_board(webot: Robot) -> 'Dict[str, ServoBoard]':
 
 
 class ServoBoard:
-    def __init__(self, servos: 'List[Servo]') -> None:
+    def __init__(self, servos: list[Servo]) -> None:
         self.servos = servos
 
 
@@ -30,7 +28,7 @@ class Servo:
         return self._position
 
     @position.setter
-    def position(self, value: Union[None, float]) -> None:
+    def position(self, value: None | float) -> None:
         if value is not None:
             self._position = value
             self._servo.set_position(value)

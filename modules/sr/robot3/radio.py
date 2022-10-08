@@ -3,7 +3,7 @@ from __future__ import annotations
 import enum
 import struct
 from math import pi, atan2
-from typing import List, Optional, NamedTuple
+from typing import NamedTuple
 from threading import Lock
 
 from controller import Robot, Emitter, Receiver
@@ -51,10 +51,10 @@ class StationCode(str, enum.Enum):
 
 class TargetInfo(NamedTuple):
     station_code: StationCode
-    owned_by: Optional[Claimant]
+    owned_by: Claimant | None
 
 
-def parse_radio_message(message: bytes, zone: int) -> Optional[TargetInfo]:
+def parse_radio_message(message: bytes, zone: int) -> TargetInfo | None:
     try:
         station_code, owned_by = struct.unpack("!2sb", message)
         return TargetInfo(
@@ -80,7 +80,7 @@ class Target(NamedTuple):
         signal_strength: float,
         target_info: TargetInfo,
         vector: Vector,
-    ) -> 'Target':
+    ) -> Target:
         x, _, z = vector.data  # 2-dimensional bearing in the xz plane, elevation is ignored
         bearing = pi - atan2(x, z)
         bearing = bearing - (2 * pi) if bearing > pi else bearing  # Normalize to (-pi, pi)
@@ -107,7 +107,7 @@ class Radio:
         self._zone = zone
         self._step_lock = step_lock
 
-    def sweep(self) -> List[Target]:
+    def sweep(self) -> list[Target]:
         """
         Sweep for nearby radio targets.
 

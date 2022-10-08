@@ -5,7 +5,7 @@ Vector utilities.
 from __future__ import annotations
 
 import math
-from typing import Union, Iterable, overload
+from typing import Iterable, overload
 
 # between vectors considered the same
 DEGREES_TOLERANCE = 10
@@ -41,13 +41,13 @@ class Vector:
     def __len__(self) -> int:
         return len(self.data)
 
-    def __round__(self, precision: int) -> 'Vector':
+    def __round__(self, precision: int) -> Vector:
         return Vector(round(x, precision) for x in self.data)
 
-    def __neg__(self) -> 'Vector':
+    def __neg__(self) -> Vector:
         return self * -1
 
-    def __add__(self, other: 'Vector') -> 'Vector':
+    def __add__(self, other: Vector) -> Vector:
         if not isinstance(other, Vector):
             return NotImplemented  # type: ignore[unreachable]
 
@@ -59,21 +59,21 @@ class Vector:
 
         return Vector(x + y for x, y in zip(self.data, other.data))
 
-    def __sub__(self, other: 'Vector') -> 'Vector':
+    def __sub__(self, other: Vector) -> Vector:
         if not isinstance(other, Vector):
             return NotImplemented  # type: ignore[unreachable]
 
         return self.__add__(-other)
 
     @overload
-    def __mul__(self, other: float) -> 'Vector':
+    def __mul__(self, other: float) -> Vector:
         """
         Multiply vector by scalar.
         """
         ...
 
     @overload
-    def __mul__(self, other: 'Vector') -> float:
+    def __mul__(self, other: Vector) -> float:
         """
         Dot product between two vectors of equal length.
 
@@ -82,7 +82,7 @@ class Vector:
         """
         ...
 
-    def __mul__(self, value: 'Union[Vector, float]') -> 'Union[Vector, float]':
+    def __mul__(self, value: Vector | float) -> Vector | float:
         if isinstance(value, (float, int)):
             return Vector(value * x for x in self.data)
 
@@ -99,7 +99,7 @@ class Vector:
 
     __rmul__ = __mul__
 
-    def __truediv__(self, other: float) -> 'Vector':
+    def __truediv__(self, other: float) -> Vector:
         if not isinstance(other, (float, int)):
             return NotImplemented  # type: ignore[unreachable]
 

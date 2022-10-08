@@ -17,7 +17,7 @@ class Point(NamedTuple):
     polar: PolarCoord
 
     @classmethod
-    def from_vector(cls, vector: Vector) -> 'Point':
+    def from_vector(cls, vector: Vector) -> Point:
         return cls(
             world=Cartesian(*vector.data),
             polar=polar_from_cartesian(vector),

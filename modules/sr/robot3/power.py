@@ -15,7 +15,7 @@ class Outputs(Enum):
     OUT_L3 = 'L3'
 
 
-def init_power_board(webot: Robot) -> 'Power':
+def init_power_board(webot: Robot) -> Power:
     return Power()
 
 
@@ -43,10 +43,10 @@ class OutputGroup:
         for output in self._outputs.values():
             output.is_enabled = False
 
-    def __getitem__(self, index: Outputs) -> 'Output':
+    def __getitem__(self, index: Outputs) -> Output:
         return self._outputs[index]
 
-    def __iter__(self) -> 'Iterator[Output]':
+    def __iter__(self) -> Iterator[Output]:
         return iter(self._outputs.values())
 
     def __len__(self) -> int:
@@ -81,7 +81,7 @@ class BatterySensor:
 
 
 class Piezo:
-    def buzz(self, duration: float, note: 'Pitch') -> None:
+    def buzz(self, duration: float, note: Pitch) -> None:
         pass
 
 

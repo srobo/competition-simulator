@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Dict, Union
-
 from controller import Robot
 from sr.robot3.utils import map_to_range
 from sr.robot3.randomizer import add_jitter
@@ -14,7 +12,7 @@ COAST = 0
 BRAKE = 0
 
 
-def init_motor_array(webot: Robot) -> 'Dict[str, Motor]':
+def init_motor_array(webot: Robot) -> dict[str, Motor]:
     return {
         'srABC1': Motor(
             Wheel(webot, 'left wheel'),
@@ -23,7 +21,7 @@ def init_motor_array(webot: Robot) -> 'Dict[str, Motor]':
     }
 
 
-def translate(sr_speed_val: float, sr_motor: Union[Gripper, Wheel, LinearMotor]) -> float:
+def translate(sr_speed_val: float, sr_motor: Gripper | Wheel | LinearMotor) -> float:
     # Translate from -1 to 1 range to the actual motor control range
 
     if sr_speed_val != 0:
@@ -43,8 +41,8 @@ class Motor:
 
     def __init__(
         self,
-        m0: Union[Wheel, LinearMotor, Gripper, None],
-        m1: Union[Wheel, LinearMotor, Gripper, None],
+        m0: Wheel | LinearMotor | Gripper | None,
+        m1: Wheel | LinearMotor | Gripper | None,
     ) -> None:
         self.m0 = MotorChannel(0, m0)
         self.m1 = MotorChannel(1, m1)
@@ -61,7 +59,7 @@ class MotorChannel:
     def __init__(
         self,
         channel: int,
-        sr_motor: Union[Gripper, Wheel, LinearMotor, None],
+        sr_motor: Gripper | Wheel | LinearMotor | None,
     ) -> None:
         self.channel = channel
         # Private shadow of use_brake

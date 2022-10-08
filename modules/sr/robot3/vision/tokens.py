@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import enum
 import math
-from typing import Dict, List, Mapping, NamedTuple
+from typing import Mapping, NamedTuple
 
 from sr.robot3.coordinates import vectors
 from sr.robot3.coordinates.matrix import Matrix
@@ -73,7 +73,7 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def face(self, name: FaceName) -> 'Face':
+    def face(self, name: FaceName) -> Face:
         """
         Get the named `Face` of the token.
 
@@ -83,7 +83,7 @@ class Token:
         """
         return Face(self, name)
 
-    def corners_global(self) -> Dict[str, Vector]:
+    def corners_global(self) -> dict[str, Vector]:
         """
         A mapping of the corners of the token (named for their apparent position
         on a reference token) to the current position of that corner relative to
@@ -94,7 +94,7 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def visible_faces(self, angle_tolernace: float = 75, is_2d: bool = False) -> 'List[Face]':
+    def visible_faces(self, angle_tolernace: float = 75, is_2d: bool = False) -> list[Face]:
         """
         Returns a list of the faces which are visible to the global origin.
         If a token should be considered 2D, only check its front and rear faces.
@@ -118,14 +118,14 @@ class Face:
     def __repr__(self) -> str:
         return f'Face({self.token!r}, {self.name!r})'
 
-    def _filter_corners(self, corners: Mapping[str, Vector]) -> Dict[str, Vector]:
+    def _filter_corners(self, corners: Mapping[str, Vector]) -> dict[str, Vector]:
         return {
             name: position
             for name, position in corners.items()
             if self.name.value in name
         }
 
-    def corners(self) -> Dict[str, Vector]:
+    def corners(self) -> dict[str, Vector]:
         """
         A mapping of the corners of the face (named for their apparent position
         on a reference token) to the current position of that corner relative to
@@ -133,7 +133,7 @@ class Face:
         """
         return self._filter_corners(self.token.corners)
 
-    def corners_global(self) -> Dict[str, Vector]:
+    def corners_global(self) -> dict[str, Vector]:
         """
         A mapping of the corners of the token (named for their apparent position
         on a reference token) to the current position of that corner relative to

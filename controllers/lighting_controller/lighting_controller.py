@@ -7,7 +7,7 @@ Currently doesn't support:
 from __future__ import annotations
 
 import sys
-from typing import Dict, List, Tuple, Optional, NamedTuple
+from typing import NamedTuple
 from pathlib import Path
 from dataclasses import dataclass
 
@@ -24,14 +24,14 @@ import webots_utils  # isort:skip
 class ArenaLighting(NamedTuple):
     light_def: str
     intensity: float = 3.5
-    colour: Tuple[float, float, float] = (1, 1, 1)
+    colour: tuple[float, float, float] = (1, 1, 1)
 
 
 class LightingEffect(NamedTuple):
     start_time: float  # Negative start times are relative to the end of the match
     # Negative values 0 - (-0.08) don't get included in the produced recordings
-    fade_time: Optional[float] = None
-    lighting: List[ArenaLighting] = [ArenaLighting('SUN')]
+    fade_time: float | None = None
+    lighting: list[ArenaLighting] = [ArenaLighting('SUN')]
     luminosity: float = 0.35
     name: str = ""
 
@@ -54,9 +54,9 @@ class LightFade:
     light: Node
     remaining_steps: int
     intensity_step: float
-    colour_step: Tuple[float, float, float]
+    colour_step: tuple[float, float, float]
     current_intensity: float
-    current_colour: Tuple[float, float, float]
+    current_colour: tuple[float, float, float]
     effect: ArenaLighting
 
 
@@ -86,7 +86,7 @@ CUE_STACK = [
 
 
 class LightingController:
-    def __init__(self, duration: float, cue_stack: List[LightingEffect]) -> None:
+    def __init__(self, duration: float, cue_stack: list[LightingEffect]) -> None:
         self._robot = Supervisor()
         self.timestep = self._robot.getBasicTimeStep()
         self.start_offset: float = 0
@@ -97,10 +97,10 @@ class LightingController:
         self.ambient_node = webots_utils.node_from_def(self._robot, 'AMBIENT')
 
         self.luminosity_fade = LuminosityFade(0, 0, 0.35, 0.35)
-        self.lighting_fades: List[LightFade] = []
+        self.lighting_fades: list[LightFade] = []
 
         # fetch all nodes used in effects, any missing nodes will be flagged here
-        self.light_nodes: Dict[str, Node] = {}
+        self.light_nodes: dict[str, Node] = {}
         for cue in cue_stack:
             for light in cue.lighting:
                 if self.light_nodes.get(light.light_def) is None:
@@ -115,7 +115,7 @@ class LightingController:
     def set_node_intensity(self, node: Node, intensity: float) -> None:
         node.getField('intensity').setSFFloat(intensity)
 
-    def set_node_colour(self, node: Node, colour: Tuple[float, float, float]) -> None:
+    def set_node_colour(self, node: Node, colour: tuple[float, float, float]) -> None:
         node.getField('color').setSFColor(list(colour))
 
     def get_current_luminosity(self) -> float:
@@ -131,9 +131,9 @@ class LightingController:
 
     def increment_colour(
         self,
-        colour: Tuple[float, float, float],
-        step: Tuple[float, float, float],
-    ) -> Tuple[float, float, float]:
+        colour: tuple[float, float, float],
+        step: tuple[float, float, float],
+    ) -> tuple[float, float, float]:
         return tuple(colour[i] + step[i] for i in range(3))  # type: ignore
 
     def current_match_time(self) -> float:
@@ -178,7 +178,7 @@ class LightingController:
 
                 # figure out steps of each value
                 intensity_step = (light.intensity - current_intensity) / steps
-                colour_step: Tuple[float, float, float] = tuple(  # type: ignore
+                colour_step: tuple[float, float, float] = tuple(  # type: ignore
                     light.colour[i] - current_colour[i]
                     for i in range(3)
                 )
