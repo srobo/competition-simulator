@@ -59,9 +59,7 @@ jobs:
         env:
           SCRIPTS: ${{ steps.define_scripts.outputs.SCRIPTS }}
         run: |
-          # Ignore TODOs on CI, for now, even though we do want them
-          # highlighted in development.
-          ./script/linting/lint $SCRIPTS --extend-ignore=T000
+          ./script/linting/lint $SCRIPTS
 
       - name: Typecheck with Mypy
         env:
