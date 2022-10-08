@@ -141,7 +141,7 @@ class Camera:
 
         self._lock = lock
 
-    def see(self) -> list[Marker]:
+    def see(self, *, eager: bool = True) -> list[Marker]:
         """
         Identify items which the camera can see and return a list of `Marker`
         instances describing them.
@@ -183,6 +183,15 @@ class Camera:
                 markers.append(Marker(face, marker_info, when))
 
         return markers
+
+    def see_ids(self) -> list[int]:
+        # While in theory this method ought to be the "fast" method, processing
+        # speed doesn't matter much in the simulator and with the locking we
+        # need to do it's much easier to let this be a shallow wrapper around
+        # the full implementation.
+        return [x.info.code for x in self.see()]
+
+    # The simulator does not emulate the `capture` or `save` methods.
 
 
 def init_cameras(webot: Robot, lock: threading.Lock) -> list[Camera]:
