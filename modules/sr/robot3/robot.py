@@ -143,7 +143,7 @@ class Robot:
         # No camera for SR2021
 
     def _init_power_board(self) -> None:
-        self.power_board = power.init_power_board(self.webot)
+        self.power_board = power.init_power_board(self)
 
     def _init_motors(self) -> None:
         self.motor_boards = motor.init_motor_array(self.webot)
