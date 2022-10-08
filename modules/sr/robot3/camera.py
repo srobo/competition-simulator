@@ -5,7 +5,7 @@ import threading
 from enum import Enum
 from typing import NamedTuple
 
-from controller import Robot
+from controller import Robot, Camera as WebotCamera
 from sr.robot3.vision import Face, Orientation, tokens_from_objects
 from sr.robot3.coordinates import Point
 
@@ -129,11 +129,11 @@ class Marker:
 
 
 class Camera:
-    def __init__(self, webot: Robot, lock: threading.Lock) -> None:
+    def __init__(self, webot: Robot, camera: WebotCamera, lock: threading.Lock) -> None:
         self._webot = webot
         self._timestep = int(webot.getBasicTimeStep())
 
-        self.camera = webot.getCamera("camera")
+        self.camera = camera
         self.camera.enable(self._timestep)
         self.camera.recognitionEnable(self._timestep)
 
@@ -181,3 +181,10 @@ class Camera:
                 markers.append(Marker(face, marker_info, when))
 
         return markers
+
+
+def init_cameras(webot: Robot, lock: threading.Lock) -> list[Camera]:
+    camera = webot.getCamera('camera')
+    if camera is None:
+        return []
+    return [Camera(webot, camera, lock)]

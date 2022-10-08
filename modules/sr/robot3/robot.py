@@ -6,7 +6,7 @@ from os import path, environ
 from typing import TypeVar, Collection
 from threading import Lock
 
-from sr.robot3 import motor, power, servos, ruggeduino
+from sr.robot3 import motor, power, camera, servos, ruggeduino
 # Webots specific library
 from controller import Robot as WebotsRobot
 
@@ -143,7 +143,8 @@ class Robot:
         # Ruggeduinos
         self._init_ruggeduinos()
 
-        # No camera for SR2021
+        # Camera
+        self._init_cameras()
 
     def _init_power_board(self) -> None:
         self.power_board = power.init_power_board(self)
@@ -157,12 +158,20 @@ class Robot:
     def _init_ruggeduinos(self) -> None:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
 
+    def _init_cameras(self) -> None:
+        # See comment in Camera.see for why we need to pass the step lock here.
+        self._cameras = camera.init_cameras(self.webot, self._step_lock)
+
     def _singular(self, elements: Collection[T], name: str) -> T:
         num = len(elements)
         if num != 1:
             raise ValueError(f"Expected exactly one {name} to be connected, but found {num}")
         x, = elements
         return x
+
+    @property
+    def camera(self) -> camera.Camera:
+        return self._singular(self._cameras, 'camera')
 
     @property
     def motor_board(self) -> motor.MotorBoard:
