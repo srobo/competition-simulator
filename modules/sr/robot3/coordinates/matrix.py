@@ -17,10 +17,10 @@ class Matrix:
     def __init__(self, data: Iterable[Iterable[float]]) -> None:
         tuple_data = tuple(tuple(x) for x in data)
 
-        lengths = set(len(x) for x in tuple_data)
+        lengths = {len(x) for x in tuple_data}
 
         if len(lengths) != 1:
-            raise ValueError("Malformed input to Matrix: {!r}".format(tuple_data))
+            raise ValueError(f"Malformed input to Matrix: {tuple_data!r}")
 
         self.data = tuple_data
 

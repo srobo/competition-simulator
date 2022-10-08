@@ -62,7 +62,7 @@ def get_robot_file(zone_id: int, mode: str) -> Path:
         if robot_file.exists():
             return robot_file
 
-        print("No robot controller found for zone {}".format(zone_id))
+        print(f"No robot controller found for zone {zone_id}")
 
         # Only in competition mode is it an error for a robot file to be missing.
         missing_file_is_error = mode == "comp"
@@ -96,14 +96,14 @@ def print_simulation_version() -> None:
     version_path = (REPO_ROOT / '.simulation-rev')
     if version_path.exists():
         description, revision = version_path.read_text().splitlines()
-        version = "{} (rev {})".format(description, revision)
+        version = f"{description} (rev {revision})"
     else:
         version = subprocess.check_output(
             ['git', 'describe', '--always', '--tags'],
             cwd=str(REPO_ROOT.resolve()),
         ).decode().strip()
 
-    print("Running simulator version {}".format(version))
+    print(f"Running simulator version {version}")
 
 
 def reconfigure_environment(robot_file: Path) -> None:
@@ -136,7 +136,7 @@ def main() -> None:
         # always printed somewhere.
         print_simulation_version()
 
-    print("Using {} for Zone {}".format(robot_file, robot_zone))
+    print(f"Using {robot_file} for Zone {robot_zone}")
 
     # Pass through the various data our library needs
     os.environ['SR_ROBOT_ZONE'] = str(robot_zone)

@@ -57,12 +57,12 @@ class Robot:
         user_code_version = self._get_user_code_info()
 
         parts = [
-            "Zone: {}".format(self.zone),
-            "Mode: {}".format(self.mode),
+            f"Zone: {self.zone}",
+            f"Mode: {self.mode}",
         ]
 
         if user_code_version:
-            parts.append("User code: {}".format(user_code_version))
+            parts.append(f"User code: {user_code_version}")
 
         print("Robot Initialized. {}.".format(", ".join(parts)))  # noqa: T201
 
@@ -76,7 +76,7 @@ class Robot:
 
         if duration_ms <= 0:
             raise ValueError(
-                "Duration must be greater than zero, not {!r}".format(duration_ms),
+                f"Duration must be greater than zero, not {duration_ms!r}",
             )
 
         with self._step_lock:

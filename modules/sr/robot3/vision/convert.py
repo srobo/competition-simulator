@@ -11,12 +11,12 @@ from typing import NamedTuple
 
 from sr.robot3.coordinates.matrix import Matrix
 
-WebotsOrientation = NamedTuple('WebotsOrientation', (
-    ('x', float),
-    ('y', float),
-    ('z', float),
-    ('theta', float),
-))
+
+class WebotsOrientation(NamedTuple):
+    x: float
+    y: float
+    z: float
+    theta: float
 
 
 def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> 'Matrix':

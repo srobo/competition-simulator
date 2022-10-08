@@ -10,11 +10,10 @@ TOKEN_SIZE = 1
 
 
 # An orientation object which mimicks how libkoki computes its orientation angles.
-Orientation = NamedTuple('Orientation', (
-    ('rot_x', float),
-    ('rot_y', float),
-    ('rot_z', float),
-))
+class Orientation(NamedTuple):
+    rot_x: float
+    rot_y: float
+    rot_z: float
 
 
 class FaceName(enum.Enum):
@@ -115,7 +114,7 @@ class Face:
         self.name = name
 
     def __repr__(self) -> str:
-        return 'Face({!r}, {!r})'.format(self.token, self.name)
+        return f'Face({self.token!r}, {self.name!r})'
 
     def _filter_corners(self, corners: Mapping[str, Vector]) -> Dict[str, Vector]:
         return {

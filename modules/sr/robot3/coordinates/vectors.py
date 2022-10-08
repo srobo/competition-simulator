@@ -34,7 +34,7 @@ class Vector:
         return hash(self.data)
 
     def __repr__(self) -> str:
-        return 'Vector({!r})'.format(self.data)
+        return f'Vector({self.data!r})'
 
     def __len__(self) -> int:
         return len(self.data)

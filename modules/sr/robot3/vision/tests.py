@@ -456,34 +456,34 @@ class RectangleTests(unittest.TestCase):
         a = Rectangle((0, 0), (1, 1))
         b = Rectangle((2, 2), (1, 1))
 
-        self.assertFalse(a.overlaps(b), "{} should not overlap {}".format(a, b))
-        self.assertFalse(b.overlaps(a), "{} should not overlap {}".format(b, a))
+        self.assertFalse(a.overlaps(b), f"{a} should not overlap {b}")
+        self.assertFalse(b.overlaps(a), f"{b} should not overlap {a}")
 
     def test_no_overlap_when_touching(self) -> None:
         a = Rectangle((0, 0), (1, 1))
         b = Rectangle((1, 1), (1, 1))
 
-        self.assertFalse(a.overlaps(b), "{} should not overlap {}".format(a, b))
-        self.assertFalse(b.overlaps(a), "{} should not overlap {}".format(b, a))
+        self.assertFalse(a.overlaps(b), f"{a} should not overlap {b}")
+        self.assertFalse(b.overlaps(a), f"{b} should not overlap {a}")
 
     def test_has_overlap_self(self) -> None:
         a = Rectangle((1, 1), (2, 2))
 
-        self.assertTrue(a.overlaps(a), "{} should overlap {}".format(a, a))
+        self.assertTrue(a.overlaps(a), f"{a} should overlap {a}")
 
     def test_has_partial_overlap(self) -> None:
         a = Rectangle((1, 1), (2, 2))
         b = Rectangle((2, 2), (2, 2))
 
-        self.assertTrue(a.overlaps(b), "{} should overlap {}".format(a, b))
-        self.assertTrue(b.overlaps(a), "{} should overlap {}".format(b, a))
+        self.assertTrue(a.overlaps(b), f"{a} should overlap {b}")
+        self.assertTrue(b.overlaps(a), f"{b} should overlap {a}")
 
     def test_has_overlap_contained(self) -> None:
         a = Rectangle((1, 1), (5, 5))
         b = Rectangle((2, 2), (2, 2))
 
-        self.assertTrue(a.overlaps(b), "{} should overlap {}".format(a, b))
-        self.assertTrue(b.overlaps(a), "{} should overlap {}".format(b, a))
+        self.assertTrue(a.overlaps(b), f"{a} should overlap {b}")
+        self.assertTrue(b.overlaps(a), f"{b} should overlap {a}")
 
 
 if __name__ == '__main__':

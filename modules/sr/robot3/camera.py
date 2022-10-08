@@ -22,12 +22,11 @@ MARKER_TOKEN_GOLD = MarkerType.GOLD
 MARKER_TOKEN_SILVER = MarkerType.SILVER
 
 
-MarkerInfo = NamedTuple('MarkerInfo', (
-    ('code', int),
-    ('marker_type', MarkerType),
-    ('offset', int),
-    ('size', float),
-))
+class MarkerInfo(NamedTuple):
+    code: int
+    marker_type: MarkerType
+    offset: int
+    size: float
 
 
 MARKER_MODEL_TYPE_MAP = {
@@ -90,10 +89,10 @@ class Marker:
 
     def __repr__(self) -> str:
         return '<Marker: {}>'.format(', '.join((
-            'info={}'.format(self.info),
-            'centre={}'.format(self.centre),
-            'dist={}'.format(self.dist),
-            'orientation={}'.format(self.orientation),
+            f'info={self.info}',
+            f'centre={self.centre}',
+            f'dist={self.dist}',
+            f'orientation={self.orientation}',
         )))
 
     @property
