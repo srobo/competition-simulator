@@ -88,6 +88,9 @@ class Robot:
             result = self.webot.step(duration_ms)
             return result != -1
 
+    def print_wifi_details(self) -> None:
+        print("The simulated robot does not have WiFi.")  # noqa: T201
+
     def wait_start(self) -> None:
         "Wait for the start signal to happen"
 
