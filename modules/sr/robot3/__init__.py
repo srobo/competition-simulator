@@ -14,8 +14,8 @@ OUT_H0 = Outputs.OUT_H0
 OUT_H1 = Outputs.OUT_H1
 OUT_L0 = Outputs.OUT_L0
 OUT_L1 = Outputs.OUT_L1
-OUT_L2 = Outputs.OUT_L2
 OUT_L3 = Outputs.OUT_L3
+OUT_FIVE_VOLT = Outputs.OUT_FIVE_VOLT
 
 A0 = AnaloguePin.A0
 A1 = AnaloguePin.A1
@@ -43,8 +43,8 @@ __all__ = (
     'OUT_H1',
     'OUT_L0',
     'OUT_L1',
-    'OUT_L2',
     'OUT_L3',
+    'OUT_FIVE_VOLT',
     'MarkerType',
     'MARKER_ARENA',
     'MARKER_TOKEN_GOLD',

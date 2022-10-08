@@ -11,8 +11,9 @@ class Outputs(Enum):
     OUT_H1 = 'H1'
     OUT_L0 = 'L0'
     OUT_L1 = 'L1'
-    OUT_L2 = 'L2'
+    # OUT_L2 = 'L2' # Brain board runs from L2
     OUT_L3 = 'L3'
+    OUT_FIVE_VOLT = 'FIVE_VOLT'
 
 
 def init_power_board(webot: Robot) -> PowerBoard:
