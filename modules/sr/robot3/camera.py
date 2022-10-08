@@ -9,6 +9,8 @@ from controller import Robot, Camera as WebotCamera
 from sr.robot3.vision import Face, Orientation, tokens_from_objects
 from sr.robot3.coordinates import Point
 
+from .utils import maybe_get_robot_device
+
 MARKER_MODEL_RE = re.compile(r"^[AGS]\d{0,2}$")
 
 
@@ -184,7 +186,7 @@ class Camera:
 
 
 def init_cameras(webot: Robot, lock: threading.Lock) -> list[Camera]:
-    camera = webot.getCamera('camera')
+    camera = maybe_get_robot_device(webot, 'camera', WebotCamera)
     if camera is None:
         return []
     return [Camera(webot, camera, lock)]

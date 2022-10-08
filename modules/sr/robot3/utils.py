@@ -18,6 +18,15 @@ def map_to_range(
     return ((value - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
 
+def maybe_get_robot_device(robot: Robot, name: str, kind: type[TDevice]) -> TDevice | None:
+    device = robot.getDevice(name)
+    if device is None:
+        return None
+    if not isinstance(device, kind):
+        raise TypeError
+    return device
+
+
 def get_robot_device(robot: Robot, name: str, kind: type[TDevice]) -> TDevice:
     device = robot.getDevice(name)
     if not isinstance(device, kind):
