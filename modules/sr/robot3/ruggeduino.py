@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import IntEnum
 from typing import Dict, Union
 
 from controller import Robot
@@ -12,13 +12,13 @@ INPUT = 1
 INPUT_PULLUP = 2
 
 
-class AnaloguePin(Enum):
-    A0 = "A0"
-    A1 = "A1"
-    A2 = "A2"
-    A3 = "A3"
-    A4 = "A4"
-    A5 = "A5"
+class AnaloguePin(IntEnum):
+    A0 = 14
+    A1 = 15
+    A2 = 16
+    A3 = 17
+    A4 = 18
+    A5 = 19
 
 
 ARDUINO_DEVICES_TYPE = Dict[Union[AnaloguePin, int], Union[DistanceSensor, Microswitch, Led]]
