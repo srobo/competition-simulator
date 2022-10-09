@@ -96,7 +96,7 @@ class Target(NamedTuple):
 
 class Radio:
     """
-    Wraps a radio target and reciever unit on the Robot.
+    Wraps a radio target and receiver unit on the Robot.
     """
 
     def __init__(self, webot: Robot, zone: int, step_lock: Lock) -> None:
@@ -144,7 +144,7 @@ class Radio:
         Begin a claim on any nearby territories.
 
         This transmits the first part of a territory claim, leaving the caller
-        the responsibility of transmiting the second part by calling
+        the responsibility of transmitting the second part by calling
         `complete_territory_claim` later.
 
         The radio has a limited transmission power, so will only be able to

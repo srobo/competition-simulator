@@ -11,7 +11,7 @@ from sr.robot3.coordinates.vectors import Vector
 TOKEN_SIZE = 1
 
 
-# An orientation object which mimicks how libkoki computes its orientation angles.
+# An orientation object which mimics how libkoki computes its orientation angles.
 class Orientation(NamedTuple):
     rot_x: float
     rot_y: float
@@ -23,7 +23,7 @@ class FaceName(enum.Enum):
     Names of faces on a token in the reference position.
 
     As a token is rotated, the position of a named face also moves within space.
-    That means that the "top" face of a token is not neccesarily the one called
+    That means that the "top" face of a token is not necessarily the one called
     "Top".
     """
 
@@ -78,7 +78,7 @@ class Token:
         Get the named `Face` of the token.
 
         As a token is rotated, the position of a named face also moves within
-        space. That means that the "top" face of a token is not neccesarily the
+        space. That means that the "top" face of a token is not necessarily the
         one called "Top".
         """
         return Face(self, name)
@@ -94,14 +94,14 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def visible_faces(self, angle_tolernace: float = 75, is_2d: bool = False) -> list[Face]:
+    def visible_faces(self, angle_tolerance: float = 75, is_2d: bool = False) -> list[Face]:
         """
         Returns a list of the faces which are visible to the global origin.
         If a token should be considered 2D, only check its front and rear faces.
         """
         face_names = [FaceName.Front, FaceName.Rear] if is_2d else list(FaceName)
         faces = [self.face(x) for x in face_names]
-        return [f for f in faces if f.is_visible_to_global_origin(angle_tolernace)]
+        return [f for f in faces if f.is_visible_to_global_origin(angle_tolerance)]
 
 
 class Face:
@@ -166,11 +166,11 @@ class Face:
         """
         return self.token.position + self.centre()
 
-    def is_visible_to_global_origin(self, angle_tolernace: float = 75) -> bool:
-        if angle_tolernace > 90:
+    def is_visible_to_global_origin(self, angle_tolerance: float = 75) -> bool:
+        if angle_tolerance > 90:
             raise ValueError(
                 "Refusing to allow faces with angles > 90 to be visible (asked for {})".format(
-                    angle_tolernace,
+                    angle_tolerance,
                 ),
             )
 
@@ -179,7 +179,7 @@ class Face:
 
         angle_to_origin = vectors.angle_between(direction_to_origin, normal)
 
-        return abs(angle_to_origin) < angle_tolernace
+        return abs(angle_to_origin) < angle_tolerance
 
     def distance(self) -> float:
         """
@@ -196,7 +196,7 @@ class Face:
 
         For faces which are not usually vertical, we pick the "rear" of the
         token to equate to be the place to put the "top" edge.
-        This also matches how the markes were laid out in "Sunny Side Up".
+        This also matches how the markers were laid out in "Sunny Side Up".
         """
         if self.name in (FaceName.Top, FaceName.Bottom):
             corners = [

@@ -14,8 +14,8 @@ class Robot:
     """
     Primary API for access to robot parts.
 
-    This robot requires that the consumer manage the progession of time manually
-    by calling the `sleep` method.
+    This robot requires that the consumer manage the progression of time
+    manually by calling the `sleep` method.
     """
 
     def __init__(self, auto_start: bool = False, verbose: bool = True) -> None:
@@ -172,7 +172,7 @@ class Robot:
             raise ValueError('sleep length must be non-negative')
 
         # Ensure the time delay is a valid step increment, while also ensuring
-        # that small values remain nonzero.
+        # that small values remain non-zero.
         n_steps = math.ceil((secs * 1000) / self._timestep)
         duration_ms = n_steps * self._timestep
 

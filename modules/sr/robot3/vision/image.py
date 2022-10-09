@@ -50,7 +50,7 @@ class Rectangle:
 
     def overlaps(self, other: Rectangle) -> bool:
         # If one rectangle fully contains the other then we want the "outer" one
-        # to be in `a`. this helps ensure that this is symetrical.
+        # to be in `a`. this helps ensure that this is symmetrical.
         a, b = (self, other) if self.x_min < other.x_min else (other, self)
 
         return (
