@@ -1,7 +1,11 @@
 #VRML_SIM R2022b utf8
 
 EXTERNPROTO "../protos/Robot_2022/Robot_2022.proto"
-EXTERNPROTO "../protos/Tokens/TinCan.proto"
+EXTERNPROTO "../protos/Tokens/SRToken_Gold.proto"
+EXTERNPROTO "../protos/Tokens/SRToken_Silver.proto"
+EXTERNPROTO "../protos/Tokens/SRToken_Bronze.proto"
+EXTERNPROTO "../protos/Tokens/Starting_Zone.proto"
+EXTERNPROTO "../protos/Tokens/Scoring_Zone.proto"
 
 WorldInfo {
   basicTimeStep 8
@@ -11,6 +15,8 @@ Viewpoint {
   # the combined rotation of 0, -1, 0, 1.5708 & -1, 0, 0, 1
   orientation 0.43231 0.43231 -0.79134 1.80272
   position 0 7.95 12.0
+  ambientOcclusionRadius 0.3
+  bloomThreshold 100
   # top view:
   #orientation -0.57735 -0.57735 -0.57735 2.09440
   #position 0 20.5 0
@@ -19,22 +25,52 @@ Viewpoint {
 DEF SUN DirectionalLight {
   color 1 1 1
   direction 0 0 -1
-  intensity 3.5
+  intensity 1
   castShadows TRUE
+}
+DEF SUN2 DirectionalLight {
+  color 1 1 1
+  direction 0.2 0.1 -1
+  intensity 0.5
+  castShadows FALSE
 }
 DEF AMBIENT Background {
   skyColor [
-    0.960784 0.952941 0.956863
+    0.4 0.4 0.4
   ]
-  luminosity 0.35
+  luminosity 1.5
 }
-
 DEF ROBOT-0 Robot_2022 {
-  translation 2.0 0 0
+  translation 0.5 -2.375 0.001
+  rotation 0 0 -1 1.57079633
   controller "sr_controller"
   model "Robot0"
-  flagColour 1 0 1
+  flagColour 0 1 0
   controllerArgs "0"
+}
+DEF ROBOT-1 Robot_2022 {
+  translation -2.375 -0.5 0.001
+  rotation 0 0 -1 3.1415927
+  model "Robot1"
+  controller "sr_controller"
+  flagColour 1 0.375 0
+  controllerArgs "1"
+}
+DEF ROBOT-2 Robot_2022 {
+  translation -0.5 2.375 0.001
+  rotation 0 0 1 1.57079633
+  model "Robot2"
+  controller "sr_controller"
+  flagColour 1 0 1
+  controllerArgs "2"
+}
+DEF ROBOT-3 Robot_2022 {
+  translation 2.375 0.5 0.001
+  rotation 0 0 1 0
+  model "Robot3"
+  controller "sr_controller"
+  flagColour 1 1 0
+  controllerArgs "3"
 }
 
 Robot {
@@ -66,7 +102,7 @@ Solid {  # Floor
   children [
     DEF FLOOR Shape {
       appearance PBRAppearance {
-        baseColor 0.6 0.6 0.6
+        baseColor 1 1 1
         roughness 1
         metalness 0
       }
@@ -83,7 +119,7 @@ Solid {  # North Wall
   children [
     DEF SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 0.095395215 0.22841774 0.8000001
+        baseColor 0.25 0.4 1
         roughness 1
         metalness 0
       }
@@ -100,7 +136,7 @@ Solid {  # South Wall
   children [
     DEF SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 0.095395215 0.22841774 0.8000001
+        baseColor 0.25 0.4 1
         roughness 1
         metalness 0
       }
@@ -117,7 +153,7 @@ Solid {  # East Wall
   children [
     DEF SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 0.095395215 0.22841774 0.8000001
+        baseColor 0.25 0.4 1
         roughness 1
         metalness 0
       }
@@ -134,7 +170,7 @@ Solid {  # West Wall
   children [
     DEF SHAPE Shape {
       appearance PBRAppearance {
-        baseColor 0.095395215 0.22841774 0.8000001
+        baseColor 0.25 0.4 1
         roughness 1
         metalness 0
       }
@@ -146,8 +182,272 @@ Solid {  # West Wall
   boundingObject USE SHAPE
   name "West Wall"
 }
-
-TinCan {
-  translation 1.6 0 0.05
-  tokenName "A Can"
+Starting_Zone {
+  translation 0.5 -2.375 0.001
+  name "Zone 0 Starting"
+}
+Starting_Zone {
+  translation -2.375 -0.5 0.001
+  name "Zone 1 Starting"
+}
+Starting_Zone {
+  translation -0.5 2.375 0.001
+  name "Zone 2 Starting"
+}
+Starting_Zone {
+  translation 2.375 0.5 0.001
+  name "Zone 3 Starting"
+}
+Scoring_Zone {
+  translation 1.5 -1.5 0.0005
+  name "Zone 0 Scoring"
+  cornerColor 0.66 1 0.66
+}
+Scoring_Zone {
+  translation -1.5 -1.5 0.0005
+  name "Zone 1 Scoring"
+  cornerColor 1 0.75 0.6
+}
+Scoring_Zone {
+  translation -1.5 1.5 0.0005
+  name "Zone 2 Scoring"
+  cornerColor 1 0.6 1
+}
+Scoring_Zone {
+  translation 1.5 1.5 0.0005
+  name "Zone 3 Scoring"
+  cornerColor 1 1 0.6
+}
+Solid { # Centre
+  translation 0 0 0.0375
+  children [
+    DEF SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.4 1
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.55 0.55 0.075
+      }
+    }
+  ]
+  boundingObject USE SHAPE
+  name "Platform"
+}
+Solid { # North Barrier
+  translation 0 -0.6375 0.0375
+  children [
+    DEF SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.4 1
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.05 0.725 0.075
+      }
+    }
+  ]
+  boundingObject USE SHAPE
+  name "North Barrier"
+}
+Solid { # South Barrier
+  translation 0 0.6375 0.0375
+  children [
+    DEF SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.4 1
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.05 0.725 0.075
+      }
+    }
+  ]
+  boundingObject USE SHAPE
+  name "South Barrier"
+}
+Solid { # East Barrier
+  translation 0.6375 0 0.0375
+  children [
+    DEF SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.4 1
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.725 0.05 0.075
+      }
+    }
+  ]
+  boundingObject USE SHAPE
+  name "East Barrier"
+}
+Solid { # West Barrier
+  translation -0.625 0 0.0375
+  children [
+    DEF SHAPE Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.4 1
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.725 0.05 0.075
+      }
+    }
+  ]
+  boundingObject USE SHAPE
+  name "West Barrier"
+}
+# ---  Corner 0  ---
+SRToken_Bronze {
+  translation 2.650 1.180 0.055
+  model "B0"
+}
+SRToken_Bronze {
+  translation 0.925 0.925 0.055
+  model "B1"
+}
+SRToken_Bronze {
+  translation 1.625 1.625 0.055
+  model "B2"
+}
+SRToken_Bronze {
+  translation 0.750 2.275 0.055
+  model "B3"
+}
+SRToken_Bronze {
+  translation 1.155 2.525 0.055
+  model "B4"
+}
+SRToken_Silver {
+  translation 2.525 2.525 0.055
+  model "S5"
+}
+SRToken_Silver {
+  translation 2.175 1.905 0.055
+  model "S6"
+}
+SRToken_Silver {
+  translation 1.905 2.175 0.055
+  model "S7"
+}
+SRToken_Gold {
+  translation 0.150 0.400 0.125
+  model "G8"
+}
+# ---  Corner 1  ---
+SRToken_Bronze {
+  translation -1.180 2.650 0.055
+  model "B9"
+}
+SRToken_Bronze {
+  translation -0.925 0.925 0.055
+  model "B10"
+}
+SRToken_Bronze {
+  translation -1.625 1.625 0.055
+  model "B11"
+}
+SRToken_Bronze {
+  translation -2.275 0.750 0.055
+  model "B12"
+}
+SRToken_Bronze {
+  translation -2.525 1.155 0.055
+  model "B13"
+}
+SRToken_Silver {
+  translation -2.525 2.525 0.055
+  model "S14"
+}
+SRToken_Silver {
+  translation -1.905 2.175 0.055
+  model "S15"
+}
+SRToken_Silver {
+  translation -2.175 1.905 0.055
+  model "S16"
+}
+SRToken_Gold {
+  translation -0.400 0.150 0.125
+  model "G17"
+}
+# ---  Corner 2  ---
+SRToken_Bronze {
+  translation -2.650 -1.180 0.055
+  model "B18"
+}
+SRToken_Bronze {
+  translation -0.925 -0.925 0.055
+  model "B19"
+}
+SRToken_Bronze {
+  translation -1.625 -1.625 0.055
+  model "B20"
+}
+SRToken_Bronze {
+  translation -0.750 -2.275 0.055
+  model "B21"
+}
+SRToken_Bronze {
+  translation -1.155 -2.525 0.055
+  model "B22"
+}
+SRToken_Silver {
+  translation -2.525 -2.525 0.055
+  model "S23"
+}
+SRToken_Silver {
+  translation -2.175 -1.905 0.055
+  model "S24"
+}
+SRToken_Silver {
+  translation -1.905 -2.175 0.055
+  model "S25"
+}
+SRToken_Gold {
+  translation -0.150 -0.400 0.125
+  model "G26"
+}
+# ---  Corner 3  ---
+SRToken_Bronze {
+  translation 1.180 -2.650 0.055
+  model "B27"
+}
+SRToken_Bronze {
+  translation 0.925 -0.925 0.055
+  model "B28"
+}
+SRToken_Bronze {
+  translation 1.625 -1.625 0.055
+  model "B29"
+}
+SRToken_Bronze {
+  translation 2.275 -0.750 0.055
+  model "B30"
+}
+SRToken_Bronze {
+  translation 2.525 -1.155 0.055
+  model "B31"
+}
+SRToken_Silver {
+  translation 2.525 -2.525 0.055
+  model "S32"
+}
+SRToken_Silver {
+  translation 1.905 -2.175 0.055
+  model "S33"
+}
+SRToken_Silver {
+  translation 2.175 -1.905 0.055
+  model "S34"
+}
+SRToken_Gold {
+  translation 0.400 -0.150 0.125
+  model "G35"
 }

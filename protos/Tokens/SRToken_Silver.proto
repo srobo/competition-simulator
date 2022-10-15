@@ -11,11 +11,12 @@ PROTO SRToken_Silver [
     children [
       Shape {
         appearance DEF TOKEN_APPEARANCE PBRAppearance {
-          baseColor 1 1 1
+          baseColor 0.7 0.7 0.7
           metalness 0
+          roughness 1
         }
         geometry DEF TOKEN_GEOMETRY Box {
-          size 0.26 0.26 0.26
+          size 0.11 0.11 0.11
         }
       }
     ]
