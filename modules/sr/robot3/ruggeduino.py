@@ -36,7 +36,7 @@ class AnaloguePin(IntEnum):
     A5 = 19
 
 
-ARDUINO_DEVICES_TYPE = Dict[Union[AnaloguePin, int], RuggeduinoDevice]
+DevicesMapping = Dict[Union[AnaloguePin, int], RuggeduinoDevice]
 
 
 def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
@@ -63,7 +63,7 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
         DistanceSensor(webot, name)
         for name in dist_sensor_names
     ]
-    analogue_input_dict: ARDUINO_DEVICES_TYPE = {
+    analogue_input_dict: DevicesMapping = {
         key: sensor
         for key, sensor in zip(AnaloguePin, analogue_sensors)
     }
@@ -72,7 +72,7 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
         Microswitch(webot, name)
         for name in switch_names
     ]
-    digital_input_dict: ARDUINO_DEVICES_TYPE = {
+    digital_input_dict: DevicesMapping = {
         index: sensor
         for index, sensor in
         enumerate(digital_sensors, start=Ruggeduino.DIGITAL_PIN_START)
@@ -87,7 +87,7 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
         )
     ]
 
-    digital_output_dict: ARDUINO_DEVICES_TYPE = {
+    digital_output_dict: DevicesMapping = {
         index: output
         for index, output in enumerate(
             digital_outputs,
@@ -110,6 +110,6 @@ class Ruggeduino:
 
     def __init__(
         self,
-        devices: ARDUINO_DEVICES_TYPE,
+        devices: DevicesMapping,
     ) -> None:
         self.pins = devices
