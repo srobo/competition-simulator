@@ -4,7 +4,12 @@ from enum import IntEnum
 from typing import Dict, Union
 
 from controller import Robot
-from sr.robot3.ruggeduino_devices import Led, Microswitch, DistanceSensor
+from sr.robot3.ruggeduino_devices import (
+    Led,
+    Microswitch,
+    DistanceSensor,
+    RuggeduinoDevice,
+)
 from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 
 
@@ -31,7 +36,7 @@ class AnaloguePin(IntEnum):
     A5 = 19
 
 
-ARDUINO_DEVICES_TYPE = Dict[Union[AnaloguePin, int], Union[DistanceSensor, Microswitch, Led]]
+ARDUINO_DEVICES_TYPE = Dict[Union[AnaloguePin, int], RuggeduinoDevice]
 
 
 def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
