@@ -21,7 +21,20 @@ class Robot:
     manually by calling the `sleep` method.
     """
 
-    def __init__(self, auto_start: bool = False, verbose: bool = True) -> None:
+    def __init__(
+        self,
+        *,
+        auto_start: bool = False,
+        verbose: bool = False,
+        env: object = None,
+        ignored_ruggeduinos: list[str] | None = None,
+    ) -> None:
+        """
+        Initialise robot.
+
+        Note: `env` and `ignored_ruggeduinos` are ignored in the simulator.
+        """
+
         self._initialised = False
         self._quiet = not verbose
 
