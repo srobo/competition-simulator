@@ -8,6 +8,7 @@ from sr.robot3.camera import (
     MARKER_TOKEN_GOLD,
     MARKER_TOKEN_SILVER,
 )
+from sr.robot3.metadata import RobotMode
 from sr.robot3.ruggeduino import AnaloguePin, GPIOPinMode
 
 OUT_H0 = Outputs.OUT_H0
@@ -24,6 +25,8 @@ A3 = AnaloguePin.A3
 A4 = AnaloguePin.A4
 A5 = AnaloguePin.A5
 
+COMP = RobotMode.COMP
+DEV = RobotMode.DEV
 
 OUTPUT = GPIOPinMode.DIGITAL_OUTPUT
 INPUT = GPIOPinMode.DIGITAL_INPUT
@@ -36,6 +39,8 @@ __all__ = (
     'INPUT_PULLUP',
     'COAST',
     'BRAKE',
+    'COMP',
+    'DEV',
     'Robot',
     'Note',
     'A0',
