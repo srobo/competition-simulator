@@ -1,13 +1,13 @@
 import math 
 positions = [
-    ("B", 2.65, 1.18), # Closest to starting area
-    ("B", 0.925, 0.925), # Closest to the arena centre
-    ("B", 1.625, 1.625), # Furthest from any walls
-    ("B", 0.75, 2.275), # Closest to the next starting area
-    ("B", 1.155, 2.525), # Next to the closest to the starting area
+    ("B", 2.525, 1.100), # Closest to starting area
+    ("B", 1.000, 1.000), # Closest to the arena centre
+    ("B", 1.550, 1.550), # Furthest from any walls
+    ("B", 0.800, 2.225), # Closest to the next starting area
+    ("B", 1.100, 2.525), # Next to the closest to the starting area
     ("S", 2.525, 2.525), # In the corner
-    ("S", 2.175, 1.905), # Closer silver one to the starting area
-    ("S", 1.905, 2.175), # Further silver one to the starting area
+    ("S", 2.325, 1.815), # Closer silver one to the starting area
+    ("S", 1.815, 2.325), # Further silver one to the starting area
     ("G", 0.15, 0.4), # Gold one in the corner
 ]
 
