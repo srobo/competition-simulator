@@ -37,9 +37,9 @@ class Robot:
 
         self._quiet = not verbose
 
-        self.webot = WebotsRobot()
+        self._webot = WebotsRobot()
         # returns a float, but should always actually be an integer value
-        self._timestep = int(self.webot.getBasicTimeStep())
+        self._timestep = int(self._webot.getBasicTimeStep())
 
         self._metadata, self._code_path = metadata.init_metadata()
 
@@ -93,7 +93,7 @@ class Robot:
             # `synchronization` is left at its default value of `TRUE`). In
             # that mode, Webots returns -1 from step to indicate that the
             # simulation is terminating, or 0 otherwise.
-            result = self.webot.step(duration_ms)
+            result = self._webot.step(duration_ms)
             return result != -1
 
     def print_wifi_details(self) -> None:
@@ -113,9 +113,9 @@ class Robot:
 
         if self.mode == metadata.RobotMode.COMP:
             # Interact with the supervisor "robot" to wait for the start of the match.
-            self.webot.setCustomData('ready')
+            self._webot.setCustomData('ready')
             while (
-                self.webot.getCustomData() != 'start' and
+                self._webot.getCustomData() != 'start' and
                 self.webots_step_and_should_continue(self._timestep)
             ):
                 pass
@@ -144,17 +144,17 @@ class Robot:
         self.power_board = power.init_power_board(self)
 
     def _init_motors(self) -> None:
-        self.motor_boards = motor.init_motor_array(self.webot)
+        self.motor_boards = motor.init_motor_array(self._webot)
 
     def _init_servos(self) -> None:
-        self.servo_boards = servos.init_servo_board(self.webot)
+        self.servo_boards = servos.init_servo_board(self._webot)
 
     def _init_ruggeduinos(self) -> None:
-        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
+        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self._webot)
 
     def _init_cameras(self) -> None:
         # See comment in Camera.see for why we need to pass the step lock here.
-        self._cameras = camera.init_cameras(self.webot, self._step_lock)
+        self._cameras = camera.init_cameras(self._webot, self._step_lock)
 
     def _singular(self, elements: Collection[T], name: str) -> T:
         num = len(elements)
@@ -203,7 +203,7 @@ class Robot:
         """
         Roughly equivalent to `time.time` but for simulation time.
         """
-        return self.webot.getTime()
+        return self._webot.getTime()
 
     def sleep(self, secs: float) -> None:
         """
