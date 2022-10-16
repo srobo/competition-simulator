@@ -35,7 +35,6 @@ class Robot:
         Note: `env` and `ignored_ruggeduinos` are ignored in the simulator.
         """
 
-        self._initialised = False
         self._quiet = not verbose
 
         self.webot = WebotsRobot()
@@ -50,14 +49,11 @@ class Robot:
         # thread, but not both.
         self._step_lock = Lock()
 
-        self.init()
+        self._init_devs()
+        self.display_info()
+
         if not auto_start:
             self.wait_start()
-
-    def init(self) -> None:
-        self._init_devs()
-        self._initialised = True
-        self.display_info()
 
     def _get_user_code_info(self) -> str | None:
         user_version_path = self._code_path / '.user-rev'
