@@ -6,7 +6,7 @@ from sr.robot3.randomizer import add_jitter
 from sr.robot3.motor_devices import Wheel, Gripper, LinearMotor
 
 # The maximum value that the motor board will accept
-SPEED_MAX = 1.0
+SPEED_MAX = 1
 
 COAST = 0
 BRAKE = 0
@@ -77,11 +77,10 @@ class MotorChannel:
         "target setter function"
         self._power = value
 
-        # Limit the value to within the valid range
-        if value > SPEED_MAX:
-            value = SPEED_MAX
-        elif value < -SPEED_MAX:
-            value = -SPEED_MAX
+        if value > SPEED_MAX or value < -SPEED_MAX:
+            raise ValueError(
+                f"Motor power must be between {SPEED_MAX} and -{SPEED_MAX}.",
+            )
 
         if self.sr_motor:
             self.sr_motor.set_speed(translate(value, self.sr_motor))

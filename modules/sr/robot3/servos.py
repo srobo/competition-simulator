@@ -3,6 +3,8 @@ from __future__ import annotations
 from controller import Motor, Robot
 from sr.robot3.utils import map_to_range, get_robot_device
 
+SERVO_LIMIT = 1
+
 
 def init_servo_board(webot: Robot) -> dict[str, ServoBoard]:
     return {
@@ -43,6 +45,11 @@ class ServoDevice:
         self.min_position = self.webot_motor.getMinPosition()
 
     def set_position(self, position: float) -> None:
+        if position > SERVO_LIMIT or position < -SERVO_LIMIT:
+            raise ValueError(
+                f"Servo position must be between {SERVO_LIMIT} and -{SERVO_LIMIT}.",
+            )
+
         self.webot_motor.setPosition(map_to_range(
             -1,
             1,
