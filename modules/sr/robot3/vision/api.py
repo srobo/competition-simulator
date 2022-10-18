@@ -16,7 +16,7 @@ def build_token_info(
     recognition_object: CameraRecognitionObject,
     size: float,
 ) -> tuple[Token, Rectangle, CameraRecognitionObject]:
-    x, y, z = recognition_object.get_position()
+    x, y, z = recognition_object.getPosition()
 
     token = Token(
         size=size,
@@ -24,14 +24,14 @@ def build_token_info(
         position=Vector((x, y, -z)),
     )
     token.rotate(rotation_matrix_from_axis_and_angle(
-        WebotsOrientation(*recognition_object.get_orientation()),
+        WebotsOrientation(*recognition_object.getOrientation()),
     ))
 
     return (
         token,
         Rectangle(
-            recognition_object.get_position_on_image(),
-            recognition_object.get_size_on_image(),
+            recognition_object.getPositionOnImage(),
+            recognition_object.getSizeOnImage(),
         ),
         recognition_object,
     )
