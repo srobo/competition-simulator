@@ -14,11 +14,26 @@ NINETY_DEGREES = math.pi / 2
 DEFAULT_ANGLE_TOLERANCE = math.radians(75)
 
 
-# An orientation object which mimics how libkoki computes its orientation angles.
+# An orientation object which mimics how Zoloto computes its orientation angles.
 class Orientation(NamedTuple):
     rot_x: float
     rot_y: float
     rot_z: float
+
+    @property
+    def roll(self) -> float:
+        return self.rot_x
+
+    @property
+    def pitch(self) -> float:
+        return self.rot_y
+
+    @property
+    def yaw(self) -> float:
+        return self.rot_z
+
+    def yaw_pitch_roll(self) -> tuple[float, float, float]:
+        return self.yaw, self.pitch, self.roll
 
 
 class FaceName(enum.Enum):
@@ -225,6 +240,7 @@ class Face:
         return (a + b) / 2
 
     def orientation(self) -> Orientation:
+        # TODO: compare this to how Zoloto computes orientation.
         n_x, n_y, n_z = self.normal().data
 
         rot_y = math.atan(n_x / n_z)
