@@ -48,6 +48,6 @@ for corner in range(4):
         x, y = rotate(x, y, angle)
         print(f"""{token_name} {{
   translation {x:.3f} {y:.3f} {height:.3f}
-  model "{color}{global_id}"
+  model "B{global_id}"
 }}""")  # noqa:T201
         global_id += 1
