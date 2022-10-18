@@ -92,7 +92,7 @@ class Piezo:
         duration: int | float | datetime.timedelta,
         pitch: Pitch,
         *,
-        blocking: bool | None = None
+        blocking: bool | None = None,
     ) -> None:
         if not blocking:
             return
