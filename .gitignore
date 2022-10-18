@@ -6,3 +6,5 @@
 /.vscode
 /.mypy_cache
 /venv
+
+/robots
