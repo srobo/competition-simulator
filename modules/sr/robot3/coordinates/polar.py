@@ -21,7 +21,7 @@ def polar_from_cartesian(cartesian: Vector) -> PolarCoord:
     Compute a `PolarCoord` representation of the given 3-vector compatible with
     libkoki's "bearing" object.
 
-    Returned angles are in degrees.
+    Returned angles are in radians.
     """
     if len(cartesian) != 3:
         raise ValueError(
@@ -36,6 +36,6 @@ def polar_from_cartesian(cartesian: Vector) -> PolarCoord:
 
     return PolarCoord(
         length=length,
-        rot_y=math.degrees(rot_y),
-        rot_x=math.degrees(rot_x),
+        rot_y=rot_y,
+        rot_x=rot_x,
     )

@@ -33,9 +33,11 @@ class FaceTests(unittest.TestCase):
         face = token.face(face_name)
 
         actual = face.orientation()
-        actual = Orientation(*(round(x, 2) for x in actual))
 
-        self.assertEqual(expected_orientation, actual, "Wrong orientation")
+        actual = Orientation(*(round(x, 4) for x in actual))
+        expected = Orientation(*(round(x, 4) for x in expected_orientation))
+
+        self.assertEqual(expected, actual, "Wrong orientation")
 
     def test_normals(self) -> None:
         cases = {
@@ -123,7 +125,7 @@ class FaceTests(unittest.TestCase):
         for webots_orientation, expected_degrees in cases:
             with self.subTest(expected_degrees):
                 self.assertOrientation(
-                    Orientation(expected_degrees, 0, 0),
+                    Orientation(math.radians(expected_degrees), 0, 0),
                     webots_orientation,
                     FaceName.Front,
                 )
@@ -146,7 +148,7 @@ class FaceTests(unittest.TestCase):
         for webots_orientation, expected_degrees in cases:
             with self.subTest(expected_degrees):
                 self.assertOrientation(
-                    Orientation(0, expected_degrees, 0),
+                    Orientation(0, math.radians(expected_degrees), 0),
                     webots_orientation,
                     FaceName.Front,
                 )
@@ -165,7 +167,7 @@ class FaceTests(unittest.TestCase):
         for webots_orientation, expected_degrees in cases:
             with self.subTest(expected_degrees):
                 self.assertOrientation(
-                    Orientation(0, 0, expected_degrees),
+                    Orientation(0, 0, math.radians(expected_degrees)),
                     webots_orientation,
                     FaceName.Front,
                 )
@@ -180,10 +182,12 @@ class FaceTests(unittest.TestCase):
 
         one_over_root_three = 3 ** -0.5
 
+        ninety_degrees = math.pi / 2
+
         cases = (
             (
                 'B',
-                Orientation(0, 90, -90),
+                Orientation(0, ninety_degrees, -ninety_degrees),
                 WebotsOrientation(
                     -one_over_root_three,
                     -one_over_root_three,
@@ -193,7 +197,7 @@ class FaceTests(unittest.TestCase):
             ),
             (
                 'C',
-                Orientation(0, -90, -90),
+                Orientation(0, -ninety_degrees, -ninety_degrees),
                 WebotsOrientation(
                     one_over_root_three,
                     one_over_root_three,
