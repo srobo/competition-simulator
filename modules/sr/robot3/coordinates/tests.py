@@ -10,6 +10,7 @@ from . import vectors
 from .polar import PolarCoord, polar_from_cartesian
 from .matrix import Matrix
 from .vectors import Vector
+from .twin_angle import Spherical, spherical_from_cartesian
 
 SimpleVector = Tuple[float, float, float]
 
@@ -391,6 +392,65 @@ class PolarTests(unittest.TestCase):
                 # Cope with floating point differences
                 actual = PolarCoord(*(round(x, 7) for x in actual))
                 expected = PolarCoord(*(round(x, 7) for x in expected))
+
+                self.assertEqual(expected, actual)
+
+
+class SphericalTests(unittest.TestCase):
+    def test_spherical(self) -> None:
+        cases = [
+            (
+                Vector((0, 0, 0)),
+                Spherical(0, 0, 0),
+            ),
+            (
+                Vector((0, 0, 1)),
+                Spherical(
+                    rot_x=0,
+                    rot_y=0,
+                    dist=1,
+                ),
+            ),
+            (
+                Vector((0, 1, 0)),
+                Spherical(
+                    rot_x=math.pi / 2,
+                    rot_y=0,
+                    dist=1,
+                ),
+            ),
+            (
+                Vector((1, 0, 0)),
+                Spherical(
+                    rot_x=0,
+                    rot_y=math.pi / 2,
+                    dist=1,
+                ),
+            ),
+            (
+                Vector((1000, 1000, 0)),
+                Spherical(
+                    rot_x=math.pi / 2,
+                    rot_y=math.pi / 2,
+                    dist=1414,
+                ),
+            ),
+        ]
+
+        for cartesian, expected in cases:
+            with self.subTest(cartesian):
+                actual = spherical_from_cartesian(cartesian)
+                # Cope with floating point differences
+                actual = Spherical(
+                    round(actual.rot_x, 7),
+                    round(actual.rot_y, 7),
+                    dist=actual.dist,
+                )
+                expected = Spherical(
+                    round(expected.rot_x, 7),
+                    round(expected.rot_y, 7),
+                    dist=expected.dist,
+                )
 
                 self.assertEqual(expected, actual)
 
