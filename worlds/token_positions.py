@@ -1,4 +1,5 @@
 import math
+import textwrap
 
 positions = [
     ("B", 2.525, 1.100),  # Closest to starting area
@@ -46,8 +47,12 @@ for corner in range(4):
         token_name = get_name(color)
         height = get_height(color)
         x, y = rotate(x, y, angle)
-        print(f"""{token_name} {{
-  translation {x:.3f} {y:.3f} {height:.3f}
-  model "B{global_id}"
-}}""")  # noqa:T201
+        print(textwrap.dedent(  # noqa:T201
+            f"""
+              {token_name} {{
+                translation {x:.3f} {y:.3f} {height:.3f}
+                model "B{global_id}"
+              }}
+            """,
+        ).strip())
         global_id += 1
