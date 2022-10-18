@@ -11,4 +11,8 @@
         "webot",
         "Webots"
     ],
+    "python.analysis.extraPaths": [
+        "modules",
+        "stubs"
+    ],
 }
