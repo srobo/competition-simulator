@@ -111,7 +111,7 @@ def check_required_libraries(path: Path) -> None:
 def get_robots(
     supervisor: Supervisor,
     *,
-    skip_missing: bool = False
+    skip_missing: bool = False,
 ) -> list[tuple[int, Node]]:
     """
     Get a list of (zone id, robot node) tuples.
