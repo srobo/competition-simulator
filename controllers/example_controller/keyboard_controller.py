@@ -80,20 +80,20 @@ while True:
             boost = True
 
         if key_ascii == key_forward:
-            left_power += 50
-            right_power += 50
+            left_power += 0.5
+            right_power += 0.5
 
         elif key_ascii == key_reverse:
-            left_power += -50
-            right_power += -50
+            left_power += -0.5
+            right_power += -0.5
 
         elif key_ascii == key_left:
-            left_power -= 25
-            right_power += 25
+            left_power -= 0.25
+            right_power += 0.25
 
         elif key_ascii == key_right:
-            left_power += 25
-            right_power -= 25
+            left_power += 0.25
+            right_power -= 0.25
 
         elif key_ascii == key_sense:
             print_sensors(R)
@@ -111,9 +111,9 @@ while True:
         key = keyboard.getKey()
 
     if boost:
-        # double power values but constrain to [-100, 100]
-        left_power = max(min(left_power * 2, 100), -100)
-        right_power = max(min(right_power * 2, 100), -100)
+        # double power values but constrain to [-1, 1]
+        left_power = max(min(left_power * 2, 1), -1)
+        right_power = max(min(right_power * 2, 1), -1)
 
     R.motor_board.motors[0].power = left_power
     R.motor_board.motors[1].power = right_power
