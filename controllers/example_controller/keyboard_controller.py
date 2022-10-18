@@ -41,6 +41,26 @@ def print_sensors(robot: Robot) -> None:
         touching = R.ruggeduino.pins[pin].digital_read()
         print(f"{pin} {name: <6}: {touching}")
 
+    try:
+        camera = R.camera
+    except ValueError:
+        print("No camera on this robot")
+    else:
+        markers = camera.see()
+        if markers:
+            print(f"Found {len(markers)} makers:")
+            for marker in markers:
+                print(f" #{marker.id}")
+                x, y, z = marker.cartesian
+                print(f" Cartesian: {x:.4g}, {y:.4g}, {z:.4g}")
+                rot_x, rot_y, dist = marker.spherical
+                print(f" Spherical: {rot_x:.4g}, {rot_y:.4g}, {dist}")
+                rot_x, rot_y, rot_z = marker.orientation
+                print(f" Orientation: {rot_x:.4g}, {rot_y:.4g}, {rot_z:.4g}")
+                print()
+        else:
+            print("No markers")
+
     print()
 
 
