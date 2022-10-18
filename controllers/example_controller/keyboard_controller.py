@@ -1,3 +1,5 @@
+import math
+
 from sr.robot3 import *
 from controller import Keyboard
 
@@ -15,7 +17,19 @@ CONTROLS = {
     "boost": (Keyboard.SHIFT, Keyboard.CONTROL),
     "grabber_open": (ord("R"), ord("P")),
     "grabber_close": (ord("E"), ord("O")),
+    "angle_unit": (ord("B"), ord("B")),
 }
+
+
+USE_DEGREES = False
+
+
+def angle_str(angle: float) -> str:
+    if USE_DEGREES:
+        degrees = math.degrees(angle)
+        return f"{degrees:.2g}°"
+
+    return f"{angle:.4g} rad"
 
 
 def print_sensors(robot: Robot) -> None:
@@ -41,6 +55,31 @@ def print_sensors(robot: Robot) -> None:
         touching = R.ruggeduino.pins[pin].digital_read()
         print(f"{pin} {name: <6}: {touching}")
 
+    try:
+        camera = R.camera
+    except ValueError:
+        print("No camera on this robot")
+    else:
+        markers = camera.see()
+        if markers:
+            print(f"Found {len(markers)} makers:")
+            for marker in markers:
+                print(f" #{marker.id}")
+                x, y, z = marker.cartesian
+                print(f" Cartesian: {x:.4g}, {y:.4g}, {z:.4g}")
+                rot_x, rot_y, dist = marker.spherical
+                print(
+                    f" Spherical: {angle_str(rot_x)}, {angle_str(rot_y)}, {dist}",
+                )
+                rot_x, rot_y, rot_z = marker.orientation
+                print(
+                    f" Orientation: {angle_str(rot_x)}, {angle_str(rot_y)}, "
+                    f"{angle_str(rot_z)}",
+                )
+                print()
+        else:
+            print("No markers")
+
     print()
 
 
@@ -57,6 +96,7 @@ key_sense = CONTROLS["sense"][R.zone]
 key_boost = CONTROLS["boost"][R.zone]
 key_grab_open = CONTROLS["grabber_open"][R.zone]
 key_grab_close = CONTROLS["grabber_close"][R.zone]
+key_angle_unit = CONTROLS["angle_unit"][R.zone]
 
 print(
     "Note: you need to click on 3D viewport for keyboard events to be picked "
@@ -105,6 +145,9 @@ while True:
         elif key_ascii == key_grab_close:
             R.servo_board.servos[0].position = 1
             R.servo_board.servos[1].position = 1
+
+        elif key_ascii == key_angle_unit:
+            USE_DEGREES = not USE_DEGREES
 
         # Work our way through all the enqueued key presses before dropping
         # out to the timestep
