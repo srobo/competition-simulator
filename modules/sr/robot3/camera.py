@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import re
+import enum
 import threading
-from enum import Enum
-from typing import NamedTuple
+from typing import Container, NamedTuple
 
 from controller import Robot, Camera as WebotCamera
 from sr.robot3.vision import Face, Orientation, tokens_from_objects
@@ -11,45 +11,35 @@ from sr.robot3.coordinates import Point
 
 from .utils import maybe_get_robot_device
 
-MARKER_MODEL_RE = re.compile(r"^[AGS]\d{0,2}$")
+MARKER_MODEL_RE = re.compile(r"^[FB]\d{0,2}$")
 
 
-class MarkerType(Enum):
-    ARENA = "ARENA"
-    GOLD = "TOKEN_GOLD"
-    SILVER = "TOKEN_SILVER"
-
-
-# Existing token types
-MARKER_ARENA = MarkerType.ARENA
-MARKER_TOKEN_GOLD = MarkerType.GOLD
-MARKER_TOKEN_SILVER = MarkerType.SILVER
+# Zoloto's markers API doesn't expose any information derived from the marker's
+# identity, however we need to track whether the marker is of a kind that would
+# be on a box or a wall and its size. This enum lets us do that.
+class ObjectType(enum.Enum):
+    FLAT = 'F'
+    BOX = 'B'
 
 
 class MarkerInfo(NamedTuple):
     code: int
-    marker_type: MarkerType
-    offset: int
-    size: float
+    size: int
+    object_type: ObjectType
 
 
-MARKER_MODEL_TYPE_MAP = {
-    'A': MarkerType.ARENA,
-    'G': MarkerType.GOLD,
-    'S': MarkerType.SILVER,
+MARKER_SIZES: dict[Container[int], int] = {
+    range(28): 200,  # 0 - 27 for arena boundary
+    range(28, 100): 100,  # Everything else is a token
 }
 
-MARKER_TYPE_OFFSETS = {
-    MarkerType.ARENA: 0,
-    MarkerType.GOLD: 32,
-    MarkerType.SILVER: 40,
-}
 
-MARKER_TYPE_SIZE = {
-    MarkerType.ARENA: 0.25,
-    MarkerType.GOLD: 0.2,
-    MarkerType.SILVER: 0.2,
-}
+def get_marker_size(marker_id: int) -> int:
+    for bucket, size in MARKER_SIZES.items():
+        if marker_id in bucket:
+            return size
+
+    raise ValueError(f"Unknown marker id {marker_id}")
 
 
 def parse_marker_info(model_id: str) -> MarkerInfo | None:
@@ -57,9 +47,11 @@ def parse_marker_info(model_id: str) -> MarkerInfo | None:
     Parse the model id of a maker model into a `MarkerInfo`.
 
     Expected input format is a letter and two digits. The letter indicates the
-    type of the marker, the digits its "libkoki" 'code'.
+    type of the marker, indicating whether or not the marker is on a flat
+    object. The digits which form the 'code' are used for determining the
+    properties visible in the API.
 
-    Examples: 'A00', 'A01', ..., 'G32', 'G33', ..., 'S40', 'S41', ...
+    Examples: 'F00', 'F01', ..., 'B32', 'B33', ...
     """
 
     match = MARKER_MODEL_RE.match(model_id)
@@ -68,16 +60,12 @@ def parse_marker_info(model_id: str) -> MarkerInfo | None:
 
     kind, number = model_id[0], model_id[1:]
 
-    marker_type = MARKER_MODEL_TYPE_MAP[kind]
     code = int(number)
-
-    type_offset = MARKER_TYPE_OFFSETS[marker_type]
 
     return MarkerInfo(
         code=code,
-        marker_type=marker_type,
-        offset=code - type_offset,
-        size=MARKER_TYPE_SIZE[marker_type],
+        size=get_marker_size(code),
+        object_type=ObjectType(kind),
     )
 
 
@@ -178,7 +166,7 @@ class Camera:
 
         for token, recognition_object in tokens:
             marker_info = object_infos[recognition_object]
-            is_2d = marker_info.marker_type == MarkerType.ARENA
+            is_2d = marker_info.object_type == ObjectType.FLAT
             for face in token.visible_faces(is_2d=is_2d):
                 markers.append(Marker(face, marker_info, when))
 

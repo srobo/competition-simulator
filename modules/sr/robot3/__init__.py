@@ -2,12 +2,6 @@ import sr.robot3._version_check  # noqa: F401
 from sr.robot3.motor import BRAKE, COAST
 from sr.robot3.power import Note, Outputs
 from sr.robot3.robot import Robot
-from sr.robot3.camera import (
-    MarkerType,
-    MARKER_ARENA,
-    MARKER_TOKEN_GOLD,
-    MARKER_TOKEN_SILVER,
-)
 from sr.robot3.metadata import RobotMode
 from sr.robot3.ruggeduino import AnaloguePin, GPIOPinMode
 
@@ -55,8 +49,4 @@ __all__ = (
     'OUT_L1',
     'OUT_L3',
     'OUT_FIVE_VOLT',
-    'MarkerType',
-    'MARKER_ARENA',
-    'MARKER_TOKEN_GOLD',
-    'MARKER_TOKEN_SILVER',
 )
