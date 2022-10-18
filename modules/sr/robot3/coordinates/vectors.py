@@ -8,7 +8,7 @@ import math
 from typing import Iterable, overload
 
 # between vectors considered the same
-DEGREES_TOLERANCE = 10
+RADIANS_TOLERANCE = math.radians(10)
 
 
 class Vector:
@@ -138,7 +138,7 @@ ZERO_3VECTOR = Vector((0, 0, 0))
 
 def angle_between(vec_a: Vector, vec_b: Vector) -> float:
     """
-    Determine the angle between two vectors, in degrees.
+    Determine the angle between two vectors, in radians.
 
     This is calculated using the definition of the dot product and
     knowing the size of the vectors.
@@ -165,8 +165,7 @@ def angle_between(vec_a: Vector, vec_b: Vector) -> float:
         cos_theta = round(cos_theta, 15)
 
     theta_rads = math.acos(cos_theta)
-    theta_degrees = math.degrees(theta_rads)
-    return theta_degrees
+    return theta_rads
 
 
 def are_same_direction(vec_a: Vector, vec_b: Vector) -> bool:
@@ -174,7 +173,7 @@ def are_same_direction(vec_a: Vector, vec_b: Vector) -> bool:
         return False
 
     theta = angle_between(vec_a, vec_b)
-    return theta < DEGREES_TOLERANCE
+    return theta < RADIANS_TOLERANCE
 
 
 def unit_vector(direction_vector: Vector) -> Vector:

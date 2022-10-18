@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import unittest
 from typing import Tuple
 
@@ -356,25 +357,42 @@ class VectorTests(unittest.TestCase):
             with self.subTest(case):
                 expected, vec_a, vec_b = case
                 actual = vectors.angle_between(vec_a, vec_b)
-                self.assertEqual(expected, actual, "Wrong angle between vectors.")
+                self.assertEqual(
+                    math.radians(expected),
+                    actual,
+                    "Wrong angle between vectors.",
+                )
 
 
 class PolarTests(unittest.TestCase):
     def test_polar(self) -> None:
         cases = [
-            (Vector((0, 0, 1)), PolarCoord(1, 0, 0)),
-            (Vector((1, 0, 1)), PolarCoord(round(2 ** 0.5, 7), 0, 45)),
-            (Vector((0, 1, 1)), PolarCoord(round(2 ** 0.5, 7), 45, 0)),
-            (Vector((1, 1, 1)), PolarCoord(round(3 ** 0.5, 7), 35.2643897, 45)),
+            (
+                Vector((0, 0, 1)),
+                PolarCoord(1, 0, 0),
+            ),
+            (
+                Vector((1, 0, 1)),
+                PolarCoord(2 ** 0.5, math.radians(0), math.radians(45)),
+            ),
+            (
+                Vector((0, 1, 1)),
+                PolarCoord(2 ** 0.5, math.radians(45), math.radians(0)),
+            ),
+            (
+                Vector((1, 1, 1)),
+                PolarCoord(3 ** 0.5, math.radians(35.2643897), math.radians(45)),
+            ),
         ]
 
         for cartesian, expected in cases:
             with self.subTest(cartesian):
                 actual = polar_from_cartesian(cartesian)
                 # Cope with floating point differences
-                rounded = PolarCoord(*(round(x, 7) for x in actual))
+                actual = PolarCoord(*(round(x, 7) for x in actual))
+                expected = PolarCoord(*(round(x, 7) for x in expected))
 
-                self.assertEqual(expected, rounded)
+                self.assertEqual(expected, actual)
 
 
 if __name__ == '__main__':

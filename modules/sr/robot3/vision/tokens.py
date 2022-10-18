@@ -10,6 +10,9 @@ from sr.robot3.coordinates.vectors import Vector
 
 TOKEN_SIZE = 1
 
+NINETY_DEGREES = math.pi / 2
+DEFAULT_ANGLE_TOLERANCE = math.radians(75)
+
 
 # An orientation object which mimics how libkoki computes its orientation angles.
 class Orientation(NamedTuple):
@@ -94,7 +97,11 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def visible_faces(self, angle_tolerance: float = 75, is_2d: bool = False) -> list[Face]:
+    def visible_faces(
+        self,
+        angle_tolerance: float = DEFAULT_ANGLE_TOLERANCE,
+        is_2d: bool = False,
+    ) -> list[Face]:
         """
         Returns a list of the faces which are visible to the global origin.
         If a token should be considered 2D, only check its front and rear faces.
@@ -166,11 +173,16 @@ class Face:
         """
         return self.token.position + self.centre()
 
-    def is_visible_to_global_origin(self, angle_tolerance: float = 75) -> bool:
-        if angle_tolerance > 90:
+    def is_visible_to_global_origin(
+        self,
+        angle_tolerance: float = DEFAULT_ANGLE_TOLERANCE,
+    ) -> bool:
+        if angle_tolerance > NINETY_DEGREES:
             raise ValueError(
-                "Refusing to allow faces with angles > 90 to be visible (asked for {})".format(
+                "Refusing to allow faces with angles > 90° to be visible "
+                "(asked for {} radians, {})".format(
                     angle_tolerance,
+                    math.degrees(angle_tolerance),
                 ),
             )
 
@@ -236,8 +248,4 @@ class Face:
         a_x, a_y, _ = unrotated_midpoint.data
         rot_z = -math.atan2(a_x, a_y)
 
-        return Orientation(
-            math.degrees(-rot_x),
-            math.degrees(rot_y),
-            math.degrees(rot_z),
-        )
+        return Orientation(-rot_x, rot_y, rot_z)
