@@ -188,6 +188,11 @@ class Face:
         """
         return self.token.position + self.centre()
 
+    def angle_to_global_origin(self) -> float:
+        direction_to_origin = -self.centre_global()
+        normal = self.normal()
+        return vectors.angle_between(direction_to_origin, normal)
+
     def is_visible_to_global_origin(
         self,
         angle_tolerance: float = DEFAULT_ANGLE_TOLERANCE,
@@ -201,11 +206,7 @@ class Face:
                 ),
             )
 
-        direction_to_origin = -self.centre_global()
-        normal = self.normal()
-
-        angle_to_origin = vectors.angle_between(direction_to_origin, normal)
-
+        angle_to_origin = self.angle_to_global_origin()
         return abs(angle_to_origin) < angle_tolerance
 
     def distance(self) -> float:
