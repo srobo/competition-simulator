@@ -121,8 +121,12 @@ class Token:
         Returns a list of the faces which are visible to the global origin.
         If a token should be considered 2D, only check its front and rear faces.
         """
-        face_names = [FaceName.Front, FaceName.Rear] if is_2d else list(FaceName)
-        faces = [self.face(x) for x in face_names]
+        # face_names = [FaceName.Front, FaceName.Rear] if is_2d else list(FaceName)
+        faces = [self.face(x) for x in FaceName]
+        # print([
+        #     math.degrees(x.angle_to_global_origin())
+        #     for x in faces
+        # ])
         return [f for f in faces if f.is_visible_to_global_origin(angle_tolerance)]
 
 
