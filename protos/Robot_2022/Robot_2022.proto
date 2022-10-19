@@ -542,6 +542,7 @@ PROTO Robot_2022 [
             height 600
             recognition Recognition {
               frameThickness 2
+              maxRange 4
             }
           }
           Compass {
