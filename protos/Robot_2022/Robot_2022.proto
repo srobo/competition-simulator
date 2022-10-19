@@ -541,7 +541,7 @@ PROTO Robot_2022 [
             width 800
             height 600
             recognition Recognition {
-              frameThickness 5
+              frameThickness 2
             }
           }
           Compass {
