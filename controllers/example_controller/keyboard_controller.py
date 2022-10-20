@@ -1,3 +1,5 @@
+import math
+
 from sr.robot3 import *
 from controller import Keyboard
 
@@ -54,9 +56,9 @@ def print_sensors(robot: Robot) -> None:
                 x, y, z = marker.cartesian
                 print(f" Cartesian: {x:.4g}, {y:.4g}, {z:.4g}")
                 rot_x, rot_y, dist = marker.spherical
-                print(f" Spherical: {rot_x:.4g}, {rot_y:.4g}, {dist}")
+                print(f" Spherical: {math.degrees(rot_x):.4g}, {math.degrees(rot_y):.4g}, {dist}")
                 rot_x, rot_y, rot_z = marker.orientation
-                print(f" Orientation: {rot_x:.4g}, {rot_y:.4g}, {rot_z:.4g}")
+                print(f" Orientation: {math.degrees(rot_x):.4g}, {math.degrees(rot_y):.4g}, {math.degrees(rot_z):.4g}")
                 print()
         else:
             print("No markers")

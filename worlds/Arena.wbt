@@ -7,18 +7,11 @@ WorldInfo {
   basicTimeStep 8
 }
 Viewpoint {
-  # rotation 0.0 0.0 1.0 0.0
-  # the combined rotation of 0, -1, 0, 1.5708 & -1, 0, 0, 1
-  orientation 0.43231 0.43231 -0.79134 1.80272
-  position 0 7.95 12.0
-  # top view:
-  #orientation -0.57735 -0.57735 -0.57735 2.09440
-  #position 0 20.5 0
+  orientation 0.2627627819843081 0.6295547538601851 -0.7311747618017932 1.0373977646534511
+  position 0.7803736329703514 0.8610857436577816 2.093818675647143
   near 0.1
 }
 DEF SUN DirectionalLight {
-  color 1 1 1
-  direction 0 0 -1
   intensity 3.5
   castShadows TRUE
 }
@@ -28,40 +21,65 @@ DEF AMBIENT Background {
   ]
   luminosity 0.35
 }
-
 DEF ROBOT-0 Robot_2022 {
-  translation 2.0 0 0
+  hidden position_0_0 -15.647896829024683
+  hidden position_0_1 -5.079826358215946
+  hidden position_0_2 486.0927436727983
+  hidden position2_0_2 -72.48689910627144
+  hidden position3_0_2 259.6650458259143
+  hidden position_0_3 277.2905191158293
+  hidden position2_0_3 95.45513158233717
+  hidden position3_0_3 -223.61607062736184
+  hidden position_0_4 5.70467838633267e-15
+  hidden position_0_5 -6.397162444858528e-15
+  hidden linearVelocity_0 -5.721897155559561e-17 4.5153008192725816e-15 1.3711159137737782e-16
+  hidden angularVelocity_0 7.251917377733592e-17 -9.95325571158331e-16 3.2299745813012926e-15
+  hidden rotation_2 -0.021238328016361722 0.7069459886988636 0.7069485854612454 3.099122538383947
+  hidden linearVelocity_2 -1.725694565521877e-16 6.243896016311311e-15 4.307944234286523e-17
+  hidden angularVelocity_2 -5.105299908580874e-15 -1.2082213445852018e-15 3.31990082365586e-15
+  hidden rotation_4 0.7174313903852974 0.49259030517867564 0.49259211456721297 4.386247846462174
+  hidden linearVelocity_4 5.487773887379237e-17 -5.741868045543757e-15 -1.7233195436890016e-16
+  hidden angularVelocity_4 -4.595268621508735e-15 -1.1235333303431132e-15 8.261563041420158e-15
+  hidden rotation_6 0.6133534463167145 0.18618391121580943 0.7675500642276 4.8353972463875
+  hidden linearVelocity_6 6.013892389344066e-15 2.198323978733285e-15 -5.176661073118447e-16
+  hidden angularVelocity_6 -2.747902058534822e-13 7.517365692256618e-13 9.709609592542137e-18
+  hidden rotation_7 -0.5912791148718706 0.17470763296838707 -0.7873158523101899 3.120197444052301
+  hidden linearVelocity_7 5.038007059525035e-15 2.180408072786774e-15 1.1388716547127182e-15
+  hidden angularVelocity_7 -2.7255072780802696e-13 6.297509198843787e-13 3.549119384802742e-18
+  hidden linearVelocity_10 1.2058900700605762e-14 -6.178423738506125e-16 3.9968028886505627e-16
+  hidden angularVelocity_10 5.2386122126796506e-15 -1.7710494458166152e-15 3.3946561979165723e-15
+  hidden linearVelocity_11 -5.424200968559974e-15 5.94017692038582e-15 1.9243865760169376e-16
+  hidden angularVelocity_11 1.574879126551163e-14 -6.277775682826886e-16 3.561820870684073e-15
+  translation 1.580269988725887 -0.688667986388482 0.00012092706586863677
+  rotation -0.016255020062964004 -0.0001590886751974645 0.9998678657770466 -3.12202209599937
   controller "sr_controller"
   model "Robot0"
   flagColour 1 0 1
-  controllerArgs "0"
+  controllerArgs [
+    "0"
+  ]
 }
-
 Robot {
   translation 0 0 -1
-  name "comp-supervisor"
-  model "CompetitionSupervisor"
-  description "A supervisor 'robot' to help run the competition."
-  controller "competition_supervisor"
-  supervisor TRUE
   children [
-    # this is a hack to detect if we are running on version 2020b
     Connector {
       name "2021a-compatibility"
       type "passive"
     }
   ]
+  name "comp-supervisor"
+  model "CompetitionSupervisor"
+  description "A supervisor 'robot' to help run the competition."
+  controller "competition_supervisor"
+  supervisor TRUE
 }
-
 DEF LIGHT_CTRL Robot {
-  translation 0 0 0
   name "lighting_controller"
   description "A supervisor 'robot' to handle modifying the arena lighting throughout the match"
   controller "lighting_controller"
   supervisor TRUE
 }
-
-Solid {  # Floor
+Solid {
   translation 0 0 -0.002
   children [
     DEF FLOOR Shape {
@@ -78,7 +96,7 @@ Solid {  # Floor
   name "Floor"
   boundingObject USE FLOOR
 }
-Solid {  # Wall markers
+Solid {
   children [
     DEF WALL_MARKER Solid {
       translation 2.154 -2.8749 0.175
@@ -557,7 +575,7 @@ Solid {  # Wall markers
       ]
     }
     DEF WALL_MARKER Solid {
-      translation -0 2.8749 0.175
+      translation 0 2.8749 0.175
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -753,7 +771,8 @@ Solid {  # Wall markers
       ]
     }
     DEF WALL_MARKER Solid {
-      translation 2.8749 0 0.175
+      translation 2.875 -0.3 0.175
+      rotation 0 1 0 0.26180030610042526
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -809,7 +828,8 @@ Solid {  # Wall markers
       ]
     }
     DEF WALL_MARKER Solid {
-      translation 2.8749 -1.436 0.175
+      translation 2.8 -1 0.175
+      rotation 0 0 1 -0.7853996938995746
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -867,7 +887,7 @@ Solid {  # Wall markers
   ]
   name "Wall markers"
 }
-Solid {  # North Wall
+Solid {
   translation 0 -2.95 0.15
   children [
     DEF SHAPE Shape {
@@ -881,10 +901,10 @@ Solid {  # North Wall
       }
     }
   ]
-  boundingObject USE SHAPE
   name "North Wall"
+  boundingObject USE SHAPE
 }
-Solid {  # South Wall
+Solid {
   translation 0 2.95 0.15
   children [
     DEF SHAPE Shape {
@@ -898,10 +918,10 @@ Solid {  # South Wall
       }
     }
   ]
-  boundingObject USE SHAPE
   name "South Wall"
+  boundingObject USE SHAPE
 }
-Solid {  # East Wall
+Solid {
   translation -2.95 0 0.15
   children [
     DEF SHAPE Shape {
@@ -915,10 +935,10 @@ Solid {  # East Wall
       }
     }
   ]
-  boundingObject USE SHAPE
   name "East Wall"
+  boundingObject USE SHAPE
 }
-Solid {  # West Wall
+Solid {
   translation 2.95 0 0.15
   children [
     DEF SHAPE Shape {
@@ -932,11 +952,11 @@ Solid {  # West Wall
       }
     }
   ]
-  boundingObject USE SHAPE
   name "West Wall"
+  boundingObject USE SHAPE
 }
-
 TinCan {
-  translation 1.6 0 0.05
+  translation 1.6 -8.482336259877066e-17 0.04797057000000002
+  rotation -0.0016717144919378036 -0.0022078551354413585 -0.9999961653658269 2.2131974732743796e-15
   tokenName "A Can"
 }
