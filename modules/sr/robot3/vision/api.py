@@ -16,12 +16,14 @@ def build_token_info(
     recognition_object: CameraRecognitionObject,
     size: float,
 ) -> tuple[Token, Rectangle, CameraRecognitionObject]:
-    x, y, z = recognition_object.getPosition()
+    # Webots' axes are different to ours. Account for that in the unpacking
+    z, x, y = recognition_object.getPosition()
 
     token = Token(
         size=size,
-        # Webots Z is inverted with regard to the one we want.
-        position=Vector((x, y, -z)),
+        # Webots X and Y is inverted with regard to the one we want -- Zoloto
+        # has increasing X & Y to the right and down respectively.
+        position=Vector((-x, y, z)),
     )
     token.rotate(rotation_matrix_from_axis_and_angle(
         WebotsOrientation(*recognition_object.getOrientation()),

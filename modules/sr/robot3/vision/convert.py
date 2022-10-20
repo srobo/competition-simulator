@@ -22,11 +22,12 @@ class WebotsOrientation(NamedTuple):
 
 
 def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> Matrix:
-    x, y, z, theta = orientation
+    # Webots' axes are different to ours. Account for that in the unpacking
+    z, x, y, theta = orientation
 
-    # Seemingly webots' y is upside down versus Wikipedia's. Note: this also
+    # Seemingly webots' X is upside down versus Zoloto's. Note: this also
     # changes the handedness of the axes.
-    y *= -1
+    x *= -1
 
     size = round(x ** 2 + y ** 2 + z ** 2, 5)
     if size != 1:
