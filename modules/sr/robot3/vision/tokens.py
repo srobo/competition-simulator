@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import enum
 import math
-from typing import Mapping, NamedTuple
+from typing import Mapping, Collection, NamedTuple
 
 from sr.robot3.coordinates import vectors
 from sr.robot3.coordinates.matrix import Matrix
@@ -45,6 +45,7 @@ class FaceName(enum.Enum):
     "Top".
     """
 
+    # TODO: rename these in terms of cardinal directions for clarity.
     Top = 'top'
     Bottom = 'bottom'
 
@@ -63,11 +64,18 @@ class Token:
     of its corners, which are stored relative to the centre of the cube.
 
     Tokens have 6 `Face`s, all facing outwards and named for their position on a
-    reference cube.
+    reference cube. Which of these have markers on can optionally be specified
+    in the constructor (by default all do).
     """
 
-    def __init__(self, position: Vector, size: float = TOKEN_SIZE) -> None:
+    def __init__(
+        self,
+        position: Vector,
+        valid_faces: Collection[FaceName] = FaceName,
+        size: float = TOKEN_SIZE,
+    ) -> None:
         self.position = position
+        self.valid_faces = valid_faces
         self.corners = {
             'left-top-front': Vector((-1, 1, -1)) * size,
             'right-top-front': Vector((1, 1, -1)) * size,
@@ -99,6 +107,8 @@ class Token:
         space. That means that the "top" face of a token is not necessarily the
         one called "Top".
         """
+        if name not in self.valid_faces:
+            raise ValueError(f"{name} is not a valid face for this token")
         return Face(self, name)
 
     def corners_global(self) -> dict[str, Vector]:
@@ -112,17 +122,12 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def visible_faces(
-        self,
-        angle_tolerance: float = DEFAULT_ANGLE_TOLERANCE,
-        is_2d: bool = False,
-    ) -> list[Face]:
+    def visible_faces(self, angle_tolerance: float = DEFAULT_ANGLE_TOLERANCE) -> list[Face]:
         """
         Returns a list of the faces which are visible to the global origin.
         If a token should be considered 2D, only check its front and rear faces.
         """
-        face_names = [FaceName.Front, FaceName.Rear] if is_2d else list(FaceName)
-        faces = [self.face(x) for x in face_names]
+        faces = [self.face(x) for x in self.valid_faces]
         return [f for f in faces if f.is_visible_to_global_origin(angle_tolerance)]
 
 

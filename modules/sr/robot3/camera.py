@@ -4,10 +4,10 @@ import re
 import enum
 import functools
 import threading
-from typing import Container, NamedTuple
+from typing import Container, Collection, NamedTuple
 
 from controller import Robot, Camera as WebotCamera
-from sr.robot3.vision import Face, Orientation, tokens_from_objects
+from sr.robot3.vision import Face, FaceName, Orientation, tokens_from_objects
 from sr.robot3.coordinates import (
     Vector,
     Spherical,
@@ -37,6 +37,22 @@ class MarkerInfo(NamedTuple):
     def size_m(self) -> float:
         # Webots uses metres.
         return self.size_mm / 1000
+
+    def valid_faces(self) -> Collection[FaceName]:
+        if self.object_type == ObjectType.BOX:
+            return FaceName
+        if self.object_type == ObjectType.FLAT:
+            # Assume flat markers have had their proper orientation applied in
+            # the world file.
+            #
+            # Our wall marker numbering starts on the North wall, so we pick
+            # that as our reference markers (and expect them to have zero
+            # rotation). Their South face (in our terms) is the one facing into
+            # the arena, however as our arena is rotated 90° relative to Webots
+            # this ends up as one of the "side"s of the token box.
+            return [FaceName.Right]
+
+        raise AssertionError("Unknown object type")
 
 
 MARKER_SIZES: dict[Container[int], int] = {
@@ -177,6 +193,7 @@ class Camera:
         tokens = tokens_from_objects(
             object_infos.keys(),
             lambda o: object_infos[o].size_m,
+            lambda o: object_infos[o].valid_faces(),
         )
 
         when = self._webot.getTime()
@@ -185,8 +202,7 @@ class Camera:
 
         for token, recognition_object in tokens:
             marker_info = object_infos[recognition_object]
-            is_2d = marker_info.object_type == ObjectType.FLAT
-            for face in token.visible_faces(is_2d=is_2d):
+            for face in token.visible_faces():
                 markers.append(Marker(face, marker_info, when))
 
         return markers
