@@ -36,7 +36,10 @@ def get_height(color):
 
 def rotate(x, y, angle):
     """ Rotate given coordinate around the origin"""
-    return x * math.cos(angle) - y * math.sin(angle), x * math.sin(angle) + y * math.cos(angle)
+    return (
+        x * math.cos(angle) - y * math.sin(angle),
+        x * math.sin(angle) + y * math.cos(angle),
+    )
 
 
 global_id = 0
