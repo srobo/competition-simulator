@@ -50,7 +50,7 @@ def print_sensors(robot: Robot) -> None:
         if markers:
             print(f"Found {len(markers)} makers:")
             for marker in markers:
-                print(f" #{marker.id}")
+                print(f" #{marker.id} {marker._face.name}")
                 x, y, z = marker.cartesian
                 print(f" Cartesian: {x:.4g}, {y:.4g}, {z:.4g}")
                 rot_x, rot_y, dist = marker.spherical
