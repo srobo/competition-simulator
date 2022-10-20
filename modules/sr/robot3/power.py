@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import datetime
 from enum import Enum
-from typing import Union, Iterator
+from typing import Union, Iterator, TYPE_CHECKING
 
-from controller import Robot
+if TYPE_CHECKING:
+    from .robot import Robot
 
 
 class Outputs(Enum):
@@ -11,19 +13,20 @@ class Outputs(Enum):
     OUT_H1 = 'H1'
     OUT_L0 = 'L0'
     OUT_L1 = 'L1'
-    OUT_L2 = 'L2'
+    # OUT_L2 = 'L2' # Brain board runs from L2
     OUT_L3 = 'L3'
+    OUT_FIVE_VOLT = 'FIVE_VOLT'
 
 
-def init_power_board(webot: Robot) -> Power:
-    return Power()
+def init_power_board(robot: Robot) -> PowerBoard:
+    return PowerBoard(robot)
 
 
-class Power:
-    def __init__(self) -> None:
+class PowerBoard:
+    def __init__(self, robot: Robot) -> None:
         self.outputs = OutputGroup()
         self.battery_sensor = BatterySensor()
-        self.piezo = Piezo()
+        self.piezo = Piezo(robot)
 
 
 class OutputGroup:
@@ -81,8 +84,23 @@ class BatterySensor:
 
 
 class Piezo:
-    def buzz(self, duration: float, note: Pitch) -> None:
-        pass
+    def __init__(self, robot: Robot) -> None:
+        self.robot = robot
+
+    def buzz(
+        self,
+        duration: int | float | datetime.timedelta,
+        pitch: Pitch,
+        *,
+        blocking: bool | None = None,
+    ) -> None:
+        if not blocking:
+            return
+
+        if isinstance(duration, datetime.timedelta):
+            duration = duration.total_seconds()
+
+        self.robot.sleep(duration)
 
 
 class Note(float, Enum):

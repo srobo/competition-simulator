@@ -5,9 +5,11 @@ import threading
 from enum import Enum
 from typing import NamedTuple
 
-from controller import Robot
+from controller import Robot, Camera as WebotCamera
 from sr.robot3.vision import Face, Orientation, tokens_from_objects
 from sr.robot3.coordinates import Point
+
+from .utils import maybe_get_robot_device
 
 MARKER_MODEL_RE = re.compile(r"^[AGS]\d{0,2}$")
 
@@ -129,17 +131,17 @@ class Marker:
 
 
 class Camera:
-    def __init__(self, webot: Robot, lock: threading.Lock) -> None:
+    def __init__(self, webot: Robot, camera: WebotCamera, lock: threading.Lock) -> None:
         self._webot = webot
         self._timestep = int(webot.getBasicTimeStep())
 
-        self.camera = webot.getCamera("camera")
+        self.camera = camera
         self.camera.enable(self._timestep)
         self.camera.recognitionEnable(self._timestep)
 
         self._lock = lock
 
-    def see(self) -> list[Marker]:
+    def see(self, *, eager: bool = True) -> list[Marker]:
         """
         Identify items which the camera can see and return a list of `Marker`
         instances describing them.
@@ -181,3 +183,19 @@ class Camera:
                 markers.append(Marker(face, marker_info, when))
 
         return markers
+
+    def see_ids(self) -> list[int]:
+        # While in theory this method ought to be the "fast" method, processing
+        # speed doesn't matter much in the simulator and with the locking we
+        # need to do it's much easier to let this be a shallow wrapper around
+        # the full implementation.
+        return [x.info.code for x in self.see()]
+
+    # The simulator does not emulate the `capture` or `save` methods.
+
+
+def init_cameras(webot: Robot, lock: threading.Lock) -> list[Camera]:
+    camera = maybe_get_robot_device(webot, 'camera', WebotCamera)
+    if camera is None:
+        return []
+    return [Camera(webot, camera, lock)]

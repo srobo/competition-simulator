@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import math
 import random
-from os import path, environ
+from typing import TypeVar, Collection
+from pathlib import Path
 from threading import Lock
 
-from sr.robot3 import motor, power, servos, ruggeduino
+from sr.robot3 import motor, power, camera, servos, metadata, ruggeduino
 # Webots specific library
 from controller import Robot as WebotsRobot
+
+T = TypeVar('T')
 
 
 class Robot:
@@ -18,18 +21,27 @@ class Robot:
     manually by calling the `sleep` method.
     """
 
-    def __init__(self, auto_start: bool = False, verbose: bool = True) -> None:
-        self._initialised = False
+    def __init__(
+        self,
+        *,
+        auto_start: bool = False,
+        verbose: bool = False,
+        env: object = None,
+        ignored_ruggeduinos: list[str] | None = None,
+    ) -> None:
+        """
+        Initialise robot.
+
+        Note: `env` and `ignored_ruggeduinos` are ignored in the simulator.
+        """
+
         self._quiet = not verbose
 
-        self.webot = WebotsRobot()
+        self._webot = WebotsRobot()
         # returns a float, but should always actually be an integer value
-        self._timestep = int(self.webot.getBasicTimeStep())
+        self._timestep = int(self._webot.getBasicTimeStep())
 
-        self.mode = environ.get("SR_ROBOT_MODE", "dev")
-        self.zone = int(environ.get("SR_ROBOT_ZONE", 0))
-        self.arena = "A"
-        self.usbkey = path.normpath(path.join(environ["SR_ROBOT_FILE"], "../"))
+        self._metadata, self._code_path = metadata.init_metadata()
 
         # Lock used to guard access to Webot's time stepping machinery, allowing
         # us to safely advance simulation time from *either* the competitor's
@@ -37,22 +49,18 @@ class Robot:
         # thread, but not both.
         self._step_lock = Lock()
 
-        self.init()
+        self._init_devs()
+        self.display_info()
+
         if not auto_start:
             self.wait_start()
 
-    def init(self) -> None:
-        self._init_devs()
-        self._initialised = True
-        self.display_info()
-
     def _get_user_code_info(self) -> str | None:
-        user_version_path = path.join(self.usbkey, '.user-rev')
-        if path.exists(user_version_path):
-            with open(user_version_path) as f:
-                return f.read().strip()
-
-        return None
+        user_version_path = self._code_path / '.user-rev'
+        try:
+            return user_version_path.read_text().strip()
+        except IOError:
+            return None
 
     def display_info(self) -> None:
         user_code_version = self._get_user_code_info()
@@ -85,22 +93,14 @@ class Robot:
             # `synchronization` is left at its default value of `TRUE`). In
             # that mode, Webots returns -1 from step to indicate that the
             # simulation is terminating, or 0 otherwise.
-            result = self.webot.step(duration_ms)
+            result = self._webot.step(duration_ms)
             return result != -1
+
+    def print_wifi_details(self) -> None:
+        print("The simulated robot does not have WiFi.")  # noqa: T201
 
     def wait_start(self) -> None:
         "Wait for the start signal to happen"
-
-        if self.mode not in ["comp", "dev"]:
-            raise Exception(
-                "mode of '%s' is not supported -- must be 'comp' or 'dev'" % self.mode,
-            )
-        if self.zone < 0 or self.zone > 3:
-            raise Exception(
-                "zone must be in range 0-3 inclusive -- value of %i is invalid" % self.zone,
-            )
-        if self.arena not in ["A", "B"]:
-            raise Exception("arena must be A or B")
 
         print("Waiting for start signal.")  # noqa: T201
 
@@ -111,11 +111,11 @@ class Robot:
             self._timestep * random.randint(8, 20),
         )
 
-        if self.mode == 'comp':
+        if self.mode == metadata.RobotMode.COMP:
             # Interact with the supervisor "robot" to wait for the start of the match.
-            self.webot.setCustomData('ready')
+            self._webot.setCustomData('ready')
             while (
-                self.webot.getCustomData() != 'start' and
+                self._webot.getCustomData() != 'start' and
                 self.webots_step_and_should_continue(self._timestep)
             ):
                 pass
@@ -137,31 +137,73 @@ class Robot:
         # Ruggeduinos
         self._init_ruggeduinos()
 
-        # No camera for SR2021
+        # Camera
+        self._init_cameras()
 
     def _init_power_board(self) -> None:
-        self.power_board = power.init_power_board(self.webot)
+        self.power_board = power.init_power_board(self)
 
     def _init_motors(self) -> None:
-        self.motor_boards = motor.init_motor_array(self.webot)
-        if len(self.motor_boards) == 1:
-            self.motor_board = list(self.motor_boards.values())[0]
+        self.motor_boards = motor.init_motor_array(self._webot)
 
     def _init_servos(self) -> None:
-        self.servo_boards = servos.init_servo_board(self.webot)
-        if len(self.servo_boards) == 1:
-            self.servo_board = list(self.servo_boards.values())[0]
+        self.servo_boards = servos.init_servo_board(self._webot)
 
     def _init_ruggeduinos(self) -> None:
-        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self.webot)
-        if len(self.ruggeduinos) == 1:
-            self.ruggeduino = list(self.ruggeduinos.values())[0]
+        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self._webot)
+
+    def _init_cameras(self) -> None:
+        # See comment in Camera.see for why we need to pass the step lock here.
+        self._cameras = camera.init_cameras(self._webot, self._step_lock)
+
+    def _singular(self, elements: Collection[T], name: str) -> T:
+        num = len(elements)
+        if num != 1:
+            raise ValueError(f"Expected exactly one {name} to be connected, but found {num}")
+        x, = elements
+        return x
+
+    @property
+    def camera(self) -> camera.Camera:
+        return self._singular(self._cameras, 'camera')
+
+    @property
+    def motor_board(self) -> motor.MotorBoard:
+        return self._singular(self.motor_boards.values(), 'motor board')
+
+    @property
+    def ruggeduino(self) -> ruggeduino.Ruggeduino:
+        return self._singular(self.ruggeduinos.values(), 'ruggeduino')
+
+    @property
+    def servo_board(self) -> servos.ServoBoard:
+        return self._singular(self.servo_boards.values(), 'servo board')
+
+    @property
+    def arena(self) -> str:
+        return self.metadata.arena
+
+    @property
+    def mode(self) -> metadata.RobotMode:
+        return self.metadata.mode
+
+    @property
+    def usbkey(self) -> Path | None:
+        return self._code_path
+
+    @property
+    def zone(self) -> int:
+        return self.metadata.zone
+
+    @property
+    def metadata(self) -> metadata.Metadata:
+        return self._metadata
 
     def time(self) -> float:
         """
         Roughly equivalent to `time.time` but for simulation time.
         """
-        return self.webot.getTime()
+        return self._webot.getTime()
 
     def sleep(self, secs: float) -> None:
         """

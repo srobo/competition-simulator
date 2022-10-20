@@ -1,27 +1,42 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import IntEnum
 from typing import Dict, Union
 
 from controller import Robot
-from sr.robot3.ruggeduino_devices import Led, Microswitch, DistanceSensor
+from sr.robot3.ruggeduino_devices import (
+    Led,
+    Microswitch,
+    DistanceSensor,
+    RuggeduinoDevice,
+)
 from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 
-OUTPUT = 0
-INPUT = 1
-INPUT_PULLUP = 2
+
+class GPIOPinMode(IntEnum):
+    """Hardware modes that a GPIO pin can be set to."""
+
+    DIGITAL_INPUT = 0  #: The digital state of the pin can be read
+    DIGITAL_INPUT_PULLUP = 1  #: Same as DIGITAL_INPUT but internal pull-up is enabled
+    DIGITAL_INPUT_PULLDOWN = 2  #: Same as DIGITAL_INPUT but internal pull-down is enabled
+    DIGITAL_OUTPUT = 3  #: The digital state of the pin can be set.
+
+    ANALOGUE_INPUT = 4  #: The analogue voltage of the pin can be read.
+    ANALOGUE_OUTPUT = 5  #: The analogue voltage of the pin can be set using a DAC.
+
+    PWM_OUTPUT = 6  #: A PWM output signal can be created on the pin.
 
 
-class AnaloguePin(Enum):
-    A0 = "A0"
-    A1 = "A1"
-    A2 = "A2"
-    A3 = "A3"
-    A4 = "A4"
-    A5 = "A5"
+class AnaloguePin(IntEnum):
+    A0 = 14
+    A1 = 15
+    A2 = 16
+    A3 = 17
+    A4 = 18
+    A5 = 19
 
 
-ARDUINO_DEVICES_TYPE = Dict[Union[AnaloguePin, int], Union[DistanceSensor, Microswitch, Led]]
+DevicesMapping = Dict[Union[AnaloguePin, int], RuggeduinoDevice]
 
 
 def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
@@ -48,7 +63,7 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
         DistanceSensor(webot, name)
         for name in dist_sensor_names
     ]
-    analogue_input_dict: ARDUINO_DEVICES_TYPE = {
+    analogue_input_dict: DevicesMapping = {
         key: sensor
         for key, sensor in zip(AnaloguePin, analogue_sensors)
     }
@@ -57,7 +72,7 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
         Microswitch(webot, name)
         for name in switch_names
     ]
-    digital_input_dict: ARDUINO_DEVICES_TYPE = {
+    digital_input_dict: DevicesMapping = {
         index: sensor
         for index, sensor in
         enumerate(digital_sensors, start=Ruggeduino.DIGITAL_PIN_START)
@@ -72,7 +87,7 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
         )
     ]
 
-    digital_output_dict: ARDUINO_DEVICES_TYPE = {
+    digital_output_dict: DevicesMapping = {
         index: output
         for index, output in enumerate(
             digital_outputs,
@@ -95,6 +110,6 @@ class Ruggeduino:
 
     def __init__(
         self,
-        devices: ARDUINO_DEVICES_TYPE,
+        devices: DevicesMapping,
     ) -> None:
         self.pins = devices
