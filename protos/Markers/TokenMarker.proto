@@ -1,0 +1,24 @@
+#VRML_SIM R2022b utf8
+
+EXTERNPROTO "./MarkerBase.proto"
+
+PROTO TokenMarker [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFString name ""
+  field SFString model ""
+]
+{
+  MarkerBase {
+    translation IS translation
+    rotation IS rotation
+    name IS name
+    model IS model
+    # TokenMarkers need to have physics enabled otherwise we get a warning from
+    # Webots about them not having physics. We don't really want them to have
+    # physics and apparently that should be fine (and it does seem to work), but
+    # it would likely confuse competitors to get a bunch of warnings.
+    physics Physics {}
+    size 0.2 0.0001 0.2
+  }
+}

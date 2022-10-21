@@ -1,55 +1,74 @@
 from __future__ import annotations
 
 import re
+import enum
+import functools
 import threading
-from enum import Enum
-from typing import NamedTuple
+from typing import Container, NamedTuple
 
 from controller import Robot, Camera as WebotCamera
-from sr.robot3.vision import Face, Orientation, tokens_from_objects
-from sr.robot3.coordinates import Point
+from sr.robot3.vision import (
+    Face,
+    Token,
+    FlatToken,
+    Orientation,
+    tokens_from_objects,
+)
+from sr.robot3.coordinates import (
+    Vector,
+    Spherical,
+    ThreeDCoordinates,
+    spherical_from_cartesian,
+)
 
 from .utils import maybe_get_robot_device
 
-MARKER_MODEL_RE = re.compile(r"^[AGS]\d{0,2}$")
+MARKER_MODEL_RE = re.compile(r"^[FB]\d{0,2}$")
 
 
-class MarkerType(Enum):
-    ARENA = "ARENA"
-    GOLD = "TOKEN_GOLD"
-    SILVER = "TOKEN_SILVER"
-
-
-# Existing token types
-MARKER_ARENA = MarkerType.ARENA
-MARKER_TOKEN_GOLD = MarkerType.GOLD
-MARKER_TOKEN_SILVER = MarkerType.SILVER
+# Zoloto's markers API doesn't expose any information derived from the marker's
+# identity, however we need to track whether the marker is of a kind that would
+# be on a box or a wall and its size. This enum lets us do that.
+class ObjectType(enum.Enum):
+    FLAT = 'F'
+    BOX = 'B'
 
 
 class MarkerInfo(NamedTuple):
     code: int
-    marker_type: MarkerType
-    offset: int
-    size: float
+    size_mm: int
+    object_type: ObjectType
+
+    @property
+    def size_m(self) -> float:
+        # Webots uses metres.
+        return self.size_mm / 1000
+
+    def get_token_class(self) -> type[Token]:
+        if self.object_type == ObjectType.BOX:
+            return Token
+        if self.object_type == ObjectType.FLAT:
+            # See class docstring for how this works and coupling to the proto files
+            return FlatToken
+
+        raise AssertionError("Unknown object type")
 
 
-MARKER_MODEL_TYPE_MAP = {
-    'A': MarkerType.ARENA,
-    'G': MarkerType.GOLD,
-    'S': MarkerType.SILVER,
+MARKER_SIZES: dict[Container[int], int] = {
+    range(28): 200,  # 0 - 27 for arena boundary
+    range(28, 100): 100,  # Everything else is a token
 }
 
-MARKER_TYPE_OFFSETS = {
-    MarkerType.ARENA: 0,
-    MarkerType.GOLD: 32,
-    MarkerType.SILVER: 40,
-}
 
-MARKER_TYPE_SIZE = {
-    MarkerType.ARENA: 0.25,
-    MarkerType.GOLD: 0.2,
-    MarkerType.SILVER: 0.2,
-}
+def get_marker_size_mm(marker_id: int) -> int:
+    """
+    Return the marker size in millimetres.
+    """
+    for bucket, size in MARKER_SIZES.items():
+        if marker_id in bucket:
+            return size
+
+    raise ValueError(f"Unknown marker id {marker_id}")
 
 
 def parse_marker_info(model_id: str) -> MarkerInfo | None:
@@ -57,9 +76,11 @@ def parse_marker_info(model_id: str) -> MarkerInfo | None:
     Parse the model id of a maker model into a `MarkerInfo`.
 
     Expected input format is a letter and two digits. The letter indicates the
-    type of the marker, the digits its "libkoki" 'code'.
+    type of the marker, indicating whether or not the marker is on a flat
+    object. The digits which form the 'code' are used for determining the
+    properties visible in the API.
 
-    Examples: 'A00', 'A01', ..., 'G32', 'G33', ..., 'S40', 'S41', ...
+    Examples: 'F00', 'F01', ..., 'B32', 'B33', ...
     """
 
     match = MARKER_MODEL_RE.match(model_id)
@@ -68,66 +89,68 @@ def parse_marker_info(model_id: str) -> MarkerInfo | None:
 
     kind, number = model_id[0], model_id[1:]
 
-    marker_type = MARKER_MODEL_TYPE_MAP[kind]
     code = int(number)
-
-    type_offset = MARKER_TYPE_OFFSETS[marker_type]
 
     return MarkerInfo(
         code=code,
-        marker_type=marker_type,
-        offset=code - type_offset,
-        size=MARKER_TYPE_SIZE[marker_type],
+        size_mm=get_marker_size_mm(code),
+        object_type=ObjectType(kind),
     )
 
 
 class Marker:
     # Note: properties in the same order as in the docs.
-    # Note: we are _not_ supporting image-related properties, so no `res`.
+    # Note: we are _not_ supporting image-related properties, so no `pixel_*`.
 
     def __init__(self, face: Face, marker_info: MarkerInfo, timestamp: float) -> None:
         self._face = face
 
-        self.info = marker_info
+        self._info = marker_info
         self.timestamp = timestamp
 
     def __repr__(self) -> str:
-        return '<Marker: {}>'.format(', '.join((
-            f'info={self.info}',
-            f'centre={self.centre}',
-            f'dist={self.dist}',
-            f'orientation={self.orientation}',
+        return '<Marker {}>'.format(' '.join((
+            f'id={self.id!r}',
+            f'size={self.size!r}',
+            f'distance={self.distance!r}',
+            f'rot_y={self.spherical.rot_y!r}',
         )))
 
     @property
-    def centre(self) -> Point:
-        """A `Point` describing the position of the centre of the marker."""
-        return Point.from_vector(self._face.centre_global())
+    def id(self) -> int:  # noqa:A003
+        return self._info.code
 
     @property
-    def vertices(self) -> list[Point]:
-        """
-        A list of 4 `Point` instances, each representing the position of the
-        black corners of the marker.
-        """
-        # Note quite the black corners of the marker, though fairly close --
-        # actually the corners of the face of the modelled token.
-        return [Point.from_vector(x) for x in self._face.corners_global().values()]
+    def size(self) -> int:
+        return self._info.size_mm
+
+    # No pixel values as there is no underlying image.
+
+    @functools.cached_property
+    def _position(self) -> Vector:
+        # Webots uses metres, Zoloto uses millimetres. Convert before exposing
+        # from our simulated API.
+        return self._face.centre_global() * 1000
 
     @property
-    def dist(self) -> float:
-        """An alias for `centre.polar.length`."""
-        return self._face.centre_global().magnitude()
-
-    @property
-    def rot_y(self) -> float:
-        """An alias for `centre.polar.rot_y`."""
-        return self.centre.polar.rot_y
+    def distance(self) -> float:
+        """Distance to the centre of the marker, in millimetres."""
+        return self._position.magnitude()
 
     @property
     def orientation(self) -> Orientation:
         """An `Orientation` instance describing the orientation of the marker."""
         return self._face.orientation()
+
+    @property
+    def spherical(self) -> Spherical:
+        """A `Spherical` instance describing the position relative to the camera."""
+        return spherical_from_cartesian(self._position)
+
+    @property
+    def cartesian(self) -> ThreeDCoordinates:
+        """An `ThreeDCoordinates` instance describing the position relative to the camera."""
+        return ThreeDCoordinates(*self._position.data)
 
 
 class Camera:
@@ -162,14 +185,15 @@ class Camera:
 
         for recognition_object in self.camera.getRecognitionObjects():
             marker_info = parse_marker_info(
-                recognition_object.get_model().decode(errors='replace'),
+                recognition_object.getModel().decode(errors='replace'),
             )
             if marker_info:
                 object_infos[recognition_object] = marker_info
 
         tokens = tokens_from_objects(
             object_infos.keys(),
-            lambda o: object_infos[o].size,
+            lambda o: object_infos[o].size_m,
+            lambda o: object_infos[o].get_token_class(),
         )
 
         when = self._webot.getTime()
@@ -178,8 +202,7 @@ class Camera:
 
         for token, recognition_object in tokens:
             marker_info = object_infos[recognition_object]
-            is_2d = marker_info.marker_type == MarkerType.ARENA
-            for face in token.visible_faces(is_2d=is_2d):
+            for face in token.visible_faces():
                 markers.append(Marker(face, marker_info, when))
 
         return markers
@@ -189,7 +212,7 @@ class Camera:
         # speed doesn't matter much in the simulator and with the locking we
         # need to do it's much easier to let this be a shallow wrapper around
         # the full implementation.
-        return [x.info.code for x in self.see()]
+        return [x._info.code for x in self.see()]
 
     # The simulator does not emulate the `capture` or `save` methods.
 

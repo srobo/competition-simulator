@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import unittest
 from typing import Tuple
 
@@ -9,6 +10,7 @@ from . import vectors
 from .polar import PolarCoord, polar_from_cartesian
 from .matrix import Matrix
 from .vectors import Vector
+from .twin_angle import Spherical, spherical_from_cartesian
 
 SimpleVector = Tuple[float, float, float]
 
@@ -356,25 +358,101 @@ class VectorTests(unittest.TestCase):
             with self.subTest(case):
                 expected, vec_a, vec_b = case
                 actual = vectors.angle_between(vec_a, vec_b)
-                self.assertEqual(expected, actual, "Wrong angle between vectors.")
+                self.assertEqual(
+                    math.radians(expected),
+                    actual,
+                    "Wrong angle between vectors.",
+                )
 
 
 class PolarTests(unittest.TestCase):
     def test_polar(self) -> None:
         cases = [
-            (Vector((0, 0, 1)), PolarCoord(1, 0, 0)),
-            (Vector((1, 0, 1)), PolarCoord(round(2 ** 0.5, 7), 0, 45)),
-            (Vector((0, 1, 1)), PolarCoord(round(2 ** 0.5, 7), 45, 0)),
-            (Vector((1, 1, 1)), PolarCoord(round(3 ** 0.5, 7), 35.2643897, 45)),
+            (
+                Vector((0, 0, 1)),
+                PolarCoord(1, 0, 0),
+            ),
+            (
+                Vector((1, 0, 1)),
+                PolarCoord(2 ** 0.5, math.radians(0), math.radians(45)),
+            ),
+            (
+                Vector((0, 1, 1)),
+                PolarCoord(2 ** 0.5, math.radians(45), math.radians(0)),
+            ),
+            (
+                Vector((1, 1, 1)),
+                PolarCoord(3 ** 0.5, math.radians(35.2643897), math.radians(45)),
+            ),
         ]
 
         for cartesian, expected in cases:
             with self.subTest(cartesian):
                 actual = polar_from_cartesian(cartesian)
                 # Cope with floating point differences
-                rounded = PolarCoord(*(round(x, 7) for x in actual))
+                actual = PolarCoord(*(round(x, 7) for x in actual))
+                expected = PolarCoord(*(round(x, 7) for x in expected))
 
-                self.assertEqual(expected, rounded)
+                self.assertEqual(expected, actual)
+
+
+class SphericalTests(unittest.TestCase):
+    def test_spherical(self) -> None:
+        cases = [
+            (
+                Vector((0, 0, 0)),
+                Spherical(0, 0, 0),
+            ),
+            (
+                Vector((0, 0, 1)),
+                Spherical(
+                    rot_x=0,
+                    rot_y=0,
+                    dist=1,
+                ),
+            ),
+            (
+                Vector((0, 1, 0)),
+                Spherical(
+                    rot_x=math.pi / 2,
+                    rot_y=0,
+                    dist=1,
+                ),
+            ),
+            (
+                Vector((1, 0, 0)),
+                Spherical(
+                    rot_x=0,
+                    rot_y=math.pi / 2,
+                    dist=1,
+                ),
+            ),
+            (
+                Vector((1000, 1000, 0)),
+                Spherical(
+                    rot_x=math.pi / 2,
+                    rot_y=math.pi / 2,
+                    dist=1414,
+                ),
+            ),
+        ]
+
+        for cartesian, expected in cases:
+            with self.subTest(cartesian):
+                actual = spherical_from_cartesian(cartesian)
+                # Cope with floating point differences
+                actual = Spherical(
+                    round(actual.rot_x, 7),
+                    round(actual.rot_y, 7),
+                    dist=actual.dist,
+                )
+                expected = Spherical(
+                    round(expected.rot_x, 7),
+                    round(expected.rot_y, 7),
+                    dist=expected.dist,
+                )
+
+                self.assertEqual(expected, actual)
 
 
 if __name__ == '__main__':

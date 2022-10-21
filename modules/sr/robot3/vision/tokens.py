@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import enum
 import math
-from typing import Mapping, NamedTuple
+import warnings
+from typing import Mapping, Collection, NamedTuple
 
 from sr.robot3.coordinates import vectors
 from sr.robot3.coordinates.matrix import Matrix
@@ -10,12 +11,30 @@ from sr.robot3.coordinates.vectors import Vector
 
 TOKEN_SIZE = 1
 
+NINETY_DEGREES = math.pi / 2
+DEFAULT_ANGLE_TOLERANCE = math.radians(75)
 
-# An orientation object which mimics how libkoki computes its orientation angles.
+
+# An orientation object which mimics how Zoloto computes its orientation angles.
 class Orientation(NamedTuple):
     rot_x: float
     rot_y: float
     rot_z: float
+
+    @property
+    def roll(self) -> float:
+        return self.rot_x
+
+    @property
+    def pitch(self) -> float:
+        return self.rot_y
+
+    @property
+    def yaw(self) -> float:
+        return self.rot_z
+
+    def yaw_pitch_roll(self) -> tuple[float, float, float]:
+        return self.yaw, self.pitch, self.roll
 
 
 class FaceName(enum.Enum):
@@ -27,6 +46,7 @@ class FaceName(enum.Enum):
     "Top".
     """
 
+    # TODO: rename these in terms of cardinal directions for clarity.  # noqa:T000
     Top = 'top'
     Bottom = 'bottom'
 
@@ -45,24 +65,35 @@ class Token:
     of its corners, which are stored relative to the centre of the cube.
 
     Tokens have 6 `Face`s, all facing outwards and named for their position on a
-    reference cube.
+    reference cube. Which of these have markers on can optionally be specified
+    in the constructor (by default all do).
     """
 
-    def __init__(self, position: Vector, size: float = TOKEN_SIZE) -> None:
+    def __init__(
+        self,
+        position: Vector,
+        size: float = TOKEN_SIZE,
+    ) -> None:
         self.position = position
-        self.corners = {
-            'left-top-front': Vector((-1, 1, -1)) * size,
-            'right-top-front': Vector((1, 1, -1)) * size,
+        self.corners, self.valid_faces = self._init_corners(size)
 
-            'left-bottom-front': Vector((-1, -1, -1)) * size,
-            'right-bottom-front': Vector((1, -1, -1)) * size,
+    def _init_corners(self, size: float) -> tuple[dict[str, Vector], Collection[FaceName]]:
+        return (
+            {
+                'left-top-front': Vector((-1, 1, -1)) * size,
+                'right-top-front': Vector((1, 1, -1)) * size,
 
-            'left-top-rear': Vector((-1, 1, 1)) * size,
-            'right-top-rear': Vector((1, 1, 1)) * size,
+                'left-bottom-front': Vector((-1, -1, -1)) * size,
+                'right-bottom-front': Vector((1, -1, -1)) * size,
 
-            'left-bottom-rear': Vector((-1, -1, 1)) * size,
-            'right-bottom-rear': Vector((1, -1, 1)) * size,
-        }
+                'left-top-rear': Vector((-1, 1, 1)) * size,
+                'right-top-rear': Vector((1, 1, 1)) * size,
+
+                'left-bottom-rear': Vector((-1, -1, 1)) * size,
+                'right-bottom-rear': Vector((1, -1, 1)) * size,
+            },
+            FaceName,
+        )
 
     def rotate(self, matrix: Matrix) -> None:
         """
@@ -81,6 +112,8 @@ class Token:
         space. That means that the "top" face of a token is not necessarily the
         one called "Top".
         """
+        if name not in self.valid_faces:
+            raise ValueError(f"{name} is not a valid face for this token")
         return Face(self, name)
 
     def corners_global(self) -> dict[str, Vector]:
@@ -94,14 +127,50 @@ class Token:
             for name, position in self.corners.items()
         }
 
-    def visible_faces(self, angle_tolerance: float = 75, is_2d: bool = False) -> list[Face]:
+    def visible_faces(self, angle_tolerance: float = DEFAULT_ANGLE_TOLERANCE) -> list[Face]:
         """
         Returns a list of the faces which are visible to the global origin.
         If a token should be considered 2D, only check its front and rear faces.
         """
-        face_names = [FaceName.Front, FaceName.Rear] if is_2d else list(FaceName)
-        faces = [self.face(x) for x in face_names]
+        faces = [self.face(x) for x in self.valid_faces]
         return [f for f in faces if f.is_visible_to_global_origin(angle_tolerance)]
+
+
+class FlatToken(Token):
+    """
+    Represents a 2D fiducial marker which knows its position in space and can be
+    rotated.
+
+    Internally this stores its position in space separately from the positions
+    of its corners, which are stored relative to the centre of the cuboid that
+    represents the marker.
+
+    FlatTokens have one `Face`.
+
+    Instances of this type must have had their proper orientation applied in the
+    world file.
+    """
+
+    def _init_corners(self, size: float) -> tuple[dict[str, Vector], Collection[FaceName]]:
+        # Our wall marker numbering starts on the North wall, so we pick
+        # that as our reference markers (and expect them to have zero
+        # rotation). Their South face (in our terms) is the one facing into
+        # the arena, however as our arena is rotated 90° relative to Webots
+        # this ends up as one of the "side"s of the token box.
+
+        # The dimensions here need to end up matching those passed to the marker
+        # as defined in `protos/Markers/MarkerBase.proto`, however note that our
+        # axes are rotated relative to those in Webots.
+        return (
+            {
+                'right-top-front': Vector((0.0001, size, -size)),
+                'right-bottom-front': Vector((0.0001, -size, -size)),
+
+                'right-top-rear': Vector((0.0001, size, size)),
+                'right-bottom-rear': Vector((0.0001, -size, size)),
+            },
+            [FaceName.Right],
+        )
 
 
 class Face:
@@ -166,19 +235,25 @@ class Face:
         """
         return self.token.position + self.centre()
 
-    def is_visible_to_global_origin(self, angle_tolerance: float = 75) -> bool:
-        if angle_tolerance > 90:
+    def angle_to_global_origin(self) -> float:
+        direction_to_origin = -self.centre_global()
+        normal = self.normal()
+        return vectors.angle_between(direction_to_origin, normal)
+
+    def is_visible_to_global_origin(
+        self,
+        angle_tolerance: float = DEFAULT_ANGLE_TOLERANCE,
+    ) -> bool:
+        if angle_tolerance > NINETY_DEGREES:
             raise ValueError(
-                "Refusing to allow faces with angles > 90 to be visible (asked for {})".format(
+                "Refusing to allow faces with angles > 90° to be visible "
+                "(asked for {} radians, {})".format(
                     angle_tolerance,
+                    math.degrees(angle_tolerance),
                 ),
             )
 
-        direction_to_origin = -self.centre_global()
-        normal = self.normal()
-
-        angle_to_origin = vectors.angle_between(direction_to_origin, normal)
-
+        angle_to_origin = self.angle_to_global_origin()
         return abs(angle_to_origin) < angle_tolerance
 
     def distance(self) -> float:
@@ -213,6 +288,12 @@ class Face:
         return (a + b) / 2
 
     def orientation(self) -> Orientation:
+        # TODO: match this to how Zoloto computes orientation.  # noqa:T000
+        warnings.warn(
+            "Orientation data in the simulator does not match the robot API. "
+            "Either or both may change to resolve this.",
+        )
+
         n_x, n_y, n_z = self.normal().data
 
         rot_y = math.atan(n_x / n_z)
@@ -236,8 +317,4 @@ class Face:
         a_x, a_y, _ = unrotated_midpoint.data
         rot_z = -math.atan2(a_x, a_y)
 
-        return Orientation(
-            math.degrees(-rot_x),
-            math.degrees(rot_y),
-            math.degrees(rot_z),
-        )
+        return Orientation(-rot_x, rot_y, rot_z)
