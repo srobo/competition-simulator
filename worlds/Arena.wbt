@@ -491,6 +491,7 @@ Solid { # Plinth Centre
     }
   ]
   boundingObject USE SHAPE
+  locked TRUE
   name "Plinth Centre"
 }
 Solid { # Plinth North Arm
@@ -508,6 +509,7 @@ Solid { # Plinth North Arm
     }
   ]
   boundingObject USE SHAPE
+  locked TRUE
   name "Plinth North Arm"
 }
 Solid { # Plinth South Arm
@@ -525,6 +527,7 @@ Solid { # Plinth South Arm
     }
   ]
   boundingObject USE SHAPE
+  locked TRUE
   name "Plinth South Arm"
 }
 Solid { # Plinth West Arm
@@ -542,6 +545,7 @@ Solid { # Plinth West Arm
     }
   ]
   boundingObject USE SHAPE
+  locked TRUE
   name "Plinth West Arm"
 }
 Solid { # Plinth East Arm
@@ -559,6 +563,7 @@ Solid { # Plinth East Arm
     }
   ]
   boundingObject USE SHAPE
+  locked TRUE
   name "Plinth East Arm"
 }
 # ---  Corner 0  ---
