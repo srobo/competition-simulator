@@ -81,7 +81,6 @@ jobs:
 
       - name: Run match
         run: |
-          source ./venv/bin/activate
           xvfb-run script/run-comp-match archives 42 ABC --duration 5 --resolution 1280 720
 
       - name: Store archives
