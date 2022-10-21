@@ -26,9 +26,9 @@ def get_name(color):
 
 def get_height(color):
     if color == "B":
-        return 0.055
+        return 0.061
     if color == "S":
-        return 0.055
+        return 0.061
     if color == "G":
         return 0.136
     raise ValueError("Invalid color")

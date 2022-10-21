@@ -16,8 +16,43 @@ PROTO SRToken_Bronze [
           roughness 1
         }
         geometry DEF TOKEN_GEOMETRY Box {
-          size 0.11 0.11 0.11
+          size 0.12 0.12 0.12
         }
+      }
+      TokenMarker {
+        translation 0 0.0601 0
+        name "front"
+        model "F91"
+      }
+      TokenMarker {
+        translation 0 -0.0601 0
+        rotation 0 0 1 3.1416
+        name "back"
+        model "F92"
+      }
+      TokenMarker {
+        translation 0.0601 0 0
+        rotation 0 0 1 -1.5708
+        name "side-1"
+        model "F93"
+      }
+      TokenMarker {
+        translation -0.0601 0 0
+        rotation 0 0 1 1.5708
+        name "side-2"
+        model "F94"
+      }
+      TokenMarker {
+        translation 0 0 0.0601
+        rotation -0.577350 0.577350 0.577350 -2.09439
+        name "top"
+        model "F95"
+      }
+      TokenMarker {
+        translation 0 0 -0.0601
+        rotation -0.577350 -0.577350 0.577350 2.09439
+        name "bottom"
+        model "F96"
       }
     ]
     name IS model
@@ -27,8 +62,5 @@ PROTO SRToken_Bronze [
       density -1
       mass 0.200
     }
-    recognitionColors [
-      1 1 1
-    ]
   }
 }

@@ -568,35 +568,35 @@ Solid { # Plinth East Arm
 }
 # ---  Corner 0  ---
 SRToken_Bronze {
-  translation 2.525 1.100 0.055
+  translation 2.525 1.100 0.061
   model "B0"
 }
 SRToken_Bronze {
-  translation 1.000 1.000 0.055
+  translation 1.000 1.000 0.061
   model "B1"
 }
 SRToken_Bronze {
-  translation 1.550 1.550 0.055
+  translation 1.550 1.550 0.061
   model "B2"
 }
 SRToken_Bronze {
-  translation 0.800 2.225 0.055
+  translation 0.800 2.225 0.061
   model "B3"
 }
 SRToken_Bronze {
-  translation 1.100 2.525 0.055
+  translation 1.100 2.525 0.061
   model "B4"
 }
 SRToken_Silver {
-  translation 2.525 2.525 0.055
+  translation 2.525 2.525 0.061
   model "B5"
 }
 SRToken_Silver {
-  translation 2.325 1.815 0.055
+  translation 2.325 1.815 0.061
   model "B6"
 }
 SRToken_Silver {
-  translation 1.815 2.325 0.055
+  translation 1.815 2.325 0.061
   model "B7"
 }
 SRToken_Gold {
@@ -605,35 +605,35 @@ SRToken_Gold {
 }
 # ---  Corner 1  ---
 SRToken_Bronze {
-  translation -1.100 2.525 0.055
+  translation -1.100 2.525 0.061
   model "B9"
 }
 SRToken_Bronze {
-  translation -1.000 1.000 0.055
+  translation -1.000 1.000 0.061
   model "B10"
 }
 SRToken_Bronze {
-  translation -1.550 1.550 0.055
+  translation -1.550 1.550 0.061
   model "B11"
 }
 SRToken_Bronze {
-  translation -2.225 0.800 0.055
+  translation -2.225 0.800 0.061
   model "B12"
 }
 SRToken_Bronze {
-  translation -2.525 1.100 0.055
+  translation -2.525 1.100 0.061
   model "B13"
 }
 SRToken_Silver {
-  translation -2.525 2.525 0.055
+  translation -2.525 2.525 0.061
   model "B14"
 }
 SRToken_Silver {
-  translation -1.815 2.325 0.055
+  translation -1.815 2.325 0.061
   model "B15"
 }
 SRToken_Silver {
-  translation -2.325 1.815 0.055
+  translation -2.325 1.815 0.061
   model "B16"
 }
 SRToken_Gold {
@@ -642,35 +642,35 @@ SRToken_Gold {
 }
 # ---  Corner 2  ---
 SRToken_Bronze {
-  translation -2.525 -1.100 0.055
+  translation -2.525 -1.100 0.061
   model "B18"
 }
 SRToken_Bronze {
-  translation -1.000 -1.000 0.055
+  translation -1.000 -1.000 0.061
   model "B19"
 }
 SRToken_Bronze {
-  translation -1.550 -1.550 0.055
+  translation -1.550 -1.550 0.061
   model "B20"
 }
 SRToken_Bronze {
-  translation -0.800 -2.225 0.055
+  translation -0.800 -2.225 0.061
   model "B21"
 }
 SRToken_Bronze {
-  translation -1.100 -2.525 0.055
+  translation -1.100 -2.525 0.061
   model "B22"
 }
 SRToken_Silver {
-  translation -2.525 -2.525 0.055
+  translation -2.525 -2.525 0.061
   model "B23"
 }
 SRToken_Silver {
-  translation -2.325 -1.815 0.055
+  translation -2.325 -1.815 0.061
   model "B24"
 }
 SRToken_Silver {
-  translation -1.815 -2.325 0.055
+  translation -1.815 -2.325 0.061
   model "B25"
 }
 SRToken_Gold {
@@ -679,35 +679,35 @@ SRToken_Gold {
 }
 # ---  Corner 3  ---
 SRToken_Bronze {
-  translation 1.100 -2.525 0.055
+  translation 1.100 -2.525 0.061
   model "B27"
 }
 SRToken_Bronze {
-  translation 1.000 -1.000 0.055
+  translation 1.000 -1.000 0.061
   model "B28"
 }
 SRToken_Bronze {
-  translation 1.550 -1.550 0.055
+  translation 1.550 -1.550 0.061
   model "B29"
 }
 SRToken_Bronze {
-  translation 2.225 -0.800 0.055
+  translation 2.225 -0.800 0.061
   model "B30"
 }
 SRToken_Bronze {
-  translation 2.525 -1.100 0.055
+  translation 2.525 -1.100 0.061
   model "B31"
 }
 SRToken_Silver {
-  translation 2.525 -2.525 0.055
+  translation 2.525 -2.525 0.061
   model "B32"
 }
 SRToken_Silver {
-  translation 1.815 -2.325 0.055
+  translation 1.815 -2.325 0.061
   model "B33"
 }
 SRToken_Silver {
-  translation 2.325 -1.815 0.055
+  translation 2.325 -1.815 0.061
   model "B34"
 }
 SRToken_Gold {
