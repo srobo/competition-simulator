@@ -10,7 +10,7 @@ positions = [
     ("S", 2.525, 2.525),  # In the corner
     ("S", 2.325, 1.815),  # Closer silver one to the starting area
     ("S", 1.815, 2.325),  # Further silver one to the starting area
-    ("G", 0.165, 0.435),  # Gold one in the corner
+    ("G", 0.160, 0.435),  # Gold one in the corner
 ]
 
 
