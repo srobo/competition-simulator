@@ -49,7 +49,7 @@ class MarkerInfo(NamedTuple):
             return Token
         if self.object_type == ObjectType.FLAT:
             # See class docstring for how this works and coupling to the proto files
-            return FlatToken
+            return Token  # FlatToken
 
         raise AssertionError("Unknown object type")
 

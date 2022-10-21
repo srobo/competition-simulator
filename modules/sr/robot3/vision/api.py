@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Callable, Iterable, Sequence, TYPE_CHECKING
 
+import ptvsd
 from sr.robot3.coordinates.vectors import Vector
 
 from .image import Rectangle
@@ -10,6 +11,8 @@ from .convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
 
 if TYPE_CHECKING:
     from controller import CameraRecognitionObject
+
+ptvsd.enable_attach()
 
 
 def build_token_info(
@@ -26,9 +29,27 @@ def build_token_info(
         # has increasing X & Y to the right and down respectively.
         position=Vector((-x, y, z)),
     )
+    w_orient = recognition_object.getOrientation()
+    a, b, c, d = w_orient
+    print()
+    print(f"{a:.4g}, {b:.4g}, {c:.4g}, {d:.4g}")
+
+    # Upright: 0.01625, 0.01641, 0.9997, 1.561
+    # roll 90 deg left (counter clockwise): 0.5816, 0.5873, 0.563, 2.108
+    # roll 90 deg right (clockwise): -0.5692, -0.5747, 0.588, 2.07
+    # upside-down: -0.7036, -0.7105, 0.01144, 3.118
+
+    # Viewed from another position
+    # 0.7065, -0.7076, 0.0115, 3.119
+
     token.rotate(rotation_matrix_from_axis_and_angle(
-        WebotsOrientation(*recognition_object.getOrientation()),
+        WebotsOrientation(*w_orient),
     ))
+
+    for name, vector in token.corners.items():
+        print(name, vector)
+
+    print()
 
     return (
         token,

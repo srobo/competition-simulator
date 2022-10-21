@@ -51,7 +51,7 @@ class FaceName(enum.Enum):
     Bottom = 'bottom'
 
     Left = 'left'
-    Right = 'right'
+    Right = 'right'  # North
 
     Front = 'front'
     Rear = 'rear'
