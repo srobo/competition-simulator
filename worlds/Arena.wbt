@@ -2,6 +2,7 @@
 
 EXTERNPROTO "../protos/Markers/WallMarker.proto"
 EXTERNPROTO "../protos/Robot_2022/Robot_2022.proto"
+EXTERNPROTO "../protos/Tokens/SRToken_Gold.proto"
 EXTERNPROTO "../protos/Tokens/TinCan.proto"
 
 WorldInfo {
@@ -408,4 +409,14 @@ Solid {  # West Wall
 TinCan {
   translation 1.6 0 0.05
   tokenName "A Can"
+}
+
+SRToken_Gold {
+  translation -1.6 0 0.13
+  model "gold-1"
+}
+
+SRToken_Gold {
+  translation 0 -1.6 0.13
+  model "gold-2"
 }
