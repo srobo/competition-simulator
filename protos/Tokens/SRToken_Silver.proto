@@ -25,7 +25,7 @@ PROTO SRToken_Silver [
     boundingObject USE TOKEN_GEOMETRY
     physics Physics {
       density -1
-      mass 0.200
+      mass 0.500
     }
     recognitionColors [
       1 1 1
