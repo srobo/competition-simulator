@@ -459,22 +459,22 @@ Starting_Zone {
 Scoring_Zone {
   translation 1.5 -1.5 0.0005
   name "Zone 0 Scoring"
-  cornerColor 0.66 1 0.66
+  cornerColor 0.8 1 0.8
 }
 Scoring_Zone {
   translation -1.5 -1.5 0.0005
   name "Zone 1 Scoring"
-  cornerColor 1 0.75 0.6
+  cornerColor 1 0.85 0.8
 }
 Scoring_Zone {
   translation -1.5 1.5 0.0005
   name "Zone 2 Scoring"
-  cornerColor 1 0.6 1
+  cornerColor 1 0.8 1
 }
 Scoring_Zone {
   translation 1.5 1.5 0.0005
   name "Zone 3 Scoring"
-  cornerColor 1 1 0.6
+  cornerColor 1 1 0.8
 }
 Solid { # Plinth Centre
   translation 0 0 0.0375
