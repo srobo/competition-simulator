@@ -10,7 +10,7 @@ positions = [
     ("S", 2.525, 2.525),  # In the corner
     ("S", 2.325, 1.815),  # Closer silver one to the starting area
     ("S", 1.815, 2.325),  # Further silver one to the starting area
-    ("G", 0.15, 0.4),  # Gold one in the corner
+    ("G", 0.165, 0.435),  # Gold one in the corner
 ]
 
 
@@ -30,7 +30,7 @@ def get_height(color):
     if color == "S":
         return 0.055
     if color == "G":
-        return 0.125
+        return 0.136
     raise ValueError("Invalid color")
 
 
