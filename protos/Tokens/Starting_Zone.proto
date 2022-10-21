@@ -1,0 +1,26 @@
+#VRML_SIM R2022b utf8
+PROTO Starting_Zone [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 0 0 0
+  field SFString name ""
+]
+{
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Shape {
+        appearance DEF STARTING_ZONE_APPEARANCE PBRAppearance {
+          baseColor 1 1 1
+          metalness 0
+          roughness 1
+        }
+        geometry DEF STARTING_ZONE_GEOMETRY Plane {
+          size 1 1
+        }
+      }
+    ]
+    name IS name
+    model IS name
+  }
+}
