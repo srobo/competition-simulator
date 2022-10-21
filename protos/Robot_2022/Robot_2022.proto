@@ -555,10 +555,10 @@ PROTO Robot_2022 [
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
-                rotation 0 0 1 -1.5708
+                rotation 0 0 1 3.1416
                 children [
                   DEF GEO_DS Transform {
-                    rotation -1 -1 -1 -2.0944
+                    rotation 0 1 1 3.14159
                     children [
                       Shape {
                         appearance PBRAppearance {
@@ -608,7 +608,7 @@ PROTO Robot_2022 [
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
-                rotation 0 0 1 -1.5708
+                rotation 0 0 1 3.1416
                 children [
                   USE GEO_DS
                 ]
@@ -623,6 +623,7 @@ PROTO Robot_2022 [
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
+                rotation 0 0 1 -1.5708
                 children [
                   USE GEO_DS
                 ]
@@ -637,7 +638,7 @@ PROTO Robot_2022 [
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
-                rotation 0 0 1 3.1416
+                rotation 0 0 1 1.5708
                 children [
                   USE GEO_DS
                 ]
@@ -652,10 +653,10 @@ PROTO Robot_2022 [
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
-                rotation 0 0 1 -1.5708
+                rotation 0 0 1 3.1416
                 children [
                   Transform {
-                    rotation 0 -1 0 -1.5708
+                    rotation 1 0 0 1.5708
                     children [
                       USE GEO_DS
                     ]
@@ -672,10 +673,10 @@ PROTO Robot_2022 [
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
-                rotation 0 0 1 1.5708
+                rotation 0 1 0 -0.1
                 children [
                   Transform {
-                    rotation 0 -1 0 -1.5708
+                    rotation 1 0 0 1.5708
                     children [
                       USE GEO_DS
                     ]
