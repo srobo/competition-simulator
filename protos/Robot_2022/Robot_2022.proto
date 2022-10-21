@@ -503,6 +503,48 @@ PROTO Robot_2022 [
             directionNoise 0.05
             signalStrengthNoise 0.03
           }
+          Camera {
+            translation -0.02 0 0.12
+            rotation 0 0 1 3.14159265
+            children [
+              Transform {
+                translation 0 0 0.006
+                rotation 0.5773509358554485 0.5773509358554485 0.5773489358556708 2.0944
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0 0 0
+                    }
+                    geometry Cylinder {
+                      height 0.01
+                      radius 0.01
+                    }
+                  }
+                ]
+                translationStep 0.001
+              }
+              Transform {
+                translation -0.02 0 0.005
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 0.4 0.4 0.4
+                      metalness 0
+                    }
+                    geometry Box {
+                      size 0.03 0.03 0.03
+                    }
+                  }
+                ]
+              }
+            ]
+            width 800
+            height 600
+            recognition Recognition {
+              frameThickness 2
+              maxRange 4
+            }
+          }
           Compass {
             name "robot compass"
           }

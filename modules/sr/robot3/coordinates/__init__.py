@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from .polar import PolarCoord, polar_from_cartesian
 from .vectors import Vector
-from .coordinates import Point, Cartesian
+from .cartesian import ThreeDCoordinates
+from .twin_angle import Spherical, spherical_from_cartesian
 
 __all__ = (
-    'Point',
     'Vector',
-    'Cartesian',
-    'PolarCoord',
-    'polar_from_cartesian',
+    'ThreeDCoordinates',
+    'Spherical',
+    'spherical_from_cartesian',
 )

@@ -15,23 +15,26 @@ if TYPE_CHECKING:
 def build_token_info(
     recognition_object: CameraRecognitionObject,
     size: float,
+    token_class: type[Token],
 ) -> tuple[Token, Rectangle, CameraRecognitionObject]:
-    x, y, z = recognition_object.get_position()
+    # Webots' axes are different to ours. Account for that in the unpacking
+    z, x, y = recognition_object.getPosition()
 
-    token = Token(
+    token = token_class(
         size=size,
-        # Webots Z is inverted with regard to the one we want.
-        position=Vector((x, y, -z)),
+        # Webots X and Y is inverted with regard to the one we want -- Zoloto
+        # has increasing X & Y to the right and down respectively.
+        position=Vector((-x, y, z)),
     )
     token.rotate(rotation_matrix_from_axis_and_angle(
-        WebotsOrientation(*recognition_object.get_orientation()),
+        WebotsOrientation(*recognition_object.getOrientation()),
     ))
 
     return (
         token,
         Rectangle(
-            recognition_object.get_position_on_image(),
-            recognition_object.get_size_on_image(),
+            recognition_object.getPositionOnImage(),
+            recognition_object.getSizeOnImage(),
         ),
         recognition_object,
     )
@@ -40,6 +43,7 @@ def build_token_info(
 def tokens_from_objects(
     objects: Iterable[CameraRecognitionObject],
     get_size: Callable[[CameraRecognitionObject], float],
+    get_token_class: Callable[[CameraRecognitionObject], type[Token]],
 ) -> Sequence[tuple[Token, CameraRecognitionObject]]:
     """
     Constructs tokens from the given recognised objects, ignoring any which are
@@ -47,7 +51,10 @@ def tokens_from_objects(
     """
 
     tokens_with_info = sorted(
-        (build_token_info(o, get_size(o)) for o in objects),
+        (
+            build_token_info(x, get_size(x), get_token_class(x))
+            for x in objects
+        ),
         key=lambda x: x[0].position.magnitude(),
     )
 
