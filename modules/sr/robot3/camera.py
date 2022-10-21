@@ -4,10 +4,16 @@ import re
 import enum
 import functools
 import threading
-from typing import Container, Collection, NamedTuple
+from typing import Container, NamedTuple
 
 from controller import Robot, Camera as WebotCamera
-from sr.robot3.vision import Face, FaceName, Orientation, tokens_from_objects
+from sr.robot3.vision import (
+    Face,
+    Token,
+    FlatToken,
+    Orientation,
+    tokens_from_objects,
+)
 from sr.robot3.coordinates import (
     Vector,
     Spherical,
@@ -38,19 +44,12 @@ class MarkerInfo(NamedTuple):
         # Webots uses metres.
         return self.size_mm / 1000
 
-    def valid_faces(self) -> Collection[FaceName]:
+    def get_token_class(self) -> type[Token]:
         if self.object_type == ObjectType.BOX:
-            return FaceName
+            return Token
         if self.object_type == ObjectType.FLAT:
-            # Assume flat markers have had their proper orientation applied in
-            # the world file.
-            #
-            # Our wall marker numbering starts on the North wall, so we pick
-            # that as our reference markers (and expect them to have zero
-            # rotation). Their South face (in our terms) is the one facing into
-            # the arena, however as our arena is rotated 90° relative to Webots
-            # this ends up as one of the "side"s of the token box.
-            return [FaceName.Right]
+            # See class docstring for how this works and coupling to the proto files
+            return FlatToken
 
         raise AssertionError("Unknown object type")
 
@@ -194,7 +193,7 @@ class Camera:
         tokens = tokens_from_objects(
             object_infos.keys(),
             lambda o: object_infos[o].size_m,
-            lambda o: object_infos[o].valid_faces(),
+            lambda o: object_infos[o].get_token_class(),
         )
 
         when = self._webot.getTime()

@@ -3,6 +3,9 @@
 PROTO MarkerBase [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
+  # Marker sizes are assumed to be flat squares. If this changes, or the
+  # dimension which is the "thin" one changes, then changes will be needed in
+  # our vision wrappers (see `modules/sr/robot3/vision/tokens.py`).
   field SFVec3f {0.1 0.0001 0.1, 0.2 0.0001 0.2, 0.25 0.0001 0.25} size 0.1 0.0001 0.1
   field SFString name ""
   field SFString model ""

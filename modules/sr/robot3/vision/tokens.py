@@ -71,24 +71,28 @@ class Token:
     def __init__(
         self,
         position: Vector,
-        valid_faces: Collection[FaceName] = FaceName,
         size: float = TOKEN_SIZE,
     ) -> None:
         self.position = position
-        self.valid_faces = valid_faces
-        self.corners = {
-            'left-top-front': Vector((-1, 1, -1)) * size,
-            'right-top-front': Vector((1, 1, -1)) * size,
+        self.corners, self.valid_faces = self._init_corners(size)
 
-            'left-bottom-front': Vector((-1, -1, -1)) * size,
-            'right-bottom-front': Vector((1, -1, -1)) * size,
+    def _init_corners(self, size: float) -> tuple[dict[str, Vector], Collection[FaceName]]:
+        return (
+            {
+                'left-top-front': Vector((-1, 1, -1)) * size,
+                'right-top-front': Vector((1, 1, -1)) * size,
 
-            'left-top-rear': Vector((-1, 1, 1)) * size,
-            'right-top-rear': Vector((1, 1, 1)) * size,
+                'left-bottom-front': Vector((-1, -1, -1)) * size,
+                'right-bottom-front': Vector((1, -1, -1)) * size,
 
-            'left-bottom-rear': Vector((-1, -1, 1)) * size,
-            'right-bottom-rear': Vector((1, -1, 1)) * size,
-        }
+                'left-top-rear': Vector((-1, 1, 1)) * size,
+                'right-top-rear': Vector((1, 1, 1)) * size,
+
+                'left-bottom-rear': Vector((-1, -1, 1)) * size,
+                'right-bottom-rear': Vector((1, -1, 1)) * size,
+            },
+            FaceName,
+        )
 
     def rotate(self, matrix: Matrix) -> None:
         """
@@ -129,6 +133,43 @@ class Token:
         """
         faces = [self.face(x) for x in self.valid_faces]
         return [f for f in faces if f.is_visible_to_global_origin(angle_tolerance)]
+
+
+class FlatToken(Token):
+    """
+    Represents a 2D fiducial marker which knows its position in space and can be
+    rotated.
+
+    Internally this stores its position in space separately from the positions
+    of its corners, which are stored relative to the centre of the cuboid that
+    represents the marker.
+
+    FlatTokens have one `Face`.
+
+    Instances of this type must have had their proper orientation applied in the
+    world file.
+    """
+
+    def _init_corners(self, size: float) -> tuple[dict[str, Vector], Collection[FaceName]]:
+        # Our wall marker numbering starts on the North wall, so we pick
+        # that as our reference markers (and expect them to have zero
+        # rotation). Their South face (in our terms) is the one facing into
+        # the arena, however as our arena is rotated 90° relative to Webots
+        # this ends up as one of the "side"s of the token box.
+
+        # The dimensions here need to end up matching those passed to the marker
+        # as defined in `protos/Markers/MarkerBase.proto`, however note that our
+        # axes are rotated relative to those in Webots.
+        return (
+            {
+                'right-top-front': Vector((0.0001, size, -size)),
+                'right-bottom-front': Vector((0.0001, -size, -size)),
+
+                'right-top-rear': Vector((0.0001, size, size)),
+                'right-bottom-rear': Vector((0.0001, -size, size)),
+            },
+            [FaceName.Right],
+        )
 
 
 class Face:
