@@ -476,7 +476,7 @@ Scoring_Zone {
   name "Zone 3 Scoring"
   cornerColor 1 1 0.6
 }
-Solid { # Centre
+Solid { # Plinth Centre
   translation 0 0 0.0375
   children [
     DEF SHAPE Shape {
@@ -491,9 +491,9 @@ Solid { # Centre
     }
   ]
   boundingObject USE SHAPE
-  name "Platform"
+  name "Plinth Centre"
 }
-Solid { # North Barrier
+Solid { # Plinth North Arm
   translation 0 -0.6375 0.0375
   children [
     DEF SHAPE Shape {
@@ -508,9 +508,9 @@ Solid { # North Barrier
     }
   ]
   boundingObject USE SHAPE
-  name "North Barrier"
+  name "Plinth North Arm"
 }
-Solid { # South Barrier
+Solid { # Plinth South Arm
   translation 0 0.6375 0.0375
   children [
     DEF SHAPE Shape {
@@ -525,9 +525,9 @@ Solid { # South Barrier
     }
   ]
   boundingObject USE SHAPE
-  name "South Barrier"
+  name "Plinth South Arm"
 }
-Solid { # East Barrier
+Solid { # Plinth West Arm
   translation 0.6375 0 0.0375
   children [
     DEF SHAPE Shape {
@@ -542,9 +542,9 @@ Solid { # East Barrier
     }
   ]
   boundingObject USE SHAPE
-  name "East Barrier"
+  name "Plinth West Arm"
 }
-Solid { # West Barrier
+Solid { # Plinth East Arm
   translation -0.625 0 0.0375
   children [
     DEF SHAPE Shape {
@@ -559,7 +559,7 @@ Solid { # West Barrier
     }
   ]
   boundingObject USE SHAPE
-  name "West Barrier"
+  name "Plinth East Arm"
 }
 # ---  Corner 0  ---
 SRToken_Bronze {
