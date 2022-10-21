@@ -16,6 +16,6 @@ PROTO WallMarker [
     name IS name
     model IS model
     texture_url IS texture_url
-    size 0.25 0.0001 0.25
+    size 0.2 0.0001 0.2
   }
 }
