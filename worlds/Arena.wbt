@@ -443,38 +443,46 @@ Solid {  # West Wall
 Starting_Zone {
   translation 0.5 -2.375 0.001
   name "Zone 0 Starting"
+  locked TRUE
 }
 Starting_Zone {
   translation -2.375 -0.5 0.001
   name "Zone 1 Starting"
+  locked TRUE
 }
 Starting_Zone {
   translation -0.5 2.375 0.001
   name "Zone 2 Starting"
+  locked TRUE
 }
 Starting_Zone {
   translation 2.375 0.5 0.001
   name "Zone 3 Starting"
+  locked TRUE
 }
 Scoring_Zone {
   translation 1.5 -1.5 0.0005
   name "Zone 0 Scoring"
   cornerColor 0.8 1 0.8
+  locked TRUE
 }
 Scoring_Zone {
   translation -1.5 -1.5 0.0005
   name "Zone 1 Scoring"
   cornerColor 1 0.85 0.8
+  locked TRUE
 }
 Scoring_Zone {
   translation -1.5 1.5 0.0005
   name "Zone 2 Scoring"
   cornerColor 1 0.8 1
+  locked TRUE
 }
 Scoring_Zone {
   translation 1.5 1.5 0.0005
   name "Zone 3 Scoring"
   cornerColor 1 1 0.8
+  locked TRUE
 }
 Solid { # Plinth Centre
   translation 0 0 0.0375
