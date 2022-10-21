@@ -1,24 +1,20 @@
 #VRML_SIM R2022b utf8
 
+EXTERNPROTO "../protos/Markers/MarkerBase.proto"
+EXTERNPROTO "../protos/Markers/WallMarker.proto"
 EXTERNPROTO "../protos/Robot_2022/Robot_2022.proto"
 EXTERNPROTO "../protos/Tokens/TinCan.proto"
+EXTERNPROTO "../protos/Tokens/SRToken_Gold.proto"
 
 WorldInfo {
   basicTimeStep 8
 }
 Viewpoint {
-  # rotation 0.0 0.0 1.0 0.0
-  # the combined rotation of 0, -1, 0, 1.5708 & -1, 0, 0, 1
-  orientation 0.43231 0.43231 -0.79134 1.80272
-  position 0 7.95 12.0
-  # top view:
-  #orientation -0.57735 -0.57735 -0.57735 2.09440
-  #position 0 20.5 0
+  orientation 0.4323093801120243 0.4323093801120243 -0.7913388653000145 1.80272
+  position 0 7.95 12
   near 0.1
 }
 DEF SUN DirectionalLight {
-  color 1 1 1
-  direction 0 0 -1
   intensity 3.5
   castShadows TRUE
 }
@@ -28,40 +24,65 @@ DEF AMBIENT Background {
   ]
   luminosity 0.35
 }
-
 DEF ROBOT-0 Robot_2022 {
-  translation 2.0 0 0
+  hidden position_0_0 35.203442170428886
+  hidden position_0_1 32.54253278108413
+  hidden position_0_2 -5.546809176272807
+  hidden position2_0_2 19.064265204749095
+  hidden position3_0_2 -26.389280436564555
+  hidden position_0_3 -42.95605398286923
+  hidden position2_0_3 8.53576874515556
+  hidden position3_0_3 61.21022889532942
+  hidden position_0_4 -1.0615344698303336e-14
+  hidden position_0_5 1.0534715413085792e-14
+  hidden linearVelocity_0 -2.635572461075075e-15 -4.5448563169336505e-15 -1.6758083390568402e-16
+  hidden angularVelocity_0 2.349051303456262e-16 3.5075185939349804e-16 -3.967623717515568e-15
+  hidden rotation_2 -0.2302934967662998 0.6880993485503483 0.6881018760850292 2.688900018284503
+  hidden linearVelocity_2 1.85144712994247e-15 3.349873062177238e-15 -4.268453925660889e-17
+  hidden angularVelocity_2 -5.820202906523336e-15 2.8917517676416997e-15 -1.1906509379742061e-15
+  hidden rotation_4 0.74582547769368 0.47103223183714193 0.4710339620383175 4.423237246273951
+  hidden linearVelocity_4 -1.707078623358909e-15 -2.960201221325263e-15 -8.644629181555988e-17
+  hidden angularVelocity_4 6.432278041498004e-16 -3.962753182347666e-16 -3.96681090537491e-15
+  hidden rotation_6 0.3638503328218298 0.45914852262113637 -0.8104292501386358 1.3740208436302972
+  hidden linearVelocity_6 9.21837478936368e-16 -1.5825609605587007e-15 -8.412111584274439e-16
+  hidden angularVelocity_6 1.97818423056338e-13 1.1522869636127268e-13 -4.9285200274198406e-29
+  hidden rotation_7 -0.521058328047854 0.8525148729625373 0.041431994275486286 1.9057629542419872
+  hidden linearVelocity_7 -5.649476424076449e-15 1.7708664879794217e-15 -1.2941710129652982e-17
+  hidden angularVelocity_7 -2.2135641205993913e-13 -7.061784949568201e-13 1.1613885892963085e-28
+  hidden linearVelocity_10 7.315706053538166e-16 1.857101068877553e-15 -2.96059473233375e-17
+  hidden angularVelocity_10 -7.02558882233176e-15 4.246772244683483e-15 -3.41552196424089e-15
+  hidden linearVelocity_11 3.126971126942299e-15 -2.085384701136567e-15 3.1086244689504376e-16
+  hidden angularVelocity_11 -5.8642115881437144e-15 2.5987976083789697e-15 -5.67686167313326e-15
+  translation 0.7523657761700041 -0.542366670617917 0.0001209270658934225
+  rotation 0.016223901804315717 0.0618416594824755 -0.9979541042366114 0.5141346554571122
   controller "sr_controller"
   model "Robot0"
   flagColour 1 0 1
-  controllerArgs "0"
+  controllerArgs [
+    "0"
+  ]
 }
-
 Robot {
   translation 0 0 -1
-  name "comp-supervisor"
-  model "CompetitionSupervisor"
-  description "A supervisor 'robot' to help run the competition."
-  controller "competition_supervisor"
-  supervisor TRUE
   children [
-    # this is a hack to detect if we are running on version 2020b
     Connector {
       name "2021a-compatibility"
       type "passive"
     }
   ]
+  name "comp-supervisor"
+  model "CompetitionSupervisor"
+  description "A supervisor 'robot' to help run the competition."
+  controller "competition_supervisor"
+  supervisor TRUE
 }
-
 DEF LIGHT_CTRL Robot {
-  translation 0 0 0
   name "lighting_controller"
   description "A supervisor 'robot' to handle modifying the arena lighting throughout the match"
   controller "lighting_controller"
   supervisor TRUE
 }
-
-Solid {  # Floor
+Solid {
   translation 0 0 -0.002
   children [
     DEF FLOOR Shape {
@@ -78,40 +99,15 @@ Solid {  # Floor
   name "Floor"
   boundingObject USE FLOOR
 }
-Solid {  # Wall markers
+Solid {
   children [
-    DEF WALL_MARKER Solid {
+    WallMarker {
       translation 2.154 -2.8749 0.175
-      rotation 0 0 1 0
-      children [
-        Shape {
-          appearance DEF APP_FLOOR PBRAppearance {
-            baseColorMap ImageTexture {
-              url [
-                "../textures/arena-markers/0.png"
-              ]
-              repeatS FALSE
-              repeatT FALSE
-            }
-            roughness 1
-            metalness 0
-          }
-          geometry DEF WALL_MARKER_GEOMETRY Box {
-            size 0.25 0.0001 0.25
-          }
-        }
-      ]
-      name "A0"
+      name "F0"
       model "F0"
-      boundingObject USE WALL_MARKER_GEOMETRY
-      locked TRUE
-      recognitionColors [
-        1 1 1
-      ]
     }
     DEF WALL_MARKER Solid {
       translation 1.436 -2.8749 0.175
-      rotation 0 0 1 0
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -140,7 +136,6 @@ Solid {  # Wall markers
     }
     DEF WALL_MARKER Solid {
       translation 0.718 -2.8749 0.175
-      rotation 0 0 1 0
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -169,7 +164,6 @@ Solid {  # Wall markers
     }
     DEF WALL_MARKER Solid {
       translation 0 -2.8749 0.175
-      rotation 0 0 1 0
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -198,7 +192,6 @@ Solid {  # Wall markers
     }
     DEF WALL_MARKER Solid {
       translation -0.718 -2.8749 0.175
-      rotation 0 0 1 0
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -227,7 +220,6 @@ Solid {  # Wall markers
     }
     DEF WALL_MARKER Solid {
       translation -1.436 -2.8749 0.175
-      rotation 0 0 1 0
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -256,7 +248,6 @@ Solid {  # Wall markers
     }
     DEF WALL_MARKER Solid {
       translation -2.154 -2.8749 0.175
-      rotation 0 0 1 0
       children [
         Shape {
           appearance DEF APP_FLOOR PBRAppearance {
@@ -574,7 +565,7 @@ Solid {  # Wall markers
       ]
     }
     DEF WALL_MARKER Solid {
-      translation -0 2.8749 0.175
+      translation 0 2.8749 0.175
       rotation 0 0 1 3.1416
       children [
         Shape {
@@ -895,7 +886,7 @@ Solid {  # Wall markers
   ]
   name "Wall markers"
 }
-Solid {  # North Wall
+Solid {
   translation 0 -2.95 0.15
   children [
     DEF SHAPE Shape {
@@ -909,10 +900,10 @@ Solid {  # North Wall
       }
     }
   ]
-  boundingObject USE SHAPE
   name "North Wall"
+  boundingObject USE SHAPE
 }
-Solid {  # South Wall
+Solid {
   translation 0 2.95 0.15
   children [
     DEF SHAPE Shape {
@@ -926,10 +917,10 @@ Solid {  # South Wall
       }
     }
   ]
-  boundingObject USE SHAPE
   name "South Wall"
+  boundingObject USE SHAPE
 }
-Solid {  # East Wall
+Solid {
   translation -2.95 0 0.15
   children [
     DEF SHAPE Shape {
@@ -943,10 +934,10 @@ Solid {  # East Wall
       }
     }
   ]
-  boundingObject USE SHAPE
   name "East Wall"
+  boundingObject USE SHAPE
 }
-Solid {  # West Wall
+Solid {
   translation 2.95 0 0.15
   children [
     DEF SHAPE Shape {
@@ -960,11 +951,22 @@ Solid {  # West Wall
       }
     }
   ]
-  boundingObject USE SHAPE
   name "West Wall"
+  boundingObject USE SHAPE
+}
+TinCan {
+  translation 1.5945196913652593 0.022618977608252825 0.04797056999999999
+  rotation 1.810374681692674e-17 1.850107724995754e-17 -0.9999999999999999 0.37660756077766644
+  tokenName "A Can"
+}
+SRToken_Gold {
+  translation 1.5060764381876565e-17 -7.462266764242417e-20 0.12798037999999995
+  rotation -0.005091113008906346 -0.006109335610712801 0.9999683777933811 1.9355395366714312e-16
+  model "B98"
 }
 
-TinCan {
-  translation 1.6 0 0.05
-  tokenName "A Can"
+SRToken_Gold {
+  translation 1 0 0
+  rotation -0.005091113008906346 -0.006109335610712801 0.9999683777933811 1.9355395366714312e-16
+  model "B99"
 }

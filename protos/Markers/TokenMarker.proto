@@ -1,0 +1,21 @@
+#VRML_SIM R2022b utf8
+
+EXTERNPROTO "./MarkerBase.proto"
+
+PROTO TokenMarker [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFString name ""
+  field SFString model ""
+  field SFNode physics NULL
+]
+{
+  MarkerBase {
+    translation IS translation
+    rotation IS rotation
+    name IS name
+    model IS model
+    physics IS physics
+    size 0.1 0.0001 0.1
+  }
+}

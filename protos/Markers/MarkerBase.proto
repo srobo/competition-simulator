@@ -1,0 +1,42 @@
+#VRML_SIM R2022b utf8
+
+PROTO MarkerBase [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFVec3f {0.1 0.0001 0.1, 0.25 0.0001 0.25} size 0.1 0.0001 0.1
+  field SFString name ""
+  field SFString model ""
+  field SFNode physics NULL
+]
+{
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Shape {
+        appearance PBRAppearance {
+          baseColorMap ImageTexture {
+            url [
+              "../../textures/arena-markers/0.png"
+            ]
+            repeatS FALSE
+            repeatT FALSE
+          }
+          roughness 1
+          metalness 0
+        }
+        geometry DEF MARKER_GEOMETRY Box {
+          size IS size
+        }
+      }
+    ]
+    name IS name
+    model IS model
+    boundingObject USE MARKER_GEOMETRY
+    physics IS physics
+    locked TRUE
+    recognitionColors [
+      1 1 1
+    ]
+  }
+}
