@@ -1,0 +1,26 @@
+#VRML_SIM R2022b utf8
+PROTO Scoring_Zone [
+  field SFVec3f translation 0 0 0
+  field SFString name ""
+  field SFColor cornerColor 1 1 1
+]
+{
+  Solid {
+    translation IS translation
+    rotation 0 0 0 0
+    children [
+      Shape {
+        appearance DEF SCORING_ZONE_APPEARANCE PBRAppearance {
+          baseColor IS cornerColor
+          metalness 0
+          roughness 1
+        }
+        geometry DEF SCORING_ZONE_GEOMETRY Plane {
+          size 3 3
+        }
+      }
+    ]
+    name IS name
+    model IS name
+  }
+}

@@ -2,7 +2,7 @@
 
 EXTERNPROTO "../Markers/TokenMarker.proto"
 
-PROTO SRToken_Silver [
+PROTO SRToken_Bronze [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
   field SFString model ""
@@ -14,7 +14,7 @@ PROTO SRToken_Silver [
     children [
       Shape {
         appearance DEF TOKEN_APPEARANCE PBRAppearance {
-          baseColor 0.7 0.7 0.7
+          baseColor 0.7 0.55 0.35
           metalness 0
           roughness 1
         }
@@ -63,7 +63,7 @@ PROTO SRToken_Silver [
     boundingObject USE TOKEN_GEOMETRY
     physics Physics {
       density -1
-      mass 0.500
+      mass 0.200
     }
   }
 }
