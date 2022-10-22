@@ -22,5 +22,6 @@ PROTO Scoring_Zone [
     ]
     name IS name
     model IS name
+    locked TRUE
   }
 }
