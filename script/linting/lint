@@ -6,4 +6,4 @@ if [ -z "$FLAKE8" ]; then
     FLAKE8=flake8
 fi
 
-exec "$FLAKE8" $ROOT/controllers $ROOT/modules $ROOT/stubs $ROOT/worlds "$@"
+exec "$FLAKE8" $ROOT/controllers $ROOT/modules $ROOT/worlds "$@"

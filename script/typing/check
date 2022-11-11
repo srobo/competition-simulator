@@ -2,10 +2,10 @@
 
 ROOT=$(dirname $(dirname  $(dirname $0)))
 
-export PYTHONPATH=$ROOT/stubs:$ROOT/modules
+export PYTHONPATH=$ROOT/modules
 
 if [ -z "$MYPY" ]; then
     MYPY=mypy
 fi
 
-exec "$MYPY" $ROOT/controllers/* $ROOT/modules $ROOT/stubs "$@"
+exec "$MYPY" $ROOT/controllers/* $ROOT/modules "$@"
