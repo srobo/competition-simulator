@@ -196,6 +196,15 @@ class Robot:
         return self.metadata.zone
 
     @property
+    def is_simulated(self) -> bool:
+        """
+        Determine whether the robot is simulated.
+
+        :returns: True if the robot is simulated. False otherwise.
+        """
+        return True
+
+    @property
     def metadata(self) -> metadata.Metadata:
         return self._metadata
 
