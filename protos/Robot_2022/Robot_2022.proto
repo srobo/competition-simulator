@@ -160,7 +160,7 @@ PROTO Robot_2022 [
                   Shape {
                     appearance USE BODY_COLOUR
                     geometry Box {
-                      size 0.03 0.33 0.012
+                      size 0.03 0.4 0.012
                     }
                   }
                 ]
@@ -177,23 +177,23 @@ PROTO Robot_2022 [
                 ]
               }
               DEF body_left_arm Transform {
-                translation -0.075 -0.1525 0.036
+                translation -0.0681 -0.1875 0.036
                 children [
                   Shape {
                     appearance USE BODY_COLOUR
                     geometry Box {
-                      size 0.12 0.025 0.024
+                      size 0.106 0.025 0.024
                     }
                   }
                 ]
               }
               DEF body_right_arm Transform {
-                translation -0.075 0.1525 0.036
+                translation -0.0681 0.1875 0.036
                 children [
                   Shape {
                     appearance USE BODY_COLOUR
                     geometry Box {
-                      size 0.12 0.025 0.024
+                      size 0.106 0.025 0.024
                     }
                   }
                 ]
@@ -206,7 +206,7 @@ PROTO Robot_2022 [
         translation -0.1 0 0.0025
         children [
           DEF LEFT_CASTER Transform {
-            translation 0 0.15 0
+            translation 0 0.187 0
             children [
               DEF CASTER_JOINT BallJoint {
                 jointParameters BallJointParameters {
@@ -257,7 +257,7 @@ PROTO Robot_2022 [
             ]
           }
           DEF RIGHT_CASTER Transform {
-            translation 0 -0.15 0
+            translation 0 -0.187 0
             children [
               DEF CASTER_JOINT BallJoint {
                 jointParameters BallJointParameters {
@@ -293,7 +293,7 @@ PROTO Robot_2022 [
                 }
                 geometry Cylinder {
                   radius 0.004
-                  height 0.3
+                  height 0.37
                   subdivision 12
                   top FALSE
                   bottom FALSE
@@ -302,7 +302,7 @@ PROTO Robot_2022 [
             ]
             name "Support rod 1"
             boundingObject DEF SUPPORT_ROD_GEO Box {
-              size 0.007 0.007 0.3
+              size 0.007 0.007 0.37
             }
             physics Physics {
               density 8000  # steel
@@ -321,7 +321,7 @@ PROTO Robot_2022 [
             }
           }
           DEF GRABBER_LEFT Transform {
-            translation -0.055 -0.13 0
+            translation -0.055 -0.165 0
             children [
               SliderJoint {
                 jointParameters JointParameters {
@@ -347,18 +347,39 @@ PROTO Robot_2022 [
                 endPoint Solid {
                   children [
                     DEF GRIPPER_ARM Transform {
-                      translation -0.065 0 0
+                      translation 0 0 0
                       children [
-                        Shape {
-                          appearance PBRAppearance {
-                            baseColor 0.25 0.35 0.235
-                            roughness 1
-                            metalness 0
-                          }
-                          geometry Box {
-                            size 0.2 0.012 0.05
-                          }
-                        }
+                        DEF GRIPPER_GEOMETRY Group {
+                          children [
+                            DEF long_bit Transform {
+                              translation -0.12 0 0.075
+                              children [
+                                Shape {
+                                  appearance DEF GRABBER_COLOUR PBRAppearance {
+                                    baseColor 0.25 0.35 0.235
+                                    roughness 1
+                                    metalness 0
+                                  }
+                                  geometry Box {
+                                    size 0.16 0.012 0.05
+                                  }
+                                }
+                              ]
+                            }
+                            DEF bit_with_rails Transform {
+                              translation 0 0 0.0425
+                              children [
+                                Shape {
+                                  appearance USE GRABBER_COLOUR
+                                  geometry Box {
+                                    size 0.08 0.012 0.115
+                                  }
+                                }
+                              ]
+                            }
+
+                        ]
+                      }
                       ]
                     }
                     DEF SLIDE_BEARINGS Group {
@@ -392,7 +413,7 @@ PROTO Robot_2022 [
                     }
                   ]
                   name "Gripper slider 1"
-                  boundingObject USE GRIPPER_ARM
+                  boundingObject USE GRIPPER_GEOMETRY
                   physics Physics {
                     # wood = ~700, leave at default
                   }
@@ -401,7 +422,7 @@ PROTO Robot_2022 [
             ]
           }
           DEF GRABBER_RIGHT Transform {
-            translation -0.055 0.13 0
+            translation -0.055 0.165 0
             children [
               SliderJoint {
                 jointParameters JointParameters {
@@ -435,7 +456,7 @@ PROTO Robot_2022 [
                     }
                   ]
                   name "Gripper slider 2"
-                  boundingObject USE GRIPPER_ARM
+                  boundingObject USE GRIPPER_GEOMETRY
                   physics Physics {
                     # wood = ~700, leave at default
                   }
@@ -551,7 +572,7 @@ PROTO Robot_2022 [
           DEF DISTANCE_SENSORS Group {
             children [
               DEF front_left DistanceSensor {
-                translation -0.122 -0.152 0.07
+                translation -0.122 -0.187 0.07
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
@@ -604,7 +625,7 @@ PROTO Robot_2022 [
                 ]
               }
               DEF front_right DistanceSensor {
-                translation -0.122 0.152 0.07
+                translation -0.122 0.187 0.07
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
