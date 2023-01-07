@@ -495,7 +495,7 @@ Solid { # Plinth Centre
   name "Plinth Centre"
 }
 Solid { # Plinth North Arm
-  translation 0 -0.6375 0.0375
+  translation 0 -0.65 0.0375
   children [
     DEF SHAPE Shape {
       appearance PBRAppearance {
@@ -504,7 +504,7 @@ Solid { # Plinth North Arm
         metalness 0
       }
       geometry Box {
-        size 0.05 0.725 0.075
+        size 0.05 0.7 0.075
       }
     }
   ]
@@ -513,7 +513,7 @@ Solid { # Plinth North Arm
   name "Plinth North Arm"
 }
 Solid { # Plinth South Arm
-  translation 0 0.6375 0.0375
+  translation 0 0.65 0.0375
   children [
     DEF SHAPE Shape {
       appearance PBRAppearance {
@@ -522,7 +522,7 @@ Solid { # Plinth South Arm
         metalness 0
       }
       geometry Box {
-        size 0.05 0.725 0.075
+        size 0.05 0.7 0.075
       }
     }
   ]
@@ -531,7 +531,7 @@ Solid { # Plinth South Arm
   name "Plinth South Arm"
 }
 Solid { # Plinth West Arm
-  translation 0.6375 0 0.0375
+  translation 0.65 0 0.0375
   children [
     DEF SHAPE Shape {
       appearance PBRAppearance {
@@ -540,7 +540,7 @@ Solid { # Plinth West Arm
         metalness 0
       }
       geometry Box {
-        size 0.725 0.05 0.075
+        size 0.7 0.05 0.075
       }
     }
   ]
@@ -549,7 +549,7 @@ Solid { # Plinth West Arm
   name "Plinth West Arm"
 }
 Solid { # Plinth East Arm
-  translation -0.625 0 0.0375
+  translation -0.65 0 0.0375
   children [
     DEF SHAPE Shape {
       appearance PBRAppearance {
@@ -558,7 +558,7 @@ Solid { # Plinth East Arm
         metalness 0
       }
       geometry Box {
-        size 0.725 0.05 0.075
+        size 0.7 0.05 0.075
       }
     }
   ]
