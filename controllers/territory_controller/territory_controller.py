@@ -5,7 +5,7 @@ import enum
 import struct
 import logging
 import collections
-from typing import Tuple, Mapping, Callable
+from typing import Mapping, Callable
 from pathlib import Path
 from collections import defaultdict
 from dataclasses import dataclass
@@ -489,7 +489,9 @@ class TerritoryController:
         receive_time: float,
     ) -> None:
         try:
-            robot_id, is_conclude = struct.unpack("!BB", packet)  # type: Tuple[int, int]
+            robot_id: int
+            is_conclude: int
+            robot_id, is_conclude = struct.unpack("!BB", packet)
             claimant = Claimant(robot_id)
             operation_args = (station_code, claimant, receive_time)
             if is_conclude:
