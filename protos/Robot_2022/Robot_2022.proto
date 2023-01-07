@@ -515,14 +515,6 @@ PROTO Robot_2022 [
       DEF SENSORS Transform {
         translation 0 0 0
         children [
-          Receiver {
-            type "radio"
-            name "robot receiver"
-            bufferSize 30
-            channel 1
-            directionNoise 0.05
-            signalStrengthNoise 0.03
-          }
           Camera {
             translation -0.02 0 0.16
             rotation -0.1246747 0 0.9921977 3.1415927
