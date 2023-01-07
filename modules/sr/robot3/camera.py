@@ -184,8 +184,11 @@ class Camera:
         object_infos = {}
 
         for recognition_object in self.camera.getRecognitionObjects():
+            recognition_model = recognition_object.getModel()
+            if isinstance(recognition_model, bytes):
+                recognition_model = recognition_model.decode(errors='replace')
             marker_info = parse_marker_info(
-                recognition_object.getModel().decode(errors='replace'),
+                recognition_model,
             )
             if marker_info:
                 object_infos[recognition_object] = marker_info

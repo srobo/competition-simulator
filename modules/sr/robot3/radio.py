@@ -54,7 +54,7 @@ class TargetInfo(NamedTuple):
     owned_by: Claimant | None
 
 
-def parse_radio_message(message: bytes, zone: int) -> TargetInfo | None:
+def parse_radio_message(message: bytes | str, zone: int) -> TargetInfo | None:
     try:
         station_code, owned_by = struct.unpack("!2sb", message)
         return TargetInfo(
