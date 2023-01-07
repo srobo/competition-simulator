@@ -193,6 +193,14 @@ def get_simulation_run_mode(supervisor: Supervisor) -> SimulationMode:
         return Supervisor.SIMULATION_MODE_FAST
 
 
+def set_simulation_mode(supervisor: Supervisor, mode: SimulationMode) -> None:
+    try:
+        supervisor.simulationSetMode(mode)
+    except AttributeError:
+        from controller.wb import wb
+        wb.wb_supervisor_simulation_set_mode(mode)
+
+
 def inform_start(node: Node) -> None:
     node.getField('customData').setSFString('start')
 
@@ -208,7 +216,7 @@ def run_match(supervisor: Supervisor) -> None:
     inform_start(webots_utils.node_from_def(supervisor, 'LIGHT_CTRL'))
 
     # ... then un-pause the simulation, so they all start together
-    supervisor.simulationSetMode(get_simulation_run_mode(supervisor))
+    set_simulation_mode(supervisor, get_simulation_run_mode(supervisor))
 
     time_step = int(supervisor.getBasicTimeStep())
     duration = controller_utils.get_match_duration_seconds()
@@ -219,7 +227,7 @@ def run_match(supervisor: Supervisor) -> None:
     print("Game over, pausing")
     print("==================")
 
-    supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
+    set_simulation_mode(supervisor, Supervisor.SIMULATION_MODE_PAUSE)
 
 
 def main() -> None:
@@ -235,7 +243,7 @@ def main() -> None:
         remove_unused_robots(supervisor)
         wait_until_robots_ready(supervisor)
 
-        supervisor.simulationSetMode(Supervisor.SIMULATION_MODE_PAUSE)
+        set_simulation_mode(supervisor, Supervisor.SIMULATION_MODE_PAUSE)
 
         # Check after we've paused the sim so that any errors won't be masked by
         # subsequent console output from a robot.
