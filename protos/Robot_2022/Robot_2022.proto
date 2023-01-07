@@ -377,9 +377,8 @@ PROTO Robot_2022 [
                                 }
                               ]
                             }
-
-                        ]
-                      }
+                          ]
+                        }
                       ]
                     }
                     DEF SLIDE_BEARINGS Group {
