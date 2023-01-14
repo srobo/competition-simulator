@@ -75,7 +75,11 @@ CUE_STACK = [
         luminosity=0.05,
         name="Pre-set",
     ),
-    LightingEffect(0, fade_time=1.5, name="Fade-up"),
+    LightingEffect(
+        0,
+        fade_time=1.5,
+        name="Fade-up",
+    ),
     LightingEffect(
         -0.1,
         lighting=[ArenaLighting('SUN', intensity=1, colour=(1, 0, 0))],
