@@ -24,9 +24,9 @@ if not ARENA_ROOT.is_absolute():
     raise ValueError(f"'ARENA_ROOT' must be an absolute path, got {ARENA_ROOT!r}")
 
 
-NUM_ZONES = 1
+NUM_ZONES = 4
 
-GAME_DURATION_SECONDS = 120
+GAME_DURATION_SECONDS = 150
 
 
 class Resolution(NamedTuple):

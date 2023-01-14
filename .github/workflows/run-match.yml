@@ -70,6 +70,11 @@ jobs:
 
           zip ABC.zip robot.py
 
+          # Duplicate for the other zones
+          cp ABC.zip DEF.zip
+          cp ABC.zip GHI.zip
+          cp ABC.zip JKL.zip
+
       - name: Hide overlays
         run: |
           # pre-run webots to generate the config file
@@ -81,7 +86,7 @@ jobs:
 
       - name: Run match
         run: |
-          xvfb-run script/run-comp-match archives 42 ABC --duration 5 --resolution 1280 720
+          xvfb-run script/run-comp-match archives 42 ABC DEF GHI JKL --duration 5 --resolution 1280 720
 
       - name: Store archives
         uses: actions/upload-artifact@v2
@@ -94,3 +99,21 @@ jobs:
           LAST_LINE=$(tail --lines=1 archives/ABC/log-zone-0-match-42.txt)
           set -x
           test "$LAST_LINE" == "0| Success: $GITHUB_SHA"
+
+      - name: Validate success of zone 1
+        run: |
+          LAST_LINE=$(tail --lines=1 archives/DEF/log-zone-1-match-42.txt)
+          set -x
+          test "$LAST_LINE" == "1| Success: $GITHUB_SHA"
+
+      - name: Validate success of zone 2
+        run: |
+          LAST_LINE=$(tail --lines=1 archives/GHI/log-zone-2-match-42.txt)
+          set -x
+          test "$LAST_LINE" == "2| Success: $GITHUB_SHA"
+
+      - name: Validate success of zone 3
+        run: |
+          LAST_LINE=$(tail --lines=1 archives/JKL/log-zone-3-match-42.txt)
+          set -x
+          test "$LAST_LINE" == "3| Success: $GITHUB_SHA"
