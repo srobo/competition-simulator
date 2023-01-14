@@ -198,7 +198,7 @@ def set_simulation_mode(supervisor: Supervisor, mode: SimulationMode) -> None:
         supervisor.simulationSetMode(mode)
     except AttributeError:
         # Webots R2023a throws an AttributeError so we'll call underlying setter ourselves
-        from controller.wb import wb
+        from controller.wb import wb  # type: ignore[import]
         wb.wb_supervisor_simulation_set_mode(mode)
 
 
