@@ -1,229 +1,156 @@
 from __future__ import annotations
 
-import re
-import enum
-import functools
+import logging
 import threading
-from typing import Container, NamedTuple
+from typing import Iterable
+from pathlib import Path
 
-from controller import Robot, Camera as WebotCamera
-from sr.robot3.vision import (
-    Face,
-    Token,
-    FlatToken,
-    Orientation,
-    tokens_from_objects,
-)
-from sr.robot3.coordinates import (
-    Vector,
-    Spherical,
-    ThreeDCoordinates,
-    spherical_from_cartesian,
-)
+from marker import Marker
+from controller import Robot as WebotsRobot, Camera as WebotsCamera
 
 from .utils import maybe_get_robot_device
 
-MARKER_MODEL_RE = re.compile(r"^[FB]\d{0,2}$")
+LOGGER = logging.getLogger(__name__)
 
-
-# Zoloto's markers API doesn't expose any information derived from the marker's
-# identity, however we need to track whether the marker is of a kind that would
-# be on a box or a wall and its size. This enum lets us do that.
-class ObjectType(enum.Enum):
-    FLAT = 'F'
-    BOX = 'B'
-
-
-class MarkerInfo(NamedTuple):
-    code: int
-    size_mm: int
-    object_type: ObjectType
-
-    @property
-    def size_m(self) -> float:
-        # Webots uses metres.
-        return self.size_mm / 1000
-
-    def get_token_class(self) -> type[Token]:
-        if self.object_type == ObjectType.BOX:
-            return Token
-        if self.object_type == ObjectType.FLAT:
-            # See class docstring for how this works and coupling to the proto files
-            return FlatToken
-
-        raise AssertionError("Unknown object type")
-
-
-MARKER_SIZES: dict[Container[int], int] = {
+MARKER_SIZES: dict[Iterable[int], int] = {
     range(28): 200,  # 0 - 27 for arena boundary
-    range(28, 100): 100,  # Everything else is a token
+    range(28, 100): 80,  # Everything else is a token
 }
 
 
-def get_marker_size_mm(marker_id: int) -> int:
+class WebotsCameraBoard:
     """
-    Return the marker size in millimetres.
-    """
-    for bucket, size in MARKER_SIZES.items():
-        if marker_id in bucket:
-            return size
+    Virtual Camera Board for detecting recognition objects.
 
-    raise ValueError(f"Unknown marker id {marker_id}")
-
-
-def parse_marker_info(model_id: str) -> MarkerInfo | None:
-    """
-    Parse the model id of a maker model into a `MarkerInfo`.
-
-    Expected input format is a letter and two digits. The letter indicates the
-    type of the marker, indicating whether or not the marker is on a flat
-    object. The digits which form the 'code' are used for determining the
-    properties visible in the API.
-
-    Examples: 'F00', 'F01', ..., 'B32', 'B33', ...
+    Additionally, it will do pose estimation, along with the spatial
+    positon and orientation of the markers that it has detected.
     """
 
-    match = MARKER_MODEL_RE.match(model_id)
-    if match is None:
-        return None
+    name: str = "Webots Camera Board"
 
-    kind, number = model_id[0], model_id[1:]
+    def __init__(
+        self,
+        robot: WebotsRobot,
+        camera: WebotsCamera,
+        lock: threading.Lock,
+        marker_sizes: dict[Iterable[int], int],
+        fps: int = 30,
+    ):
+        self._sample_time = 1000 // fps
+        self._serial = f"Webots Camera - {camera.getName()}"
+        self._marker_offset = 0
+        self._tag_sizes: dict[int, float] = {}
 
-    code = int(number)
-
-    return MarkerInfo(
-        code=code,
-        size_mm=get_marker_size_mm(code),
-        object_type=ObjectType(kind),
-    )
-
-
-class Marker:
-    # Note: properties in the same order as in the docs.
-    # Note: we are _not_ supporting image-related properties, so no `pixel_*`.
-
-    def __init__(self, face: Face, marker_info: MarkerInfo, timestamp: float) -> None:
-        self._face = face
-
-        self._info = marker_info
-        self.timestamp = timestamp
-
-    def __repr__(self) -> str:
-        return '<Marker {}>'.format(' '.join((
-            f'id={self.id!r}',
-            f'size={self.size!r}',
-            f'distance={self.distance!r}',
-            f'rot_y={self.spherical.rot_y!r}',
-        )))
-
-    @property
-    def id(self) -> int:  # noqa:A003
-        return self._info.code
-
-    @property
-    def size(self) -> int:
-        return self._info.size_mm
-
-    # No pixel values as there is no underlying image.
-
-    @functools.cached_property
-    def _position(self) -> Vector:
-        # Webots uses metres, Zoloto uses millimetres. Convert before exposing
-        # from our simulated API.
-        return self._face.centre_global() * 1000
-
-    @property
-    def distance(self) -> float:
-        """Distance to the centre of the marker, in millimetres."""
-        return self._position.magnitude()
-
-    @property
-    def orientation(self) -> Orientation:
-        """An `Orientation` instance describing the orientation of the marker."""
-        return self._face.orientation()
-
-    @property
-    def spherical(self) -> Spherical:
-        """A `Spherical` instance describing the position relative to the camera."""
-        return spherical_from_cartesian(self._position)
-
-    @property
-    def cartesian(self) -> ThreeDCoordinates:
-        """An `ThreeDCoordinates` instance describing the position relative to the camera."""
-        return ThreeDCoordinates(*self._position.data)
-
-
-class Camera:
-    def __init__(self, webot: Robot, camera: WebotCamera, lock: threading.Lock) -> None:
-        self._webot = webot
-        self._timestep = int(webot.getBasicTimeStep())
-
-        self.camera = camera
-        self.camera.enable(self._timestep)
-        self.camera.recognitionEnable(self._timestep)
-
+        self._camera = camera
+        self._robot = robot
         self._lock = lock
+        self._camera.recognitionEnable(self._sample_time)
+
+        self._set_marker_sizes(marker_sizes)
+
+    @property
+    def serial_number(self) -> str:
+        """Get the serial number."""
+        return self._serial
+
+    @property
+    def firmware_version(self) -> str | None:
+        """Get the firmware version of the board."""
+        return '1.0'
 
     def see(self, *, eager: bool = True) -> list[Marker]:
         """
-        Identify items which the camera can see and return a list of `Marker`
-        instances describing them.
+        Capture an image and identify fiducial markers.
+
+        :param eager: Process the pose estimations of markers immediately,
+            currently unused.
+        :returns: list of markers that the camera could see.
         """
-        # Webots appears not to like it if you try to hang on to a
-        # `CameraRecognitionObject` after another time-step has passed. However
-        # because we advance the time-steps in a background thread we're likely
-        # to do that all the time. In order to counter that we have our `Robot`
-        # pass down its time-step lock so that we can hold that while we do the
-        # processing. The objects which we pass back to the caller are safe to
-        # use because they don't refer to Webots' objects at all.
+        raw_markers: list[Marker] = []
         with self._lock:
-            self._webot.step(self._timestep)
-            return self._see()
+            self._capture()
+            for recognition_object in self._camera.getRecognitionObjects():
+                try:
+                    # Get the object's assigned "model" value
+                    marker_id = int(recognition_object.getModel())
+                except ValueError:
+                    LOGGER.warning("Invalid marker id found.")
+                    continue
 
-    def _see(self) -> list[Marker]:
-        object_infos = {}
-        recognition_objects = []
+                size = self._tag_sizes.get(marker_id, 0)
 
-        for recognition_object in self.camera.getRecognitionObjects():
-            recognition_model = recognition_object.getModel()
-            if isinstance(recognition_model, bytes):
-                recognition_model = recognition_model.decode(errors='replace')
-            marker_info = parse_marker_info(
-                recognition_model,
-            )
-            if marker_info:
-                recognition_objects.append(recognition_object)
-                object_infos[recognition_object.getModel()] = marker_info
+                raw_markers.append(Marker(
+                    id=marker_id,
+                    # X forward, Y left, Z up
+                    pose_t=tuple(recognition_object.getPosition()),
+                    # In axis-angle form
+                    pose_R=tuple(recognition_object.getOrientation()),
+                    tag_size=size,
+                    pixel_center=tuple(recognition_object.getPositionOnImage()),
+                ))
 
-        tokens = tokens_from_objects(
-            recognition_objects,
-            lambda o: object_infos[o.getModel()].size_m,
-            lambda o: object_infos[o.getModel()].get_token_class(),
-        )
-
-        when = self._webot.getTime()
-
-        markers = []
-
-        for token, recognition_object in tokens:
-            marker_info = object_infos[recognition_object.getModel()]
-            for face in token.visible_faces():
-                markers.append(Marker(face, marker_info, when))
-
-        return markers
+        return self._marker_filter(raw_markers)
 
     def see_ids(self) -> list[int]:
-        # While in theory this method ought to be the "fast" method, processing
-        # speed doesn't matter much in the simulator and with the locking we
-        # need to do it's much easier to let this be a shallow wrapper around
-        # the full implementation.
-        return [x._info.code for x in self.see()]
+        """
+        Capture an image and identify fiducial markers.
 
-    # The simulator does not emulate the `capture` or `save` methods.
+        This method returns just the marker IDs that are visible.
+        :returns: A list of IDs for the markers that were visible.
+        """
+        return [marker.id for marker in self.see()]
+
+    def save(self, path: Path | str) -> None:
+        """
+        Save an unannotated image to a path.
+
+        NOTE This differs from the kit version as the image is not annotated.
+        """
+        path = Path(path)
+        if not path.suffix:
+            LOGGER.warning("No file extension given, defaulting to jpg")
+            path = path.with_suffix(".jpg")
+        # TODO check this is within the folder
+
+        with self._lock:
+            self._capture()
+            self._camera.saveImage(str(path), 100)
+
+    def _capture(self) -> None:
+        self._camera.enable(self._sample_time)
+        self._robot.step(self._sample_time)
+        self._camera.disable()
+
+    def _set_marker_sizes(
+        self,
+        marker_sizes: dict[Iterable[int], int],
+        marker_offset: int = 0,
+    ) -> None:
+        """Set the sizes of all the markers used in the game."""
+        # store marker offset to be used by the filter
+        self._marker_offset = marker_offset
+        # Reset previously stored sizes
+        self._tag_sizes = {}
+        for marker_ids, marker_size in marker_sizes.items():
+            # Unroll generators to give direct lookup
+            for marker_id in marker_ids:
+                # Convert to meters
+                self._tag_sizes[marker_id + marker_offset] = float(marker_size) / 1000
+
+    def _marker_filter(self, markers: list[Marker]) -> list[Marker]:
+        """Apply marker offset and remove markers that are not in the game."""
+        filtered_markers: list[Marker] = []
+
+        for marker in markers:
+            if marker._id in self._tag_sizes.keys():
+                marker._id -= self._marker_offset
+                filtered_markers.append(marker)
+
+        return filtered_markers
 
 
-def init_cameras(webot: Robot, lock: threading.Lock) -> list[Camera]:
-    camera = maybe_get_robot_device(webot, 'camera', WebotCamera)
+def init_cameras(webot: WebotsRobot, lock: threading.Lock) -> list[WebotsCameraBoard]:
+    camera = maybe_get_robot_device(webot, 'camera', WebotsCamera)
     if camera is None:
         return []
-    return [Camera(webot, camera, lock)]
+    return [WebotsCameraBoard(webot, camera, lock, MARKER_SIZES)]

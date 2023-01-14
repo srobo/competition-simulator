@@ -164,7 +164,7 @@ class Robot:
         return x
 
     @property
-    def camera(self) -> camera.Camera:
+    def camera(self) -> camera.WebotsCameraBoard:
         return self._singular(self._cameras, 'camera')
 
     @property
