@@ -21,6 +21,9 @@ import controller_utils  # isort:skip
 import webots_utils  # isort:skip
 
 
+MATCH_LIGHTING_INTENSITY = 2.1
+
+
 class ArenaLighting(NamedTuple):
     light_def: str
     intensity: float
@@ -78,6 +81,7 @@ CUE_STACK = [
     LightingEffect(
         0,
         fade_time=1.5,
+        lighting=[ArenaLighting('SUN', intensity=MATCH_LIGHTING_INTENSITY)],
         name="Fade-up",
     ),
     LightingEffect(
