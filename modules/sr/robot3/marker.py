@@ -358,7 +358,7 @@ class Marker:
         pose_t: tuple[float, float, float],
         # In axis-angle form
         pose_R: tuple[float, float, float, float],
-        tag_size: int,
+        tag_size: float,
         pixel_center: tuple[int, int],
     ):
         self.__marker_type = MarkerType.WEBOTS

@@ -5,10 +5,10 @@ import threading
 from typing import Iterable
 from pathlib import Path
 
-from marker import Marker
 from controller import Robot as WebotsRobot, Camera as WebotsCamera
 
 from .utils import maybe_get_robot_device
+from .marker import Marker
 
 LOGGER = logging.getLogger(__name__)
 
