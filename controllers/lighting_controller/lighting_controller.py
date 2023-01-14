@@ -254,6 +254,7 @@ class LightingController:
                 ):  # cue relative to start
                     self.start_lighting_effect(cue)
                     self.cue_stack.remove(cue)
+
                 elif (
                     cue.start_time < 0 and
                     self.remaining_match_time() <= -(cue.start_time)
