@@ -6,7 +6,7 @@ from typing import TypeVar, Collection
 from pathlib import Path
 from threading import Lock
 
-from sr.robot3 import motor, power, camera, servos, metadata, ruggeduino
+from sr.robot3 import motor, power, april_camera, servos, metadata, ruggeduino
 # Webots specific library
 from controller import Robot as WebotsRobot
 
@@ -153,8 +153,8 @@ class Robot:
         self.ruggeduinos = ruggeduino.init_ruggeduino_array(self._webot)
 
     def _init_cameras(self) -> None:
-        # See comment in Camera.see for why we need to pass the step lock here.
-        self._cameras = camera.init_cameras(self._webot, self._step_lock)
+        # See comment in WebotsCameraSource.read for why we need to pass the step lock here.
+        self._cameras = april_camera.init_cameras(self._webot, self._step_lock)
 
     def _singular(self, elements: Collection[T], name: str) -> T:
         num = len(elements)
@@ -164,7 +164,7 @@ class Robot:
         return x
 
     @property
-    def camera(self) -> camera.Camera:
+    def camera(self) -> april_camera.AprilCameraBoard:
         return self._singular(self._cameras, 'camera')
 
     @property

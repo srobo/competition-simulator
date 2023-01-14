@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import threading
 from math import tan
 from typing import Iterable
 from pathlib import Path
@@ -15,11 +16,25 @@ from april_vision import (
 )
 from numpy.typing import NDArray
 
+from .utils import maybe_get_robot_device
+
+MARKER_SIZES: dict[Iterable[int], int] = {
+    range(28): 200,  # 0 - 27 for arena boundary
+    range(28, 100): 80,  # Everything else is a token
+}
+
 
 class WebotsCameraSource(FrameSource):
-    def __init__(self, robot: WebotsRobot, camera: WebotsCamera, fps: int = 30) -> None:
+    def __init__(
+        self,
+        robot: WebotsRobot,
+        camera: WebotsCamera,
+        lock: threading.Lock,
+        fps: int = 30,
+    ) -> None:
         self._robot = robot
         self.camera = camera
+        self.lock = lock
         self.sample_time = 1000 // fps
         self.image_size = (self.camera.getHeight(), self.camera.getWidth())
 
@@ -30,18 +45,25 @@ class WebotsCameraSource(FrameSource):
         :param fresh: Whether to flush the device's buffer before capturing
         the frame, unused.
         """
-        self.camera.enable(self.sample_time)
-        self._robot.step(self.sample_time)
-
-        # rgb_frame_list = self.camera.getImageArray()
-        # rgb_frame_raw = np.array(rgb_frame_list, dtype=np.uint8)
-        # # numpy loads the array with height and width the wrong way around
-        # rgb_frame = rgb_frame_raw.reshape(
-        #     (rgb_frame_raw.shape[1], rgb_frame_raw.shape[0], -1))
-
+        # NOTE while loading from a shaped RGB array makes this code nicer,
+        # this is substantially slower. Additionally a reshape is still needed because
+        # numpy loads the array with height and width the wrong way around.
+        # frame_arr = self.camera.getImageArray()
+        # frame_init = np.array(frame_arr, dtype=np.uint8)
+        # rgb_frame = frame_init.reshape((frame_init.shape[1], frame_init.shape[0], -1))
         # frame = cv2.cvtColor(rgb_frame, cv2.COLOR_RGB2BGR)
 
-        rgb_frame_raw: NDArray[np.uint8] = np.frombuffer(self.camera.getImage(), np.uint8)
+        # A frame is only captured every sample_time milliseconds the camera is enabled
+        # so we need to wait for a frame to be captured after loading the frame.
+        # We need to maintain the lock while the numpy array is generated as the
+        # buffer is freed at the end of the timestep
+        self.camera.enable(self.sample_time)
+        with self.lock:
+            self._robot.step(self.sample_time)
+
+            image_data_raw = self.camera.getImage()
+            rgb_frame_raw: NDArray[np.uint8] = np.frombuffer(image_data_raw, np.uint8)
+
         rgb_frame = rgb_frame_raw.reshape((self.image_size[0], self.image_size[1], 4))
         frame: NDArray[np.uint8] = cv2.cvtColor(rgb_frame, cv2.COLOR_BGRA2BGR)
 
@@ -65,8 +87,10 @@ class AprilCameraBoard():
     name: str = "AprilTag Camera Board"
 
     def __init__(
-        self, robot: WebotsRobot,
+        self,
+        robot: WebotsRobot,
         camera: WebotsCamera,
+        lock: threading.Lock,
         marker_sizes: dict[Iterable[int], int],
         fps: int = 30,
     ):
@@ -79,7 +103,7 @@ class AprilCameraBoard():
             camera.getHeight() // 2,  # cy
         )
 
-        cam = WebotsCameraSource(robot, camera, fps)
+        cam = WebotsCameraSource(robot, camera, lock, fps)
         self._camera = Processor(cam, calibration=calibration, name=self._serial)
         self._camera.marker_filter = self._marker_filter
         self._set_marker_sizes(marker_sizes)
@@ -161,3 +185,10 @@ class AprilCameraBoard():
                 filtered_markers.append(marker)
 
         return filtered_markers
+
+
+def init_cameras(webot: WebotsRobot, lock: threading.Lock) -> list[AprilCameraBoard]:
+    camera = maybe_get_robot_device(webot, 'camera', WebotsCamera)
+    if camera is None:
+        return []
+    return [AprilCameraBoard(webot, camera, lock, MARKER_SIZES)]
