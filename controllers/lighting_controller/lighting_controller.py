@@ -153,7 +153,7 @@ class LightingController:
                 self.set_node_intensity(self.light_nodes[light.light_def], light.intensity)
                 self.set_node_colour(self.light_nodes[light.light_def], light.colour)
 
-            print(f"Lighting effect '{effect.name}' complete")  # noqa: T201
+            print(f"Lighting effect '{effect.name}' complete")  # noqa: B028, T201
 
         else:
             steps = int((effect.fade_time * 1000) / self.timestep)
@@ -222,7 +222,7 @@ class LightingController:
                 self.set_node_intensity(fade.light, fade.effect.intensity)
                 self.set_node_colour(fade.light, fade.effect.colour)
 
-                print(f"Lighting effect for '{fade.effect.light_def}' complete")  # noqa: T201
+                print(f"Lighting effect for '{fade.effect.light_def}' complete")  # noqa: E501, B028, T201
 
                 self.lighting_fades.remove(fade)  # remove completed fade
 
