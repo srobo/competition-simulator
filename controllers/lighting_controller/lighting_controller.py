@@ -23,7 +23,7 @@ import webots_utils  # isort:skip
 
 class ArenaLighting(NamedTuple):
     light_def: str
-    intensity: float = 3.5
+    intensity: float
     colour: tuple[float, float, float] = (1, 1, 1)
 
 
@@ -31,7 +31,7 @@ class LightingEffect(NamedTuple):
     start_time: float  # Negative start times are relative to the end of the match
     # Negative values 0 - (-0.08) don't get included in the produced recordings
     fade_time: float | None = None
-    lighting: list[ArenaLighting] = [ArenaLighting('SUN')]
+    lighting: list[ArenaLighting] = [ArenaLighting('SUN', intensity=1)]
     luminosity: float = 0.35
     name: str = ""
 
