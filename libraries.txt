@@ -12,3 +12,5 @@ matplotlib==3.5.1
 numpy==1.22.3
 pandas==1.4.2
 typing-extensions==3.10.0.0
+april-vision==1.0.2
+opencv-python-headless==4.7.0.68
