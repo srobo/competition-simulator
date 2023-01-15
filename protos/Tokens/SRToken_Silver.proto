@@ -24,25 +24,25 @@ PROTO SRToken_Silver [
       }
       TokenMarker {
         translation 0 0.0601 0
-        rotation 0 0 1 1.5708
+        rotation 0 0 1 -1.5708
         name "front"
         model "99"
       }
       TokenMarker {
         translation 0 -0.0601 0
-        rotation 0 0 1 -1.5708
+        rotation 0 0 1 1.5708
         name "back"
         model "99"
       }
       TokenMarker {
         translation 0.0601 0 0
-        rotation 0 0 1 0
+        rotation 0 0 1 3.1416
         name "side-1"
         model "99"
       }
       TokenMarker {
         translation -0.0601 0 0
-        rotation 0 0 1 3.1416
+        rotation 0 0 1 0
         name "side-2"
         model "99"
       }
