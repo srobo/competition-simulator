@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# mypy: disable-error-code=no-untyped-def
 ##############################################
 # The MIT License (MIT)
 # Copyright (c) 2014 Kevin Walchko
