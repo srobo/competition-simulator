@@ -12,9 +12,7 @@ from enum import Enum
 from math import pi, acos, atan2, hypot
 from typing import Dict, List, Tuple, NamedTuple
 
-from pyquaternion import Quaternion
-from numpy import float64
-from numpy.typing import NDArray
+from squaternion import Quaternion
 
 
 class MarkerType(Enum):
@@ -209,8 +207,8 @@ RotationMatrix = Tuple[ThreeTuple, ThreeTuple, ThreeTuple]
 class Orientation:
     """The orientation of an object in 3-D space."""
 
-    __ZOLOTO_LEGACY_ORIENTATION = Quaternion(
-        axis=(1, 0, 0), radians=pi,
+    __ZOLOTO_LEGACY_ORIENTATION = Quaternion.from_angle_axis(
+        angle=pi, axis=(1, 0, 0),
     )
 
     def __init__(self, rotation_matrix: tuple[float, float, float, float]):
@@ -223,19 +221,21 @@ class Orientation:
         x, y, z, rad = rotation_matrix
         # Calculate the quaternion of the rotation in the camera's coordinate system
         # Correct for roll and yaw turning the wrong way
-        quaternion = Quaternion(axis=(-x, y, -z), radians=rad)
+        quaternion = Quaternion.from_angle_axis(angle=rad, axis=(-x, y, -z))
 
-        self.__rotation_matrix: NDArray[float64] = quaternion.rotation_matrix
+        self.__rotation_matrix: RotationMatrix = quaternion.to_rot()
 
         if os.environ.get('ZOLOTO_LEGACY_AXIS'):
             # Remap axis for zoloto's axis () and adjust pitch zero position
             self._quaternion = Quaternion(
-                quaternion.w, -quaternion.y, quaternion.z, -quaternion.x,
+                w=quaternion.w, x=-quaternion.y, y=quaternion.z, z=-quaternion.x,
             ) * self.__ZOLOTO_LEGACY_ORIENTATION
         else:
             self._quaternion = quaternion
 
-        self._yaw_pitch_roll: tuple[float, float, float] = quaternion.yaw_pitch_roll
+        roll, pitch, yaw = quaternion.to_euler()
+
+        self._yaw_pitch_roll: ThreeTuple = yaw, pitch, roll
 
     @property
     def rot_x(self) -> float:
@@ -324,8 +324,8 @@ class Orientation:
 
         Specifically intrinsic Tait-Bryan angles following the z-y'-x'' convention.
         """
-        yaw_pitch_roll: ThreeTuple = self._quaternion.yaw_pitch_roll
-        return yaw_pitch_roll
+        roll, pitch, yaw = self._quaternion.to_euler()
+        return yaw, pitch, roll
 
     @property
     def rotation_matrix(self) -> RotationMatrix:
@@ -335,13 +335,13 @@ class Orientation:
         Returns:
             A 3x3 rotation matrix as a tuple of tuples.
         """
-        rotation_matrix: RotationMatrix = self.__rotation_matrix.tolist()
-        return rotation_matrix
+        return self.__rotation_matrix
 
     @property
-    def quaternion(self) -> Quaternion:
+    def quaternion(self) -> tuple[float, float, float, float]:
         """Get the quaternion represented by this orientation."""
-        return self._quaternion
+        quaternion: tuple[float, float, float, float] = self._quaternion.to_tuple()
+        return quaternion
 
     def __repr__(self) -> str:
         return "Orientation(rot_x={}, rot_y={}, rot_z={})".format(
