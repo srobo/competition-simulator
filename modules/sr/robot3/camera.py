@@ -193,12 +193,12 @@ class Camera:
             )
             if marker_info:
                 recognition_objects.append(recognition_object)
-                object_infos[recognition_object.getModel()] = marker_info
+                object_infos[recognition_object.getId()] = marker_info
 
         tokens = tokens_from_objects(
             recognition_objects,
-            lambda o: object_infos[o.getModel()].size_m,
-            lambda o: object_infos[o.getModel()].get_token_class(),
+            lambda o: object_infos[o.getId()].size_m,
+            lambda o: object_infos[o.getId()].get_token_class(),
         )
 
         when = self._webot.getTime()
@@ -206,7 +206,7 @@ class Camera:
         markers = []
 
         for token, recognition_object in tokens:
-            marker_info = object_infos[recognition_object.getModel()]
+            marker_info = object_infos[recognition_object.getId()]
             for face in token.visible_faces():
                 markers.append(Marker(face, marker_info, when))
 
