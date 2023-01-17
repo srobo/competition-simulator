@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import logging
 import threading
-from typing import Iterable
+from typing import Iterable, NamedTuple
 from pathlib import Path
+from collections import defaultdict
 
 from controller import Robot as WebotsRobot, Camera as WebotsCamera
 
@@ -16,6 +17,15 @@ MARKER_SIZES: dict[Iterable[int], int] = {
     range(28): 200,  # 0 - 27 for arena boundary
     range(28, 100): 80,  # Everything else is a token
 }
+
+
+class Recognition(NamedTuple):
+    marker_id: int
+    # X forward, Y left, Z up
+    pose_t: tuple[float, float, float]
+    # In axis-angle form
+    pose_R: tuple[float, float, float, float]
+    pixel_center: tuple[int, int]
 
 
 class WebotsCameraBoard:
@@ -67,27 +77,55 @@ class WebotsCameraBoard:
         :returns: list of markers that the camera could see.
         """
         raw_markers: list[Marker] = []
+        recognition_objects: dict[str, dict[str, Recognition]] = defaultdict(dict)
+
         with self._lock:
             self._capture()
+
             for recognition_object in self._camera.getRecognitionObjects():
+                # Get the object's assigned "model" value, the marker has 5 detection points:
+                # the marker itself and the 4 corners, named in the form <id>_<location>
+                tag_uid, tag_name, tag_point = str(recognition_object.getModel()).split('_')
+
                 try:
-                    # Get the object's assigned "model" value
-                    marker_id = int(recognition_object.getModel())
+                    marker_id = int(tag_name)
                 except ValueError:
-                    LOGGER.warning("Invalid marker id found.")
+                    LOGGER.warning(f"Invalid marker id found: {tag_name}")
                     continue
 
-                size = self._tag_sizes.get(marker_id, 0)
+                pose_t = tuple(recognition_object.getPosition())
+                pose_R = tuple(recognition_object.getOrientation())
+                pixel_center = tuple(recognition_object.getPositionOnImage())
 
-                raw_markers.append(Marker(
-                    id=marker_id,
-                    # X forward, Y left, Z up
-                    pose_t=tuple(recognition_object.getPosition()),
-                    # In axis-angle form
-                    pose_R=tuple(recognition_object.getOrientation()),
-                    tag_size=size,
-                    pixel_center=tuple(recognition_object.getPositionOnImage()),
-                ))
+                recognition_objects[tag_uid][tag_point] = Recognition(
+                    marker_id=marker_id,
+                    pose_t=pose_t,  # type: ignore[arg-type]
+                    pose_R=pose_R,  # type: ignore[arg-type]
+                    pixel_center=pixel_center,  # type: ignore[arg-type]
+                )
+
+        for marker_points in recognition_objects.values():
+            if marker_points.keys() != {'base', 'TL', 'TR', 'BL', 'BR'}:
+                LOGGER.debug(f"Only partially saw {marker_id}.")
+                continue
+
+            size = self._tag_sizes.get(marker_points['base'].marker_id, 0)
+
+            raw_markers.append(Marker(
+                id=marker_points['base'].marker_id,
+                # X forward, Y left, Z up
+                pose_t=marker_points['base'].pose_t,
+                # In axis-angle form
+                pose_R=marker_points['base'].pose_R,
+                tag_size=size,
+                pixel_center=marker_points['base'].pixel_center,
+                pixel_corners=[
+                    marker_points['TL'].pixel_center,
+                    marker_points['TR'].pixel_center,
+                    marker_points['BL'].pixel_center,
+                    marker_points['BR'].pixel_center,
+                ],
+            ))
 
         return self._marker_filter(raw_markers)
 

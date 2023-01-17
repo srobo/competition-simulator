@@ -354,16 +354,18 @@ class Marker:
 
     def __init__(
         self,
-        id: int,
+        id: int,  # noqa: A002
         pose_t: tuple[float, float, float],
         # In axis-angle form
         pose_R: tuple[float, float, float, float],
         tag_size: float,
         pixel_center: tuple[int, int],
+        pixel_corners: list[tuple[int, int]],
     ):
         self.__marker_type = MarkerType.WEBOTS
         self._id = id
         self.__pixel_center = PixelCoordinates(*pixel_center)
+        self.__pixel_corners = [PixelCoordinates(x, y) for x, y in pixel_corners]
         self.__size = int(tag_size * 1000)
         self._tvec = pose_t
         self._rvec = pose_R
@@ -393,11 +395,7 @@ class Marker:
     @property
     def pixel_corners(self) -> List[PixelCoordinates]:
         """The pixels of the corners of the marker in the image."""
-        # TODO
-        return [
-            self.__pixel_center
-            for _ in range(4)
-        ]
+        return self.__pixel_corners
 
     @property
     def pixel_centre(self) -> PixelCoordinates:
