@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import logging
 import threading
-from typing import Iterable, NamedTuple
+from typing import Iterable, Iterator, NamedTuple
 from pathlib import Path
+from contextlib import contextmanager
 from collections import defaultdict
 
 from controller import Robot as WebotsRobot, Camera as WebotsCamera
@@ -54,7 +55,6 @@ class WebotsCameraBoard:
         self._camera = camera
         self._robot = robot
         self._lock = lock
-        self._camera.recognitionEnable(self._sample_time)
 
         self._set_marker_sizes(marker_sizes)
 
@@ -79,9 +79,7 @@ class WebotsCameraBoard:
         raw_markers: list[Marker] = []
         recognition_objects: dict[str, dict[str, Recognition]] = defaultdict(dict)
 
-        with self._lock:
-            self._capture()
-
+        with self._capture():
             for recognition_object in self._camera.getRecognitionObjects():
                 # Get the object's assigned "model" value, the marker has 5 detection points:
                 # the marker itself and the 4 corners, named in the form <id>_<location>
@@ -150,14 +148,28 @@ class WebotsCameraBoard:
             path = path.with_suffix(".jpg")
         # TODO check this is within the folder
 
-        with self._lock:
-            self._capture()
+        with self._capture():
             self._camera.saveImage(str(path), 100)
 
-    def _capture(self) -> None:
-        self._camera.enable(self._sample_time)
-        self._robot.step(self._sample_time)
-        self._camera.disable()
+    @contextmanager
+    def _capture(self) -> Iterator[None]:
+        """
+        A context manager to handle enabling and disabling the camera and recognition.
+
+        Handles waiting for the camera to be sampled.
+        """
+        # Hold the step lock both to allow us to wait for the camera's sampling
+        # period and remain in the resulting timestap while the recognition
+        # objects are used.
+        with self._lock:
+            try:
+                self._camera.enable(self._sample_time)
+                self._camera.recognitionEnable(self._sample_time)
+                self._robot.step(self._sample_time)
+                yield
+            finally:
+                self._camera.recognitionDisable()
+                self._camera.disable()
 
     def _set_marker_sizes(
         self,
