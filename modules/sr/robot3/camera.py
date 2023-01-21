@@ -151,21 +151,6 @@ class WebotsCameraBoard:
     #     with self._capture():
     #         self._camera.saveImage(str(path), 100)
 
-        """
-        Save an unannotated image to a path.
-
-        NOTE This differs from the kit version as the image is not annotated.
-        TODO check this is within the folder.
-        TODO update run_comp_match to include these in teams archives.
-        """
-        path = Path(path)
-        if not path.suffix:
-            LOGGER.warning("No file extension given, defaulting to jpg")
-            path = path.with_suffix(".jpg")
-
-        with self._capture():
-            self._camera.saveImage(str(path), 100)
-
     @contextmanager
     def _capture(self) -> Iterator[None]:
         """
