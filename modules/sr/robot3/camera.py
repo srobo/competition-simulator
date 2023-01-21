@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 import threading
 from typing import Iterable, Iterator, NamedTuple
-from pathlib import Path
 from contextlib import contextmanager
 from collections import defaultdict
 
@@ -136,17 +135,33 @@ class WebotsCameraBoard:
         """
         return [marker.id for marker in self.see()]
 
-    def save(self, path: Path | str) -> None:
+    # def save(self, path: Path | str) -> None:
+    #     """
+    #     Save an unannotated image to a path.
+
+    #     NOTE This differs from the kit version as the image is not annotated.
+    #     TODO check this is within the folder.
+    #     TODO update run_comp_match to include these in teams archives.
+    #     """
+    #     path = Path(path)
+    #     if not path.suffix:
+    #         LOGGER.warning("No file extension given, defaulting to jpg")
+    #         path = path.with_suffix(".jpg")
+
+    #     with self._capture():
+    #         self._camera.saveImage(str(path), 100)
+
         """
         Save an unannotated image to a path.
 
         NOTE This differs from the kit version as the image is not annotated.
+        TODO check this is within the folder.
+        TODO update run_comp_match to include these in teams archives.
         """
         path = Path(path)
         if not path.suffix:
             LOGGER.warning("No file extension given, defaulting to jpg")
             path = path.with_suffix(".jpg")
-        # TODO check this is within the folder
 
         with self._capture():
             self._camera.saveImage(str(path), 100)
