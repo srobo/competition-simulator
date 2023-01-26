@@ -6,7 +6,7 @@ PROTO MarkerBase [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
   # Marker sizes are assumed to be flat squares.
-  field SFVec3f {0.0001 0.1 0.1, 0.0001 0.2 0.2, 0.0001 0.25 0.25} size 0.0001 0.1 0.1
+  field SFVec3f {0.0001 0.08 0.08, 0.0001 0.2 0.2, 0.0001 0.25 0.25} size 0.0001 0.08 0.08
   field SFString name ""
   field SFString model ""
   field MFString texture_url []
