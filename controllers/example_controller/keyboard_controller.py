@@ -71,13 +71,10 @@ def print_sensors(robot: Robot) -> None:
                 print(
                     f" Spherical: {angle_str(rot_x)}, {angle_str(rot_y)}, {dist}",
                 )
-                roll = marker.orientation.roll
-                pitch = marker.orientation.pitch
-                yaw = marker.orientation.yaw
-
+                rot_x, rot_y, rot_z = marker.orientation
                 print(
-                    f" Orientation: roll={angle_str(roll)}, pitch={angle_str(pitch)}, "
-                    f"yaw={angle_str(yaw)}",
+                    f" Orientation: {angle_str(rot_x)}, {angle_str(rot_y)}, "
+                    f"{angle_str(rot_z)}",
                 )
                 print()
         else:

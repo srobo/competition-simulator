@@ -10,7 +10,7 @@ from __future__ import annotations
 import os
 from enum import Enum
 from math import pi, acos, atan2, hypot
-from typing import Dict, List, Tuple, NamedTuple
+from typing import Dict, List, Tuple, Iterator, NamedTuple
 
 from squaternion import Quaternion
 
@@ -326,6 +326,14 @@ class Orientation:
         """
         roll, pitch, yaw = self._quaternion.to_euler()
         return yaw, pitch, roll
+
+    def __iter__(self) -> Iterator[float]:
+        """
+        Get an iterator over the rotation angles.
+        Returns:
+            An iterator of floating point angles in order x, y, z.
+        """
+        return iter([self.rot_x, self.rot_y, self.rot_z])
 
     @property
     def rotation_matrix(self) -> RotationMatrix:
