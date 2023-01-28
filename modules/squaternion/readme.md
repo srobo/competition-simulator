@@ -1,5 +1,6 @@
 # Simple Quaternions (`squaternion`)
-Vendored from [MomsFriendlyRobotCompany/squaternion](https://github.com/MomsFriendlyRobotCompany/squaternion) on 2023-01-16.
+
+Vendored from [MomsFriendlyRobotCompany/squaternion](https://github.com/MomsFriendlyRobotCompany/squaternion/commit/c31d0e238ee5084db7dcd3a26e220ad2bbc0ae05) on 2023-01-16, with light changes to cope with the containing repo's linting.
 
 A lightweight `quaternion` math library with no external requirements.
 
