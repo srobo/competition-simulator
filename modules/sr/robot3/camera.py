@@ -82,7 +82,8 @@ class WebotsCameraBoard:
             for recognition_object in self._camera.getRecognitionObjects():
                 # Get the object's assigned "model" value, the marker has 5 detection points:
                 # the marker itself and the 4 corners, named in the form <id>_<location>
-                tag_uid, tag_name, tag_point = force_text(recognition_object.getModel()).split('_')
+                model_name = force_text(recognition_object.getModel())
+                tag_uid, tag_name, tag_point = model_name.split('_')
 
                 try:
                     marker_id = int(tag_name)
