@@ -8,7 +8,7 @@ from collections import defaultdict
 
 from controller import Robot as WebotsRobot, Camera as WebotsCamera
 
-from .utils import maybe_get_robot_device
+from .utils import force_text, maybe_get_robot_device
 from .marker import Marker
 
 LOGGER = logging.getLogger(__name__)
@@ -82,7 +82,7 @@ class WebotsCameraBoard:
             for recognition_object in self._camera.getRecognitionObjects():
                 # Get the object's assigned "model" value, the marker has 5 detection points:
                 # the marker itself and the 4 corners, named in the form <id>_<location>
-                tag_uid, tag_name, tag_point = str(recognition_object.getModel()).split('_')
+                tag_uid, tag_name, tag_point = force_text(recognition_object.getModel()).split('_')
 
                 try:
                     marker_id = int(tag_name)
