@@ -50,7 +50,7 @@ class PixelCoordinates(NamedTuple):
 
 class CartesianCoordinates(NamedTuple):
     """
-    A 3 dimesional cartesian coordinate in the standard right-handed cartesian system.
+    A 3 dimensional cartesian coordinate in the standard right-handed cartesian system.
 
     Origin is at the camera.
 
@@ -112,9 +112,9 @@ class CartesianCoordinates(NamedTuple):
 
 class SphericalCoordinate(NamedTuple):
     """
-    A 3 dimesional spherical coordinate location.
+    A 3 dimensional spherical coordinate location.
 
-    The convential spherical coordinate in mathematical notation where θ is
+    The conventional spherical coordinate in mathematical notation where θ is
     a rotation around the vertical axis and φ is measured as the angle from
     the vertical axis.
     More information: https://mathworld.wolfram.com/SphericalCoordinates.html

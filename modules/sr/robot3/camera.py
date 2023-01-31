@@ -33,7 +33,7 @@ class WebotsCameraBoard:
     Virtual Camera Board for detecting recognition objects.
 
     Additionally, it will do pose estimation, along with the spatial
-    positon and orientation of the markers that it has detected.
+    position and orientation of the markers that it has detected.
     """
 
     name: str = "Webots Camera Board"
@@ -144,7 +144,7 @@ class WebotsCameraBoard:
         Handles waiting for the camera to be sampled.
         """
         # Hold the step lock both to allow us to wait for the camera's sampling
-        # period and remain in the resulting timestap while the recognition
+        # period and remain in the resulting timestep while the recognition
         # objects are used.
         with self._lock:
             try:
