@@ -23,7 +23,7 @@ PROTO MarkerBase [
     rotation IS rotation
     children [
       Solid {
-        translation 0 %<= fields.size.value.y / 2 >% %<= fields.size.value.z / 2 >%
+        translation 0 %<= fields.size.value.y * 0.8 / 2 >% %<= fields.size.value.z * 0.8 / 2 >%
         children [
           Shape {
             appearance PBRAppearance {
@@ -43,7 +43,7 @@ PROTO MarkerBase [
         ]
       }
       Solid {
-        translation 0 %<= -fields.size.value.y / 2 >% %<= fields.size.value.z / 2 >%
+        translation 0 %<= -fields.size.value.y * 0.8 / 2 >% %<= fields.size.value.z * 0.8 / 2 >%
         children [
           Shape {
             appearance PBRAppearance {
@@ -63,7 +63,7 @@ PROTO MarkerBase [
         ]
       }
       Solid {
-        translation 0 %<= -fields.size.value.y / 2 >% %<= -fields.size.value.z / 2 >%
+        translation 0 %<= -fields.size.value.y * 0.8 / 2 >% %<= -fields.size.value.z * 0.8 / 2 >%
         children [
           Shape {
             appearance PBRAppearance {
@@ -83,7 +83,7 @@ PROTO MarkerBase [
         ]
       }
       Solid {
-        translation 0 %<= fields.size.value.y / 2 >% %<= -fields.size.value.z / 2 >%
+        translation 0 %<= fields.size.value.y * 0.8 / 2 >% %<= -fields.size.value.z * 0.8 / 2 >%
         children [
           Shape {
             appearance PBRAppearance {
