@@ -490,4 +490,4 @@ def obliqueness_to_camera(marker: Marker) -> float:
     print(repr(np_rotation_matrix))
     print(f"{np_marker_normal=}")
 
-    return vectors.angle_between(position, marker_normal)
+    return 0  # vectors.angle_between(position, marker_normal)
