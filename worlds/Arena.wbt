@@ -119,252 +119,252 @@ Solid {  # Wall markers
   children [
     WallMarker {
       translation 2.154 -2.8749 0.175
-      rotation 0 0 1 0
-      name "F0"
-      model "F0"
+      rotation 0 0 1 -1.5708
+      name "A0"
+      model "0"
       texture_url [
         "../textures/arena-markers/0.png"
       ]
     }
     WallMarker {
       translation 1.436 -2.8749 0.175
-      rotation 0 0 1 0
+      rotation 0 0 1 -1.5708
       name "A1"
-      model "F1"
+      model "1"
       texture_url [
         "../textures/arena-markers/1.png"
       ]
     }
     WallMarker {
       translation 0.718 -2.8749 0.175
-      rotation 0 0 1 0
+      rotation 0 0 1 -1.5708
       name "A2"
-      model "F2"
+      model "2"
       texture_url [
         "../textures/arena-markers/2.png"
       ]
     }
     WallMarker {
       translation 0 -2.8749 0.175
-      rotation 0 0 1 0
+      rotation 0 0 1 -1.5708
       name "A3"
-      model "F3"
+      model "3"
       texture_url [
         "../textures/arena-markers/3.png"
       ]
     }
     WallMarker {
       translation -0.718 -2.8749 0.175
-      rotation 0 0 1 0
+      rotation 0 0 1 -1.5708
       name "A4"
-      model "F4"
+      model "4"
       texture_url [
         "../textures/arena-markers/4.png"
       ]
     }
     WallMarker {
       translation -1.436 -2.8749 0.175
-      rotation 0 0 1 0
+      rotation 0 0 1 -1.5708
       name "A5"
-      model "F5"
+      model "5"
       texture_url [
         "../textures/arena-markers/5.png"
       ]
     }
     WallMarker {
       translation -2.154 -2.8749 0.175
-      rotation 0 0 1 0
+      rotation 0 0 1 -1.5708
       name "A6"
-      model "F6"
+      model "6"
       texture_url [
         "../textures/arena-markers/6.png"
       ]
     }
     WallMarker {
       translation -2.8749 -2.154 0.175
-      rotation 0 0 1 -1.5708
+      rotation 0 0 1 3.1416
       name "A7"
-      model "F7"
+      model "7"
       texture_url [
         "../textures/arena-markers/7.png"
       ]
     }
     WallMarker {
       translation -2.8749 -1.436 0.175
-      rotation 0 0 1 -1.5708
+      rotation 0 0 1 3.1416
       name "A8"
-      model "F8"
+      model "8"
       texture_url [
         "../textures/arena-markers/8.png"
       ]
     }
     WallMarker {
       translation -2.8749 -0.718 0.175
-      rotation 0 0 1 -1.5708
+      rotation 0 0 1 3.1416
       name "A9"
-      model "F9"
+      model "9"
       texture_url [
         "../textures/arena-markers/9.png"
       ]
     }
     WallMarker {
       translation -2.8749 0 0.175
-      rotation 0 0 1 -1.5708
+      rotation 0 0 1 3.1416
       name "A10"
-      model "F10"
+      model "10"
       texture_url [
         "../textures/arena-markers/10.png"
       ]
     }
     WallMarker {
       translation -2.8749 0.718 0.175
-      rotation 0 0 1 -1.5708
+      rotation 0 0 1 3.1416
       name "A11"
-      model "F11"
+      model "11"
       texture_url [
         "../textures/arena-markers/11.png"
       ]
     }
     WallMarker {
       translation -2.8749 1.436 0.175
-      rotation 0 0 1 -1.5708
+      rotation 0 0 1 3.1416
       name "A12"
-      model "F12"
+      model "12"
       texture_url [
         "../textures/arena-markers/12.png"
       ]
     }
     WallMarker {
       translation -2.8749 2.154 0.175
-      rotation 0 0 1 -1.5708
+      rotation 0 0 1 3.1416
       name "A13"
-      model "F13"
+      model "13"
       texture_url [
         "../textures/arena-markers/13.png"
       ]
     }
     WallMarker {
       translation -2.154 2.8749 0.175
-      rotation 0 0 1 3.1416
+      rotation 0 0 1 1.5708
       name "A14"
-      model "F14"
+      model "14"
       texture_url [
         "../textures/arena-markers/14.png"
       ]
     }
     WallMarker {
       translation -1.436 2.8749 0.175
-      rotation 0 0 1 3.1416
+      rotation 0 0 1 1.5708
       name "A15"
-      model "F15"
+      model "15"
       texture_url [
         "../textures/arena-markers/15.png"
       ]
     }
     WallMarker {
       translation -0.718 2.8749 0.175
-      rotation 0 0 1 3.1416
+      rotation 0 0 1 1.5708
       name "A16"
-      model "F16"
+      model "16"
       texture_url [
         "../textures/arena-markers/16.png"
       ]
     }
     WallMarker {
       translation -0 2.8749 0.175
-      rotation 0 0 1 3.1416
+      rotation 0 0 1 1.5708
       name "A17"
-      model "F17"
+      model "17"
       texture_url [
         "../textures/arena-markers/17.png"
       ]
     }
     WallMarker {
       translation 0.718 2.8749 0.175
-      rotation 0 0 1 3.1416
+      rotation 0 0 1 1.5708
       name "A18"
-      model "F18"
+      model "18"
       texture_url [
         "../textures/arena-markers/18.png"
       ]
     }
     WallMarker {
       translation 1.436 2.8749 0.175
-      rotation 0 0 1 3.1416
+      rotation 0 0 1 1.5708
       name "A19"
-      model "F19"
+      model "19"
       texture_url [
         "../textures/arena-markers/19.png"
       ]
     }
     WallMarker {
       translation 2.154 2.8749 0.175
-      rotation 0 0 1 3.1416
+      rotation 0 0 1 1.5708
       name "A20"
-      model "F20"
+      model "20"
       texture_url [
         "../textures/arena-markers/20.png"
       ]
     }
     WallMarker {
       translation 2.8749 2.154 0.175
-      rotation 0 0 1 1.5708
+      rotation 0 0 1 0
       name "A21"
-      model "F21"
+      model "21"
       texture_url [
         "../textures/arena-markers/21.png"
       ]
     }
     WallMarker {
       translation 2.8749 1.436 0.175
-      rotation 0 0 1 1.5708
+      rotation 0 0 1 0
       name "A22"
-      model "F22"
+      model "22"
       texture_url [
         "../textures/arena-markers/22.png"
       ]
     }
     WallMarker {
       translation 2.8749 0.718 0.175
-      rotation 0 0 1 1.5708
+      rotation 0 0 1 0
       name "A23"
-      model "F23"
+      model "23"
       texture_url [
         "../textures/arena-markers/23.png"
       ]
     }
     WallMarker {
       translation 2.8749 0 0.175
-      rotation 0 0 1 1.5708
+      rotation 0 0 1 0
       name "A24"
-      model "F24"
+      model "24"
       texture_url [
         "../textures/arena-markers/24.png"
       ]
     }
     WallMarker {
       translation 2.8749 -0.718 0.175
-      rotation 0 0 1 1.5708
+      rotation 0 0 1 0
       name "A25"
-      model "F25"
+      model "25"
       texture_url [
         "../textures/arena-markers/25.png"
       ]
     }
     WallMarker {
       translation 2.8749 -1.436 0.175
-      rotation 0 0 1 1.5708
+      rotation 0 0 1 0
       name "A26"
-      model "F26"
+      model "26"
       texture_url [
         "../textures/arena-markers/26.png"
       ]
     }
     WallMarker {
       translation 2.8749 -2.154 0.175
-      rotation 0 0 1 1.5708
+      rotation 0 0 1 0
       name "A27"
-      model "F27"
+      model "27"
       texture_url [
         "../textures/arena-markers/27.png"
       ]

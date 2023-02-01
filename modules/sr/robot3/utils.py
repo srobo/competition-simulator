@@ -37,3 +37,9 @@ def get_robot_device(robot: Robot, name: str, kind: type[TDevice]) -> TDevice:
     if not isinstance(device, kind):
         raise TypeError
     return device
+
+
+def force_text(value: str | bytes) -> str:
+    if isinstance(value, bytes):
+        value = value.decode()
+    return value
