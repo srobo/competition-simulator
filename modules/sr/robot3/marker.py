@@ -183,6 +183,11 @@ class SphericalCoordinate(NamedTuple):
         else:
             return self.theta
 
+    @property
+    def dist(self) -> int:
+        # Legacy property alias for compatibility. Drop after SR2023
+        return self.distance
+
     @classmethod
     def from_tvec(cls, x: float, y: float, z: float) -> SphericalCoordinate:
         """
