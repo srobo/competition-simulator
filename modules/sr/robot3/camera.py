@@ -1,4 +1,5 @@
 from __future__ import annotations
+import datetime
 
 import logging
 import threading
@@ -9,9 +10,12 @@ from collections import defaultdict
 from controller import Robot as WebotsRobot, Camera as WebotsCamera
 
 from .utils import force_text, maybe_get_robot_device
-from .marker import Marker
+from .marker import Marker, obliqueness_to_camera
 
+import math
 LOGGER = logging.getLogger(__name__)
+
+DEFAULT_ANGLE_TOLERANCE = math.radians(75)
 
 MARKER_SIZES: dict[Iterable[int], int] = {
     range(28): 200,  # 0 - 27 for arena boundary
@@ -93,6 +97,7 @@ class WebotsCameraBoard:
 
                 pose_t = tuple(recognition_object.getPosition())
                 pose_R = tuple(recognition_object.getOrientation())
+                print(datetime.datetime.now(), model_name, pose_R)
                 pixel_center = tuple(recognition_object.getPositionOnImage())
 
                 recognition_objects[tag_uid][tag_point] = Recognition(
@@ -177,6 +182,9 @@ class WebotsCameraBoard:
         filtered_markers: list[Marker] = []
 
         for marker in markers:
+            if obliqueness_to_camera(marker) > DEFAULT_ANGLE_TOLERANCE:
+                continue
+
             if marker._id in self._tag_sizes.keys():
                 marker._id -= self._marker_offset
                 filtered_markers.append(marker)

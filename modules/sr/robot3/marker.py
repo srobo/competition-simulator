@@ -14,6 +14,8 @@ from typing import Dict, List, Tuple, Iterator, NamedTuple
 
 from squaternion import Quaternion
 
+from .coordinates import matrix, vectors
+
 
 class MarkerType(Enum):
     """
@@ -453,3 +455,39 @@ class Marker:
                 {"rvec": list(self._rvec), "tvec": list(self._tvec)},
             )
         return marker_dict
+
+
+def obliqueness_to_camera(marker: Marker) -> float:
+    """
+    Compute the angle between the marker's normal and its position vector.
+    """
+
+    # Reference direction for a marker is along the axis the camera is facing.
+    # Use `CartesianCoordinates.from_tvec` so we get matching axis conversions.
+    reference_direction = vectors.Vector(CartesianCoordinates.from_tvec(1, 0, 0))
+
+    rotation_matrix = matrix.Matrix(marker.orientation.rotation_matrix)
+    marker_normal = rotation_matrix * reference_direction
+
+    position = vectors.Vector(marker.cartesian)
+
+    import datetime
+
+    print(datetime.datetime.now())
+
+    print(marker.id)
+    print(repr(rotation_matrix))
+    print(f"{marker_normal=}")
+    print(f"{marker.cartesian=}")
+
+    import numpy
+
+    np_reference_direction = numpy.array(CartesianCoordinates.from_tvec(1, 0, 0))
+
+    np_rotation_matrix = numpy.array(marker.orientation.rotation_matrix)
+    np_marker_normal = np_rotation_matrix * np_reference_direction
+
+    print(repr(np_rotation_matrix))
+    print(f"{np_marker_normal=}")
+
+    return vectors.angle_between(position, marker_normal)
