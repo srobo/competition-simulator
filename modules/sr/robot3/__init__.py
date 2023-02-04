@@ -18,6 +18,7 @@ A2 = AnaloguePin.A2
 A3 = AnaloguePin.A3
 A4 = AnaloguePin.A4
 A5 = AnaloguePin.A5
+A6 = AnaloguePin.A6
 
 COMP = RobotMode.COMP
 DEV = RobotMode.DEV
@@ -43,6 +44,7 @@ __all__ = (
     'A3',
     'A4',
     'A5',
+    'A6',
     'OUT_H0',
     'OUT_H1',
     'OUT_L0',

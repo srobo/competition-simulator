@@ -11,6 +11,7 @@ def init_servo_board(webot: Robot) -> dict[str, ServoBoard]:
         'srXYZ2': ServoBoard([
             Servo(webot, 'left gripper'),
             Servo(webot, 'right gripper'),
+            Servo(webot, 'fingers'),
         ]),
     }
 

@@ -8,6 +8,7 @@ from sr.robot3.ruggeduino_devices import (
     Led,
     Microswitch,
     DistanceSensor,
+    PressureSensor,
     RuggeduinoDevice,
 )
 from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
@@ -34,6 +35,7 @@ class AnaloguePin(IntEnum):
     A3 = 17
     A4 = 18
     A5 = 19
+    A6 = 20
 
 
 DevicesMapping = Dict[Union[AnaloguePin, int], RuggeduinoDevice]
@@ -51,6 +53,9 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
         "Front DS",
         "Back DS",
     ]
+    pressure_sensor_names = [
+        "finger pressure",
+    ]
     switch_names = [
         "back bump sensor",
     ]
@@ -62,7 +67,11 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
     analogue_sensors = [
         DistanceSensor(webot, name)
         for name in dist_sensor_names
+    ] + [
+        PressureSensor(webot, name)
+        for name in pressure_sensor_names
     ]
+
     analogue_input_dict: DevicesMapping = {
         key: sensor
         for key, sensor in zip(AnaloguePin, analogue_sensors)

@@ -17,6 +17,8 @@ CONTROLS = {
     "boost": (Keyboard.SHIFT, Keyboard.CONTROL),
     "grabber_open": (ord("R"), ord("P")),
     "grabber_close": (ord("E"), ord("O")),
+    "fingers_down": (ord("C"), ord(",")),
+    "fingers_up": (ord("X"), ord(".")),
     "angle_unit": (ord("B"), ord("B")),
 }
 
@@ -44,6 +46,9 @@ def print_sensors(robot: Robot) -> None:
     touch_sensor_names = [
         "Rear",
     ]
+    pressure_sensor_names = {
+        A6: "Fingers",
+    }
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
     for Apin, name in distance_sensor_names.items():
@@ -54,6 +59,11 @@ def print_sensors(robot: Robot) -> None:
     for pin, name in enumerate(touch_sensor_names, 2):
         touching = R.ruggeduino.pins[pin].digital_read()
         print(f"{pin} {name: <6}: {touching}")
+
+    print(f"Pressure sensor readings:")
+    for Apin, name in pressure_sensor_names.items():
+        pressure = R.ruggeduino.pins[Apin].analogue_read()
+        print(f"{Apin} {name: <12}: {pressure:.2f}")
 
     try:
         camera = R.camera
@@ -98,6 +108,8 @@ key_sense = CONTROLS["sense"][R.zone]
 key_boost = CONTROLS["boost"][R.zone]
 key_grab_open = CONTROLS["grabber_open"][R.zone]
 key_grab_close = CONTROLS["grabber_close"][R.zone]
+key_fingers_down = CONTROLS["fingers_down"][R.zone]
+key_fingers_up = CONTROLS["fingers_up"][R.zone]
 key_angle_unit = CONTROLS["angle_unit"][R.zone]
 
 print(
@@ -147,6 +159,12 @@ while True:
         elif key_ascii == key_grab_close:
             R.servo_board.servos[0].position = 1
             R.servo_board.servos[1].position = 1
+
+        elif key_ascii == key_fingers_down:
+            R.servo_board.servos[2].position = -1
+
+        elif key_ascii == key_fingers_up:
+            R.servo_board.servos[2].position = 1
 
         elif key_ascii == key_angle_unit:
             USE_DEGREES = not USE_DEGREES
