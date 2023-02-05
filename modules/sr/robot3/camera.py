@@ -118,8 +118,8 @@ class WebotsCameraBoard:
                 tag_size=size,
                 pixel_center=marker_points['base'].pixel_center,
                 pixel_corners=[
-                    marker_points['TL'].pixel_center,
                     marker_points['TR'].pixel_center,
+                    marker_points['TL'].pixel_center,
                     marker_points['BL'].pixel_center,
                     marker_points['BR'].pixel_center,
                 ],
