@@ -836,8 +836,8 @@ PROTO Robot_2022 [
                       translation 0 -0.205 -0.044
                       children [
                         Shape {
-                          appearance USE FINGER_BUMPER_COLOUR 
-                          geometry USE FINGER_BUMPER_BOX  
+                          appearance USE FINGER_BUMPER_COLOUR
+                          geometry USE FINGER_BUMPER_BOX
                         }
                       ]
                     }

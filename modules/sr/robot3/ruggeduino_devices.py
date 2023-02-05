@@ -57,6 +57,7 @@ class DistanceSensor(RuggeduinoDevice):
             DistanceSensor.UPPER_BOUND,
         )
 
+
 class PressureSensor(RuggeduinoDevice):
     """
     A Webots touch sensor with pressure,  we convert the distance to metres.
@@ -72,7 +73,6 @@ class PressureSensor(RuggeduinoDevice):
     def __get_pressure(self) -> float:
         # Currently we only the return Z-axis force.
         return self.webot_sensor.getValues()[2]
-        
 
     def analogue_read(self) -> float:
         """
@@ -83,7 +83,6 @@ class PressureSensor(RuggeduinoDevice):
             PressureSensor.LOWER_BOUND,
             PressureSensor.UPPER_BOUND,
         )
-
 
 
 class Microswitch(RuggeduinoDevice):

@@ -60,7 +60,7 @@ def print_sensors(robot: Robot) -> None:
         touching = R.ruggeduino.pins[pin].digital_read()
         print(f"{pin} {name: <6}: {touching}")
 
-    print(f"Pressure sensor readings:")
+    print("Pressure sensor readings:")
     for Apin, name in pressure_sensor_names.items():
         pressure = R.ruggeduino.pins[Apin].analogue_read()
         print(f"{Apin} {name: <12}: {pressure:.2f}")
