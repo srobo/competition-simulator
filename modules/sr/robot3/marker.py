@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import os
 from enum import Enum
-from math import pi, acos, atan2, hypot
+from math import pi, acos, asin, atan2, hypot
 from typing import Dict, List, Tuple, Iterator, NamedTuple
 
 from squaternion import Quaternion
@@ -238,9 +238,7 @@ class Orientation:
         else:
             self._quaternion = quaternion
 
-        roll, pitch, yaw = quaternion.to_euler()
-
-        self._yaw_pitch_roll: ThreeTuple = yaw, pitch, roll
+        self._yaw_pitch_roll: ThreeTuple = self._calculate_yaw_pitch_roll(quaternion)
 
     @property
     def rot_x(self) -> float:
@@ -329,7 +327,18 @@ class Orientation:
 
         Specifically intrinsic Tait-Bryan angles following the z-y'-x'' convention.
         """
-        roll, pitch, yaw = self._quaternion.to_euler()
+        return self._calculate_yaw_pitch_roll(self._quaternion)
+
+    def _calculate_yaw_pitch_roll(self, q: Quaternion) -> ThreeTuple:
+        """
+        Calculate intrinsic Tait-Bryan angles following the z-y'-x'' convention.
+        """
+        q = q.normalize
+        yaw = atan2(2 * (q.w * q.z - q.x * q.y),
+                    1 - 2 * (q.y ** 2 + q.z ** 2))
+        pitch = asin(2 * (q.w * q.y + q.z * q.x))
+        roll = atan2(2 * (q.w * q.x - q.y * q.z),
+                     1 - 2 * (q.x ** 2 + q.y ** 2))
         return yaw, pitch, roll
 
     def __iter__(self) -> Iterator[float]:
