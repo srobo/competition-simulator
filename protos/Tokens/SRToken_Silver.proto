@@ -64,7 +64,7 @@ PROTO SRToken_Silver [
     boundingObject USE TOKEN_GEOMETRY
     physics Physics {
       density -1
-      mass 0.500
+      mass 0.400
     }
   }
 }
