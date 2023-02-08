@@ -244,8 +244,7 @@ class Orientation:
             self._quaternion = quaternion
 
         roll, pitch, yaw = quaternion.to_euler()
-
-        self._yaw_pitch_roll: ThreeTuple = yaw, pitch, roll
+        self._new_style_yaw_pitch_roll: ThreeTuple = yaw, pitch, roll
 
     @property
     def rot_x(self) -> float:
@@ -301,7 +300,7 @@ class Orientation:
 
         Zero values have the marker facing the camera square-on.
         """
-        return self._yaw_pitch_roll[0]
+        return self._new_style_yaw_pitch_roll[0]
 
     @property
     def pitch(self) -> float:
@@ -313,7 +312,7 @@ class Orientation:
 
         Zero values have the marker facing the camera square-on.
         """
-        return self._yaw_pitch_roll[1]
+        return self._new_style_yaw_pitch_roll[1]
 
     @property
     def roll(self) -> float:
@@ -325,7 +324,7 @@ class Orientation:
 
         Zero values have the marker facing the camera square-on.
         """
-        return self._yaw_pitch_roll[2]
+        return self._new_style_yaw_pitch_roll[2]
 
     @property
     def yaw_pitch_roll(self) -> ThreeTuple:
