@@ -36,6 +36,7 @@ class AnaloguePin(IntEnum):
     A4 = 18
     A5 = 19
     A6 = 20
+    A7 = 21
 
 
 DevicesMapping = Dict[Union[AnaloguePin, int], RuggeduinoDevice]
@@ -54,7 +55,8 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
         "Back DS",
     ]
     pressure_sensor_names = [
-        "finger pressure",
+        "finger pressure left",
+        "finger pressure right",
     ]
     switch_names = [
         "back bump sensor",

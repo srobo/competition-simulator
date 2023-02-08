@@ -47,7 +47,8 @@ def print_sensors(robot: Robot) -> None:
         "Rear",
     ]
     pressure_sensor_names = {
-        A6: "Fingers",
+        A6: "Left Finger",
+        A7: "Right Finger",
     }
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
@@ -162,9 +163,11 @@ while True:
 
         elif key_ascii == key_fingers_down:
             R.servo_board.servos[2].position = 1
+            R.servo_board.servos[3].position = 1
 
         elif key_ascii == key_fingers_up:
             R.servo_board.servos[2].position = -1
+            R.servo_board.servos[3].position = -1
 
         elif key_ascii == key_angle_unit:
             USE_DEGREES = not USE_DEGREES
