@@ -216,18 +216,23 @@ class Orientation:
         angle=pi, axis=(1, 0, 0),
     )
 
-    def __init__(self, rotation_matrix: tuple[float, float, float, float]):
+    @classmethod
+    def from_axis_angle(cls, axis_angle: tuple[float, float, float, float]) -> Orientation:
+        x, y, z, rad = axis_angle
+
+        # Calculate the quaternion of the rotation in the camera's coordinate system
+        # Correct for roll and yaw turning the wrong way
+        quaternion = Quaternion.from_angle_axis(angle=rad, axis=(-x, y, -z))
+
+        return cls(quaternion)
+
+    def __init__(self, quaternion: Quaternion) -> None:
         """
         Construct a quaternion given the rotation matrix in the camera's coordinate system.
 
         More information:
         https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
         """
-        x, y, z, rad = rotation_matrix
-        # Calculate the quaternion of the rotation in the camera's coordinate system
-        # Correct for roll and yaw turning the wrong way
-        quaternion = Quaternion.from_angle_axis(angle=rad, axis=(-x, y, -z))
-
         self.__rotation_matrix: RotationMatrix = quaternion.to_rot()
 
         if os.environ.get('ZOLOTO_LEGACY_AXIS'):
@@ -424,7 +429,7 @@ class Marker:
     def orientation(self) -> Orientation:
         """The marker's orientation."""
         if self._rvec is not None:
-            return Orientation(self._rvec)
+            return Orientation.from_axis_angle(self._rvec)
         raise RuntimeError("This marker was detected with an uncalibrated camera")
 
     @property
