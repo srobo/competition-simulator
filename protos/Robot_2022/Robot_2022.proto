@@ -762,6 +762,121 @@ PROTO Robot_2022 [
           }
         ]
       }
+      DEF FINGERS Transform {
+        translation -0.107 0 0.0362
+        children [
+          DEF RIGHT_FINGER_HINGE HingeJoint {
+            jointParameters HingeJointParameters {
+              position 0
+              axis 0 1 0
+              staticFriction 0
+            }
+            device [
+              RotationalMotor {
+                name "right finger"
+                maxVelocity 1
+                sound ""
+                maxTorque 100
+                minPosition 0
+                maxPosition 1.57
+              }
+              PositionSensor {
+                name "left finger sensor"
+              }
+            ]
+            endPoint Solid {
+              translation 0.0138 0.205 0
+              rotation 0 1 0 -1.57079
+              children [
+                DEF FINGER_GEO Group {
+                  children [
+                    Shape {
+                      appearance DEF GRABBER_COLOUR PBRAppearance {
+                        baseColor 0 0.0051864 0
+                        roughness 0.3
+                        metalness 0
+                      }
+                      geometry DEF FINGER_BOX Box {
+                        size 0.02 0.01 0.05
+                      }
+                    }
+                  ]
+                }
+                DEF FINGER_BUMP Transform {
+                  translation 0 0 -0.0302
+                  children [
+                    Shape {
+                      appearance DEF FINGER_BUMPER_COLOUR PBRAppearance {
+                        baseColor 0.5 0 0
+                        roughness 0.7
+                      }
+                      geometry DEF FINGER_BUMPER_BOX Box {
+                        size 0.02 0.01 0.01
+                      }
+                    }
+                  ]
+                }
+                TouchSensor {
+                  translation 0 0 0
+                  name "finger pressure right"
+                  type "force-3d"
+                  boundingObject USE FINGER_BUMP
+                  physics Physics {
+                    density 8000
+                  }
+                }
+              ]
+              name "finger right"
+              boundingObject USE FINGER_GEO
+              physics Physics {
+                density 8000
+              }
+            }
+          }
+          DEF RIGHT_FINGER_HINGE HingeJoint {
+            jointParameters HingeJointParameters {
+              position 0
+              axis 0 1 0
+              staticFriction 0
+            }
+            device [
+              RotationalMotor {
+                name "left finger"
+                maxVelocity 1
+                sound ""
+                maxTorque 100
+                minPosition 0
+                maxPosition 1.57
+              }
+              PositionSensor {
+                name "left finger sensor"
+              }
+            ]
+            endPoint Solid {
+              translation 0.0138 -0.205 0
+              rotation 0 1 0 -1.57079
+              children [
+                USE FINGER_GEO
+                USE FINGER_BUMP
+                TouchSensor {
+                  translation 0 0 0
+                  name "finger pressure left"
+                  type "force-3d"
+                  boundingObject USE FINGER_BUMP
+                  physics Physics {
+                    density 8000
+                  }
+                }
+              ]
+              name "finger left"
+              boundingObject USE FINGER_GEO
+              physics Physics {
+                density 8000
+              }
+            }
+          }
+        ]
+      }
     ]
     name IS model
     model IS model
