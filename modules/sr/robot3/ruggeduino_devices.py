@@ -64,7 +64,7 @@ class PressureSensor(RuggeduinoDevice):
     """
 
     LOWER_BOUND = 0
-    UPPER_BOUND = 250
+    UPPER_BOUND = 3
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
@@ -72,7 +72,7 @@ class PressureSensor(RuggeduinoDevice):
 
     def __get_pressure(self) -> float:
         # Currently we only the return Z-axis force.
-        return self.webot_sensor.getValues()[2]
+        return self.webot_sensor.getValues()[2] / 100
 
     def analogue_read(self) -> float:
         """
