@@ -21,7 +21,7 @@ import controller_utils  # isort:skip
 import webots_utils  # isort:skip
 
 
-NON_MATCH_LIGHTING_INTENSITY = 0.8
+NON_MATCH_LIGHTING_INTENSITY = 0
 MATCH_LIGHTING_INTENSITY = 1.8
 
 
