@@ -850,7 +850,7 @@ PROTO Robot_2022 [
                   boundingObject USE FINGER_BUMP_GEO
                   physics Physics {
                     density -1
-                    mass 0.2
+                    mass 0.25
                   }
                 }
               ]
