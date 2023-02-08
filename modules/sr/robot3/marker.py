@@ -383,7 +383,7 @@ class Marker:
         self,
         id: int,  # noqa: A002
         pose_t: tuple[float, float, float],
-        # In axis-angle form
+        # In quaternion form
         pose_R: tuple[float, float, float, float],
         tag_size: float,
         pixel_center: tuple[int, int],
@@ -438,7 +438,7 @@ class Marker:
     def orientation(self) -> Orientation:
         """The marker's orientation."""
         if self._rvec is not None:
-            return Orientation.from_axis_angle(self._rvec)
+            return Orientation(Quaternion(*self._rvec))
         raise RuntimeError("This marker was detected with an uncalibrated camera")
 
     @property

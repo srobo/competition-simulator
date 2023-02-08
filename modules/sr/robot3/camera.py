@@ -10,6 +10,7 @@ from controller import Robot as WebotsRobot, Camera as WebotsCamera
 
 from .utils import force_text, maybe_get_robot_device
 from .marker import Marker
+from .compute_orientations import compute_orientation, LocalCoordinateSystem
 
 LOGGER = logging.getLogger(__name__)
 
@@ -109,12 +110,21 @@ class WebotsCameraBoard:
 
             size = self._tag_sizes.get(marker_points['base'].marker_id, 0)
 
+            orientation = compute_orientation(
+                top_left=marker_points['TL'].pose_t,
+                top_right=marker_points['TR'].pose_t,
+                bottom_left=marker_points['BL'].pose_t,
+                bottom_right=marker_points['BR'].pose_t,
+                coordinate_system=LocalCoordinateSystem.ENU,
+                output_coordinate_system=LocalCoordinateSystem.ENU,
+            )
+
             raw_markers.append(Marker(
                 id=marker_points['base'].marker_id,
                 # X forward, Y left, Z up
                 pose_t=marker_points['base'].pose_t,
                 # In axis-angle form
-                pose_R=marker_points['base'].pose_R,
+                pose_R=orientation.quaternion,
                 tag_size=size,
                 pixel_center=marker_points['base'].pixel_center,
                 pixel_corners=[
