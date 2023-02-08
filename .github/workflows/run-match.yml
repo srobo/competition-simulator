@@ -3,7 +3,7 @@ name: Simulator match
 on:
   push:
     branches:
-      - master
+      - main
   pull_request: {}
   release:
     types: [ created ]
@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        webots-version: ["2022b"]
+        webots-version: ["2022b", "2023a"]
 
     steps:
       - uses: actions/checkout@v2

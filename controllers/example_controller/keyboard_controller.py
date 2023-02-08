@@ -67,7 +67,9 @@ def print_sensors(robot: Robot) -> None:
                 print(f" #{marker.id}")
                 x, y, z = marker.cartesian
                 print(f" Cartesian: {x:.4g}, {y:.4g}, {z:.4g}")
-                rot_x, rot_y, dist = marker.spherical
+                rot_x = marker.spherical.rot_x
+                rot_y = marker.spherical.rot_y
+                dist = marker.spherical.distance
                 print(
                     f" Spherical: {angle_str(rot_x)}, {angle_str(rot_y)}, {dist}",
                 )

@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-from controller import Robot, Device
+from controller import Robot
+
+try:  # R2022
+    from controller import Device
+except ImportError:  # R2023a
+    from controller.device import Device  # type: ignore[assignment]
 
 TDevice = TypeVar('TDevice', bound=Device)
 
@@ -32,3 +37,9 @@ def get_robot_device(robot: Robot, name: str, kind: type[TDevice]) -> TDevice:
     if not isinstance(device, kind):
         raise TypeError
     return device
+
+
+def force_text(value: str | bytes) -> str:
+    if isinstance(value, bytes):
+        value = value.decode()
+    return value

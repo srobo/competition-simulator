@@ -1,12 +1,12 @@
 #VRML_SIM R2022b utf8
+# template language: javascript
+# tags: nonDeterministic
 
 PROTO MarkerBase [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
-  # Marker sizes are assumed to be flat squares. If this changes, or the
-  # dimension which is the "thin" one changes, then changes will be needed in
-  # our vision wrappers (see `modules/sr/robot3/vision/tokens.py`).
-  field SFVec3f {0.1 0.0001 0.1, 0.2 0.0001 0.2, 0.25 0.0001 0.25} size 0.1 0.0001 0.1
+  # Marker sizes are assumed to be flat squares.
+  field SFVec3f {0.0001 0.08 0.08, 0.0001 0.2 0.2, 0.0001 0.25 0.25} size 0.0001 0.08 0.08
   field SFString name ""
   field SFString model ""
   field MFString texture_url []
@@ -14,9 +14,94 @@ PROTO MarkerBase [
 ]
 {
   Solid {
+    %<
+    import * as wbrandom from 'wbrandom.js';
+    wbrandom.seed(context.id);
+    const uid = wbrandom.integer();
+    >%
     translation IS translation
     rotation IS rotation
     children [
+      Solid {
+        translation 0 %<= fields.size.value.y * 0.8 / 2 >% %<= fields.size.value.z * 0.8 / 2 >%
+        children [
+          Shape {
+            appearance PBRAppearance {
+              transparency 1
+              metalness 0
+            }
+            geometry Box {
+              size 0.001 0.001 0.001
+            }
+          }
+        ]
+        model %<= "\"" + uid + "_" + fields.model.value + "_TL\"" >%
+        name "TL"
+        locked TRUE
+        recognitionColors [
+          0 0 1
+        ]
+      }
+      Solid {
+        translation 0 %<= -fields.size.value.y * 0.8 / 2 >% %<= fields.size.value.z * 0.8 / 2 >%
+        children [
+          Shape {
+            appearance PBRAppearance {
+              transparency 1
+              metalness 0
+            }
+            geometry Box {
+              size 0.001 0.001 0.001
+            }
+          }
+        ]
+        model %<= "\"" + uid + "_" + fields.model.value + "_TR\"" >%
+        name "TR"
+        locked TRUE
+        recognitionColors [
+          0 0 1
+        ]
+      }
+      Solid {
+        translation 0 %<= -fields.size.value.y * 0.8 / 2 >% %<= -fields.size.value.z * 0.8 / 2 >%
+        children [
+          Shape {
+            appearance PBRAppearance {
+              transparency 1
+              metalness 0
+            }
+            geometry Box {
+              size 0.001 0.001 0.001
+            }
+          }
+        ]
+        model %<= "\"" + uid + "_" + fields.model.value + "_BR\"" >%
+        name "BR"
+        locked TRUE
+        recognitionColors [
+          0 0 1
+        ]
+      }
+      Solid {
+        translation 0 %<= fields.size.value.y * 0.8 / 2 >% %<= -fields.size.value.z * 0.8 / 2 >%
+        children [
+          Shape {
+            appearance PBRAppearance {
+              transparency 1
+              metalness 0
+            }
+            geometry Box {
+              size 0.001 0.001 0.001
+            }
+          }
+        ]
+        model %<= "\"" + uid + "_" + fields.model.value + "_BL\"" >%
+        name "BL"
+        locked TRUE
+        recognitionColors [
+          0 0 1
+        ]
+      }
       Shape {
         appearance PBRAppearance {
           baseColorMap ImageTexture {
@@ -33,7 +118,7 @@ PROTO MarkerBase [
       }
     ]
     name IS name
-    model IS model
+    model %<= "\"" + uid + "_" + fields.model.value + "_base\"" >%
     boundingObject USE MARKER_GEOMETRY
     physics IS physics
     locked TRUE
