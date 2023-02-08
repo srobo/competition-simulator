@@ -161,10 +161,10 @@ while True:
             R.servo_board.servos[1].position = 1
 
         elif key_ascii == key_fingers_down:
-            R.servo_board.servos[2].position = -1
+            R.servo_board.servos[2].position = 1
 
         elif key_ascii == key_fingers_up:
-            R.servo_board.servos[2].position = 1
+            R.servo_board.servos[2].position = -1
 
         elif key_ascii == key_angle_unit:
             USE_DEGREES = not USE_DEGREES
