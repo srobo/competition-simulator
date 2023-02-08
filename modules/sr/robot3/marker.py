@@ -219,20 +219,30 @@ class Orientation:
     @classmethod
     def from_axis_angle(cls, axis_angle: tuple[float, float, float, float]) -> Orientation:
         x, y, z, rad = axis_angle
-
-        # Calculate the quaternion of the rotation in the camera's coordinate system
-        # Correct for roll and yaw turning the wrong way
-        quaternion = Quaternion.from_angle_axis(angle=rad, axis=(-x, y, -z))
-
+        quaternion = Quaternion.from_angle_axis(angle=rad, axis=(x, y, z))
         return cls(quaternion)
 
-    def __init__(self, quaternion: Quaternion) -> None:
+    @staticmethod
+    def _webots_to_sr(webots_quaternion: Quaternion) -> Quaternion:
         """
-        Construct a quaternion given the rotation matrix in the camera's coordinate system.
+        Adjust a quaternion for Webots' roll and yaw turning the other way than
+        the SR vision expects.
+        """
+        return Quaternion(
+            w=webots_quaternion.w,
+            x=-webots_quaternion.x,
+            y=webots_quaternion.y,
+            z=-webots_quaternion.z,
+        )
 
-        More information:
-        https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
+    def __init__(self, webots_quaternion: Quaternion) -> None:
         """
+        Orientation within the camera's coordinate system
+        when given a quaternion in Webots' coordinate system.
+        """
+
+        quaternion = self._webots_to_sr(webots_quaternion)
+
         self.__rotation_matrix: RotationMatrix = quaternion.to_rot()
 
         if os.environ.get('ZOLOTO_LEGACY_AXIS'):
