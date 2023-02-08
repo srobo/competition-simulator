@@ -22,7 +22,7 @@ import webots_utils  # isort:skip
 
 
 NON_MATCH_LIGHTING_INTENSITY = 0.8
-MATCH_LIGHTING_INTENSITY = 2.
+MATCH_LIGHTING_INTENSITY = 1.8
 
 
 class ArenaLighting(NamedTuple):

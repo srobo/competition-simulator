@@ -39,7 +39,7 @@ DEF AMBIENT Background {
   skyColor [
     0.4 0.4 0.4
   ]
-  luminosity 1.5
+  luminosity 1.6
 }
 DEF ROBOT-0 Robot_2022 {
   translation 0.5 -2.375 0.001
