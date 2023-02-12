@@ -287,7 +287,7 @@ class TransformationTests(unittest.TestCase):
 
         R = rotation_matrix_from_axis_and_angle(input_orientation)
 
-        R = round(R, 1)  # type: ignore[call-overload]
+        R = round(R, 1)
 
         result = R * original
 
