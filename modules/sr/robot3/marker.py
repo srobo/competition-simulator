@@ -216,32 +216,17 @@ class Orientation:
         angle=pi, axis=(1, 0, 0),
     )
 
-    @classmethod
-    def from_axis_angle(cls, axis_angle: tuple[float, float, float, float]) -> Orientation:
-        x, y, z, rad = axis_angle
-        quaternion = Quaternion.from_angle_axis(angle=rad, axis=(x, y, z))
-        return cls(quaternion)
+    def __init__(self, rotation_matrix: tuple[float, float, float, float]):
+        """
+        Construct a quaternion given the rotation matrix in the camera's coordinate system.
 
-    @staticmethod
-    def _webots_to_sr(webots_quaternion: Quaternion) -> Quaternion:
+        More information:
+        https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
         """
-        Adjust a quaternion for Webots' roll and yaw turning the other way than
-        the SR vision expects.
-        """
-        return Quaternion(
-            w=webots_quaternion.w,
-            x=-webots_quaternion.x,
-            y=webots_quaternion.y,
-            z=-webots_quaternion.z,
-        )
-
-    def __init__(self, webots_quaternion: Quaternion) -> None:
-        """
-        Orientation within the camera's coordinate system
-        when given a quaternion in Webots' coordinate system.
-        """
-
-        quaternion = self._webots_to_sr(webots_quaternion)
+        x, y, z, rad = rotation_matrix
+        # Calculate the quaternion of the rotation in the camera's coordinate system
+        # Correct for roll and yaw turning the wrong way
+        quaternion = Quaternion.from_angle_axis(angle=rad, axis=(-x, y, -z))
 
         self.__rotation_matrix: RotationMatrix = quaternion.to_rot()
 
@@ -254,7 +239,8 @@ class Orientation:
             self._quaternion = quaternion
 
         roll, pitch, yaw = quaternion.to_euler()
-        self._new_style_yaw_pitch_roll: ThreeTuple = yaw, pitch, roll
+
+        self._yaw_pitch_roll: ThreeTuple = yaw, pitch, roll
 
     @property
     def rot_x(self) -> float:
@@ -310,7 +296,7 @@ class Orientation:
 
         Zero values have the marker facing the camera square-on.
         """
-        return self._new_style_yaw_pitch_roll[0]
+        return self._yaw_pitch_roll[0]
 
     @property
     def pitch(self) -> float:
@@ -322,7 +308,7 @@ class Orientation:
 
         Zero values have the marker facing the camera square-on.
         """
-        return self._new_style_yaw_pitch_roll[1]
+        return self._yaw_pitch_roll[1]
 
     @property
     def roll(self) -> float:
@@ -334,7 +320,7 @@ class Orientation:
 
         Zero values have the marker facing the camera square-on.
         """
-        return self._new_style_yaw_pitch_roll[2]
+        return self._yaw_pitch_roll[2]
 
     @property
     def yaw_pitch_roll(self) -> ThreeTuple:
@@ -438,7 +424,7 @@ class Marker:
     def orientation(self) -> Orientation:
         """The marker's orientation."""
         if self._rvec is not None:
-            return Orientation.from_axis_angle(self._rvec)
+            return Orientation(self._rvec)
         raise RuntimeError("This marker was detected with an uncalibrated camera")
 
     @property
