@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import math
 import random
 from typing import TypeVar, Collection
@@ -29,7 +28,6 @@ class Robot:
         verbose: bool = False,
         env: object = None,
         ignored_ruggeduinos: list[str] | None = None,
-        legacy_camera_axis: bool = True,
     ) -> None:
         """
         Initialise robot.
@@ -52,11 +50,6 @@ class Robot:
         self._step_lock = Lock()
 
         self._init_devs()
-        if legacy_camera_axis:
-            print("Using legacy coordinate system for vision")  # noqa: T201
-            os.environ['ZOLOTO_LEGACY_AXIS'] = '1'
-        else:
-            print("Using updated coordinate system for vision")  # noqa: T201
         self.display_info()
 
         if not auto_start:
@@ -171,7 +164,7 @@ class Robot:
         return x
 
     @property
-    def camera(self) -> camera.WebotsCameraBoard:
+    def camera(self) -> camera.Camera:
         return self._singular(self._cameras, 'camera')
 
     @property

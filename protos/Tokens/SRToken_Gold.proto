@@ -24,39 +24,38 @@ PROTO SRToken_Gold [
       }
       TokenMarker {
         translation 0 0.1351 0
-        rotation 0 0 1 -1.5708
         name "front"
-        model "99"
+        model "F99"
       }
       TokenMarker {
         translation 0 -0.1351 0
-        rotation 0 0 1 1.5708
+        rotation 0 0 1 3.1416
         name "back"
-        model "99"
+        model "F99"
       }
       TokenMarker {
         translation 0.1351 0 0
-        rotation 0 0 1 3.1416
+        rotation 0 0 1 -1.5708
         name "side-1"
-        model "99"
+        model "F99"
       }
       TokenMarker {
         translation -0.1351 0 0
-        rotation 0 0 1 0
+        rotation 0 0 1 1.5708
         name "side-2"
-        model "99"
+        model "F99"
       }
       TokenMarker {
         translation 0 0 0.1351
-        rotation 0 1 0 1.5708
+        rotation -0.577350 0.577350 0.577350 -2.09439
         name "top"
-        model "99"
+        model "F99"
       }
       TokenMarker {
         translation 0 0 -0.1351
-        rotation 0 1 0 -1.5708
+        rotation -0.577350 -0.577350 0.577350 2.09439
         name "bottom"
-        model "99"
+        model "F99"
       }
     ]
     name IS model

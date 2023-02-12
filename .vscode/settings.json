@@ -4,14 +4,12 @@
     "python.linting.mypyEnabled": true,
     "python.linting.pylintEnabled": false,
     "cSpell.words": [
-        "Apriltag",
         "piezo",
         "Ruggeduino",
         "Ruggeduinos",
         "timestep",
         "webot",
-        "Webots",
-        "zoloto",
+        "Webots"
     ],
     "python.analysis.extraPaths": [
         "modules",

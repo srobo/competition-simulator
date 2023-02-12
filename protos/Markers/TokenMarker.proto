@@ -19,6 +19,6 @@ PROTO TokenMarker [
     # physics and apparently that should be fine (and it does seem to work), but
     # it would likely confuse competitors to get a bunch of warnings.
     physics Physics {}
-    size 0.0001 0.08 0.08
+    size 0.1 0.0001 0.1
   }
 }
