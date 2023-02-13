@@ -292,6 +292,7 @@ class Face:
         warnings.warn(
             "Orientation data in the simulator does not match the robot API. "
             "Either or both may change to resolve this.",
+            stacklevel=2,
         )
 
         n_x, n_y, n_z = self.normal().data
