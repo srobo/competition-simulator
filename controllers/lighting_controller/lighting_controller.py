@@ -21,9 +21,6 @@ import controller_utils  # isort:skip
 import webots_utils  # isort:skip
 
 
-# Note: intensity at the end of the match needs to be non-zero so that the red
-# colour shows.
-NON_MATCH_LIGHTING_INTENSITY = 0.5
 MATCH_LIGHTING_INTENSITY = 1.8
 
 
@@ -77,7 +74,7 @@ class LuminosityFade:
 CUE_STACK = [
     LightingEffect(
         0,
-        lighting=[ArenaLighting('SUN', intensity=NON_MATCH_LIGHTING_INTENSITY)],
+        lighting=[ArenaLighting('SUN', intensity=0)],
         luminosity=0.05,
         name="Pre-set",
     ),
@@ -89,13 +86,7 @@ CUE_STACK = [
     ),
     LightingEffect(
         -0.1,
-        lighting=[
-            ArenaLighting(
-                'SUN',
-                intensity=NON_MATCH_LIGHTING_INTENSITY,
-                colour=(1, 0, 0),
-            ),
-        ],
+        lighting=[ArenaLighting('SUN', intensity=1, colour=(1, 0, 0))],
         luminosity=0.05,
         name="End of match",
     ),
