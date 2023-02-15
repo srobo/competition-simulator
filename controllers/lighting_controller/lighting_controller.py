@@ -21,7 +21,9 @@ import controller_utils  # isort:skip
 import webots_utils  # isort:skip
 
 
-NON_MATCH_LIGHTING_INTENSITY = 0
+# Note: intensity at the end of the match needs to be non-zero so that the red
+# colour shows.
+NON_MATCH_LIGHTING_INTENSITY = 0.5
 MATCH_LIGHTING_INTENSITY = 1.8
 
 
