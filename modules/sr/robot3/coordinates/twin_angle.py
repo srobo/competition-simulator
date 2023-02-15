@@ -23,6 +23,10 @@ class Spherical(NamedTuple):
     rot_y: float
     dist: int
 
+    @property
+    def distance(self) -> int:
+        return self.dist
+
 
 def spherical_from_cartesian(cartesian: Vector) -> Spherical:
     """
