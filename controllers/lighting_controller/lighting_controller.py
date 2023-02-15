@@ -74,7 +74,7 @@ class LuminosityFade:
 CUE_STACK = [
     LightingEffect(
         0,
-        lighting=[ArenaLighting('SUN', intensity=0)],
+        lighting=[ArenaLighting('SUN', intensity=0.2)],
         luminosity=0.05,
         name="Pre-set",
     ),
@@ -82,11 +82,12 @@ CUE_STACK = [
         0,
         fade_time=1.5,
         lighting=[ArenaLighting('SUN', intensity=MATCH_LIGHTING_INTENSITY)],
+        luminosity=1,
         name="Fade-up",
     ),
     LightingEffect(
         -0.1,
-        lighting=[ArenaLighting('SUN', intensity=1, colour=(1, 0, 0))],
+        lighting=[ArenaLighting('SUN', intensity=0.8, colour=(1, 0, 0))],
         luminosity=0.05,
         name="End of match",
     ),
