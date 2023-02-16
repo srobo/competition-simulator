@@ -29,17 +29,11 @@ DEF SUN DirectionalLight {
   intensity 1
   castShadows TRUE
 }
-DEF SUN2 DirectionalLight {
-  color 1 1 1
-  direction 0.2 0.1 -1
-  intensity 0.5
-  castShadows FALSE
-}
 DEF AMBIENT Background {
   skyColor [
     0.4 0.4 0.4
   ]
-  luminosity 1.5
+  luminosity 1.6
 }
 DEF ROBOT-0 Robot_2022 {
   translation 0.5 -2.375 0.001
