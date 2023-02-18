@@ -255,6 +255,7 @@ def main() -> None:
         with record_animation(supervisor, recording_stem.with_suffix('.html')):
             with record_video(supervisor, recording_stem.with_suffix('.mp4')):
                 run_match(supervisor)
+                supervisor.exportImage(str(recording_stem.with_suffix('.jpg')), 100)
 
 
 if __name__ == '__main__':
