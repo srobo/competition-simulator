@@ -91,6 +91,12 @@ CUE_STACK = [
         luminosity=0.05,
         name="End of match",
     ),
+    LightingEffect(
+        -0.09,
+        lighting=[ArenaLighting('SUN', intensity=MATCH_LIGHTING_INTENSITY)],
+        luminosity=1,
+        name="Post-match image",
+    ),
 ]
 
 
