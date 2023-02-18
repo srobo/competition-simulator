@@ -86,10 +86,18 @@ CUE_STACK = [
         name="Fade-up",
     ),
     LightingEffect(
-        -0.1,
+        -0.1,  # This time runs this cue as the last frame of the video
         lighting=[ArenaLighting('SUN', intensity=0.8, colour=(1, 0, 0))],
         luminosity=0.05,
         name="End of match",
+    ),
+    LightingEffect(
+        # Times between -0.1 and 0 will not appear in the video but may still
+        # be run before the competition_supervisor terminates the simulation
+        -0.09,
+        lighting=[ArenaLighting('SUN', intensity=MATCH_LIGHTING_INTENSITY)],
+        luminosity=1,
+        name="Post-match image",
     ),
 ]
 

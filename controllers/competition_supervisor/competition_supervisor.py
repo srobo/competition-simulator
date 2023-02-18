@@ -255,6 +255,10 @@ def main() -> None:
         with record_animation(supervisor, recording_stem.with_suffix('.html')):
             with record_video(supervisor, recording_stem.with_suffix('.mp4')):
                 run_match(supervisor)
+                # Because there is no timestep between this image and the movie terminating,
+                # this will be the frame after the end of the movie.
+                # The light controller sets the lighting to white for this frame.
+                supervisor.exportImage(str(recording_stem.with_suffix('.jpg')), 100)
 
 
 if __name__ == '__main__':
