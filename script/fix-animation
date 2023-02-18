@@ -3,7 +3,7 @@ import re
 import argparse
 
 
-def fix_animation(input: str, output: str) -> None:
+def fix_animation(input: str, output: str) -> None:  # noqa: A002
     with open(input) as f:
         data = f.readlines()
 
