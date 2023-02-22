@@ -7,6 +7,7 @@ PROTO TokenMarker [
   field SFRotation rotation 0 1 0 0
   field SFString name ""
   field SFString model ""
+  field MFString texture_url []
 ]
 {
   MarkerBase {
@@ -14,6 +15,7 @@ PROTO TokenMarker [
     rotation IS rotation
     name IS name
     model IS model
+    texture_url IS texture_url
     # TokenMarkers need to have physics enabled otherwise we get a warning from
     # Webots about them not having physics. We don't really want them to have
     # physics and apparently that should be fine (and it does seem to work), but
