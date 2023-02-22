@@ -93,7 +93,7 @@ def print_fatal(message: str) -> None:
 def run_match() -> None:
     try:
         subprocess.check_call([
-            'webots',
+            os.environ.get('WEBOTS_EXECUTABLE', 'webots'),
             '--batch',
             '--stdout',
             '--stderr',
