@@ -17,5 +17,6 @@ PROTO WallMarker [
     model IS model
     texture_url IS texture_url
     size 0.2 0.0001 0.2
+    visual_size 0.2 0.0001 0.2
   }
 }

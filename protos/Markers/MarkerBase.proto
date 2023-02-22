@@ -6,6 +6,7 @@ PROTO MarkerBase [
   # Marker sizes are assumed to be flat squares. If this changes, or the
   # dimension which is the "thin" one changes, then changes will be needed in
   # our vision wrappers (see `modules/sr/robot3/vision/tokens.py`).
+  field SFVec3f {0.08 0.0001 0.08, 0.2 0.0001 0.2, 0.25 0.0001 0.25} visual_size 0.08 0.0001 0.08
   field SFVec3f {0.1 0.0001 0.1, 0.2 0.0001 0.2, 0.25 0.0001 0.25} size 0.1 0.0001 0.1
   field SFString name ""
   field SFString model ""
@@ -28,13 +29,15 @@ PROTO MarkerBase [
           metalness 0
         }
         geometry DEF MARKER_GEOMETRY Box {
-          size IS size
+          size IS visual_size
         }
       }
     ]
     name IS name
     model IS model
-    boundingObject USE MARKER_GEOMETRY
+    boundingObject Box {
+      size IS size
+    }
     physics IS physics
     locked TRUE
     recognitionColors [
