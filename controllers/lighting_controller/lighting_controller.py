@@ -87,7 +87,7 @@ CUE_STACK = [
     ),
     LightingEffect(
         -0.1,  # This time runs this cue as the last frame of the video
-        lighting=[ArenaLighting('SUN', intensity=0.8, colour=(1, 0, 0))],
+        lighting=[ArenaLighting('SUN', intensity=0.8, colour=(0.6, 0.5, 0.5))],
         luminosity=0.05,
         name="End of match",
     ),
