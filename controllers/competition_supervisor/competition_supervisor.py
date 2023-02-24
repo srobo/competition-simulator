@@ -222,7 +222,20 @@ def run_match(supervisor: Supervisor) -> None:
     time_step = int(supervisor.getBasicTimeStep())
     duration = controller_utils.get_match_duration_seconds()
     duration_ms = time_step * int(1000 * duration // time_step)
-    supervisor.step(duration_ms)
+
+    START_AT = 15
+    SAVE = 11
+    STOP_BEFORE = 6
+    supervisor.step(duration_ms - time_step * START_AT)
+
+    for i in range(-START_AT, -STOP_BEFORE):
+        if i == -SAVE:
+            supervisor.exportImage(f'/tmp/bees-{i}.jpg', 100)
+        else:
+            supervisor.exportImage('/tmp/throwaway.jpg', 100)
+        supervisor.step(time_step)
+
+    supervisor.step(time_step * STOP_BEFORE)
 
     print("==================")
     print("Game over, pausing")
