@@ -18,19 +18,24 @@ PROTO MarkerBase [
     translation IS translation
     rotation IS rotation
     children [
-      Shape {
-        appearance PBRAppearance {
-          baseColorMap ImageTexture {
-            url IS texture_url
-            repeatS FALSE
-            repeatT FALSE
+      Transform {
+        translation 0 0.0002 0
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColorMap ImageTexture {
+                url IS texture_url
+                repeatS FALSE
+                repeatT FALSE
+              }
+              roughness 1
+              metalness 0
+            }
+            geometry DEF MARKER_GEOMETRY Box {
+              size IS visual_size
+            }
           }
-          roughness 1
-          metalness 0
-        }
-        geometry DEF MARKER_GEOMETRY Box {
-          size IS visual_size
-        }
+        ]
       }
     ]
     name IS name
