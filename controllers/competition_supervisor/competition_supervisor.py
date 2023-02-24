@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 import time
+import tempfile
 import contextlib
 from typing import Iterator, TYPE_CHECKING
 from pathlib import Path
@@ -206,7 +207,7 @@ def inform_start(node: Node) -> None:
     node.getField('customData').setSFString('start')
 
 
-def run_match(supervisor: Supervisor) -> None:
+def run_match(supervisor: Supervisor, end_scene_path: Path) -> None:
     print("===========")
     print("Match start")
     print("===========")
@@ -223,17 +224,43 @@ def run_match(supervisor: Supervisor) -> None:
     duration = controller_utils.get_match_duration_seconds()
     duration_ms = time_step * int(1000 * duration // time_step)
 
+    # Capture the end-of-match screenshot. This needs to be here since it must
+    # happen *before* the end of the match and must interleave itself with the
+    # stepping at that point.
+    #
+    # The timings here are manually tuned such that we capture the last fully
+    # lit frame just before the fade to red at the end of the match. In addition
+    # to depending on the lighting controller, they also depend on *and can
+    # impact* Webots behaviour.
+    #
+    # The observed failure modes are:
+    #  - if not capturing sufficiently many frames before the one of interest,
+    #    the saved image will be red-lit rather than fully lit
+    #  - if not capturing sufficiently many frames *after* the one of interest,
+    #    the red lighting will not be applied to the video
+    #
+    # The exact reasons for this are unclear, however manual testing shows that
+    # a substantial number of frames either side of the switchover are needed in
+    # order to achieve the desired behaviour. Confusingly each of the frames
+    # capture here are in fact different, so it seems to not merely be that
+    # Webots is picking the next-nearest frame from the video recording and
+    # outputting that instead.
+
+    # The start and stop frames are manually chosen based on experimentation
+    # using Webots R2023a on Ubuntu 22.04. It is possible that values closer to
+    # the target one may suffice, though these are good enough.
     START_AT = 15
     SAVE = 11
     STOP_BEFORE = 6
     supervisor.step(duration_ms - time_step * START_AT)
 
-    for i in range(-START_AT, -STOP_BEFORE):
-        if i == -SAVE:
-            supervisor.exportImage(f'/tmp/bees-{i}.jpg', 100)
-        else:
-            supervisor.exportImage('/tmp/throwaway.jpg', 100)
-        supervisor.step(time_step)
+    with tempfile.NamedTemporaryFile(suffix=end_scene_path.suffix) as tmp:
+        for i in range(-START_AT, -STOP_BEFORE):
+            if i == -SAVE:
+                supervisor.exportImage(str(end_scene_path), 100)
+            else:
+                supervisor.exportImage(tmp.name, 100)
+            supervisor.step(time_step)
 
     supervisor.step(time_step * STOP_BEFORE)
 
@@ -267,11 +294,10 @@ def main() -> None:
 
         with record_animation(supervisor, recording_stem.with_suffix('.html')):
             with record_video(supervisor, recording_stem.with_suffix('.mp4')):
-                run_match(supervisor)
-                # Because there is no timestep between this image and the movie terminating,
-                # this will be the frame after the end of the movie.
-                # The light controller sets the lighting to white for this frame.
-                supervisor.exportImage(str(recording_stem.with_suffix('.jpg')), 100)
+                run_match(
+                    supervisor,
+                    end_scene_path=recording_stem.with_suffix('.jpg'),
+                )
 
 
 if __name__ == '__main__':
