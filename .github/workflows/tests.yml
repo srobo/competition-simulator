@@ -53,7 +53,7 @@ jobs:
         id: define_scripts
         run: |
           SCRIPTS=$(find script -type f | grep -vE "/(linting/|testing/|typing/|check$)" | tr "\n" " ")
-          echo "##[set-output name=SCRIPTS;]$SCRIPTS"
+          echo SCRIPTS=$SCRIPTS >> $GITHUB_OUTPUT
 
       - name: Lint with flake8
         env:
