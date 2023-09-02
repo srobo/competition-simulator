@@ -6,6 +6,7 @@ flake8-commas
 flake8-comprehensions
 flake8-debugger
 flake8-isort
+flake8-noqa
 flake8-print
 flake8-todo
 flake8-tuple

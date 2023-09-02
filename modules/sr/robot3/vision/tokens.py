@@ -46,7 +46,7 @@ class FaceName(enum.Enum):
     "Top".
     """
 
-    # TODO: rename these in terms of cardinal directions for clarity.  # noqa:T000
+    # TODO: rename these in terms of cardinal directions for clarity.
     Top = 'top'
     Bottom = 'bottom'
 
@@ -288,7 +288,7 @@ class Face:
         return (a + b) / 2
 
     def orientation(self) -> Orientation:
-        # TODO: match this to how Zoloto computes orientation.  # noqa:T000
+        # TODO: match this to how Zoloto computes orientation.
         warnings.warn(
             "Orientation data in the simulator does not match the robot API. "
             "Either or both may change to resolve this.",
