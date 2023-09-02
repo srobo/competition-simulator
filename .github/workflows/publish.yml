@@ -9,8 +9,11 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    # using v2 strips tag annotations https://github.com/actions/checkout/issues/290
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
+
+    # work around actions/checkout stripping annotations https://github.com/actions/checkout/issues/290
+    - name: Fetch tags
+      run: git fetch --tags --force
 
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
