@@ -10,3 +10,6 @@ flake8-todo
 flake8-tuple
 
 isort>5
+
+# flake8-commas depends on setuptools at runtime but doesn't declare it
+setuptools
