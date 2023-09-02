@@ -7,7 +7,7 @@ on:
   pull_request: {}
 
 jobs:
-  skip_duplicates:
+  skip-duplicates:
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
@@ -17,7 +17,7 @@ jobs:
           access_token: ${{ github.token }}
 
   run-checks:
-    needs: skip_duplicates
+    needs: skip-duplicates
     strategy:
       fail-fast: false
       # Changing the supported versions? Also update the libraries tasks below.
@@ -79,7 +79,7 @@ jobs:
           ./script/proto-lint worlds/Arena.wbt protos/**/*.proto
 
   validate-libraries:
-    needs: skip_duplicates
+    needs: skip-duplicates
     strategy:
       fail-fast: false
       # Changing the supported versions? Also update the checks tasks above.

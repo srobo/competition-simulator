@@ -9,7 +9,7 @@ on:
     types: [ created ]
 
 jobs:
-  skip_duplicates:
+  skip-duplicates:
     continue-on-error: true
     runs-on: ubuntu-latest
     steps:
@@ -19,7 +19,7 @@ jobs:
           access_token: ${{ github.token }}
 
   run-comp-match:
-    needs: skip_duplicates
+    needs: skip-duplicates
     runs-on: ubuntu-latest
     strategy:
       matrix:
