@@ -6,6 +6,9 @@ import contextlib
 from typing import Iterator, TYPE_CHECKING
 from pathlib import Path
 
+# Note: implicit dependency here on `setuptools`. For the moment is likely
+# enough to have already been installed as part of the base Python install,
+# however that may change in time.
 import pkg_resources
 # Webots specific library
 from controller import Node, Supervisor
