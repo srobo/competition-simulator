@@ -45,7 +45,11 @@ DevicesMapping = Dict[Union[AnaloguePin, int], RuggeduinoDevice]
 def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
     # The names in these arrays correspond to the names given to devices in Webots
 
-    dist_sensor_names = [
+    analogue_inputs: list[RuggeduinoDevice] = []
+    digital_inputs: list[RuggeduinoDevice] = []
+    digital_outputs: dict[int, RuggeduinoDevice] = {}
+
+    analogue_inputs += DistanceSensor.many(webot, [
         # Updating these? Also update controllers/example_controller/keyboard_controller.py
         "Front Left DS",
         "Front Right DS",
@@ -53,64 +57,35 @@ def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
         "Right DS",
         "Front DS",
         "Back DS",
-    ]
-    pressure_sensor_names = [
+    ])
+    analogue_inputs += PressureSensor.many(webot, [
         "finger pressure left",
         "finger pressure right",
-    ]
-    switch_names = [
+    ])
+
+    digital_inputs += Microswitch.many(webot, [
         "back bump sensor",
-    ]
+    ])
+
     led_names = [
         "led 1",
         "led 2",
     ]
 
-    analogue_sensors = [
-        DistanceSensor(webot, name)
-        for name in dist_sensor_names
-    ] + [
-        PressureSensor(webot, name)
-        for name in pressure_sensor_names
-    ]
-
-    analogue_input_dict: DevicesMapping = {
-        key: sensor
-        for key, sensor in zip(AnaloguePin, analogue_sensors)
-    }
-
-    digital_sensors = [
-        Microswitch(webot, name)
-        for name in switch_names
-    ]
-    digital_input_dict: DevicesMapping = {
-        index: sensor
-        for index, sensor in
-        enumerate(digital_sensors, start=Ruggeduino.DIGITAL_PIN_START)
-    }
-
     limiter = OutputFrequencyLimiter(webot)
-    digital_outputs = [
-        Led(webot, name, limiter, pin)
+    digital_outputs.update({
+        pin: Led(webot, name, limiter, pin)
         for pin, name in enumerate(
             led_names,
-            start=Ruggeduino.DIGITAL_PIN_START + len(digital_input_dict),
+            start=Ruggeduino.DIGITAL_PIN_START + len(digital_inputs),
         )
-    ]
-
-    digital_output_dict: DevicesMapping = {
-        index: output
-        for index, output in enumerate(
-            digital_outputs,
-            start=Ruggeduino.DIGITAL_PIN_START + len(digital_input_dict),
-        )
-    }
+    })
 
     return {
         '1234567890': Ruggeduino({
-            **analogue_input_dict,
-            **digital_input_dict,
-            **digital_output_dict,
+            **dict(zip(AnaloguePin, analogue_inputs)),
+            **dict(enumerate(digital_inputs, start=Ruggeduino.DIGITAL_PIN_START)),
+            **digital_outputs,
         }),
     }
 

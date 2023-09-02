@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterable
 
 from controller import (
     LED,
@@ -34,6 +35,10 @@ class DistanceSensor(RuggeduinoDevice):
     LOWER_BOUND = 0
     UPPER_BOUND = 2
 
+    @classmethod
+    def many(cls, webot: Robot, sensor_names: Iterable[str]) -> list[DistanceSensor]:
+        return [cls(webot, x) for x in sensor_names]
+
     def __init__(self, webot: Robot, sensor_name: str) -> None:
         self.webot_sensor = get_robot_device(webot, sensor_name, WebotsDistanceSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
@@ -66,6 +71,10 @@ class PressureSensor(RuggeduinoDevice):
     LOWER_BOUND = 0
     UPPER_BOUND = 3
 
+    @classmethod
+    def many(cls, webot: Robot, sensor_names: Iterable[str]) -> list[PressureSensor]:
+        return [cls(webot, x) for x in sensor_names]
+
     def __init__(self, webot: Robot, sensor_name: str) -> None:
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
@@ -89,6 +98,10 @@ class Microswitch(RuggeduinoDevice):
     """
     A standard Webots touch sensor.
     """
+
+    @classmethod
+    def many(cls, webot: Robot, sensor_names: Iterable[str]) -> list[Microswitch]:
+        return [cls(webot, x) for x in sensor_names]
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
