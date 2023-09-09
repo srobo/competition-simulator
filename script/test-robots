@@ -44,7 +44,7 @@ def run_robot_match(
             sys.executable,
             str(comp_match_script),
             str(archives_dir),
-            '--duration', '1',
+            '--duration', '1',  # noqa: BWR001
             '--no-record',
             '--',
             '0',  # no logs will be retained so a fixed match number is used

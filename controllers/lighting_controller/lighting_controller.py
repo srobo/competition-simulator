@@ -143,7 +143,7 @@ class LightingController:
         return ArenaLighting(
             light_def,
             light.getField('intensity').getSFFloat(),
-            light.getField('color').getSFColor(),  # type: ignore
+            light.getField('color').getSFColor(),  # type: ignore[arg-type]
         )
 
     def increment_colour(
@@ -151,7 +151,7 @@ class LightingController:
         colour: tuple[float, float, float],
         step: tuple[float, float, float],
     ) -> tuple[float, float, float]:
-        return tuple(colour[i] + step[i] for i in range(3))  # type: ignore
+        return tuple(colour[i] + step[i] for i in range(3))  # type: ignore[return-value]
 
     def current_match_time(self) -> float:
         return self._robot.getTime() - self.start_offset
@@ -170,7 +170,7 @@ class LightingController:
                 self.set_node_intensity(self.light_nodes[light.light_def], light.intensity)
                 self.set_node_colour(self.light_nodes[light.light_def], light.colour)
 
-            print(f"Lighting effect '{effect.name}' complete")  # noqa: B028, T201
+            print(f"Lighting effect '{effect.name}' complete")  # noqa: T201
 
         else:
             steps = int((effect.fade_time * 1000) / self.timestep)
@@ -195,7 +195,7 @@ class LightingController:
 
                 # figure out steps of each value
                 intensity_step = (light.intensity - current_intensity) / steps
-                colour_step: tuple[float, float, float] = tuple(  # type: ignore
+                colour_step: tuple[float, float, float] = tuple(  # type: ignore[assignment]
                     light.colour[i] - current_colour[i]
                     for i in range(3)
                 )
@@ -239,7 +239,7 @@ class LightingController:
                 self.set_node_intensity(fade.light, fade.effect.intensity)
                 self.set_node_colour(fade.light, fade.effect.colour)
 
-                print(f"Lighting effect for '{fade.effect.light_def}' complete")  # noqa: E501, B028, T201
+                print(f"Lighting effect for '{fade.effect.light_def}' complete")  # noqa: E501, T201
 
                 self.lighting_fades.remove(fade)  # remove completed fade
 
