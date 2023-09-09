@@ -5,10 +5,10 @@ flake8-builtins
 flake8-commas
 flake8-comprehensions
 flake8-debugger
+flake8-fixme
 flake8-isort
 flake8-noqa
 flake8-print
-flake8-todo
 flake8-tuple
 
 isort>5
