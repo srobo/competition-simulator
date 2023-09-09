@@ -3,11 +3,7 @@ from __future__ import annotations
 from typing import TypeVar
 
 from controller import Robot
-
-try:  # R2022
-    from controller import Device
-except ImportError:  # R2023a
-    from controller.device import Device  # type: ignore[assignment]
+from controller.device import Device
 
 TDevice = TypeVar('TDevice', bound=Device)
 

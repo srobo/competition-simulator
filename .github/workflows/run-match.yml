@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        webots-version: ["2022b", "2023a"]
+        webots-version: ["2023b"]
 
     steps:
       - uses: actions/checkout@v3
