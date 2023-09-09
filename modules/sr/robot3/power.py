@@ -31,12 +31,7 @@ class PowerBoard:
 
 class OutputGroup:
     def __init__(self) -> None:
-        output_array = [Output() for _ in Outputs]
-        self._outputs = {
-            key: value
-            for key, value
-            in zip(Outputs, output_array)
-        }
+        self._outputs = {x: Output() for x in Outputs}
 
     def power_on(self) -> None:
         for output in self._outputs.values():
