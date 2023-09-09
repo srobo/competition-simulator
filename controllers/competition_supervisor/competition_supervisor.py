@@ -3,13 +3,10 @@ from __future__ import annotations
 import sys
 import time
 import contextlib
+import importlib.metadata
 from typing import Iterator, TYPE_CHECKING
 from pathlib import Path
 
-# Note: implicit dependency here on `setuptools`. For the moment is likely
-# enough to have already been installed as part of the base Python install,
-# however that may change in time.
-import pkg_resources
 # Webots specific library
 from controller import Node, Supervisor
 
@@ -96,12 +93,15 @@ def check_required_libraries(path: Path) -> None:
         if not package:
             continue
 
+        package_name, sep, expected_version = package.partition('==')
+
         try:
-            pkg_resources.get_distribution(package)
-        except pkg_resources.DistributionNotFound:
+            actual_version = importlib.metadata.version(package_name)
+        except importlib.metadata.PackageNotFoundError:
             missing.append(package)
-        except pkg_resources.VersionConflict:
-            incorrect.append(package)
+        else:
+            if expected_version != actual_version:
+                incorrect.append(package)
 
     if missing or incorrect:
         raise RuntimeError(
