@@ -9,7 +9,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     # work around actions/checkout stripping annotations https://github.com/actions/checkout/issues/290
     - name: Fetch tags
