@@ -76,7 +76,7 @@ class Marker(NamedTuple):
     Wrapper of a marker detection with axis and rotation calculated.
 
     :param id: The ID of the detected marker
-    :param size: The physical size of the marker in millimeters
+    :param size: The physical size of the marker in millimetres
     :param position: Position information of the marker relative to the camera
     :param orientation: Orientation information of the marker
     """
