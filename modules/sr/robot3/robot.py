@@ -144,13 +144,13 @@ class Robot:
         self.power_board = power.init_power_board(self)
 
     def _init_motors(self) -> None:
-        self.motor_boards = motor.init_motor_array(self._webot)
+        self.motor_boards = motor.init_motor_boards(self._webot)
 
     def _init_servos(self) -> None:
         self.servo_boards = servos.init_servo_board(self._webot)
 
     def _init_ruggeduinos(self) -> None:
-        self.ruggeduinos = ruggeduino.init_ruggeduino_array(self._webot)
+        self.ruggeduinos = ruggeduino.init_ruggeduinos(self._webot)
 
     def _init_cameras(self) -> None:
         # See comment in Camera.see for why we need to pass the step lock here.

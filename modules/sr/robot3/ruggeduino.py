@@ -42,7 +42,7 @@ class AnaloguePin(IntEnum):
 DevicesMapping = Dict[Union[AnaloguePin, int], RuggeduinoDevice]
 
 
-def init_ruggeduino_array(webot: Robot) -> dict[str, Ruggeduino]:
+def init_ruggeduinos(webot: Robot) -> dict[str, Ruggeduino]:
     # The names in these arrays correspond to the names given to devices in Webots
 
     analogue_inputs: list[RuggeduinoDevice] = []

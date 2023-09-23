@@ -12,7 +12,7 @@ COAST = 0
 BRAKE = 0
 
 
-def init_motor_array(webot: Robot) -> dict[str, MotorBoard]:
+def init_motor_boards(webot: Robot) -> dict[str, MotorBoard]:
     return {
         'srABC1': MotorBoard(
             Wheel(webot, 'left wheel'),
