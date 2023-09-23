@@ -29,7 +29,7 @@ USE_DEGREES = False
 def angle_str(angle: float) -> str:
     if USE_DEGREES:
         degrees = math.degrees(angle)
-        return f"{degrees:.2g}°"
+        return f"{degrees:.3g}°"
 
     return f"{angle:.4g} rad"
 
