@@ -210,13 +210,6 @@ class Camera:
 
         return markers
 
-    def see_ids(self) -> list[int]:
-        # While in theory this method ought to be the "fast" method, processing
-        # speed doesn't matter much in the simulator and with the locking we
-        # need to do it's much easier to let this be a shallow wrapper around
-        # the full implementation.
-        return [x._info.code for x in self.see()]
-
     # The simulator does not emulate the `capture` or `save` methods.
 
 
