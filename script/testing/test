@@ -8,6 +8,9 @@ export PYTHONPATH=$PWD/stubs:$PWD/modules
 
 python3 -m unittest discover --buffer --start-directory modules "$@"
 
+# The sr module uses namespace packages and thus needs more specific searching
+python3 -m unittest discover --buffer --start-directory modules/sr "$@"
+
 for dir in ./controllers/*/
 do
     echo -e "\nTesting $dir"
