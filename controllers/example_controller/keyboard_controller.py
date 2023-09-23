@@ -53,7 +53,7 @@ def print_sensors(robot: Robot) -> None:
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
     for Apin, name in distance_sensor_names.items():
-        dist = R.arduino.pins[Apin].analogue_read()
+        dist = R.arduino.pins[Apin].analog_read()
         print(f"{Apin} {name: <12}: {dist:.2f}")
 
     print("Touch sensor readings:")
@@ -63,7 +63,7 @@ def print_sensors(robot: Robot) -> None:
 
     print("Pressure sensor readings:")
     for Apin, name in pressure_sensor_names.items():
-        pressure = R.arduino.pins[Apin].analogue_read()
+        pressure = R.arduino.pins[Apin].analog_read()
         print(f"{Apin} {name: <12}: {pressure:.2f}")
 
     try:

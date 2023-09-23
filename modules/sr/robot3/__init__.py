@@ -2,8 +2,9 @@ import sr.robot3._version_check  # noqa: F401
 from sr.robot3.motor import BRAKE, COAST
 from sr.robot3.power import Note, Outputs
 from sr.robot3.robot import Robot
-from sr.robot3.arduino import AnaloguePin, GPIOPinMode
+from sr.robot3.arduino import AnaloguePin
 from sr.robot3.metadata import RobotMode
+from sr.robot3.arduino_devices import GPIOPinMode
 
 OUT_H0 = Outputs.OUT_H0
 OUT_H1 = Outputs.OUT_H1
@@ -21,12 +22,15 @@ A5 = AnaloguePin.A5
 A6 = AnaloguePin.A6
 A7 = AnaloguePin.A7
 
+# Match kit spelling. TODO: drop this once the kit has fixed the spelling.  # noqa: T101
+AnalogPins = AnaloguePin
+
 COMP = RobotMode.COMP
 DEV = RobotMode.DEV
 
-OUTPUT = GPIOPinMode.DIGITAL_OUTPUT
-INPUT = GPIOPinMode.DIGITAL_INPUT
-INPUT_PULLUP = GPIOPinMode.DIGITAL_INPUT_PULLUP
+OUTPUT = GPIOPinMode.OUTPUT
+INPUT = GPIOPinMode.INPUT
+INPUT_PULLUP = GPIOPinMode.INPUT_PULLUP
 
 
 __all__ = (
