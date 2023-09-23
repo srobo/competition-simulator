@@ -1,53 +1,38 @@
-"""
-Polar coordinate utilities.
-"""
-
 from __future__ import annotations
 
 import math
 from typing import NamedTuple
 
-from .vectors import Vector
 
-
-class Spherical(NamedTuple):
+class Position(NamedTuple):
     """
-    Analogue of zoloto's twin-angle `Spherical` type.
+    Position of a marker in space from the camera's perspective.
 
-    This is not the traditional spherical coordinates mechanism and as such
-    there are coordinates it cannot distinguish between. However it's what the
-    API uses, so we match that.
+    :param distance:          Distance from the camera to the marker, in millimetres.
+    :param horizontal_angle:  Horizontal angle from the camera to the marker, in radians.
+                              Ranges from -pi to pi, with positive values indicating
+                              markers to the right of the camera. Directly in front
+                              of the camera is 0 rad.
+    :param vertical_angle:    Vertical angle from the camera to the marker, in radians.
+                              Ranges from -pi to pi, with positive values indicating
+                              markers above the camera. Directly in front of the camera
+                              is 0 rad.
     """
 
-    rot_x: float
-    rot_y: float
-    dist: int
+    distance: float
+    horizontal_angle: float
+    vertical_angle: float
 
-    @property
-    def distance(self) -> int:
-        return self.dist
+    @classmethod
+    def from_cartesian_metres(cls, cartesian: tuple[float, float, float]) -> Position:
+        """
+        Construct an instance given a cartesian position expressed in metres.
+        """
+        x, y, z = cartesian
 
-
-def spherical_from_cartesian(cartesian: Vector) -> Spherical:
-    """
-    Compute a `Spherical` representation of the given 3-vector compatible with
-    Zoloto's.
-
-    Returned angles are in radians.
-    """
-    if len(cartesian) != 3:
-        raise ValueError(
-            f"Can build spherical coordinates for 3-vectors, not {cartesian!r}",
+        # From https://github.com/srobo/sr-robot/blob/a1c7d2e5f21d1d482d2b2ff1d99110865ecb392e/sr/robot3/marker.py#L127-L131  # noqa: E501
+        return cls(
+            distance=int(math.hypot(*cartesian) * 1000),
+            horizontal_angle=math.atan2(-y, x),
+            vertical_angle=math.atan2(z, x),
         )
-
-    x, y, z = cartesian.data
-
-    length = cartesian.magnitude()
-    rot_x = math.atan2(y, z)
-    rot_y = math.atan2(x, z)
-
-    return Spherical(
-        rot_y=rot_y,
-        rot_x=rot_x,
-        dist=int(length),
-    )

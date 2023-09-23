@@ -10,8 +10,9 @@ from sr.robot3.coordinates import vectors
 from sr.robot3.coordinates.vectors import Vector
 
 from .image import Rectangle
-from .tokens import Token, FaceName, Orientation
+from .types import Orientation
 from .convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
+from .markers import FiducialMarker
 
 SimpleVector = Tuple[float, float, float]
 
@@ -217,46 +218,6 @@ class FaceTests(unittest.TestCase):
                     expected_orientation,
                     webots_orientation,
                     FaceName.Front,
-                )
-
-
-@unittest.skip("Orientation data is known broken")
-class TokenTests(unittest.TestCase):
-    def test_faces_visible_to_origin(self) -> None:
-        # The first row of data in angles.png, which are equivalent to 90°
-        # rotations about the y axis.
-        cases = (
-            (
-                'A',
-                FaceName.Front,
-                WebotsOrientation(1, 0, 0, 0),
-            ),
-            (
-                'B',
-                FaceName.Right,
-                WebotsOrientation(0, -1, 0, math.pi / 2),
-            ),
-            (
-                'C',
-                FaceName.Left,
-                WebotsOrientation(0, 1, 0, math.pi / 2),
-            ),
-            (
-                'D',
-                FaceName.Rear,
-                WebotsOrientation(0, 1, 0, math.pi),
-            ),
-        )
-
-        for name, expected_face, webots_orientation in cases:
-            with self.subTest(name):
-                # position is somewhat irrelevant, just needs to be believable
-                token = Token(position=Vector((0, 0, 4)))
-                token.rotate(rotation_matrix_from_axis_and_angle(webots_orientation))
-
-                self.assertEqual(
-                    [expected_face],
-                    [x.name for x in token.visible_faces()],
                 )
 
 

@@ -76,16 +76,15 @@ def print_sensors(robot: Robot) -> None:
             print(f"Found {len(markers)} makers:")
             for marker in markers:
                 print(f" #{marker.id}")
-                x, y, z = marker.cartesian
-                print(f" Cartesian: {x:.4g}, {y:.4g}, {z:.4g}")
-                rot_x, rot_y, dist = marker.spherical
+                distance, horizontal_angle, vertical_angle = marker.position
                 print(
-                    f" Spherical: {angle_str(rot_x)}, {angle_str(rot_y)}, {dist}",
+                    f" Position: {distance}, {angle_str(horizontal_angle)}, "
+                    f"{angle_str(vertical_angle)}",
                 )
-                rot_x, rot_y, rot_z = marker.orientation
+                yaw, pitch, roll = marker.orientation
                 print(
-                    f" Orientation: {angle_str(rot_x)}, {angle_str(rot_y)}, "
-                    f"{angle_str(rot_z)}",
+                    f" Orientation: {angle_str(yaw)}, {angle_str(pitch)}, "
+                    f"{angle_str(roll)}",
                 )
                 print()
         else:

@@ -1,69 +1,80 @@
 from __future__ import annotations
 
-from typing import Callable, Iterable, Sequence, TYPE_CHECKING
+from typing import TypeVar, Iterable, Protocol, Sequence, TYPE_CHECKING
 
 from sr.robot3.coordinates.vectors import Vector
 
 from .image import Rectangle
-from .tokens import Token
 from .convert import WebotsOrientation, rotation_matrix_from_axis_and_angle
+from .markers import FiducialMarker
 
 if TYPE_CHECKING:
-    from controller import CameraRecognitionObject
+    from controller import CameraRecognitionObject as WebotsRecognitionObject
 
 
-def build_token_info(
-    recognition_object: CameraRecognitionObject,
-    size: float,
-    token_class: type[Token],
-) -> tuple[Token, Rectangle, CameraRecognitionObject]:
+class RecognisedObject(Protocol):
+    @property
+    def recognition_object(self) -> WebotsRecognitionObject:
+        ...
+
+    @property
+    def size_m(self) -> float:
+        ...
+
+
+TRecognised = TypeVar('TRecognised', bound=RecognisedObject)
+
+
+def build_marker_info(
+    recognised_object: TRecognised,
+) -> tuple[FiducialMarker, Rectangle, TRecognised]:
+    recognition_object = recognised_object. recognition_object
+
     # Webots' axes are different to ours. Account for that in the unpacking
     z, x, y = recognition_object.getPosition()
 
-    token = token_class(
-        size=size,
+    marker = FiducialMarker(
+        size=recognised_object.size_m,
         # Webots X and Y is inverted with regard to the one we want -- Zoloto
         # has increasing X & Y to the right and down respectively.
         position=Vector((-x, y, z)),
     )
-    token.rotate(rotation_matrix_from_axis_and_angle(
+    marker.rotate(rotation_matrix_from_axis_and_angle(
         WebotsOrientation(*recognition_object.getOrientation()),
     ))
 
     return (
-        token,
+        marker,
         Rectangle(
             recognition_object.getPositionOnImage(),
             recognition_object.getSizeOnImage(),
         ),
-        recognition_object,
+        recognised_object,
     )
 
 
-def tokens_from_objects(
-    objects: Iterable[CameraRecognitionObject],
-    get_size: Callable[[CameraRecognitionObject], float],
-    get_token_class: Callable[[CameraRecognitionObject], type[Token]],
-) -> Sequence[tuple[Token, CameraRecognitionObject]]:
+def markers_from_objects(
+    objects: Iterable[TRecognised],
+) -> Sequence[tuple[FiducialMarker, TRecognised]]:
     """
-    Constructs tokens from the given recognised objects, ignoring any which are
+    Constructs markers from the given recognised objects, ignoring any which are
     judged not to be visible to the camera.
     """
 
-    tokens_with_info = sorted(
+    markers_with_info = sorted(
         (
-            build_token_info(x, get_size(x), get_token_class(x))
+            build_marker_info(x)
             for x in objects
         ),
         key=lambda x: x[0].position.magnitude(),
     )
 
     preceding_rectangles: list[Rectangle] = []
-    tokens = []
-    for token, image_rectangle, recognition_object in tokens_with_info:
+    markers = []
+    for marker, image_rectangle, recognised_object in markers_with_info:
         if not any(x.overlaps(image_rectangle) for x in preceding_rectangles):
-            tokens.append((token, recognition_object))
+            markers.append((marker, recognised_object))
 
         preceding_rectangles.append(image_rectangle)
 
-    return tokens
+    return markers
