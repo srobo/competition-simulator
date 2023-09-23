@@ -13,6 +13,11 @@ python3 -m unittest discover --buffer --start-directory modules/sr "$@"
 
 for dir in ./controllers/*/
 do
+    if [[ "$dir" == "./controllers/test_supervisor/" ]]
+    then
+        echo -e "\nSkipping $dir"
+        continue
+    fi
     echo -e "\nTesting $dir"
     python3 -m unittest discover --buffer --start-directory "$dir" "$@"
 done

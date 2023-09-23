@@ -30,14 +30,16 @@ def build_marker_info(
 ) -> tuple[FiducialMarker, Rectangle, TRecognised]:
     recognition_object = recognised_object. recognition_object
 
-    # Webots' axes are different to ours. Account for that in the unpacking
-    z, x, y = recognition_object.getPosition()
+    # Webots' axes nearly match ours:
+    # - x: distance away from the camera
+    # - y: distance left of the camera
+    # - z: distance *below* the camera (we want above)
+    x, y, z = recognition_object.getPosition()
 
     marker = FiducialMarker(
         size=recognised_object.size_m,
-        # Webots X and Y is inverted with regard to the one we want -- Zoloto
-        # has increasing X & Y to the right and down respectively.
-        position=Vector((-x, y, z)),
+        # Webots Z is inverted with regard to the one we want.
+        position=Vector((x, y, -z)),
     )
     marker.rotate(rotation_matrix_from_axis_and_angle(
         WebotsOrientation(*recognition_object.getOrientation()),

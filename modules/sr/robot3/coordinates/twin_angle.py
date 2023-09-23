@@ -27,7 +27,14 @@ class Position(NamedTuple):
     def from_cartesian_metres(cls, cartesian: tuple[float, float, float]) -> Position:
         """
         Construct an instance given a cartesian position expressed in metres.
-        """
+
+        The expected cartesian coordinate systems is:
+        - x: distance away from the camera
+        - y: distance left of the camera
+        - z: distance above the camera
+
+        See https://github.com/srobo/sr-robot/blob/a1c7d2e5f21d1d482d2b2ff1d99110865ecb392e/sr/robot3/marker.py#L145-L148
+        """  # noqa: E501
         x, y, z = cartesian
 
         # From https://github.com/srobo/sr-robot/blob/a1c7d2e5f21d1d482d2b2ff1d99110865ecb392e/sr/robot3/marker.py#L127-L131  # noqa: E501

@@ -1,0 +1,98 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "../protos/Markers/WallMarker.proto"
+EXTERNPROTO "../protos/Testing/TestCamera.proto"
+
+WorldInfo {
+  basicTimeStep 8
+}
+Viewpoint {
+  # the combined rotation of 0, -1, 0, 1.5708 & -1, 0, 0, 1
+  orientation 0.43231 0.43231 -0.79134 1.80272
+  position 0 7.95 12.0
+  ambientOcclusionRadius 0.3
+  bloomThreshold 100
+}
+DEF SUN DirectionalLight {
+  color 1 1 1
+  direction 0 0 -1
+  intensity 1
+  castShadows TRUE
+}
+DEF AMBIENT Background {
+  skyColor [
+    0.4 0.4 0.4
+  ]
+  luminosity 1.6
+}
+
+Solid {
+  translation 0 0 -0.002
+  children [
+    DEF FLOOR Shape {
+      appearance PBRAppearance {
+        roughness 1
+        metalness 0
+      }
+      geometry Plane {
+        size 4 4
+      }
+    }
+  ]
+  name "Floor"
+  boundingObject USE FLOOR
+}
+
+Robot {
+  translation 0 0 1
+  children [
+    TestCamera {
+      name "camera-marker-straight-ahead"
+      translation 0 0 0
+    }
+    TestCamera {
+      name "camera-marker-slightly-left"
+      translation -0.2 0 0
+    }
+    TestCamera {
+      name "camera-marker-slightly-right"
+      translation 0.2 0 0
+    }
+    TestCamera {
+      name "camera-marker-slightly-closer"
+      translation 0 -0.2 0
+    }
+    TestCamera {
+      name "camera-marker-slightly-further"
+      translation 0 0.2 0
+    }
+    TestCamera {
+      name "camera-marker-slightly-up"
+      translation 0 0 0.2
+    }
+    TestCamera {
+      name "camera-marker-slightly-down"
+      translation 0 0 -0.2
+    }
+  ]
+  name "test-supervisor"
+  model "TestSupervisor"
+  description "A supervisor 'robot' to run integration tests."
+  controller "test_supervisor"
+  supervisor TRUE
+}
+
+Solid {
+  children [
+    WallMarker {
+      translation 0 -1 1
+      rotation 0 0 1 0
+      name "A2"
+      model "F2"
+      texture_url [
+        "../textures/arena-markers/2.png"
+      ]
+    }
+  ]
+  name "Markers"
+}
