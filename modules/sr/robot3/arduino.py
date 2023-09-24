@@ -75,15 +75,15 @@ class Arduino:
             raise ValueError(f"Invalid pins: {invalid_pins}")
 
         def get_pin(index: int) -> PinDevice:
-            supports_analogueue = index in self._ANALOGUE_PINS
+            supports_analogue = index in self._ANALOGUE_PINS
 
             pin = pins.get(index)
             if pin:
-                if pin._supports_analogue != supports_analogueue:
+                if pin._supports_analogue != supports_analogue:
                     raise ValueError(f"Invalid analogue setting for pin {index}: {pin!r}")
                 return pin
 
-            return EmptyPin(supports_analogue=supports_analogueue)
+            return EmptyPin(supports_analogue=supports_analogue)
 
         self.pins = (
             DisabledPin(),
