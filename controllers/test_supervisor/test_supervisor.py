@@ -93,7 +93,7 @@ class TestCamera(unittest.TestCase):
                         horizontal_angle=ApproximateFloat(0),
                         vertical_angle=ApproximateFloat(0),
                     ),
-                    orientation=Orientation(0, ApproximateFloat(0), 0),
+                    orientation=ApproximateOrientation(0, 0, 0),
                 ),
             ],
             markers,
