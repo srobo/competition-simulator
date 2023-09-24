@@ -140,6 +140,13 @@ class PinDevice(abc.ABC):
 
         return add_jitter(self._analogue_read(), *self._ANALOGUE_RANGE)
 
+    def __repr__(self) -> str:
+        return (
+            f"<{self.__class__.__qualname__} "
+            f"analogue={self._supports_analogue} "
+            f"disabled={self._disabled}>"
+        )
+
 
 class DisabledPin(PinDevice):
     def __init__(self) -> None:
