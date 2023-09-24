@@ -42,6 +42,18 @@ def ApproximateOrientation(yaw: float, pitch: float, roll: float) -> Orientation
     )
 
 
+def ApproximatePosition(
+    distance: int,
+    horizontal_angle: float,
+    vertical_angle: float,
+) -> Position:
+    return Position(
+        distance=distance,
+        horizontal_angle=ApproximateFloat(horizontal_angle),
+        vertical_angle=ApproximateFloat(vertical_angle),
+    )
+
+
 class TestCamera(unittest.TestCase):
     maxDiff = None
 
@@ -170,6 +182,81 @@ class TestCamera(unittest.TestCase):
                     ApproximateOrientation(0, 0, 0),
                     marker.orientation,
                     "Wrong orientation",
+                )
+
+    def test_orientations(self) -> None:
+        QUARTER_PI = ApproximateFloat(math.pi / 4)
+
+        ORIENTATIONS = [
+            (
+                # https://studentrobotics.org/docs/images/content/vision/orientation/yaw-45.png
+                'camera-marker-turned-right',
+                Orientation(
+                    yaw=-QUARTER_PI,
+                    pitch=0,
+                    roll=0,
+                ),
+            ),
+            (
+                # https://studentrobotics.org/docs/images/content/vision/orientation/yaw45.png
+                'camera-marker-turned-left',
+                Orientation(
+                    yaw=QUARTER_PI,
+                    pitch=0,
+                    roll=0,
+                ),
+            ),
+            (
+                # https://studentrobotics.org/docs/images/content/vision/orientation/pitch45.png
+                'camera-marker-leaning-back',
+                Orientation(
+                    yaw=0,
+                    pitch=QUARTER_PI,
+                    roll=0,
+                ),
+            ),
+            (
+                # https://studentrobotics.org/docs/images/content/vision/orientation/pitch-45.png
+                'camera-marker-leaning-forwards',
+                Orientation(
+                    yaw=0,
+                    pitch=-QUARTER_PI,
+                    roll=0,
+                ),
+            ),
+            (
+                # https://studentrobotics.org/docs/images/content/vision/orientation/roll45.png
+                'camera-marker-leaning-left',
+                Orientation(
+                    yaw=0,
+                    pitch=0,
+                    roll=QUARTER_PI,
+                ),
+            ),
+            (
+                # https://studentrobotics.org/docs/images/content/vision/orientation/roll-45.png
+                'camera-marker-leaning-right',
+                Orientation(
+                    yaw=0,
+                    pitch=0,
+                    roll=-QUARTER_PI,
+                ),
+            ),
+        ]
+
+        for name, orientation in ORIENTATIONS:
+            with self.subTest(name):
+                camera = self.get_camera(name)
+                marker, = camera.see()
+                self.assertEqual(
+                    orientation,
+                    marker.orientation,
+                    "Wrong orientation",
+                )
+                self.assertEqual(
+                    ApproximatePosition(1000, 0, 0),
+                    marker.position,
+                    "Wrong position",
                 )
 
 

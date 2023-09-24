@@ -35,7 +35,7 @@ Solid {
         metalness 0
       }
       geometry Plane {
-        size 4 4
+        size 20 4
       }
     }
   ]
@@ -46,6 +46,7 @@ Solid {
 Robot {
   translation 0 0 1
   children [
+    # Position testing
     TestCamera {
       name "camera-marker-straight-ahead"
       translation 0 0 0
@@ -74,6 +75,31 @@ Robot {
       name "camera-marker-slightly-down"
       translation 0 0 -0.2
     }
+    # Orientation testing
+    TestCamera {
+      name "camera-marker-turned-right"
+      translation -2 0 0
+    }
+    TestCamera {
+      name "camera-marker-turned-left"
+      translation -3 0 0
+    }
+    TestCamera {
+      name "camera-marker-leaning-back"
+      translation -4 0 0
+    }
+    TestCamera {
+      name "camera-marker-leaning-forwards"
+      translation -5 0 0
+    }
+    TestCamera {
+      name "camera-marker-leaning-left"
+      translation -6 0 0
+    }
+    TestCamera {
+      name "camera-marker-leaning-right"
+      translation -7 0 0
+    }
   ]
   name "test-supervisor"
   model "TestSupervisor"
@@ -84,6 +110,7 @@ Robot {
 
 Solid {
   children [
+    # Position testing
     WallMarker {
       translation 0 -1 1
       rotation 0 0 1 0
@@ -91,6 +118,61 @@ Solid {
       model "F2"
       texture_url [
         "../textures/arena-markers/2.png"
+      ]
+    }
+    # Orientation testing
+    WallMarker {
+      translation -2 -1 1
+      rotation 0 0 1 0.785398163
+      name "A10"
+      model "F10"
+      texture_url [
+        "../textures/arena-markers/10.png"
+      ]
+    }
+    WallMarker {
+      translation -3 -1 1
+      rotation 0 0 1 -0.785398163
+      name "A11"
+      model "F11"
+      texture_url [
+        "../textures/arena-markers/11.png"
+      ]
+    }
+    WallMarker {
+      translation -4 -1 1
+      rotation 1 0 0 0.785398163
+      name "A12"
+      model "F12"
+      texture_url [
+        "../textures/arena-markers/12.png"
+      ]
+    }
+    WallMarker {
+      translation -5 -1 1
+      rotation 1 0 0 -0.785398163
+      name "A13"
+      model "F13"
+      texture_url [
+        "../textures/arena-markers/13.png"
+      ]
+    }
+    WallMarker {
+      translation -6 -1 1
+      rotation 0 1 0 0.785398163
+      name "A14"
+      model "F14"
+      texture_url [
+        "../textures/arena-markers/14.png"
+      ]
+    }
+    WallMarker {
+      translation -7 -1 1
+      rotation 0 1 0 -0.785398163
+      name "A15"
+      model "F15"
+      texture_url [
+        "../textures/arena-markers/15.png"
       ]
     }
   ]
