@@ -32,7 +32,7 @@ ANALOG_READ_MODES = {GPIOPinMode.INPUT}
 
 class PinDevice(abc.ABC):
     """
-    A pin on the Arduino.
+    A device connected to a pin on the Arduino.
     """
     _ANALOGUE_RANGE = (0., 5.)  # Volts
 
