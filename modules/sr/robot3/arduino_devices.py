@@ -34,8 +34,6 @@ class PinDevice(abc.ABC):
     """
     A pin on the Arduino.
     """
-    __slots__ = ('_supports_analogue', '_disabled', '_mode')
-
     _ANALOGUE_RANGE = (0., 5.)  # Volts
 
     def __init__(
