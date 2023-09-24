@@ -32,6 +32,7 @@ class AnaloguePin(enum.IntEnum):
 
 
 def init_arduinos(webot: Robot) -> dict[str, Arduino]:
+    # Apply common arguments upfront to simplify later declarations.
     _DistanceSensor = functools.partial(DistanceSensor, webot)
     _PressureSensor = functools.partial(PressureSensor, webot)
     _Microswitch = functools.partial(Microswitch, webot)
