@@ -66,6 +66,8 @@ def init_arduinos(webot: Robot) -> dict[str, Arduino]:
 
 class Arduino:
     # Pins 0 & 1 are reserved for USB comms, inserted as DisabledPins in __init__.
+    # Arduinos normally have 20 pins, however we cheat a bit and allow for a few
+    # more analogue pins than strictly exist.
     _VALID_PINS = range(2, max(20, max(AnaloguePin) + 1))
     _ANALOGUE_PINS = list(AnaloguePin)
 
