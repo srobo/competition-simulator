@@ -2,7 +2,7 @@ from sr.robot3 import *
 
 R = Robot()
 
-distance = R.ruggeduino.pins[A5].analogue_read()
+distance = R.arduino.pins[A5].analogue_read()
 print(f"Rear ultrasound distance: {distance} meters")
 
 # first motor board, channel 0 to half power forward

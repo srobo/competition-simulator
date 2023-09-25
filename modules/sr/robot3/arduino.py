@@ -4,12 +4,12 @@ from enum import IntEnum
 from typing import Dict, Union
 
 from controller import Robot
-from sr.robot3.ruggeduino_devices import (
+from sr.robot3.arduino_devices import (
     Led,
     Microswitch,
+    ArduinoDevice,
     DistanceSensor,
     PressureSensor,
-    RuggeduinoDevice,
 )
 from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 
@@ -39,15 +39,15 @@ class AnaloguePin(IntEnum):
     A7 = 21
 
 
-DevicesMapping = Dict[Union[AnaloguePin, int], RuggeduinoDevice]
+DevicesMapping = Dict[Union[AnaloguePin, int], ArduinoDevice]
 
 
-def init_ruggeduinos(webot: Robot) -> dict[str, Ruggeduino]:
+def init_arduinos(webot: Robot) -> dict[str, Arduino]:
     # The names in these arrays correspond to the names given to devices in Webots
 
-    analogue_inputs: list[RuggeduinoDevice] = []
-    digital_inputs: list[RuggeduinoDevice] = []
-    digital_outputs: dict[int, RuggeduinoDevice] = {}
+    analogue_inputs: list[ArduinoDevice] = []
+    digital_inputs: list[ArduinoDevice] = []
+    digital_outputs: dict[int, ArduinoDevice] = {}
 
     analogue_inputs += DistanceSensor.many(webot, [
         # Updating these? Also update controllers/example_controller/keyboard_controller.py
@@ -77,20 +77,20 @@ def init_ruggeduinos(webot: Robot) -> dict[str, Ruggeduino]:
         pin: Led(webot, name, limiter, pin)
         for pin, name in enumerate(
             led_names,
-            start=Ruggeduino.DIGITAL_PIN_START + len(digital_inputs),
+            start=Arduino.DIGITAL_PIN_START + len(digital_inputs),
         )
     })
 
     return {
-        '1234567890': Ruggeduino({
+        '1234567890': Arduino({
             **dict(zip(AnaloguePin, analogue_inputs)),
-            **dict(enumerate(digital_inputs, start=Ruggeduino.DIGITAL_PIN_START)),
+            **dict(enumerate(digital_inputs, start=Arduino.DIGITAL_PIN_START)),
             **digital_outputs,
         }),
     }
 
 
-class Ruggeduino:
+class Arduino:
 
     DIGITAL_PIN_START = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
 

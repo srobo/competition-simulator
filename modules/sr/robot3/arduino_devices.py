@@ -16,7 +16,7 @@ from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 LOGGER = logging.getLogger(__name__)
 
 
-class RuggeduinoDevice:
+class ArduinoDevice:
     def analogue_read(self) -> float:
         raise NotImplementedError()
 
@@ -27,7 +27,7 @@ class RuggeduinoDevice:
         raise NotImplementedError()
 
 
-class DistanceSensor(RuggeduinoDevice):
+class DistanceSensor(ArduinoDevice):
     """
     A standard Webots distance sensor,  we convert the distance to metres.
     """
@@ -63,7 +63,7 @@ class DistanceSensor(RuggeduinoDevice):
         )
 
 
-class PressureSensor(RuggeduinoDevice):
+class PressureSensor(ArduinoDevice):
     """
     A Webots touch sensor with pressure,  we convert the distance to metres.
     """
@@ -94,7 +94,7 @@ class PressureSensor(RuggeduinoDevice):
         )
 
 
-class Microswitch(RuggeduinoDevice):
+class Microswitch(ArduinoDevice):
     """
     A standard Webots touch sensor.
     """
@@ -114,7 +114,7 @@ class Microswitch(RuggeduinoDevice):
         return self.webot_sensor.getValue() > 0
 
 
-class Led(RuggeduinoDevice):
+class Led(ArduinoDevice):
     """
     A standard Webots LED.
     The value is a boolean to switch the LED on (True) or off (False).

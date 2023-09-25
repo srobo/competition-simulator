@@ -6,7 +6,7 @@ from typing import TypeVar, Collection
 from pathlib import Path
 from threading import Lock
 
-from sr.robot3 import motor, power, camera, servos, metadata, ruggeduino
+from sr.robot3 import motor, power, camera, servos, arduino, metadata
 # Webots specific library
 from controller import Robot as WebotsRobot
 
@@ -27,12 +27,12 @@ class Robot:
         auto_start: bool = False,
         verbose: bool = False,
         env: object = None,
-        ignored_ruggeduinos: list[str] | None = None,
+        ignored_arduinos: list[str] | None = None,
     ) -> None:
         """
         Initialise robot.
 
-        Note: `env` and `ignored_ruggeduinos` are ignored in the simulator.
+        Note: `env` and `ignored_arduinos` are ignored in the simulator.
         """
 
         self._quiet = not verbose
@@ -134,8 +134,8 @@ class Robot:
         # Servo boards
         self._init_servos()
 
-        # Ruggeduinos
-        self._init_ruggeduinos()
+        # Arduinos
+        self._init_arduinos()
 
         # Camera
         self._init_cameras()
@@ -149,8 +149,8 @@ class Robot:
     def _init_servos(self) -> None:
         self.servo_boards = servos.init_servo_board(self._webot)
 
-    def _init_ruggeduinos(self) -> None:
-        self.ruggeduinos = ruggeduino.init_ruggeduinos(self._webot)
+    def _init_arduinos(self) -> None:
+        self.arduinos = arduino.init_arduinos(self._webot)
 
     def _init_cameras(self) -> None:
         # See comment in Camera.see for why we need to pass the step lock here.
@@ -172,8 +172,8 @@ class Robot:
         return self._singular(self.motor_boards.values(), 'motor board')
 
     @property
-    def ruggeduino(self) -> ruggeduino.Ruggeduino:
-        return self._singular(self.ruggeduinos.values(), 'ruggeduino')
+    def arduino(self) -> arduino.Arduino:
+        return self._singular(self.arduinos.values(), 'arduino')
 
     @property
     def servo_board(self) -> servos.ServoBoard:
