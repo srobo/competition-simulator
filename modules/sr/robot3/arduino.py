@@ -10,6 +10,7 @@ from controller import Robot
 from sr.robot3.utils import BoardIdentity
 from sr.robot3.arduino_devices import (
     Led,
+    EmptyPin,
     PinDevice,
     Microswitch,
     DistanceSensor,
@@ -194,8 +195,9 @@ class Pin:
         self._disabled = disabled
         self._mode = GPIOPinMode.INPUT
 
+        # The device is set to an empty pin by default.
         if device is None:
-            device = PinDevice.empty()
+            device: PinDevice = EmptyPin()
         self._device = device
 
     @property
@@ -288,5 +290,5 @@ class Pin:
         return (
             f"<{self.__class__.__qualname__} "
             f"index={self._index} analog={self._supports_analog} "
-            f"disabled={self._disabled} {self._device.__class__.__name__}>"
+            f"disabled={self._disabled} {self._device!r}>"
         )

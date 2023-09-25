@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import abc
 import logging
 from typing import Optional
 
@@ -17,7 +18,7 @@ from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 LOGGER = logging.getLogger(__name__)
 
 
-class PinDevice:
+class PinDevice(abc.ABC):
     """
     A device connected to a pin on the Arduino.
     """
@@ -44,18 +45,6 @@ class PinDevice:
                 # Only the sensor devices have an enable method.
                 self._webot_device.enable(timestep)
 
-    @classmethod
-    def empty(cls) -> PinDevice:
-        """
-        Returns a PinDevice that does nothing.
-
-        This is useful for when a device is not connected to a pin.
-        Since there is no device, the robot object is nulled out.
-        """
-        if cls._DEVICE_TYPE is not None:
-            raise ValueError("An empty PinDevice is only available on the base class")
-        return cls(None, "")  # type: ignore[arg-type]
-
     def digital_read(self) -> bool:
         return False
 
@@ -68,8 +57,20 @@ class PinDevice:
     def __repr__(self) -> str:
         return (
             f"<{self.__class__.__qualname__} "
-            f"device={self._device_name}>"
+            f"device={self._device_name!r}>"
         )
+
+
+class EmptyPin(PinDevice):
+    """
+    A pin that is not connected to anything.
+    """
+    _DEVICE_TYPE = None
+
+    def __init__(self) -> None:
+        # Skip the super class init, since we don't need to connect to a device.
+        self._webot_device = None
+        self._device_name = "not connected"
 
 
 class DistanceSensor(PinDevice):
