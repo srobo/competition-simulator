@@ -1,11 +1,30 @@
 from __future__ import annotations
 
-from typing import TypeVar
+from typing import TypeVar, NamedTuple
 
 from controller import Robot
 from controller.device import Device
 
 TDevice = TypeVar('TDevice', bound=Device)
+
+
+class BoardIdentity(NamedTuple):
+    """
+    A container for the identity of a board.
+
+    All the board firmwares should return this information in response to
+    the *IDN? query.
+
+    :param manufacturer: The manufacturer of the board
+    :param board_type: The short name of the board, i.e. PBv4B
+    :param asset_tag: The asset tag of the board,
+        this should match what is printed on the board
+    :param sw_version: The firmware version of the board
+    """
+    manufacturer: str = ""
+    board_type: str = ""
+    asset_tag: str = ""
+    sw_version: str = ""
 
 
 def map_to_range(

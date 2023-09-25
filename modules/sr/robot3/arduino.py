@@ -1,101 +1,292 @@
+"""The Arduino module provides an interface to the simulated Arduino."""
 from __future__ import annotations
 
-from enum import IntEnum
-from typing import Dict, Union
+import logging
+from enum import Enum, IntEnum
+from types import MappingProxyType
+from typing import Optional
 
 from controller import Robot
+from sr.robot3.utils import BoardIdentity
 from sr.robot3.arduino_devices import (
     Led,
+    PinDevice,
     Microswitch,
-    ArduinoDevice,
     DistanceSensor,
     PressureSensor,
 )
-from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
+
+logger = logging.getLogger(__name__)
 
 
-class GPIOPinMode(IntEnum):
-    """Hardware modes that a GPIO pin can be set to."""
-
-    DIGITAL_INPUT = 0  #: The digital state of the pin can be read
-    DIGITAL_INPUT_PULLUP = 1  #: Same as DIGITAL_INPUT but internal pull-up is enabled
-    DIGITAL_INPUT_PULLDOWN = 2  #: Same as DIGITAL_INPUT but internal pull-down is enabled
-    DIGITAL_OUTPUT = 3  #: The digital state of the pin can be set.
-
-    ANALOGUE_INPUT = 4  #: The analogue voltage of the pin can be read.
-    ANALOGUE_OUTPUT = 5  #: The analogue voltage of the pin can be set using a DAC.
-
-    PWM_OUTPUT = 6  #: A PWM output signal can be created on the pin.
+class GPIOPinMode(str, Enum):
+    """The possible modes for a GPIO pin."""
+    INPUT = 'INPUT'
+    INPUT_PULLUP = 'INPUT_PULLUP'
+    OUTPUT = 'OUTPUT'
 
 
-class AnaloguePin(IntEnum):
+class AnalogPins(IntEnum):
+    """The analog pins on the Arduino."""
     A0 = 14
     A1 = 15
     A2 = 16
     A3 = 17
     A4 = 18
     A5 = 19
+
+    # Note: these pins don't exist on a real arduino.
     A6 = 20
     A7 = 21
 
 
-DevicesMapping = Dict[Union[AnaloguePin, int], ArduinoDevice]
+DIGITAL_READ_MODES = {GPIOPinMode.INPUT, GPIOPinMode.INPUT_PULLUP, GPIOPinMode.OUTPUT}
+DIGITAL_WRITE_MODES = {GPIOPinMode.OUTPUT}
+ANALOG_READ_MODES = {GPIOPinMode.INPUT}
 
 
-def init_arduinos(webot: Robot) -> dict[str, Arduino]:
-    # The names in these arrays correspond to the names given to devices in Webots
-
-    analogue_inputs: list[ArduinoDevice] = []
-    digital_inputs: list[ArduinoDevice] = []
-    digital_outputs: dict[int, ArduinoDevice] = {}
-
-    analogue_inputs += DistanceSensor.many(webot, [
-        # Updating these? Also update controllers/example_controller/keyboard_controller.py
-        "Front Left DS",
-        "Front Right DS",
-        "Left DS",
-        "Right DS",
-        "Front DS",
-        "Back DS",
-    ])
-    analogue_inputs += PressureSensor.many(webot, [
-        "finger pressure left",
-        "finger pressure right",
-    ])
-
-    digital_inputs += Microswitch.many(webot, [
-        "back bump sensor",
-    ])
-
-    led_names = [
-        "led 1",
-        "led 2",
-    ]
-
-    limiter = OutputFrequencyLimiter(webot)
-    digital_outputs.update({
-        pin: Led(webot, name, limiter, pin)
-        for pin, name in enumerate(
-            led_names,
-            start=Arduino.DIGITAL_PIN_START + len(digital_inputs),
-        )
+def init_arduinos(webot: Robot) -> MappingProxyType[str, Arduino]:
+    serial_number = '1234567890'
+    return MappingProxyType({
+        serial_number: Arduino(webot, serial_number),
     })
-
-    return {
-        '1234567890': Arduino({
-            **dict(zip(AnaloguePin, analogue_inputs)),
-            **dict(enumerate(digital_inputs, start=Arduino.DIGITAL_PIN_START)),
-            **digital_outputs,
-        }),
-    }
 
 
 class Arduino:
+    """
+    The Arduino board interface.
 
-    DIGITAL_PIN_START = 2  # Exclude pins 0 and 1 as they are used for USB serial comms
+    This is intended to be used with Arduino Uno boards running the sbot firmware.
+
+    :param webot: The robot object to connect to devices on.
+    :param serial_number: The serial number of the board.
+    """
+    __slots__ = ('_serial_num', '_serial', '_pins', '_identity')
+
+    @staticmethod
+    def get_board_type() -> str:
+        """
+        Return the type of the board.
+
+        :return: The literal string 'Arduino'.
+        """
+        return 'Arduino'
 
     def __init__(
         self,
-        devices: DevicesMapping,
+        webot: Robot,
+        serial_number: str,
     ) -> None:
-        self.pins = devices
+        # Stored for use in the identify method and repr.
+        self._serial_num = serial_number
+
+        # Note: the names here correspond to the names given to devices in Webots
+        # and, in some places, the keyboard controller.
+        self._pins = (
+            # Pins 0 and 1 are reserved for serial comms
+            Pin(0, supports_analog=False, device=None, disabled=True),
+            Pin(1, supports_analog=False, device=None, disabled=True),
+            Pin(2, supports_analog=False, device=Microswitch(webot, 'back bump sensor')),
+            Pin(3, supports_analog=False, device=Led(webot, 'led 1', pin_num=3)),
+            Pin(4, supports_analog=False, device=Led(webot, 'led 2', pin_num=4)),
+            Pin(5, supports_analog=False, device=None),
+            Pin(6, supports_analog=False, device=None),
+            Pin(7, supports_analog=False, device=None),
+            Pin(8, supports_analog=False, device=None),
+            Pin(9, supports_analog=False, device=None),
+            Pin(10, supports_analog=False, device=None),
+            Pin(11, supports_analog=False, device=None),
+            Pin(12, supports_analog=False, device=None),
+            Pin(13, supports_analog=False, device=None),
+            Pin(AnalogPins.A0, supports_analog=True,
+                device=DistanceSensor(webot, 'Front Left DS')),
+            Pin(AnalogPins.A1, supports_analog=True,
+                device=DistanceSensor(webot, 'Front Right DS')),
+            Pin(AnalogPins.A2, supports_analog=True,
+                device=DistanceSensor(webot, 'Left DS')),
+            Pin(AnalogPins.A3, supports_analog=True,
+                device=DistanceSensor(webot, 'Right DS')),
+            Pin(AnalogPins.A4, supports_analog=True,
+                device=DistanceSensor(webot, 'Front DS')),
+            Pin(AnalogPins.A5, supports_analog=True,
+                device=DistanceSensor(webot, 'Back DS')),
+            # Note: these pins don't exist on a real arduino.
+            Pin(AnalogPins.A6, supports_analog=True,
+                device=PressureSensor(webot, 'finger pressure left')),
+            Pin(AnalogPins.A7, supports_analog=True,
+                device=PressureSensor(webot, 'finger pressure right')),
+        )
+
+    def identify(self) -> BoardIdentity:
+        """
+        Get the identity of the board.
+
+        The asset tag of the board is the serial number.
+
+        :return: The identity of the board.
+        """
+
+        return BoardIdentity(
+            manufacturer="Student Robotics",
+            board_type="SRduino",
+            asset_tag=self._serial_num,
+            sw_version='1.0',
+        )
+
+    @property
+    def pins(self) -> tuple[Pin, ...]:
+        """
+        The pins on the Arduino.
+
+        :return: A tuple of the pins on the Arduino.
+        """
+        return self._pins
+
+    def command(self, command: str) -> str:
+        """
+        Send a command to the board.
+        NOTE This is currently not implemented in the simulator.
+
+        :param command: The command to send to the board.
+        :return: The response from the board.
+        """
+        return ''
+
+    def map_pin_number(self, pin_number: int) -> str:
+        """
+        Map the pin number to the the serial format.
+        Pin numbers are sent as printable ASCII characters, with 0 being 'a'.
+
+        :param pin_number: The pin number to encode.
+        :return: The pin number in the serial format.
+        :raises ValueError: If the pin number is invalid.
+        """
+        try:  # bounds check
+            self.pins[pin_number]._check_if_disabled()
+        except (IndexError, IOError):
+            raise ValueError("Invalid pin provided") from None
+        return chr(pin_number + ord('a'))
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__}: {self._serial_num}>"
+
+
+class Pin:
+    """
+    A pin on the Arduino.
+
+    :param index: The index of the pin.
+    :param supports_analog: Whether the pin supports analog reads.
+    :param device: The device wrapper to use to control a device in webots.
+    :param disabled: Whether the pin can be controlled.
+    """
+    __slots__ = ('_device', '_index', '_supports_analog', '_disabled', '_mode')
+
+    def __init__(
+        self,
+        index: int,
+        supports_analog: bool,
+        device: Optional[PinDevice] = None,
+        disabled: bool = False,
+    ):
+        self._index = index
+        self._supports_analog = supports_analog
+        self._disabled = disabled
+        self._mode = GPIOPinMode.INPUT
+
+        if device is None:
+            device = PinDevice.empty()
+        self._device = device
+
+    @property
+    def mode(self) -> GPIOPinMode:
+        """
+        Get the mode of the pin.
+
+        This returns the cached value since the board does not report this.
+
+        :raises IOError: If this pin cannot be controlled.
+        :return: The mode of the pin.
+        """
+        self._check_if_disabled()
+        return self._mode
+
+    @mode.setter
+    def mode(self, value: GPIOPinMode) -> None:
+        """
+        Set the mode of the pin.
+
+        To do analog or digital reads set the mode to INPUT or INPUT_PULLUP.
+        To do digital writes set the mode to OUTPUT.
+
+        :param value: The mode to set the pin to.
+        :raises IOError: If the pin mode is not a GPIOPinMode.
+        :raises IOError: If this pin cannot be controlled.
+        """
+        self._check_if_disabled()
+        if not isinstance(value, GPIOPinMode):
+            raise IOError('Pin mode only supports being set to a GPIOPinMode')
+
+        self._mode = value
+
+    def digital_read(self) -> bool:
+        """
+        Perform a digital read on the pin.
+
+        :raises IOError: If the pin's current mode does not support digital read
+        :raises IOError: If this pin cannot be controlled.
+        :return: The digital value of the pin.
+        """
+        self._check_if_disabled()
+        if self.mode not in DIGITAL_READ_MODES:
+            raise IOError(f'Digital read is not supported in {self.mode}')
+
+        return self._device.digital_read()
+
+    def digital_write(self, value: bool) -> None:
+        """
+        Write a digital value to the pin.
+
+        :param value: The value to write to the pin.
+        :raises IOError: If the pin's current mode does not support digital write.
+        :raises IOError: If this pin cannot be controlled.
+        """
+        self._check_if_disabled()
+        if self.mode not in DIGITAL_WRITE_MODES:
+            raise IOError(f'Digital write is not supported in {self.mode}')
+
+        self._device.digital_write(value)
+
+    def analog_read(self) -> float:
+        """
+        Get the analog voltage on the pin.
+
+        This is returned in volts. Only pins A0-A5 support analog reads.
+
+        :raises IOError: If the pin or its current mode does not support analog read.
+        :raises IOError: If this pin cannot be controlled.
+        :return: The analog voltage on the pin, ranges from 0 to 5.
+        """
+        self._check_if_disabled()
+        if self.mode not in ANALOG_READ_MODES:
+            raise IOError(f'Analog read is not supported in {self.mode}')
+        if not self._supports_analog:
+            raise IOError('Pin does not support analog read')
+
+        return self._device.analog_read()
+
+    def _check_if_disabled(self) -> None:
+        """
+        Check if the pin is disabled.
+
+        :raises IOError: If the pin is disabled.
+        """
+        if self._disabled:
+            raise IOError('This pin cannot be controlled.')
+
+    def __repr__(self) -> str:
+        return (
+            f"<{self.__class__.__qualname__} "
+            f"index={self._index} analog={self._supports_analog} "
+            f"disabled={self._disabled} {self._device.__class__.__name__}>"
+        )
