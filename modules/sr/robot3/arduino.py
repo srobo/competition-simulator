@@ -4,7 +4,6 @@ from __future__ import annotations
 import logging
 from enum import Enum, IntEnum
 from types import MappingProxyType
-from typing import Optional
 
 from controller import Robot
 from sr.robot3.utils import BoardIdentity
@@ -81,42 +80,32 @@ class Arduino:
         # Stored for use in the identify method and repr.
         self._serial_num = serial_number
 
-        # Note: the names here correspond to the names given to devices in Webots
-        # and, in some places, the keyboard controller.
         self._pins = (
             # Pins 0 and 1 are reserved for serial comms
-            Pin(0, supports_analog=False, device=None, disabled=True),
-            Pin(1, supports_analog=False, device=None, disabled=True),
-            Pin(2, supports_analog=False, device=Microswitch(webot, 'back bump sensor')),
-            Pin(3, supports_analog=False, device=Led(webot, 'led 1', pin_num=3)),
-            Pin(4, supports_analog=False, device=Led(webot, 'led 2', pin_num=4)),
-            Pin(5, supports_analog=False, device=None),
-            Pin(6, supports_analog=False, device=None),
-            Pin(7, supports_analog=False, device=None),
-            Pin(8, supports_analog=False, device=None),
-            Pin(9, supports_analog=False, device=None),
-            Pin(10, supports_analog=False, device=None),
-            Pin(11, supports_analog=False, device=None),
-            Pin(12, supports_analog=False, device=None),
-            Pin(13, supports_analog=False, device=None),
-            Pin(AnalogPins.A0, supports_analog=True,
-                device=DistanceSensor(webot, 'Front Left DS')),
-            Pin(AnalogPins.A1, supports_analog=True,
-                device=DistanceSensor(webot, 'Front Right DS')),
-            Pin(AnalogPins.A2, supports_analog=True,
-                device=DistanceSensor(webot, 'Left DS')),
-            Pin(AnalogPins.A3, supports_analog=True,
-                device=DistanceSensor(webot, 'Right DS')),
-            Pin(AnalogPins.A4, supports_analog=True,
-                device=DistanceSensor(webot, 'Front DS')),
-            Pin(AnalogPins.A5, supports_analog=True,
-                device=DistanceSensor(webot, 'Back DS')),
-            # Note: these pins don't exist on a real arduino.
-            Pin(AnalogPins.A6, supports_analog=True,
-                device=PressureSensor(webot, 'finger pressure left')),
-            Pin(AnalogPins.A7, supports_analog=True,
-                device=PressureSensor(webot, 'finger pressure right')),
+            Pin(0, supports_analog=False, disabled=True),
+            Pin(1, supports_analog=False, disabled=True),
+            # splat in both the digital and analog pins
+            *(Pin(index, supports_analog=False) for index in range(2, 14)),
+            *(Pin(index, supports_analog=True) for index in AnalogPins),
         )
+
+        # Connect the devices to the pins.
+        # NOTE: the names here correspond to the names given to devices in Webots
+        # and, in some places, the keyboard controller.
+        self._pins[2]._connect_device(Microswitch(webot, 'back bump sensor'))
+        self._pins[3]._connect_device(Led(webot, 'led 1', pin_num=3))
+        self._pins[4]._connect_device(Led(webot, 'led 2', pin_num=4))
+        self._pins[AnalogPins.A0]._connect_device(DistanceSensor(webot, 'Front Left DS'))
+        self._pins[AnalogPins.A1]._connect_device(DistanceSensor(webot, 'Front Right DS'))
+        self._pins[AnalogPins.A2]._connect_device(DistanceSensor(webot, 'Left DS'))
+        self._pins[AnalogPins.A3]._connect_device(DistanceSensor(webot, 'Right DS'))
+        self._pins[AnalogPins.A4]._connect_device(DistanceSensor(webot, 'Front DS'))
+        self._pins[AnalogPins.A5]._connect_device(DistanceSensor(webot, 'Back DS'))
+        # NOTE: these pins don't exist on a real arduino.
+        self._pins[AnalogPins.A6]._connect_device(
+            PressureSensor(webot, 'finger pressure left'))
+        self._pins[AnalogPins.A7]._connect_device(
+            PressureSensor(webot, 'finger pressure right'))
 
     def identify(self) -> BoardIdentity:
         """
@@ -178,7 +167,6 @@ class Pin:
 
     :param index: The index of the pin.
     :param supports_analog: Whether the pin supports analog reads.
-    :param device: The device wrapper to use to control a device in webots.
     :param disabled: Whether the pin can be controlled.
     """
     __slots__ = ('_device', '_index', '_supports_analog', '_disabled', '_mode')
@@ -187,7 +175,6 @@ class Pin:
         self,
         index: int,
         supports_analog: bool,
-        device: Optional[PinDevice] = None,
         disabled: bool = False,
     ):
         self._index = index
@@ -196,8 +183,14 @@ class Pin:
         self._mode = GPIOPinMode.INPUT
 
         # The device is set to an empty pin by default.
-        if device is None:
-            device: PinDevice = EmptyPin()
+        self._device: PinDevice = EmptyPin()
+
+    def _connect_device(self, device: PinDevice) -> None:
+        """
+        Connect a device to the pin.
+
+        :param device: The device wrapper to use to control a device in webots.
+        """
         self._device = device
 
     @property
