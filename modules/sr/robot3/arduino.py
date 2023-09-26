@@ -103,9 +103,11 @@ class Arduino:
         self._pins[AnalogPins.A5]._connect_device(DistanceSensor(webot, 'Back DS'))
         # NOTE: these pins don't exist on a real arduino.
         self._pins[AnalogPins.A6]._connect_device(
-            PressureSensor(webot, 'finger pressure left'))
+            PressureSensor(webot, 'finger pressure left'),
+        )
         self._pins[AnalogPins.A7]._connect_device(
-            PressureSensor(webot, 'finger pressure right'))
+            PressureSensor(webot, 'finger pressure right'),
+        )
 
     def identify(self) -> BoardIdentity:
         """
