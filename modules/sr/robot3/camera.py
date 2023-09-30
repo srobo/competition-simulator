@@ -9,7 +9,7 @@ from controller import (
     Camera as WebotCamera,
     CameraRecognitionObject as WebotsRecognitionObject,
 )
-from sr.robot3.vision import Orientation, markers_from_objects
+from sr.robot3.vision import convert, Orientation, markers_from_objects
 from sr.robot3.coordinates import Position
 
 from .utils import maybe_get_robot_device
@@ -141,7 +141,11 @@ class Camera:
                 position=Position.from_cartesian_metres(
                     fiducial_marker.position.data,  # type: ignore[arg-type]
                 ),
-                orientation=fiducial_marker.orientation(),
+                orientation=convert.yaw_pitch_roll_from_axis_and_angle(
+                    convert.WebotsOrientation(
+                        *marker_info.recognition_object.getOrientation(),
+                    ),
+                ),
             )
             for fiducial_marker, marker_info in fiducial_markers
         ]

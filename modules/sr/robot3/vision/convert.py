@@ -13,6 +13,8 @@ from typing import NamedTuple
 
 from sr.robot3.coordinates.matrix import Matrix
 
+from .types import Orientation
+
 
 class WebotsOrientation(NamedTuple):
     x: float
@@ -63,6 +65,30 @@ def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> Matri
     ))
 
 
+def yaw_pitch_roll_from_axis_and_angle(orientation: WebotsOrientation) -> Orientation:
+    x, y, z, theta = orientation
+
+    sin_theta = math.sin(theta)
+    one_minus_cos_theta = 1 - math.cos(theta)
+
+    # https://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToEuler/index.htm
+    heading = math.atan2(
+        y * sin_theta - x * z * one_minus_cos_theta,
+        1 - (y ** 2 + z ** 2) * one_minus_cos_theta,
+    )
+    attitude = math.asin(x * y * one_minus_cos_theta + -z * sin_theta)
+    bank = math.atan2(
+        x * sin_theta - y * z * one_minus_cos_theta,
+        1 - (x ** 2 + z ** 2) * one_minus_cos_theta,
+    )
+
+    return Orientation(
+        yaw=attitude,
+        roll=-bank,
+        pitch=heading,
+    )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument('x')
@@ -73,12 +99,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    print(rotation_matrix_from_axis_and_angle(WebotsOrientation(  # noqa: T201
+    webots_orientation = WebotsOrientation(
         args.x,
         args.y,
         args.z,
         args.theta,
-    )))
+    )
+    print(rotation_matrix_from_axis_and_angle(webots_orientation))  # noqa: T201
+    print(yaw_pitch_roll_from_axis_and_angle(webots_orientation))  # noqa: T201
 
 
 if __name__ == '__main__':
