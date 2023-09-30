@@ -36,8 +36,7 @@ class FiducialMarker:
         self.position = position
 
         # The dimensions here need to end up matching those passed to the marker
-        # as defined in `protos/Markers/MarkerBase.proto`, however note that our
-        # axes are rotated relative to those in Webots.
+        # as defined in `protos/Markers/MarkerBase.proto`.
         self.corners = {
             'top-left': Vector((0.0001, size, -size)),
             'bottom-left': Vector((0.0001, -size, -size)),

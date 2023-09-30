@@ -2,7 +2,7 @@
 PROTO TestCamera [
   field SFString name ""
   field SFVec3f translation 0 0 0
-  field SFRotation rotation 0 0 1 -1.5707953071795862
+  field SFRotation rotation 0 0 1 0
 ]
 {
   Camera {
