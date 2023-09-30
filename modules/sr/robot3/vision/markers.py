@@ -38,11 +38,11 @@ class FiducialMarker:
         # The dimensions here need to end up matching those passed to the marker
         # as defined in `protos/Markers/MarkerBase.proto`.
         self.corners = {
-            'top-left': Vector((0.0001, size, -size)),
-            'bottom-left': Vector((0.0001, -size, -size)),
+            'top-left': Vector((0.0001, size, size)),
+            'bottom-left': Vector((0.0001, size, -size)),
 
-            'top-right': Vector((0.0001, size, size)),
-            'bottom-right': Vector((0.0001, -size, size)),
+            'top-right': Vector((0.0001, -size, size)),
+            'bottom-right': Vector((0.0001, -size, -size)),
         }
 
     def rotate(self, matrix: Matrix) -> None:

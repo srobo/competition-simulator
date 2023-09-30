@@ -22,7 +22,7 @@ class FaceTests(unittest.TestCase):
 
         actual = marker.normal()
         self.assertEqual(
-            Vector((1, 0, 0)),
+            Vector((-1, 0, 0)),
             actual,
             "Wrong normal unit vector",
         )
