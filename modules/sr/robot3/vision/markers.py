@@ -37,12 +37,20 @@ class FiducialMarker:
 
         # The dimensions here need to end up matching those passed to the marker
         # as defined in `protos/Markers/MarkerBase.proto`.
-        self.corners = {
-            'top-left': Vector((0.0001, size, size)),
-            'bottom-left': Vector((0.0001, size, -size)),
 
-            'top-right': Vector((0.0001, -size, size)),
-            'bottom-right': Vector((0.0001, -size, -size)),
+        thickness = 0.0001 / 2
+        size = size / 2
+
+        # Choose what Webots thinks of as the "rear" face -- the one nearer the
+        # camera.
+        offset = -thickness
+
+        self.corners = {
+            'top-left': Vector((offset, size, size)),
+            'bottom-left': Vector((offset, size, -size)),
+
+            'top-right': Vector((offset, -size, size)),
+            'bottom-right': Vector((offset, -size, -size)),
         }
 
     def rotate(self, matrix: Matrix) -> None:
