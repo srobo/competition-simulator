@@ -22,14 +22,7 @@ class WebotsOrientation(NamedTuple):
 
 
 def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> Matrix:
-    # Webots' axes nearly match ours:
-    # - x: distance away from the camera
-    # - y: distance left of the camera
-    # - z: distance *below* the camera (we want above)
     x, y, z, theta = orientation
-
-    # Webots Z is inverted with regard to the one we want.
-    z *= -1
 
     size = round(x ** 2 + y ** 2 + z ** 2, 5)
     if size != 1:
