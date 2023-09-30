@@ -1,9 +1,9 @@
 """The Arduino module provides an interface to the simulated Arduino."""
 from __future__ import annotations
 
-import logging
 from enum import Enum, IntEnum
 from types import MappingProxyType
+from typing import Dict
 
 from controller import Robot
 from sr.robot3.utils import BoardIdentity
@@ -15,8 +15,6 @@ from sr.robot3.arduino_devices import (
     DistanceSensor,
     PressureSensor,
 )
-
-logger = logging.getLogger(__name__)
 
 
 class GPIOPinMode(str, Enum):
@@ -47,8 +45,26 @@ ANALOG_READ_MODES = {GPIOPinMode.INPUT}
 
 def init_arduinos(webot: Robot) -> MappingProxyType[str, Arduino]:
     serial_number = '1234567890'
+
+    # NOTE: the names here correspond to the names given to devices in Webots
+    # and, in some places, the keyboard controller.
+    pin_devices = {
+        2: Microswitch(webot, 'back bump sensor'),
+        3: Led(webot, 'led 1', pin_num=3),
+        4: Led(webot, 'led 2', pin_num=4),
+        AnalogPins.A0: DistanceSensor(webot, 'Front Left DS'),
+        AnalogPins.A1: DistanceSensor(webot, 'Front Right DS'),
+        AnalogPins.A2: DistanceSensor(webot, 'Left DS'),
+        AnalogPins.A3: DistanceSensor(webot, 'Right DS'),
+        AnalogPins.A4: DistanceSensor(webot, 'Front DS'),
+        AnalogPins.A5: DistanceSensor(webot, 'Back DS'),
+        # NOTE: these pins don't exist on a real arduino.
+        AnalogPins.A6: PressureSensor(webot, 'finger pressure left'),
+        AnalogPins.A7: PressureSensor(webot, 'finger pressure right'),
+    }
+
     return MappingProxyType({
-        serial_number: Arduino(webot, serial_number),
+        serial_number: Arduino(webot, serial_number, devices=pin_devices),
     })
 
 
@@ -60,6 +76,7 @@ class Arduino:
 
     :param webot: The robot object to connect to devices on.
     :param serial_number: The serial number of the board.
+    :param devices: The devices connected to the board, a collection of PinDevices.
     """
     __slots__ = ('_serial_num', '_serial', '_pins', '_identity')
 
@@ -76,6 +93,7 @@ class Arduino:
         self,
         webot: Robot,
         serial_number: str,
+        devices: Dict[int, PinDevice],
     ) -> None:
         # Stored for use in the identify method and repr.
         self._serial_num = serial_number
@@ -90,24 +108,8 @@ class Arduino:
         )
 
         # Connect the devices to the pins.
-        # NOTE: the names here correspond to the names given to devices in Webots
-        # and, in some places, the keyboard controller.
-        self._pins[2]._connect_device(Microswitch(webot, 'back bump sensor'))
-        self._pins[3]._connect_device(Led(webot, 'led 1', pin_num=3))
-        self._pins[4]._connect_device(Led(webot, 'led 2', pin_num=4))
-        self._pins[AnalogPins.A0]._connect_device(DistanceSensor(webot, 'Front Left DS'))
-        self._pins[AnalogPins.A1]._connect_device(DistanceSensor(webot, 'Front Right DS'))
-        self._pins[AnalogPins.A2]._connect_device(DistanceSensor(webot, 'Left DS'))
-        self._pins[AnalogPins.A3]._connect_device(DistanceSensor(webot, 'Right DS'))
-        self._pins[AnalogPins.A4]._connect_device(DistanceSensor(webot, 'Front DS'))
-        self._pins[AnalogPins.A5]._connect_device(DistanceSensor(webot, 'Back DS'))
-        # NOTE: these pins don't exist on a real arduino.
-        self._pins[AnalogPins.A6]._connect_device(
-            PressureSensor(webot, 'finger pressure left'),
-        )
-        self._pins[AnalogPins.A7]._connect_device(
-            PressureSensor(webot, 'finger pressure right'),
-        )
+        for pin_num, pin_device in devices.items():
+            self._pins[pin_num]._connect_device(pin_device)
 
     def identify(self) -> BoardIdentity:
         """
