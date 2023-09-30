@@ -46,12 +46,24 @@ class PinDevice(abc.ABC):
                 self._webot_device.enable(timestep)
 
     def digital_read(self) -> bool:
+        LOGGER.warning(
+            f"{self.__class__.__name__} does not support digital_read in simulation. "
+            "Returning default value of False",
+        )
         return False
 
     def digital_write(self, value: bool) -> None:
+        LOGGER.warning(
+            f"{self.__class__.__name__} does not support digital_write in simulation, "
+            "This action is ignored",
+        )
         return
 
     def analog_read(self) -> float:
+        LOGGER.warning(
+            f"{self.__class__.__name__} does not support analog_read in simulation. "
+            "Returning default value of 0.0",
+        )
         return 0.0
 
     def __repr__(self) -> str:
