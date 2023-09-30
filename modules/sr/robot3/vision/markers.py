@@ -1,13 +1,10 @@
 from __future__ import annotations
 
 import math
-import warnings
 
 from sr.robot3.coordinates import vectors
 from sr.robot3.coordinates.matrix import Matrix
 from sr.robot3.coordinates.vectors import Vector
-
-from .types import Orientation
 
 DEFAULT_SIZE = 1
 
@@ -95,36 +92,3 @@ class FiducialMarker:
         assert len(corners) == 2, "Wrong number of corners for 'top' edge"
         a, b = corners
         return (a + b) / 2
-
-    def orientation(self) -> Orientation:
-        # TODO: match this to how Zoloto computes orientation.  # noqa: T101
-        warnings.warn(
-            "Orientation data in the simulator does not match the robot API. "
-            "Either or both may change to resolve this.",
-            stacklevel=2,
-        )
-
-        n_x, n_y, n_z = self.normal().data
-
-        rot_y = math.atan2(n_x, n_z)
-
-        rot_x = math.asin(n_y)
-
-        # Unrotate the normal in X & Y to leave only the Z rotation
-        sin_x = math.sin(-rot_x)
-        sin_y = math.sin(-rot_y)
-        cos_x = math.cos(-rot_x)
-        cos_y = math.cos(-rot_y)
-
-        R = Matrix((
-            (cos_y, 0, sin_y),
-            (-sin_x * -sin_y, cos_x, -sin_x * cos_y),
-            (-sin_y * cos_x, sin_x, cos_x * cos_y),
-        ))
-
-        unrotated_midpoint = R * self.top_midpoint()
-
-        a_x, a_y, _ = unrotated_midpoint.data
-        rot_z = -math.atan2(a_x, a_y)
-
-        return Orientation(-rot_x, rot_y, rot_z)
