@@ -106,7 +106,7 @@ class FiducialMarker:
 
         n_x, n_y, n_z = self.normal().data
 
-        rot_y = math.atan(n_x / n_z)
+        rot_y = math.atan2(n_x, n_z)
 
         rot_x = math.asin(n_y)
 
