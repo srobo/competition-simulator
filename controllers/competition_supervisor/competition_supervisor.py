@@ -175,27 +175,6 @@ def remove_unused_robots(supervisor: Supervisor) -> None:
         robot.remove()
 
 
-def get_simulation_run_mode(supervisor: Supervisor) -> SimulationMode:
-    # webots 2020b is buggy and can raise TypeError when getDevice is passed a str
-    if supervisor.getDevice("2021a-compatibility") is None:
-        print(
-            "This simulator is running a different version of Webots to the "
-            "one that will be used for the next official competition matches "
-            "(You can check the docs to see which version will be used)",
-            file=sys.stderr,
-        )
-        print(
-            "As such it is possible that some behaviour may not "
-            "match that of the official competition matches",
-            file=sys.stderr,
-        )
-        # we are running version 2020b so the old command is used
-        return Supervisor.SIMULATION_MODE_RUN
-    else:
-        # webots-2021a removed the RUN mode and now uses FAST
-        return Supervisor.SIMULATION_MODE_FAST
-
-
 def set_simulation_mode(supervisor: Supervisor, mode: SimulationMode) -> None:
     try:
         supervisor.simulationSetMode(mode)
@@ -220,7 +199,7 @@ def run_match(supervisor: Supervisor) -> None:
     inform_start(webots_utils.node_from_def(supervisor, 'LIGHT_CTRL'))
 
     # ... then un-pause the simulation, so they all start together
-    set_simulation_mode(supervisor, get_simulation_run_mode(supervisor))
+    set_simulation_mode(supervisor, Supervisor.SIMULATION_MODE_FAST)
 
     time_step = int(supervisor.getBasicTimeStep())
     duration = controller_utils.get_match_duration_seconds()
