@@ -36,7 +36,7 @@ class FaceTests(unittest.TestCase):
         actual = marker.top_midpoint()
 
         self.assertEqual(
-            Vector((-0.0001/2, 0, 0.5)),
+            Vector((-0.0001 / 2, 0, 0.5)),
             actual,
             "Wrong top edge midpoint",
         )
