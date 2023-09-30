@@ -5,17 +5,23 @@ import sys
 import math
 import unittest
 import threading
+import dataclasses
 from pathlib import Path
 
 # Webots specific library
-from controller import Robot as WebotsRobot, Camera as WebotCamera, Supervisor
+from controller import (
+    Robot as WebotsRobot,
+    Camera as WebotCamera,
+    Supervisor,
+    CameraRecognitionObject as WebotsRecognitionObject,
+)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 sys.path.insert(1, str(REPO_ROOT / 'modules'))
 
-from sr.robot3.coordinates import Position  # isort:skip
-from sr.robot3.vision import Orientation  # isort:skip
+from sr.robot3.coordinates import Position, Vector  # isort:skip
+from sr.robot3.vision import Orientation, markers_from_objects  # isort:skip
 from sr.robot3.camera import Camera, Marker  # isort:skip
 from sr.robot3.utils import get_robot_device  # isort:skip
 
@@ -52,6 +58,20 @@ def ApproximatePosition(
         horizontal_angle=ApproximateFloat(horizontal_angle),
         vertical_angle=ApproximateFloat(vertical_angle),
     )
+
+
+def Normal(x: float, y: float, z: float) -> Vector:
+    return Vector((x, y, z))
+
+
+def TopMidpoint(x: float, y: float, z: float) -> Vector:
+    return Vector((x, y, z))
+
+
+@dataclasses.dataclass(frozen=True)
+class SimpleMarkerInfo:
+    recognition_object: WebotsRecognitionObject
+    size_m: float = 0.2
 
 
 class TestCamera(unittest.TestCase):
@@ -186,68 +206,137 @@ class TestCamera(unittest.TestCase):
 
     def test_orientations(self) -> None:
         QUARTER_PI = ApproximateFloat(math.pi / 4)
+        UNIT_DIAGONAL = ApproximateFloat(1 / math.sqrt(2))
+
+        HALF_WIDTH = ApproximateFloat(SimpleMarkerInfo.size_m / 2)
+        HALF_DIAGONAL = ApproximateFloat(HALF_WIDTH / math.sqrt(2))
+        HALF_THICKNESS = ApproximateFloat(0.0001 / 2)
+        HALF_DIAG_THICKNESS = ApproximateFloat(HALF_THICKNESS / math.sqrt(2))
 
         ORIENTATIONS = [
             (
+                # https://studentrobotics.org/docs/images/content/vision/orientation/all0.png
+                'camera-marker-straight-ahead',
+                Normal(-1, 0, 0),
+                TopMidpoint(-HALF_THICKNESS, 0, HALF_WIDTH),
+                Orientation(
+                    yaw=0,
+                    pitch=0,
+                    roll=0,
+                ),
+                2,
+            ),
+            (
                 # https://studentrobotics.org/docs/images/content/vision/orientation/yaw-45.png
                 'camera-marker-turned-right',
+                Normal(-UNIT_DIAGONAL, -UNIT_DIAGONAL, 0),
+                TopMidpoint(-HALF_DIAG_THICKNESS, -HALF_DIAG_THICKNESS, HALF_WIDTH),
                 Orientation(
                     yaw=-QUARTER_PI,
                     pitch=0,
                     roll=0,
                 ),
+                10,
             ),
             (
                 # https://studentrobotics.org/docs/images/content/vision/orientation/yaw45.png
                 'camera-marker-turned-left',
+                Normal(-UNIT_DIAGONAL, UNIT_DIAGONAL, 0),
+                TopMidpoint(-HALF_DIAG_THICKNESS, HALF_DIAG_THICKNESS, HALF_WIDTH),
                 Orientation(
                     yaw=QUARTER_PI,
                     pitch=0,
                     roll=0,
                 ),
+                11,
             ),
             (
                 # https://studentrobotics.org/docs/images/content/vision/orientation/pitch45.png
                 'camera-marker-leaning-back',
+                Normal(-UNIT_DIAGONAL, 0, UNIT_DIAGONAL),
+                TopMidpoint(
+                    ApproximateFloat(HALF_DIAGONAL - HALF_DIAG_THICKNESS),
+                    0,
+                    ApproximateFloat(HALF_DIAGONAL + HALF_DIAG_THICKNESS),
+                ),
                 Orientation(
                     yaw=0,
                     pitch=QUARTER_PI,
                     roll=0,
                 ),
+                12,
             ),
             (
                 # https://studentrobotics.org/docs/images/content/vision/orientation/pitch-45.png
                 'camera-marker-leaning-forwards',
+                Normal(-UNIT_DIAGONAL, 0, -UNIT_DIAGONAL),
+                TopMidpoint(
+                    ApproximateFloat(-HALF_DIAGONAL - HALF_DIAG_THICKNESS),
+                    0,
+                    ApproximateFloat(HALF_DIAGONAL - HALF_DIAG_THICKNESS),
+                ),
                 Orientation(
                     yaw=0,
                     pitch=-QUARTER_PI,
                     roll=0,
                 ),
+                13,
             ),
             (
                 # https://studentrobotics.org/docs/images/content/vision/orientation/roll45.png
                 'camera-marker-leaning-left',
+                Normal(-1, 0, 0),
+                TopMidpoint(-HALF_THICKNESS, HALF_DIAGONAL, HALF_DIAGONAL),
                 Orientation(
                     yaw=0,
                     pitch=0,
                     roll=QUARTER_PI,
                 ),
+                14,
             ),
             (
                 # https://studentrobotics.org/docs/images/content/vision/orientation/roll-45.png
                 'camera-marker-leaning-right',
+                Normal(-1, 0, 0),
+                TopMidpoint(-HALF_THICKNESS, -HALF_DIAGONAL, HALF_DIAGONAL),
                 Orientation(
                     yaw=0,
                     pitch=0,
                     roll=-QUARTER_PI,
                 ),
+                15,
             ),
         ]
 
-        for name, orientation in ORIENTATIONS:
+        for name, normal, top_midpoint, orientation, marker_id in ORIENTATIONS:
             with self.subTest(name):
                 camera = self.get_camera(name)
+
+                obj, = camera.camera.getRecognitionObjects()
+
+                (fiducial_marker, _), = markers_from_objects(
+                    [SimpleMarkerInfo(recognition_object=obj)],
+                )
+
+                self.assertEqual(
+                    normal,
+                    fiducial_marker.normal(),
+                    f"Wrong normal (model: {obj.getModel()})",
+                )
+
+                self.assertEqual(
+                    top_midpoint,
+                    fiducial_marker.top_midpoint(),
+                    f"Wrong top midpoint (model: {obj.getModel()})",
+                )
+
                 marker, = camera.see()
+                self.assertEqual(
+                    marker_id,
+                    marker.id,
+                    f"Wrong marker id (self check failed, model: {obj.getModel()})",
+                )
+
                 self.assertEqual(
                     orientation,
                     marker.orientation,
