@@ -8,6 +8,13 @@ EXTERNPROTO "../protos/Tokens/Scoring_Zone_Planet.proto"
 
 WorldInfo {
   basicTimeStep 8
+  contactProperties [
+    ContactProperties {
+      material1 "caster"
+      material2 "default"
+      coulombFriction 0.05
+    }
+  ]
 }
 Viewpoint {
   # rotation 0.0 0.0 1.0 0.0
