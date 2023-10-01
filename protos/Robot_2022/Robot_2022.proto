@@ -211,34 +211,28 @@ PROTO Robot_2022 [
           DEF LEFT_CASTER Transform {
             translation 0 0.187 0
             children [
-              DEF CASTER_JOINT BallJoint {
-                jointParameters BallJointParameters {
-                }
-                endPoint Solid {
-                  name "left caster"
+              DEF front_left_caster Solid {
                   translation 0 0 0
+                  name "front_left_caster"
                   children [
-                    DEF CASTER_BALL Shape {
-                      appearance PBRAppearance {
-                        baseColor 0 0.0051864 0
-                        roughness 0.0
-                        metalness 0
+                      DEF CASTER_BALL Shape {
+                          appearance DEF BALL_APPEARANCE PBRAppearance {
+                              baseColor 0 0.0051864 0
+                              roughness 0.0
+                              metalness 0
+                          }
+                          geometry Sphere {
+                              radius 0.005
+                              # subdivision 2
+                          }
                       }
-                      geometry Sphere {
-                        radius 0.005
-                        # subdivision 2
-                      }
-                    }
                   ]
-                  boundingObject DEF CASTER_BALL_BOUND Sphere {
-                    radius 0.008
-                    # subdivision 2
-                  }
+                  boundingObject USE CASTER_BALL
                   physics Physics {
-                    density 8000  # steel
+                      density 8000  # steel
                   }
+                  contactMaterial "caster"
                 }
-              }
               DEF CASTER_TOP Transform {
                 translation 0 0 0.01075
                 children [
@@ -262,21 +256,18 @@ PROTO Robot_2022 [
           DEF RIGHT_CASTER Transform {
             translation 0 -0.187 0
             children [
-              DEF CASTER_JOINT BallJoint {
-                jointParameters BallJointParameters {
-                }
-                endPoint Solid {
-                  name "right caster"
+                 DEF FRONT_RIGHT_CASTER Solid {
                   translation 0 0 0
+                  name "front_right_caster"
                   children [
-                    USE CASTER_BALL
+                      USE CASTER_BALL
                   ]
-                  boundingObject USE CASTER_BALL_BOUND
+                  boundingObject USE CASTER_BALL
                   physics Physics {
-                    density 8000  # steel
+                      density 8000  # steel
                   }
+                  contactMaterial "caster"
                 }
-              }
               USE CASTER_TOP
             ]
           }
