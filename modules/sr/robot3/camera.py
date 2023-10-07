@@ -14,7 +14,7 @@ from sr.robot3.coordinates import Position
 
 from .utils import maybe_get_robot_device
 
-MARKER_MODEL_RE = re.compile(r'^F(?P<id>\d{1,2})$')
+MARKER_MODEL_RE = re.compile(r'^F(?P<id>\d{1,3})$')
 
 
 class MarkerInfo(NamedTuple):
@@ -30,8 +30,9 @@ class MarkerInfo(NamedTuple):
 
 
 MARKER_SIZES: dict[Container[int], int] = {
-    range(28): 200,  # 0 - 27 for arena boundary
-    range(28, 100): 100,  # Everything else is a token
+    range(50): 150,  # 0-49 = 150mm
+    range(50, 100): 200,  # 50-99 = 200mm
+    range(100, 200): 80,  # 100-199 = 80mm
 }
 
 

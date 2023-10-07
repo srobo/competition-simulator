@@ -5,9 +5,9 @@ PROTO MarkerBase [
   field SFRotation rotation 0 1 0 0
   # Marker sizes are assumed to be flat squares. If this changes, or the
   # dimension which is the "thin" one changes, then changes will be needed in
-  # our vision wrappers (see `modules/sr/robot3/vision/markers.py`).
-  field SFVec3f {0.0001 0.08 0.08, 0.0001 0.2 0.2, 0.0001 0.25 0.25} visual_size 0.0001 0.08 0.08
-  field SFVec3f {0.0001 0.1 0.1, 0.0001 0.2 0.2, 0.0001 0.25 0.25} size 0.0001 0.1 0.1
+  # our vision wrappers (see `modules/sr/robot3/vision/markers.py` and
+  # `modules/sr/robot3/camera.py`).
+  field SFVec3f {0.0001 0.08 0.08, 0.0001 0.15 0.15, 0.0001 0.2 0.2} size 0.0001 0.08 0.08
   field SFString name ""
   field SFString model ""
   field MFString texture_url []
@@ -29,7 +29,7 @@ PROTO MarkerBase [
           metalness 0
         }
         geometry DEF MARKER_GEOMETRY Box {
-          size IS visual_size
+          size IS size
         }
       }
     ]
