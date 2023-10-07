@@ -74,24 +74,29 @@ def yaw_pitch_roll_from_axis_and_angle(orientation: WebotsOrientation) -> Orient
             f"Orientation vector {orientation[:3]} is not a unit vector (length is {size})",
         )
 
+    # Remap the axes to match the kit's coordinate system
+    x, y, z = -x, y, -z
+
     sin_theta = math.sin(theta)
     one_minus_cos_theta = 1 - math.cos(theta)
 
-    # https://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToEuler/index.htm
-    heading = math.atan2(
-        y * sin_theta - x * z * one_minus_cos_theta,
+    # Calculate the intrinsic Tait-Bryan angles following the z-y'-x'' convention
+    # Approximately https://w.wiki/7cuk with some sign corrections,
+    # adapted to axis-angle and simplified
+    yaw = math.atan2(
+        z * sin_theta - x * y * one_minus_cos_theta,
         1 - (y ** 2 + z ** 2) * one_minus_cos_theta,
     )
-    attitude = math.asin(x * y * one_minus_cos_theta + -z * sin_theta)
-    bank = math.atan2(
+    pitch = math.asin(x * z * one_minus_cos_theta + y * sin_theta)
+    roll = math.atan2(
         x * sin_theta - y * z * one_minus_cos_theta,
-        1 - (x ** 2 + z ** 2) * one_minus_cos_theta,
+        1 - (x ** 2 + y ** 2) * one_minus_cos_theta,
     )
 
     return Orientation(
-        yaw=attitude,
-        roll=-bank,
-        pitch=heading,
+        yaw=yaw,
+        roll=roll,
+        pitch=pitch,
     )
 
 
