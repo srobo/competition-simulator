@@ -199,6 +199,9 @@ class Microswitch(PinDevice):
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
+    def _analogue_read(self) -> float:
+        return self._ANALOGUE_RANGE[int(self._digital_read())]
+
     def _digital_read(self) -> bool:
         """
         Returns whether or not the touch sensor is in contact with something.
