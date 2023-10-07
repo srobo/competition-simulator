@@ -7,8 +7,9 @@ from collections.abc import Mapping
 from controller import Robot
 from sr.robot3.arduino_devices import (
     Led,
+    Pin,
+    Device,
     EmptyPin,
-    PinDevice,
     DisabledPin,
     Microswitch,
     DistanceSensor,
@@ -43,7 +44,7 @@ def init_arduinos(webot: Robot) -> dict[str, Arduino]:
     #
     # Note: the names here correspond to the names given to devices in Webots
     # and, in some places, the keyboard controller.
-    pins_map = {
+    devices = {
         2: _Microswitch('back bump sensor'),
         3: _Led('led 1', pin_num=3),
         4: _Led('led 2', pin_num=4),
@@ -61,7 +62,7 @@ def init_arduinos(webot: Robot) -> dict[str, Arduino]:
     }
 
     return {
-        '1234567890': Arduino(pins_map),
+        '1234567890': Arduino(devices),
     }
 
 
@@ -72,24 +73,22 @@ class Arduino:
     _VALID_PINS = range(2, max(20, max(AnaloguePin) + 1))
     _ANALOGUE_PINS = list(AnaloguePin)
 
-    def __init__(self, pins: Mapping[int, PinDevice]) -> None:
-        invalid_pins = [x for x in pins.keys() if x not in self._VALID_PINS]
+    def __init__(self, devices: Mapping[int, Device]) -> None:
+        invalid_pins = [x for x in devices.keys() if x not in self._VALID_PINS]
         if invalid_pins:
             raise ValueError(f"Invalid pins: {invalid_pins}")
 
-        def get_pin(index: int) -> PinDevice:
+        def get_device(index: int) -> Pin:
             supports_analogue = index in self._ANALOGUE_PINS
 
-            pin = pins.get(index)
-            if pin:
-                if pin._supports_analogue != supports_analogue:
-                    raise ValueError(f"Invalid analogue setting for pin {index}: {pin!r}")
-                return pin
+            device = devices.get(index)
+            if device:
+                return Pin(supports_analogue, device)
 
             return EmptyPin(supports_analogue=supports_analogue)
 
-        self.pins = (
+        self.pins: tuple[Pin, ...] = (
             DisabledPin(),
             DisabledPin(),
-            *(get_pin(x) for x in self._VALID_PINS),
+            *(get_device(x) for x in self._VALID_PINS),
         )

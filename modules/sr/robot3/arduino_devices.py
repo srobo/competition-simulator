@@ -4,6 +4,7 @@ import abc
 import enum
 import random
 import logging
+from typing import Protocol
 
 from controller import (
     LED,
@@ -30,7 +31,15 @@ DIGITAL_WRITE_MODES = {GPIOPinMode.OUTPUT}
 ANALOG_READ_MODES = {GPIOPinMode.INPUT}
 
 
-class PinDevice(abc.ABC):
+class Device(Protocol):
+    def analogue_read(self) -> float:
+        ...
+
+    def digital_write(self, value: bool) -> None:
+        ...
+
+
+class Pin(abc.ABC):
     """
     A device connected to a pin on the Arduino.
     """
@@ -39,6 +48,7 @@ class PinDevice(abc.ABC):
     def __init__(
         self,
         supports_analogue: bool,
+        device: Device,
         disabled: bool = False,
     ) -> None:
         """
@@ -46,6 +56,7 @@ class PinDevice(abc.ABC):
         :param disabled: Whether the pin can be controlled.
         """
         self._supports_analogue = supports_analogue
+        self._device = device
         self._disabled = disabled
         self._mode = GPIOPinMode.INPUT
 
@@ -84,9 +95,6 @@ class PinDevice(abc.ABC):
 
         self._mode = value
 
-    def _digital_read(self) -> bool:
-        return self._analogue_read() > 1
-
     def digital_read(self) -> bool:
         """
         Perform a digital read on the pin.
@@ -98,10 +106,9 @@ class PinDevice(abc.ABC):
         self._check_if_disabled()
         if self.mode not in DIGITAL_READ_MODES:
             raise IOError(f'Digital read is not supported in {self.mode}')
-        return self._digital_read()
 
-    def _digital_write(self, value: bool) -> None:
-        return
+        # Emulate reading an analogue signal and interpreting as a digital one.
+        return self._device.analogue_read() > 1
 
     def digital_write(self, value: bool) -> None:
         """
@@ -115,10 +122,7 @@ class PinDevice(abc.ABC):
         if self.mode not in DIGITAL_WRITE_MODES:
             raise IOError(f'Digital write is not supported in {self.mode}')
 
-        self._digital_write(value)
-
-    def _analogue_read(self) -> float:
-        return map_to_range(0, 1, *self._ANALOGUE_RANGE, random.random())
+        self._device.digital_write(value)
 
     def analog_read(self) -> float:
         """
@@ -136,7 +140,7 @@ class PinDevice(abc.ABC):
         if not self._supports_analogue:
             raise IOError('Pin does not support analogue read')
 
-        return add_jitter(self._analogue_read(), *self._ANALOGUE_RANGE)
+        return add_jitter(self._device.analogue_read(), *self._ANALOGUE_RANGE)
 
     def __repr__(self) -> str:
         return (
@@ -146,61 +150,67 @@ class PinDevice(abc.ABC):
         )
 
 
-class DisabledPin(PinDevice):
-    def __init__(self) -> None:
-        super().__init__(supports_analogue=False, disabled=True)
+class NullDevice(Device):
+    def analogue_read(self) -> float:
+        return map_to_range(0, 1, *Pin._ANALOGUE_RANGE, random.random())
+
+    def digital_write(self, value: bool) -> None:
+        pass
 
 
-class EmptyPin(PinDevice):
-    pass
+class EmptyPin(Pin):
+    def __init__(self, supports_analogue: bool) -> None:
+        super().__init__(supports_analogue, device=NullDevice(), disabled=True)
 
 
-class DistanceSensor(PinDevice):
+class DisabledPin(Pin):
+    def __init__(self, supports_analogue: bool = False) -> None:
+        super().__init__(supports_analogue, device=NullDevice(), disabled=True)
+
+
+class DistanceSensor(Device):
     """
     A standard Webots distance sensor, adapted to being a voltage based arduino sensor.
     """
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
-        super().__init__(supports_analogue=True)
         self.webot_sensor = get_robot_device(webot, sensor_name, WebotsDistanceSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def _analogue_read(self) -> float:
+    def analogue_read(self) -> float:
         return map_to_range(
             self.webot_sensor.getMinValue(),
             self.webot_sensor.getMaxValue(),
-            *self._ANALOGUE_RANGE,
+            *Pin._ANALOGUE_RANGE,
             self.webot_sensor.getValue(),
         )
 
 
-class PressureSensor(PinDevice):
+class PressureSensor(Device):
     """
     A Webots touch sensor with pressure, adapted to being a voltage based arduino sensor.
     """
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
-        super().__init__(supports_analogue=True)
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def _analogue_read(self) -> float:
+    def analogue_read(self) -> float:
         # Currently we only the return Z-axis force.
         return self.webot_sensor.getValues()[2] / 100
 
 
-class Microswitch(PinDevice):
+class Microswitch(Device):
     """
     A standard Webots touch sensor.
     """
 
     def __init__(self, webot: Robot, sensor_name: str) -> None:
-        super().__init__(supports_analogue=False)
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def _analogue_read(self) -> float:
-        return self._ANALOGUE_RANGE[int(self._digital_read())]
+    def analogue_read(self) -> float:
+        return Pin._ANALOGUE_RANGE[int(self._digital_read())]
 
     def _digital_read(self) -> bool:
         """
@@ -209,7 +219,7 @@ class Microswitch(PinDevice):
         return self.webot_sensor.getValue() > 0
 
 
-class Led(PinDevice):
+class Led(Device):
     """
     A standard Webots LED.
     The value is a boolean to switch the LED on (True) or off (False).
@@ -222,12 +232,11 @@ class Led(PinDevice):
         limiter: OutputFrequencyLimiter,
         pin_num: int,
     ) -> None:
-        super().__init__(supports_analogue=False)
         self.webot_sensor = get_robot_device(webot, device_name, LED)
         self._limiter = limiter
         self._pin_num = pin_num
 
-    def _digital_write(self, value: bool) -> None:
+    def digital_write(self, value: bool) -> None:
         if not self._limiter.can_change():
             LOGGER.warning(
                 "Rate limited change to LED output (requested setting LED on pin %d to %r)",
