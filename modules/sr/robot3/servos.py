@@ -53,9 +53,7 @@ class ServoDevice:
             )
 
         self.webot_motor.setPosition(map_to_range(
-            -1,
-            1,
-            self.min_position + 0.001,
-            self.max_position - 0.001,
+            (-1, 1),
+            (self.min_position + 0.001, self.max_position - 0.001),
             position,
         ))

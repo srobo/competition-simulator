@@ -159,7 +159,7 @@ class NullDevice(Device):
     """
 
     def analogue_read(self) -> float:
-        return map_to_range(0, 1, *Pin._ANALOGUE_RANGE, random.random())
+        return map_to_range((0, 1), Pin._ANALOGUE_RANGE, random.random())
 
     def digital_write(self, value: bool) -> None:
         pass
@@ -181,9 +181,8 @@ class DistanceSensor(Device):
 
     def analogue_read(self) -> float:
         return map_to_range(
-            self.webot_sensor.getMinValue(),
-            self.webot_sensor.getMaxValue(),
-            *Pin._ANALOGUE_RANGE,
+            (self.webot_sensor.getMinValue(), self.webot_sensor.getMaxValue()),
+            Pin._ANALOGUE_RANGE,
             self.webot_sensor.getValue(),
         )
 
