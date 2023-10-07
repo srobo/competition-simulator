@@ -85,10 +85,10 @@ class Arduino:
             if not device:
                 device = NullDevice()
 
-            return Pin(supports_analogue, device)
+            return Pin(supports_analogue, index, device)
 
         self.pins: tuple[Pin, ...] = (
-            DisabledPin(),
-            DisabledPin(),
+            DisabledPin(index=0),
+            DisabledPin(index=1),
             *(get_pin(x) for x in self._VALID_PINS),
         )

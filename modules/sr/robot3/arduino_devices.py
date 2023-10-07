@@ -48,6 +48,7 @@ class Pin(abc.ABC):
     def __init__(
         self,
         supports_analogue: bool,
+        index: int,
         device: Device,
         disabled: bool = False,
     ) -> None:
@@ -56,6 +57,7 @@ class Pin(abc.ABC):
         :param disabled: Whether the pin can be controlled.
         """
         self._supports_analogue = supports_analogue
+        self._index = index
         self._device = device
         self._disabled = disabled
         self._mode = GPIOPinMode.INPUT
@@ -145,6 +147,7 @@ class Pin(abc.ABC):
     def __repr__(self) -> str:
         return (
             f"<{self.__class__.__qualname__} "
+            f"index={self._index} "
             f"analogue={self._supports_analogue} "
             f"disabled={self._disabled}>"
         )
@@ -159,8 +162,8 @@ class NullDevice(Device):
 
 
 class DisabledPin(Pin):
-    def __init__(self, supports_analogue: bool = False) -> None:
-        super().__init__(supports_analogue, device=NullDevice(), disabled=True)
+    def __init__(self, index: int, supports_analogue: bool = False) -> None:
+        super().__init__(supports_analogue, index, device=NullDevice(), disabled=True)
 
 
 class DistanceSensor(Device):
