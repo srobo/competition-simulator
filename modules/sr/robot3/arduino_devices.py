@@ -160,7 +160,7 @@ class NullDevice(Device):
 
 class EmptyPin(Pin):
     def __init__(self, supports_analogue: bool) -> None:
-        super().__init__(supports_analogue, device=NullDevice(), disabled=True)
+        super().__init__(supports_analogue, device=NullDevice())
 
 
 class DisabledPin(Pin):
