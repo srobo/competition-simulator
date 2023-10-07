@@ -9,7 +9,7 @@ from sr.robot3.coordinates.vectors import Vector
 DEFAULT_SIZE = 1
 
 NINETY_DEGREES = math.pi / 2
-DEFAULT_ANGLE_TOLERANCE = math.radians(75)
+DEFAULT_ANGLE_TOLERANCE = math.radians(80)
 
 
 class FiducialMarker:
