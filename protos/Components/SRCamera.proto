@@ -46,7 +46,7 @@ PROTO SRCamera [
     height 600
     recognition Recognition {
       frameThickness 2
-      maxRange 4
+      maxRange 6
     }
   }
 }
