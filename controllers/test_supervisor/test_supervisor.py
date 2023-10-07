@@ -204,7 +204,7 @@ class TestCamera(unittest.TestCase):
                     "Wrong orientation",
                 )
 
-    def test_orientations(self) -> None:
+    def test_simple_orientations(self) -> None:
         QUARTER_PI = ApproximateFloat(math.pi / 4)
         UNIT_DIAGONAL = ApproximateFloat(1 / math.sqrt(2))
 
@@ -329,6 +329,218 @@ class TestCamera(unittest.TestCase):
                     fiducial_marker.top_midpoint(),
                     f"Wrong top midpoint (model: {obj.getModel()})",
                 )
+
+                marker, = camera.see()
+                self.assertEqual(
+                    marker_id,
+                    marker.id,
+                    f"Wrong marker id (self check failed, model: {obj.getModel()})",
+                )
+
+                self.assertEqual(
+                    orientation,
+                    marker.orientation,
+                    "Wrong orientation",
+                )
+                self.assertEqual(
+                    ApproximatePosition(1000, 0, 0),
+                    marker.position,
+                    "Wrong position",
+                )
+
+    def test_multi_orientations(self) -> None:
+        QUARTER_PI = ApproximateFloat(math.pi / 4)
+
+        ORIENTATIONS = [
+            # START_GENERATED:ORIENTATIONS
+            (
+                'camera-marker-pos-pitch-pos-roll',
+                Orientation(
+                    yaw=0,
+                    pitch=QUARTER_PI,
+                    roll=QUARTER_PI,
+                ),
+                0,
+            ),
+            (
+                'camera-marker-pos-pitch-neg-roll',
+                Orientation(
+                    yaw=0,
+                    pitch=QUARTER_PI,
+                    roll=-QUARTER_PI,
+                ),
+                1,
+            ),
+            (
+                'camera-marker-neg-pitch-pos-roll',
+                Orientation(
+                    yaw=0,
+                    pitch=-QUARTER_PI,
+                    roll=QUARTER_PI,
+                ),
+                2,
+            ),
+            (
+                'camera-marker-neg-pitch-neg-roll',
+                Orientation(
+                    yaw=0,
+                    pitch=-QUARTER_PI,
+                    roll=-QUARTER_PI,
+                ),
+                3,
+            ),
+            (
+                'camera-marker-pos-yaw-pos-roll',
+                Orientation(
+                    yaw=QUARTER_PI,
+                    pitch=0,
+                    roll=QUARTER_PI,
+                ),
+                4,
+            ),
+            (
+                'camera-marker-pos-yaw-neg-roll',
+                Orientation(
+                    yaw=QUARTER_PI,
+                    pitch=0,
+                    roll=-QUARTER_PI,
+                ),
+                5,
+            ),
+            (
+                'camera-marker-pos-yaw-pos-pitch',
+                Orientation(
+                    yaw=QUARTER_PI,
+                    pitch=QUARTER_PI,
+                    roll=0,
+                ),
+                6,
+            ),
+            (
+                'camera-marker-pos-yaw-pos-pitch-pos-roll',
+                Orientation(
+                    yaw=QUARTER_PI,
+                    pitch=QUARTER_PI,
+                    roll=QUARTER_PI,
+                ),
+                7,
+            ),
+            (
+                'camera-marker-pos-yaw-pos-pitch-neg-roll',
+                Orientation(
+                    yaw=QUARTER_PI,
+                    pitch=QUARTER_PI,
+                    roll=-QUARTER_PI,
+                ),
+                8,
+            ),
+            (
+                'camera-marker-pos-yaw-neg-pitch',
+                Orientation(
+                    yaw=QUARTER_PI,
+                    pitch=-QUARTER_PI,
+                    roll=0,
+                ),
+                9,
+            ),
+            (
+                'camera-marker-pos-yaw-neg-pitch-pos-roll',
+                Orientation(
+                    yaw=QUARTER_PI,
+                    pitch=-QUARTER_PI,
+                    roll=QUARTER_PI,
+                ),
+                10,
+            ),
+            (
+                'camera-marker-pos-yaw-neg-pitch-neg-roll',
+                Orientation(
+                    yaw=QUARTER_PI,
+                    pitch=-QUARTER_PI,
+                    roll=-QUARTER_PI,
+                ),
+                11,
+            ),
+            (
+                'camera-marker-neg-yaw-pos-roll',
+                Orientation(
+                    yaw=-QUARTER_PI,
+                    pitch=0,
+                    roll=QUARTER_PI,
+                ),
+                12,
+            ),
+            (
+                'camera-marker-neg-yaw-neg-roll',
+                Orientation(
+                    yaw=-QUARTER_PI,
+                    pitch=0,
+                    roll=-QUARTER_PI,
+                ),
+                13,
+            ),
+            (
+                'camera-marker-neg-yaw-pos-pitch',
+                Orientation(
+                    yaw=-QUARTER_PI,
+                    pitch=QUARTER_PI,
+                    roll=0,
+                ),
+                14,
+            ),
+            (
+                'camera-marker-neg-yaw-pos-pitch-pos-roll',
+                Orientation(
+                    yaw=-QUARTER_PI,
+                    pitch=QUARTER_PI,
+                    roll=QUARTER_PI,
+                ),
+                15,
+            ),
+            (
+                'camera-marker-neg-yaw-pos-pitch-neg-roll',
+                Orientation(
+                    yaw=-QUARTER_PI,
+                    pitch=QUARTER_PI,
+                    roll=-QUARTER_PI,
+                ),
+                16,
+            ),
+            (
+                'camera-marker-neg-yaw-neg-pitch',
+                Orientation(
+                    yaw=-QUARTER_PI,
+                    pitch=-QUARTER_PI,
+                    roll=0,
+                ),
+                17,
+            ),
+            (
+                'camera-marker-neg-yaw-neg-pitch-pos-roll',
+                Orientation(
+                    yaw=-QUARTER_PI,
+                    pitch=-QUARTER_PI,
+                    roll=QUARTER_PI,
+                ),
+                18,
+            ),
+            (
+                'camera-marker-neg-yaw-neg-pitch-neg-roll',
+                Orientation(
+                    yaw=-QUARTER_PI,
+                    pitch=-QUARTER_PI,
+                    roll=-QUARTER_PI,
+                ),
+                19,
+            ),
+            # END_GENERATED:ORIENTATIONS
+        ]
+
+        for name, orientation, marker_id in ORIENTATIONS:
+            with self.subTest(name):
+                camera = self.get_camera(name)
+
+                obj, = camera.camera.getRecognitionObjects()
 
                 marker, = camera.see()
                 self.assertEqual(

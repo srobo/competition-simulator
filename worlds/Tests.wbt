@@ -34,7 +34,7 @@ Solid {
         metalness 0
       }
       geometry Plane {
-        size 4 20
+        size 4 45
       }
     }
   ]
@@ -75,6 +75,7 @@ Robot {
       translation 0 0 -0.2
     }
     # Orientation testing
+    ## Single axis rotations
     SRCamera {
       name "camera-marker-turned-right"
       translation 0 -2 0
@@ -99,6 +100,89 @@ Robot {
       name "camera-marker-leaning-right"
       translation 0 -7 0
     }
+    ## Multi axis rotations
+    # START_GENERATED:CAMERAS
+    SRCamera {
+      name "camera-marker-pos-pitch-pos-roll"
+      translation 0 2 0
+    }
+    SRCamera {
+      name "camera-marker-pos-pitch-neg-roll"
+      translation 0 3 0
+    }
+    SRCamera {
+      name "camera-marker-neg-pitch-pos-roll"
+      translation 0 4 0
+    }
+    SRCamera {
+      name "camera-marker-neg-pitch-neg-roll"
+      translation 0 5 0
+    }
+    SRCamera {
+      name "camera-marker-pos-yaw-pos-roll"
+      translation 0 6 0
+    }
+    SRCamera {
+      name "camera-marker-pos-yaw-neg-roll"
+      translation 0 7 0
+    }
+    SRCamera {
+      name "camera-marker-pos-yaw-pos-pitch"
+      translation 0 8 0
+    }
+    SRCamera {
+      name "camera-marker-pos-yaw-pos-pitch-pos-roll"
+      translation 0 9 0
+    }
+    SRCamera {
+      name "camera-marker-pos-yaw-pos-pitch-neg-roll"
+      translation 0 10 0
+    }
+    SRCamera {
+      name "camera-marker-pos-yaw-neg-pitch"
+      translation 0 11 0
+    }
+    SRCamera {
+      name "camera-marker-pos-yaw-neg-pitch-pos-roll"
+      translation 0 12 0
+    }
+    SRCamera {
+      name "camera-marker-pos-yaw-neg-pitch-neg-roll"
+      translation 0 13 0
+    }
+    SRCamera {
+      name "camera-marker-neg-yaw-pos-roll"
+      translation 0 14 0
+    }
+    SRCamera {
+      name "camera-marker-neg-yaw-neg-roll"
+      translation 0 15 0
+    }
+    SRCamera {
+      name "camera-marker-neg-yaw-pos-pitch"
+      translation 0 16 0
+    }
+    SRCamera {
+      name "camera-marker-neg-yaw-pos-pitch-pos-roll"
+      translation 0 17 0
+    }
+    SRCamera {
+      name "camera-marker-neg-yaw-pos-pitch-neg-roll"
+      translation 0 18 0
+    }
+    SRCamera {
+      name "camera-marker-neg-yaw-neg-pitch"
+      translation 0 19 0
+    }
+    SRCamera {
+      name "camera-marker-neg-yaw-neg-pitch-pos-roll"
+      translation 0 20 0
+    }
+    SRCamera {
+      name "camera-marker-neg-yaw-neg-pitch-neg-roll"
+      translation 0 21 0
+    }
+    # END_GENERATED:CAMERAS
   ]
   name "test-supervisor"
   model "TestSupervisor"
@@ -120,6 +204,7 @@ Solid {
       ]
     }
     # Orientation testing
+    ## Single axis rotations
     WallMarker {
       translation 1 -2 1
       rotation 0 0 1 0.785398163
@@ -174,6 +259,389 @@ Solid {
         "../textures/arena-markers/15.png"
       ]
     }
+    ## Multi axis rotations
+    # START_GENERATED:MARKERS
+    Pose {
+      translation 1 2 1
+      rotation -1 0 0 0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0  # yaw
+              name "marker-pos-pitch-pos-roll"
+              model "F0"
+              texture_url [
+                "../textures/arena-markers/0.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 3 1
+      rotation -1 0 0 -0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0  # yaw
+              name "marker-pos-pitch-neg-roll"
+              model "F1"
+              texture_url [
+                "../textures/arena-markers/1.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 4 1
+      rotation -1 0 0 0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 -0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0  # yaw
+              name "marker-neg-pitch-pos-roll"
+              model "F2"
+              texture_url [
+                "../textures/arena-markers/2.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 5 1
+      rotation -1 0 0 -0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 -0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0  # yaw
+              name "marker-neg-pitch-neg-roll"
+              model "F3"
+              texture_url [
+                "../textures/arena-markers/3.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 6 1
+      rotation -1 0 0 0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0.7853981633974483  # yaw
+              name "marker-pos-yaw-pos-roll"
+              model "F4"
+              texture_url [
+                "../textures/arena-markers/4.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 7 1
+      rotation -1 0 0 -0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0.7853981633974483  # yaw
+              name "marker-pos-yaw-neg-roll"
+              model "F5"
+              texture_url [
+                "../textures/arena-markers/5.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 8 1
+      rotation -1 0 0 0  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0.7853981633974483  # yaw
+              name "marker-pos-yaw-pos-pitch"
+              model "F6"
+              texture_url [
+                "../textures/arena-markers/6.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 9 1
+      rotation -1 0 0 0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0.7853981633974483  # yaw
+              name "marker-pos-yaw-pos-pitch-pos-roll"
+              model "F7"
+              texture_url [
+                "../textures/arena-markers/7.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 10 1
+      rotation -1 0 0 -0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0.7853981633974483  # yaw
+              name "marker-pos-yaw-pos-pitch-neg-roll"
+              model "F8"
+              texture_url [
+                "../textures/arena-markers/8.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 11 1
+      rotation -1 0 0 0  # roll
+      children [
+        Pose {
+          rotation 0 1 0 -0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0.7853981633974483  # yaw
+              name "marker-pos-yaw-neg-pitch"
+              model "F9"
+              texture_url [
+                "../textures/arena-markers/9.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 12 1
+      rotation -1 0 0 0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 -0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0.7853981633974483  # yaw
+              name "marker-pos-yaw-neg-pitch-pos-roll"
+              model "F10"
+              texture_url [
+                "../textures/arena-markers/10.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 13 1
+      rotation -1 0 0 -0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 -0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 0.7853981633974483  # yaw
+              name "marker-pos-yaw-neg-pitch-neg-roll"
+              model "F11"
+              texture_url [
+                "../textures/arena-markers/11.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 14 1
+      rotation -1 0 0 0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 -0.7853981633974483  # yaw
+              name "marker-neg-yaw-pos-roll"
+              model "F12"
+              texture_url [
+                "../textures/arena-markers/12.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 15 1
+      rotation -1 0 0 -0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 -0.7853981633974483  # yaw
+              name "marker-neg-yaw-neg-roll"
+              model "F13"
+              texture_url [
+                "../textures/arena-markers/13.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 16 1
+      rotation -1 0 0 0  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 -0.7853981633974483  # yaw
+              name "marker-neg-yaw-pos-pitch"
+              model "F14"
+              texture_url [
+                "../textures/arena-markers/14.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 17 1
+      rotation -1 0 0 0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 -0.7853981633974483  # yaw
+              name "marker-neg-yaw-pos-pitch-pos-roll"
+              model "F15"
+              texture_url [
+                "../textures/arena-markers/15.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 18 1
+      rotation -1 0 0 -0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 -0.7853981633974483  # yaw
+              name "marker-neg-yaw-pos-pitch-neg-roll"
+              model "F16"
+              texture_url [
+                "../textures/arena-markers/16.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 19 1
+      rotation -1 0 0 0  # roll
+      children [
+        Pose {
+          rotation 0 1 0 -0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 -0.7853981633974483  # yaw
+              name "marker-neg-yaw-neg-pitch"
+              model "F17"
+              texture_url [
+                "../textures/arena-markers/17.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 20 1
+      rotation -1 0 0 0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 -0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 -0.7853981633974483  # yaw
+              name "marker-neg-yaw-neg-pitch-pos-roll"
+              model "F18"
+              texture_url [
+                "../textures/arena-markers/18.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    Pose {
+      translation 1 21 1
+      rotation -1 0 0 -0.7853981633974483  # roll
+      children [
+        Pose {
+          rotation 0 1 0 -0.7853981633974483  # pitch
+          children [
+            WallMarker {
+              rotation 0 0 -1 -0.7853981633974483  # yaw
+              name "marker-neg-yaw-neg-pitch-neg-roll"
+              model "F19"
+              texture_url [
+                "../textures/arena-markers/19.png"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    # END_GENERATED:MARKERS
   ]
   name "Markers"
 }
