@@ -6,6 +6,7 @@ import math
 import unittest
 import threading
 import dataclasses
+from typing import Iterable
 from pathlib import Path
 
 # Webots specific library
@@ -79,17 +80,23 @@ class TestCamera(unittest.TestCase):
 
     webot: WebotsRobot
 
-    def get_camera(self, name: str) -> Camera:
-        camera = Camera(
-            self.webot,
-            get_robot_device(self.webot, name, WebotCamera),
-            self.lock,
-        )
-        # Warm up the camera
+    def get_cameras(self, names: Iterable[str]) -> dict[str, Camera]:
+        cameras = {
+            name: Camera(
+                self.webot,
+                get_robot_device(self.webot, name, WebotCamera),
+                self.lock,
+            )
+            for name in names
+        }
+        # Warm up the cameras
         with self.lock:
             self.webot.step(TIMESTEP)
             self.webot.step(TIMESTEP)
-        return camera
+        return cameras
+
+    def get_camera(self, name: str) -> Camera:
+        return self.get_cameras([name])[name]
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -189,9 +196,11 @@ class TestCamera(unittest.TestCase):
             ),
         ]
 
+        cameras = self.get_cameras(x for x, *_ in POSITIONS)
+
         for name, position in POSITIONS:
             with self.subTest(name):
-                camera = self.get_camera(name)
+                camera = cameras[name]
                 marker, = camera.see()
                 self.assertEqual(
                     position,
@@ -310,9 +319,11 @@ class TestCamera(unittest.TestCase):
             ),
         ]
 
+        cameras = self.get_cameras(x for x, *_ in ORIENTATIONS)
+
         for name, normal, top_midpoint, orientation, marker_id in ORIENTATIONS:
             with self.subTest(name):
-                camera = self.get_camera(name)
+                camera = cameras[name]
 
                 obj, = camera.camera.getRecognitionObjects()
 
@@ -538,9 +549,11 @@ class TestCamera(unittest.TestCase):
             # END_GENERATED:ORIENTATIONS
         ]
 
+        cameras = self.get_cameras(x for x, *_ in ORIENTATIONS)
+
         for name, orientation, marker_id in ORIENTATIONS:
             with self.subTest(name):
-                camera = self.get_camera(name)
+                camera = cameras[name]
 
                 obj, = camera.camera.getRecognitionObjects()
 
