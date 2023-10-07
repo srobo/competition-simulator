@@ -1,7 +1,7 @@
 #VRML_SIM R2023b utf8
 
 EXTERNPROTO "../protos/Markers/WallMarker.proto"
-EXTERNPROTO "../protos/Testing/TestCamera.proto"
+EXTERNPROTO "../protos/Components/SRCamera.proto"
 
 WorldInfo {
   basicTimeStep 8
@@ -46,56 +46,56 @@ Robot {
   translation 0 0 1
   children [
     # Position testing
-    TestCamera {
+    SRCamera {
       name "camera-marker-straight-ahead"
       translation 0 0 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-slightly-left"
       translation 0 -0.2 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-slightly-right"
       translation 0 0.2 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-slightly-closer"
       translation 0.2 0 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-slightly-further"
       translation -0.2 0 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-slightly-up"
       translation 0 0 0.2
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-slightly-down"
       translation 0 0 -0.2
     }
     # Orientation testing
-    TestCamera {
+    SRCamera {
       name "camera-marker-turned-right"
       translation 0 -2 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-turned-left"
       translation 0 -3 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-leaning-back"
       translation 0 -4 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-leaning-forwards"
       translation 0 -5 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-leaning-left"
       translation 0 -6 0
     }
-    TestCamera {
+    SRCamera {
       name "camera-marker-leaning-right"
       translation 0 -7 0
     }
