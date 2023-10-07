@@ -214,6 +214,8 @@ class TestCamera(unittest.TestCase):
         HALF_DIAG_THICKNESS = ApproximateFloat(HALF_THICKNESS / math.sqrt(2))
 
         ORIENTATIONS = [
+            # These orientation data were constructed manually with reference to
+            # the competitor facing documentation.
             (
                 # https://studentrobotics.org/docs/images/content/vision/orientation/all0.png
                 'camera-marker-straight-ahead',
