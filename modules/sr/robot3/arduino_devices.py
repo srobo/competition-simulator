@@ -154,6 +154,10 @@ class Pin(abc.ABC):
 
 
 class NullDevice(Device):
+    """
+    Simulates the responses from a pin which is not actually connected to anything.
+    """
+
     def analogue_read(self) -> float:
         return map_to_range(0, 1, *Pin._ANALOGUE_RANGE, random.random())
 
