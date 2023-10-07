@@ -52,7 +52,7 @@ class FiducialMarker:
 
     def rotate(self, matrix: Matrix) -> None:
         """
-        Rotate the token by the given rotation matrix.
+        Rotate the marker by the given rotation matrix.
         """
         self.corners = {
             name: matrix * position
@@ -61,9 +61,10 @@ class FiducialMarker:
 
     def corners_global(self) -> dict[str, Vector]:
         """
-        A mapping of the corners of the token (named for their apparent position
-        on a reference token) to the current position of that corner relative to
-        the same origin as used to define the position of the token.
+        A mapping of the corners of the marker (named for their apparent
+        position on a reference marker) to the current position of that corner
+        relative to the same origin as used to define the position of the
+        marker.
         """
         return {
             name: position + self.position
@@ -72,7 +73,7 @@ class FiducialMarker:
 
     def normal(self) -> Vector:
         """
-        A unit vector expressing the direction normal to the face of the token.
+        A unit vector expressing the direction normal to the marker.
         """
         return vectors.unit_vector(sum(
             self.corners.values(),
@@ -81,9 +82,9 @@ class FiducialMarker:
 
     def top_midpoint(self) -> Vector:
         """
-        The midpoint of the edge which the apparent marker on this face
-        determines to be the "top" edge. It usually doesn't actually matter
-        which edge this is, though in some games it does.
+        The midpoint of the edge which the marker determines to be the "top"
+        edge. It usually doesn't actually matter which edge this is, though in
+        some games it does.
         """
         corners = [
             v for n, v in self.corners.items()
