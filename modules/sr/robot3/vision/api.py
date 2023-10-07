@@ -33,13 +33,12 @@ def build_marker_info(
     # Webots' axes nearly match ours:
     # - x: distance away from the camera
     # - y: distance left of the camera
-    # - z: distance *below* the camera (we want above)
+    # - z: distance above the camera
     x, y, z = recognition_object.getPosition()
 
     marker = FiducialMarker(
         size=recognised_object.size_m,
-        # Webots Z is inverted with regard to the one we want.
-        position=Vector((x, y, -z)),
+        position=Vector((x, y, z)),
     )
     marker.rotate(rotation_matrix_from_axis_and_angle(
         WebotsOrientation(*recognition_object.getOrientation()),
