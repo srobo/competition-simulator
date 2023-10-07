@@ -66,16 +66,16 @@ def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> Matri
 
 
 def yaw_pitch_roll_from_axis_and_angle(orientation: WebotsOrientation) -> Orientation:
-    x, y, z, theta = orientation
+    _x, _y, _z, theta = orientation
 
-    size = round(x ** 2 + y ** 2 + z ** 2, 5)
+    size = round(_x ** 2 + _y ** 2 + _z ** 2, 5)
     if size != 1:
         raise ValueError(
             f"Orientation vector {orientation[:3]} is not a unit vector (length is {size})",
         )
 
     # Remap the axes to match the kit's coordinate system
-    x, y, z = -x, y, -z
+    x, y, z = -_x, _y, -_z
 
     sin_theta = math.sin(theta)
     one_minus_cos_theta = 1 - math.cos(theta)
