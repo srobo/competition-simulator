@@ -9,7 +9,7 @@ from sr.robot3.arduino_devices import (
     Led,
     Pin,
     Device,
-    EmptyPin,
+    NullDevice,
     DisabledPin,
     Microswitch,
     DistanceSensor,
@@ -78,17 +78,17 @@ class Arduino:
         if invalid_pins:
             raise ValueError(f"Invalid pins: {invalid_pins}")
 
-        def get_device(index: int) -> Pin:
+        def get_pin(index: int) -> Pin:
             supports_analogue = index in self._ANALOGUE_PINS
 
             device = devices.get(index)
-            if device:
-                return Pin(supports_analogue, device)
+            if not device:
+                device = NullDevice()
 
-            return EmptyPin(supports_analogue=supports_analogue)
+            return Pin(supports_analogue, device)
 
         self.pins: tuple[Pin, ...] = (
             DisabledPin(),
             DisabledPin(),
-            *(get_device(x) for x in self._VALID_PINS),
+            *(get_pin(x) for x in self._VALID_PINS),
         )
