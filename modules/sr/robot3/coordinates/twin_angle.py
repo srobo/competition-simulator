@@ -1,3 +1,10 @@
+"""
+Coordinate types based on twin angles.
+
+These types are similar to traditional spherical coordinates, however differ due
+to the two angles being independent from one another.
+"""
+
 from __future__ import annotations
 
 import math
