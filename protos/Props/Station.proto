@@ -17,7 +17,7 @@ PROTO Station [
                     children [
                         Shape {
                             appearance DEF STATION_APPEARANCE PBRAppearance {
-                                baseColor 0.7 0.55 0.35
+                                baseColor 0.55 0.55 0.55
                                 metalness 0
                                 roughness 1
                             }
