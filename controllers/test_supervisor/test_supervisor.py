@@ -317,6 +317,32 @@ class TestCamera(unittest.TestCase):
                 ),
                 15,
             ),
+            (
+                # Camera and marker both rotated around to the right, so the
+                # orientation is the default even though we're not axis aligned.
+                'camera-marker-frame-rotated-right',
+                Normal(-1, 0, 0),
+                TopMidpoint(-HALF_THICKNESS, 0, HALF_WIDTH),
+                Orientation(
+                    yaw=0,
+                    pitch=0,
+                    roll=0,
+                ),
+                16,
+            ),
+            (
+                # Camera and marker both rotated around to the left, so the
+                # orientation is the default even though we're not axis aligned.
+                'camera-marker-frame-rotated-left',
+                Normal(-1, 0, 0),
+                TopMidpoint(-HALF_THICKNESS, 0, HALF_WIDTH),
+                Orientation(
+                    yaw=0,
+                    pitch=0,
+                    roll=0,
+                ),
+                17,
+            ),
         ]
 
         cameras = self.get_cameras(x for x, *_ in ORIENTATIONS)
