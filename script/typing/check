@@ -8,4 +8,4 @@ if [ -z "$MYPY" ]; then
     MYPY=mypy
 fi
 
-exec "$MYPY" $ROOT/controllers/* $ROOT/modules $ROOT/stubs "$@"
+exec "$MYPY" $ROOT/controllers/* $ROOT/modules $ROOT/worlds $ROOT/stubs "$@"

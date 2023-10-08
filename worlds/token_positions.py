@@ -1,7 +1,12 @@
+from __future__ import annotations
+
 import math
 import textwrap
+from typing import Literal
 
-positions = [
+TokenType = Literal['B', 'S', 'G']
+
+positions: list[tuple[TokenType, float, float]] = [
     ("B", 2.525, 1.100),  # Closest to starting area
     ("B", 1.000, 1.000),  # Closest to the arena centre
     ("B", 1.550, 1.550),  # Furthest from any walls
@@ -14,7 +19,7 @@ positions = [
 ]
 
 
-def get_name(color):
+def get_name(color: TokenType) -> str:
     if color == "B":
         return "SRToken_Bronze"
     if color == "S":
@@ -24,7 +29,7 @@ def get_name(color):
     raise ValueError("Invalid color")
 
 
-def get_height(color):
+def get_height(color: TokenType) -> float:
     if color == "B":
         return 0.061
     if color == "S":
@@ -34,7 +39,7 @@ def get_height(color):
     raise ValueError("Invalid color")
 
 
-def rotate(x, y, angle):
+def rotate(x: float, y: float, angle: float) -> tuple[float, float]:
     """ Rotate given coordinate around the origin"""
     return (
         x * math.cos(angle) - y * math.sin(angle),
