@@ -9,7 +9,7 @@ from sr.robot3.coordinates.vectors import Vector
 DEFAULT_SIZE = 1
 
 NINETY_DEGREES = math.pi / 2
-DEFAULT_ANGLE_TOLERANCE = math.radians(75)
+DEFAULT_ANGLE_TOLERANCE = math.radians(80)
 
 
 class FiducialMarker:
@@ -79,6 +79,37 @@ class FiducialMarker:
             self.corners.values(),
             vectors.ZERO_3VECTOR,
         ))
+
+    def centre_global(self) -> Vector:
+        """
+        The position of the centre of the marker, relative to the same origin as
+        used to define the general position of the marker.
+        """
+        corners = self.corners_global().values()
+        assert len(corners) == 4
+        normal = sum(corners, vectors.ZERO_3VECTOR)
+        return normal / 4
+
+    def angle_to_global_origin(self) -> float:
+        direction_to_origin = -self.centre_global()
+        normal = self.normal()
+        return vectors.angle_between(direction_to_origin, normal)
+
+    def is_visible_to_global_origin(
+        self,
+        angle_tolerance: float = DEFAULT_ANGLE_TOLERANCE,
+    ) -> bool:
+        if angle_tolerance > NINETY_DEGREES:
+            raise ValueError(
+                "Refusing to allow faces with angles > 90° to be visible "
+                "(asked for {} radians, {})".format(
+                    angle_tolerance,
+                    math.degrees(angle_tolerance),
+                ),
+            )
+
+        angle_to_origin = self.angle_to_global_origin()
+        return abs(angle_to_origin) < angle_tolerance
 
     def top_midpoint(self) -> Vector:
         """

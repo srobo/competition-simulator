@@ -601,6 +601,23 @@ class TestCamera(unittest.TestCase):
                     "Wrong position",
                 )
 
+    def test_oblique_and_beyond_not_seen(self) -> None:
+        names = [
+            'camera-marker-oblique',
+            'camera-marker-turned-away',
+        ]
+
+        cameras = self.get_cameras(names)
+
+        for name, camera in cameras.items():
+            with self.subTest(name):
+                markers = camera.see()
+                self.assertEqual(
+                    [],
+                    markers,
+                    "Should not be able to see any markers at this angle/position",
+                )
+
 
 def main() -> None:
     global ROBOT, TIMESTEP
