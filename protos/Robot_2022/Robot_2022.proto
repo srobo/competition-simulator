@@ -1,4 +1,7 @@
 #VRML_SIM R2022b utf8
+
+EXTERNPROTO "../Components/SRCamera.proto"
+
 PROTO Robot_2022 [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
@@ -515,48 +518,10 @@ PROTO Robot_2022 [
       DEF SENSORS Transform {
         translation 0 0 0
         children [
-          Camera {
+          SRCamera {
+            name "camera"
             translation -0.02 0 0.16
             rotation -0.1246747 0 0.9921977 3.1415927
-            children [
-              Transform {
-                translation 0 0 0.00
-                rotation 0.5773509358554485 0.5773509358554485 0.5773489358556708 2.0944
-                children [
-                  Shape {
-                    appearance PBRAppearance {
-                      baseColor 0 0 0
-                    }
-                    geometry Cylinder {
-                      height 0.01
-                      radius 0.01
-                    }
-                  }
-                ]
-                translationStep 0.001
-              }
-              Transform {
-                translation -0.02 0 0.00
-                children [
-                  Shape {
-                    appearance PBRAppearance {
-                      baseColor 0.4 0.4 0.4
-                      metalness 0
-                    }
-                    geometry Box {
-                      size 0.03 0.03 0.03
-                    }
-                  }
-                ]
-              }
-            ]
-            fieldOfView 0.82
-            width 800
-            height 600
-            recognition Recognition {
-              frameThickness 2
-              maxRange 4
-            }
           }
           Compass {
             name "robot compass"

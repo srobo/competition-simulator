@@ -10,7 +10,7 @@ from . import vectors
 from .polar import PolarCoord, polar_from_cartesian
 from .matrix import Matrix
 from .vectors import Vector
-from .twin_angle import Spherical, spherical_from_cartesian
+from .twin_angle import Position
 
 SimpleVector = Tuple[float, float, float]
 
@@ -396,60 +396,64 @@ class PolarTests(unittest.TestCase):
                 self.assertEqual(expected, actual)
 
 
-class SphericalTests(unittest.TestCase):
+class PositionTests(unittest.TestCase):
     def test_spherical(self) -> None:
         cases = [
             (
-                Vector((0, 0, 0)),
-                Spherical(0, 0, 0),
+                (0, 0, 0),
+                Position(0, 0, 0),
             ),
             (
-                Vector((0, 0, 1)),
-                Spherical(
-                    rot_x=0,
-                    rot_y=0,
-                    dist=1,
+                # 1m in front
+                (1, 0, 0),
+                Position(
+                    vertical_angle=0,
+                    horizontal_angle=0,
+                    distance=1000,
                 ),
             ),
             (
-                Vector((0, 1, 0)),
-                Spherical(
-                    rot_x=math.pi / 2,
-                    rot_y=0,
-                    dist=1,
+                # 1m left
+                (0, 1, 0),
+                Position(
+                    vertical_angle=0,
+                    horizontal_angle=-math.pi / 2,
+                    distance=1000,
                 ),
             ),
             (
-                Vector((1, 0, 0)),
-                Spherical(
-                    rot_x=0,
-                    rot_y=math.pi / 2,
-                    dist=1,
+                # 1m up
+                (0, 0, 1),
+                Position(
+                    vertical_angle=math.pi / 2,
+                    horizontal_angle=0,
+                    distance=1000,
                 ),
             ),
             (
-                Vector((1000, 1000, 0)),
-                Spherical(
-                    rot_x=math.pi / 2,
-                    rot_y=math.pi / 2,
-                    dist=1414,
+                # 1m right, 1m up
+                (0, -1, 1),
+                Position(
+                    vertical_angle=math.pi / 2,
+                    horizontal_angle=math.pi / 2,
+                    distance=1414,
                 ),
             ),
         ]
 
         for cartesian, expected in cases:
             with self.subTest(cartesian):
-                actual = spherical_from_cartesian(cartesian)
+                actual = Position.from_cartesian_metres(cartesian)
                 # Cope with floating point differences
-                actual = Spherical(
-                    round(actual.rot_x, 7),
-                    round(actual.rot_y, 7),
-                    dist=actual.dist,
+                actual = Position(
+                    actual.distance,
+                    round(actual.horizontal_angle, 7),
+                    round(actual.vertical_angle, 7),
                 )
-                expected = Spherical(
-                    round(expected.rot_x, 7),
-                    round(expected.rot_y, 7),
-                    dist=expected.dist,
+                expected = Position(
+                    expected.distance,
+                    round(expected.horizontal_angle, 7),
+                    round(expected.vertical_angle, 7),
                 )
 
                 self.assertEqual(expected, actual)

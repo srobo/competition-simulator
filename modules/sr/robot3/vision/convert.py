@@ -13,6 +13,8 @@ from typing import NamedTuple
 
 from sr.robot3.coordinates.matrix import Matrix
 
+from .types import Orientation
+
 
 class WebotsOrientation(NamedTuple):
     x: float
@@ -22,12 +24,7 @@ class WebotsOrientation(NamedTuple):
 
 
 def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> Matrix:
-    # Webots' axes are different to ours. Account for that in the unpacking
-    z, x, y, theta = orientation
-
-    # Seemingly webots' X is upside down versus Zoloto's. Note: this also
-    # changes the handedness of the axes.
-    x *= -1
+    x, y, z, theta = orientation
 
     size = round(x ** 2 + y ** 2 + z ** 2, 5)
     if size != 1:
@@ -68,6 +65,41 @@ def rotation_matrix_from_axis_and_angle(orientation: WebotsOrientation) -> Matri
     ))
 
 
+def yaw_pitch_roll_from_axis_and_angle(orientation: WebotsOrientation) -> Orientation:
+    _x, _y, _z, theta = orientation
+
+    size = round(_x ** 2 + _y ** 2 + _z ** 2, 5)
+    if size != 1:
+        raise ValueError(
+            f"Orientation vector {orientation[:3]} is not a unit vector (length is {size})",
+        )
+
+    # Remap the axes to match the kit's coordinate system
+    x, y, z = -_x, _y, -_z
+
+    sin_theta = math.sin(theta)
+    one_minus_cos_theta = 1 - math.cos(theta)
+
+    # Calculate the intrinsic Tait-Bryan angles following the z-y'-x'' convention
+    # Approximately https://w.wiki/7cuk with some sign corrections,
+    # adapted to axis-angle and simplified
+    yaw = math.atan2(
+        z * sin_theta - x * y * one_minus_cos_theta,
+        1 - (y ** 2 + z ** 2) * one_minus_cos_theta,
+    )
+    pitch = math.asin(x * z * one_minus_cos_theta + y * sin_theta)
+    roll = math.atan2(
+        x * sin_theta - y * z * one_minus_cos_theta,
+        1 - (x ** 2 + y ** 2) * one_minus_cos_theta,
+    )
+
+    return Orientation(
+        yaw=yaw,
+        roll=roll,
+        pitch=pitch,
+    )
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument('x')
@@ -78,12 +110,14 @@ def parse_args() -> argparse.Namespace:
 
 
 def main(args: argparse.Namespace) -> None:
-    print(rotation_matrix_from_axis_and_angle(WebotsOrientation(  # noqa: T201
+    webots_orientation = WebotsOrientation(
         args.x,
         args.y,
         args.z,
         args.theta,
-    )))
+    )
+    print(rotation_matrix_from_axis_and_angle(webots_orientation))  # noqa: T201
+    print(yaw_pitch_roll_from_axis_and_angle(webots_orientation))  # noqa: T201
 
 
 if __name__ == '__main__':

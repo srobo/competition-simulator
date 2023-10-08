@@ -1,57 +1,32 @@
 from __future__ import annotations
 
 import re
-import enum
-import functools
 import threading
 from typing import Container, NamedTuple
 
-from controller import Robot, Camera as WebotCamera
-from sr.robot3.vision import (
-    Face,
-    Token,
-    FlatToken,
-    Orientation,
-    tokens_from_objects,
+from controller import (
+    Robot,
+    Camera as WebotCamera,
+    CameraRecognitionObject as WebotsRecognitionObject,
 )
-from sr.robot3.coordinates import (
-    Vector,
-    Spherical,
-    ThreeDCoordinates,
-    spherical_from_cartesian,
-)
+from sr.robot3.vision import convert, Orientation, markers_from_objects
+from sr.robot3.coordinates import Position
 
 from .utils import maybe_get_robot_device
 
-MARKER_MODEL_RE = re.compile(r"^[FB]\d{0,2}$")
-
-
-# Zoloto's markers API doesn't expose any information derived from the marker's
-# identity, however we need to track whether the marker is of a kind that would
-# be on a box or a wall and its size. This enum lets us do that.
-class ObjectType(enum.Enum):
-    FLAT = 'F'
-    BOX = 'B'
+MARKER_MODEL_RE = re.compile(r'^F(?P<id>\d{1,2})$')
 
 
 class MarkerInfo(NamedTuple):
+    recognition_object: WebotsRecognitionObject
+
     code: int
     size_mm: int
-    object_type: ObjectType
 
     @property
     def size_m(self) -> float:
         # Webots uses metres.
         return self.size_mm / 1000
-
-    def get_token_class(self) -> type[Token]:
-        if self.object_type == ObjectType.BOX:
-            return Token
-        if self.object_type == ObjectType.FLAT:
-            # See class docstring for how this works and coupling to the proto files
-            return FlatToken
-
-        raise AssertionError("Unknown object type")
 
 
 MARKER_SIZES: dict[Container[int], int] = {
@@ -71,7 +46,7 @@ def get_marker_size_mm(marker_id: int) -> int:
     raise ValueError(f"Unknown marker id {marker_id}")
 
 
-def parse_marker_info(model_id: str) -> MarkerInfo | None:
+def parse_marker_info(recognition_object: WebotsRecognitionObject) -> MarkerInfo | None:
     """
     Parse the model id of a maker model into a `MarkerInfo`.
 
@@ -80,77 +55,46 @@ def parse_marker_info(model_id: str) -> MarkerInfo | None:
     object. The digits which form the 'code' are used for determining the
     properties visible in the API.
 
-    Examples: 'F00', 'F01', ..., 'B32', 'B33', ...
+    Examples: 'F00', 'F01', ...
     """
 
-    match = MARKER_MODEL_RE.match(model_id)
+    match = MARKER_MODEL_RE.match(recognition_object.getModel())
     if match is None:
         return None
 
-    kind, number = model_id[0], model_id[1:]
-
-    code = int(number)
+    code = int(match['id'])
 
     return MarkerInfo(
+        recognition_object=recognition_object,
         code=code,
         size_mm=get_marker_size_mm(code),
-        object_type=ObjectType(kind),
     )
 
 
-class Marker:
-    # Note: properties in the same order as in the docs.
+class Marker(NamedTuple):
+    """
+    Wrapper of a marker detection with axis and rotation calculated.
+
+    :param id: The ID of the detected marker
+    :param size: The physical size of the marker in millimetres
+    :param position: Position information of the marker relative to the camera
+    :param orientation: Orientation information of the marker
+    """
+
+    id: int  # noqa: A003 # match kit
+    size: int
+
     # Note: we are _not_ supporting image-related properties, so no `pixel_*`.
 
-    def __init__(self, face: Face, marker_info: MarkerInfo, timestamp: float) -> None:
-        self._face = face
-
-        self._info = marker_info
-        self.timestamp = timestamp
+    position: Position = Position(0, 0, 0)
+    orientation: Orientation = Orientation(0, 0, 0)
 
     def __repr__(self) -> str:
-        return '<Marker {}>'.format(' '.join((
-            f'id={self.id!r}',
-            f'size={self.size!r}',
-            f'distance={self.distance!r}',
-            f'rot_y={self.spherical.rot_y!r}',
-        )))
-
-    @property
-    def id(self) -> int:  # noqa:A003
-        return self._info.code
-
-    @property
-    def size(self) -> int:
-        return self._info.size_mm
-
-    # No pixel values as there is no underlying image.
-
-    @functools.cached_property
-    def _position(self) -> Vector:
-        # Webots uses metres, Zoloto uses millimetres. Convert before exposing
-        # from our simulated API.
-        return self._face.centre_global() * 1000
-
-    @property
-    def distance(self) -> float:
-        """Distance to the centre of the marker, in millimetres."""
-        return self._position.magnitude()
-
-    @property
-    def orientation(self) -> Orientation:
-        """An `Orientation` instance describing the orientation of the marker."""
-        return self._face.orientation()
-
-    @property
-    def spherical(self) -> Spherical:
-        """A `Spherical` instance describing the position relative to the camera."""
-        return spherical_from_cartesian(self._position)
-
-    @property
-    def cartesian(self) -> ThreeDCoordinates:
-        """An `ThreeDCoordinates` instance describing the position relative to the camera."""
-        return ThreeDCoordinates(*self._position.data)
+        return (
+            f"<{self.__class__.__name__} id={self.id} distance={self.position.distance:.0f}mm "
+            f"horizontal_angle={self.position.horizontal_angle:.2f}rad "
+            f"vertical_angle={self.position.vertical_angle:.2f}rad size={self.size}mm>"
+        )
 
 
 class Camera:
@@ -181,41 +125,31 @@ class Camera:
             return self._see()
 
     def _see(self) -> list[Marker]:
-        object_infos = {}
-        recognition_objects = []
+        marker_infos = []
 
         for recognition_object in self.camera.getRecognitionObjects():
-            recognition_model = recognition_object.getModel()
-            marker_info = parse_marker_info(
-                recognition_model,
-            )
+            marker_info = parse_marker_info(recognition_object)
             if marker_info:
-                recognition_objects.append(recognition_object)
-                object_infos[recognition_object.getId()] = marker_info
+                marker_infos.append(marker_info)
 
-        tokens = tokens_from_objects(
-            recognition_objects,
-            lambda o: object_infos[o.getId()].size_m,
-            lambda o: object_infos[o.getId()].get_token_class(),
-        )
+        fiducial_markers = markers_from_objects(marker_infos)
 
-        when = self._webot.getTime()
-
-        markers = []
-
-        for token, recognition_object in tokens:
-            marker_info = object_infos[recognition_object.getId()]
-            for face in token.visible_faces():
-                markers.append(Marker(face, marker_info, when))
-
+        markers = [
+            Marker(
+                id=marker_info.code,
+                size=marker_info.size_mm,
+                position=Position.from_cartesian_metres(
+                    fiducial_marker.position.data,  # type: ignore[arg-type]
+                ),
+                orientation=convert.yaw_pitch_roll_from_axis_and_angle(
+                    convert.WebotsOrientation(
+                        *marker_info.recognition_object.getOrientation(),
+                    ),
+                ),
+            )
+            for fiducial_marker, marker_info in fiducial_markers
+        ]
         return markers
-
-    def see_ids(self) -> list[int]:
-        # While in theory this method ought to be the "fast" method, processing
-        # speed doesn't matter much in the simulator and with the locking we
-        # need to do it's much easier to let this be a shallow wrapper around
-        # the full implementation.
-        return [x._info.code for x in self.see()]
 
     # The simulator does not emulate the `capture` or `save` methods.
 

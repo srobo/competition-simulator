@@ -114,3 +114,18 @@ jobs:
       - name: Install Libraries
         run: |
           pip install -r libraries.txt
+
+  validate-generated-content:
+    needs: skip-duplicates
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check generated marker orientation test data
+        uses: PeterJCLaw/validate-generated-files@v1
+        with:
+          command: script/testing/insert-poses.py
+          files: >-
+            controllers/test_supervisor/test_supervisor.py
+            worlds/Tests.wbt

@@ -7,6 +7,9 @@ SCRIPTS=$(find script -type f | grep -vE "/(linting/|testing/|typing/|check$)")
 ./script/testing/test
 result=$?
 
+./script/testing/integration-test
+result=$((result | $?))
+
 ./script/linting/lint $SCRIPTS
 result=$((result | $?))
 

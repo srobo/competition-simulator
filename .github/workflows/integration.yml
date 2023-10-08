@@ -1,4 +1,4 @@
-name: Simulator match
+name: Integration Tests
 
 on:
   push:
@@ -117,3 +117,37 @@ jobs:
           LAST_LINE=$(tail --lines=1 archives/JKL/log-zone-3-match-42.txt)
           set -x
           test "$LAST_LINE" == "3| Success: $GITHUB_SHA"
+
+  integration-tests:
+    needs: skip-duplicates
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        webots-version: ["2023b"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update
+          sudo apt-get install --yes wget zip pulseaudio xvfb
+          pulseaudio -D
+
+      - name: Download Webots
+        run: |
+          wget -O ./webots.deb \
+            https://github.com/cyberbotics/webots/releases/download/R${{ matrix.webots-version }}/webots_${{ matrix.webots-version }}_amd64.deb
+
+      - name: Install Webots
+        run: |
+          sudo apt-get install --yes ./webots.deb
+
+      - name: Run integration tests
+        run: xvfb-run script/testing/integration-test
