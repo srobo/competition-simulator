@@ -133,5 +133,5 @@ jobs:
       - name: Check generated token positions in the arena
         uses: PeterJCLaw/validate-generated-files@v1
         with:
-          command: worlds/token_positions.py
+          command: worlds/insert-tokens.py
           files: worlds/Arena.wbt

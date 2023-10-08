@@ -104,7 +104,7 @@ def values_with_at_most_one_zero() -> Iterator[tuple[Value, Value, Value]]:
 
 
 # Updating these file-content-insertion utils?
-# Consider also updating `worlds/token_positions.py`
+# Consider also updating `worlds/insert-tokens.py`
 
 
 def indented(parts: list[str], *, prefix: str) -> str:
