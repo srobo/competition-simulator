@@ -129,3 +129,9 @@ jobs:
           files: >-
             controllers/test_supervisor/test_supervisor.py
             worlds/Tests.wbt
+
+      - name: Check generated token positions in the arena
+        uses: PeterJCLaw/validate-generated-files@v1
+        with:
+          command: worlds/token_positions.py
+          files: worlds/Arena.wbt

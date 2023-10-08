@@ -553,6 +553,7 @@ Solid { # Plinth East Arm
   locked TRUE
   name "Plinth East Arm"
 }
+# START_GENERATED:TOKENS
 # ---  Corner 0  ---
 SRToken_Bronze {
   translation 2.525 1.100 0.061
@@ -701,3 +702,4 @@ SRToken_Gold {
   translation 0.435 -0.160 0.136
   model "B35"
 }
+# END_GENERATED:TOKENS
