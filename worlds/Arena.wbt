@@ -2,6 +2,7 @@
 
 EXTERNPROTO "../protos/Markers/WallMarker.proto"
 EXTERNPROTO "../protos/Props/AsteroidField.proto"
+EXTERNPROTO "../protos/Props/Station.proto"
 EXTERNPROTO "../protos/Robot_2024/Robot_2024.proto"
 EXTERNPROTO "../protos/Tokens/SRToken_Egg.proto"
 EXTERNPROTO "../protos/Tokens/Scoring_Zone_Planet.proto"
@@ -475,3 +476,7 @@ SRToken_Egg {
   model "Egg"
 }
 AsteroidField {}
+Station {
+  translation 1.685 2.3749 0
+  rotation 0 0 1 1.57079632679
+}

@@ -13,7 +13,7 @@ PROTO Station [
         DEF BODY Group {
             children [
                 DEF base Transform {
-                    translation 0 0 0
+                    translation 0 0 0.06
                     children [
                         Shape {
                             appearance DEF STATION_APPEARANCE PBRAppearance {
@@ -28,7 +28,7 @@ PROTO Station [
                     ]
                 }
                 DEF side_rear Transform {
-                    translation -0.230 0.01 0.1
+                    translation -0.230 0.01 0.16
                     children [
                         Shape {
                             appearance USE STATION_APPEARANCE
@@ -39,7 +39,7 @@ PROTO Station [
                     ]
                 }
                 DEF side_front Transform {
-                    translation 0.230 -0.01 0.1
+                    translation 0.230 -0.01 0.16
                     children [
                         Shape {
                             appearance USE STATION_APPEARANCE
@@ -50,7 +50,7 @@ PROTO Station [
                     ]
                 }
                 DEF side_left Transform {
-                    translation 0.01 0.185 0.1
+                    translation 0.01 0.185 0.16
                     children [
                         Shape {
                             appearance USE STATION_APPEARANCE
@@ -60,8 +60,8 @@ PROTO Station [
                         }
                     ]
                 }
-                DEF side_left Transform {
-                    translation -0.01 -0.185 0.1
+                DEF side_right Transform {
+                    translation -0.01 -0.185 0.16
                     children [
                         Shape {
                             appearance USE STATION_APPEARANCE
@@ -76,7 +76,7 @@ PROTO Station [
         DEF CASTERS Group {
             children [
                 DEF front_right_caster_leg Transform {
-                    translation -0.19 -0.145 -0.0275
+                    translation -0.19 -0.145 0.0325
                     children [
                         Shape {
                             appearance USE STATION_APPEARANCE
@@ -88,7 +88,7 @@ PROTO Station [
                     ]
                 }
                 DEF front_right_caster_leg Transform {
-                    translation -0.19 0.145 -0.0275
+                    translation -0.19 0.145 0.0325
                     children [
                         Shape {
                             appearance USE STATION_APPEARANCE
@@ -97,7 +97,7 @@ PROTO Station [
                     ]
                 }
                 DEF rear_right_caster_leg Transform {
-                    translation 0.19 -0.145 -0.0275
+                    translation 0.19 -0.145 0.0325
                     children [
                         Shape {
                             appearance USE STATION_APPEARANCE
@@ -106,7 +106,7 @@ PROTO Station [
                     ]
                 }
                 DEF rear_right_caster_leg Transform {
-                    translation 0.19 0.145 -0.0275
+                    translation 0.19 0.145 0.0325
                     children [
                         Shape {
                             appearance USE STATION_APPEARANCE
@@ -115,7 +115,7 @@ PROTO Station [
                     ]
                 }
                 DEF front_left_caster Solid {
-                    translation -0.19 -0.145 -0.0425
+                    translation -0.19 -0.145 0.0175
                     name "front_left_caster"
                     children [
                         DEF CASTER_BALL Shape {
@@ -138,7 +138,7 @@ PROTO Station [
                 }
                 DEF front_right_caster Solid {
                     name "front_right_caster"
-                    translation -0.19 0.145 -0.0425
+                    translation -0.19 0.145 0.0175
                     children [
                         USE CASTER_BALL
                     ]
@@ -150,7 +150,7 @@ PROTO Station [
                 }
                 DEF rear_left_caster Solid {
                     name "rear_left_caster"
-                    translation 0.19 0.145 -0.0425
+                    translation 0.19 0.145 0.0175
                     children [
                         USE CASTER_BALL
                     ]
@@ -162,7 +162,7 @@ PROTO Station [
                 }
                 DEF rear_right_caster Solid {
                     name "rear_right_caster"
-                    translation 0.19 -0.145 -0.0425
+                    translation 0.19 -0.145 0.0175
                     children [
                         USE CASTER_BALL
                     ]
