@@ -10,7 +10,7 @@ from typing import Literal
 
 TokenType = Literal['A']
 
-WORLDS_DIR = pathlib.Path(__file__).parent
+REPO_ROOT = pathlib.Path(__file__).parent.parent
 
 HALF_ARENA_WIDTH = 5.75 / 2
 
@@ -80,6 +80,7 @@ TOKEN_TEMPLATE = '''
 {token_name} {{
   translation {x:.3f} {y:.3f} {height:.3f}
   model "{model_name}"
+  marker "F%<= marker_ids[{token_num}] >%"
 }}
 '''
 
@@ -106,6 +107,7 @@ def build_output() -> list[str]:
                 y=y,
                 height=height,
                 model_name=f'B{global_id}',
+                token_num=global_id,
             ))
             global_id += 1
 
@@ -133,7 +135,7 @@ def main(args: argparse.Namespace) -> None:
     output(
         "Tokens",
         lines,
-        WORLDS_DIR / 'Arena.wbt',
+        REPO_ROOT / 'protos' / 'Props' / 'AsteroidField.proto',
         'TOKENS',
     )
 

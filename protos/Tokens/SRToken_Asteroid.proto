@@ -3,6 +3,8 @@
 EXTERNPROTO "../Markers/TokenMarker.proto"
 
 PROTO SRToken_Asteroid [
+  # Ideally we wouldn't have a default marker id, but Webots requires one
+  field SFString marker "F99"
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
   field SFString model ""
@@ -26,36 +28,36 @@ PROTO SRToken_Asteroid [
         translation 0.0651 0 0
         rotation 0 0 1 3.1416
         name "front"
-        model "F99"
+        model IS marker
       }
       TokenMarker {
         translation -0.0651 0 0
         name "back"
-        model "F99"
+        model IS marker
       }
       TokenMarker {
         translation 0 0.0651 0
         rotation 0 0 1 -1.5708
         name "side-1"
-        model "F99"
+        model IS marker
       }
       TokenMarker {
         translation 0 -0.0651 0
         rotation 0 0 1 1.5708
         name "side-2"
-        model "F99"
+        model IS marker
       }
       TokenMarker {
         translation 0 0 0.0651
         rotation 0 1 0 1.5708
         name "top"
-        model "F99"
+        model IS marker
       }
       TokenMarker {
         translation 0 0 -0.0651
         rotation 0 1 0 -1.5708
         name "bottom"
-        model "F99"
+        model IS marker
       }
     ]
     name IS model

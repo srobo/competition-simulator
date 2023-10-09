@@ -1,6 +1,7 @@
 #VRML_SIM R2022b utf8
 
 EXTERNPROTO "../protos/Markers/WallMarker.proto"
+EXTERNPROTO "../protos/Props/AsteroidField.proto"
 EXTERNPROTO "../protos/Robot_2022/Robot_2022.proto"
 EXTERNPROTO "../protos/Tokens/SRToken_Asteroid.proto"
 EXTERNPROTO "../protos/Tokens/SRToken_Egg.proto"
@@ -468,73 +469,4 @@ SRToken_Egg {
   translation 0 0 0.115
   model "Egg"
 }
-# START_GENERATED:TOKENS
-# ---  Corner 0  ---
-SRToken_Asteroid {
-  translation 1.325 1.325 0.065
-  model "B0"
-}
-SRToken_Asteroid {
-  translation 0.765 0.765 0.065
-  model "B1"
-}
-SRToken_Asteroid {
-  translation 0.000 1.325 0.065
-  model "B2"
-}
-SRToken_Asteroid {
-  translation 0.000 0.215 0.065
-  model "B3"
-}
-# ---  Corner 1  ---
-SRToken_Asteroid {
-  translation -1.325 1.325 0.065
-  model "B4"
-}
-SRToken_Asteroid {
-  translation -0.765 0.765 0.065
-  model "B5"
-}
-SRToken_Asteroid {
-  translation -1.325 0.000 0.065
-  model "B6"
-}
-SRToken_Asteroid {
-  translation -0.215 0.000 0.065
-  model "B7"
-}
-# ---  Corner 2  ---
-SRToken_Asteroid {
-  translation -1.325 -1.325 0.065
-  model "B8"
-}
-SRToken_Asteroid {
-  translation -0.765 -0.765 0.065
-  model "B9"
-}
-SRToken_Asteroid {
-  translation -0.000 -1.325 0.065
-  model "B10"
-}
-SRToken_Asteroid {
-  translation -0.000 -0.215 0.065
-  model "B11"
-}
-# ---  Corner 3  ---
-SRToken_Asteroid {
-  translation 1.325 -1.325 0.065
-  model "B12"
-}
-SRToken_Asteroid {
-  translation 0.765 -0.765 0.065
-  model "B13"
-}
-SRToken_Asteroid {
-  translation 1.325 -0.000 0.065
-  model "B14"
-}
-SRToken_Asteroid {
-  translation 0.215 -0.000 0.065
-  model "B15"
-}
-# END_GENERATED:TOKENS
+AsteroidField {}
