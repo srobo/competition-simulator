@@ -212,27 +212,27 @@ PROTO Robot_2024 [
             translation 0.035 0.187 0
             children [
               DEF front_left_caster Solid {
-                  translation 0 0 0
-                  name "front_left_caster"
-                  children [
-                      DEF CASTER_BALL Shape {
-                          appearance DEF BALL_APPEARANCE PBRAppearance {
-                              baseColor 0 0.0051864 0
-                              roughness 0.0
-                              metalness 0
-                          }
-                          geometry Sphere {
-                              radius 0.005
-                              # subdivision 2
-                          }
-                      }
-                  ]
-                  boundingObject USE CASTER_BALL
-                  physics Physics {
-                      density 8000  # steel
+                translation 0 0 0
+                name "front_left_caster"
+                children [
+                  DEF CASTER_BALL Shape {
+                    appearance DEF BALL_APPEARANCE PBRAppearance {
+                      baseColor 0 0.0051864 0
+                      roughness 0.0
+                      metalness 0
+                    }
+                    geometry Sphere {
+                      radius 0.005
+                      # subdivision 2
+                    }
                   }
-                  contactMaterial "caster"
+                ]
+                boundingObject USE CASTER_BALL
+                physics Physics {
+                  density 8000  # steel
                 }
+                contactMaterial "caster"
+              }
               DEF CASTER_TOP Transform {
                 translation 0 0 0.01075
                 children [
@@ -256,24 +256,23 @@ PROTO Robot_2024 [
           DEF RIGHT_CASTER Transform {
             translation 0.035 -0.187 0
             children [
-                 DEF FRONT_RIGHT_CASTER Solid {
-                  translation 0 0 0
-                  name "front_right_caster"
-                  children [
-                      USE CASTER_BALL
-                  ]
-                  boundingObject USE CASTER_BALL
-                  physics Physics {
-                      density 8000  # steel
-                  }
-                  contactMaterial "caster"
+              DEF FRONT_RIGHT_CASTER Solid {
+                translation 0 0 0
+                name "front_right_caster"
+                children [
+                  USE CASTER_BALL
+                ]
+                boundingObject USE CASTER_BALL
+                physics Physics {
+                  density 8000  # steel
                 }
+                contactMaterial "caster"
+              }
               USE CASTER_TOP
             ]
           }
         ]
       }
-
       DEF LIFTER Transform {
         translation 0.025 0 0
         children [

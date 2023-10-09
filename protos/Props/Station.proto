@@ -10,170 +10,170 @@ PROTO Station [
     translation IS translation
     rotation IS rotation
     children [
-        DEF BODY Group {
+      DEF BODY Group {
+        children [
+          DEF base Transform {
+            translation 0 0 0.06
             children [
-                DEF base Transform {
-                    translation 0 0 0.06
-                    children [
-                        Shape {
-                            appearance DEF STATION_APPEARANCE PBRAppearance {
-                                baseColor 0.55 0.55 0.55
-                                metalness 0
-                                roughness 1
-                            }
-                            geometry Box {
-                                size 0.48 0.39 0.025
-                            }
-                        }
-                    ]
+              Shape {
+                appearance DEF STATION_APPEARANCE PBRAppearance {
+                  baseColor 0.55 0.55 0.55
+                  metalness 0
+                  roughness 1
                 }
-                DEF side_rear Transform {
-                    translation -0.230 0.01 0.16
-                    children [
-                        Shape {
-                            appearance USE STATION_APPEARANCE
-                            geometry Box {
-                                size 0.02 0.37 0.175
-                            }
-                        }
-                    ]
+                geometry Box {
+                  size 0.48 0.39 0.025
                 }
-                DEF side_front Transform {
-                    translation 0.230 -0.01 0.16
-                    children [
-                        Shape {
-                            appearance USE STATION_APPEARANCE
-                            geometry Box {
-                                size 0.02 0.37 0.175
-                            }
-                        }
-                    ]
-                }
-                DEF side_left Transform {
-                    translation 0.01 0.185 0.16
-                    children [
-                        Shape {
-                            appearance USE STATION_APPEARANCE
-                            geometry Box {
-                                size 0.46 0.02 0.175
-                            }
-                        }
-                    ]
-                }
-                DEF side_right Transform {
-                    translation -0.01 -0.185 0.16
-                    children [
-                        Shape {
-                            appearance USE STATION_APPEARANCE
-                            geometry Box {
-                                size 0.46 0.02 0.175
-                            }
-                        }
-                    ]
-                }
+              }
             ]
-        }
-        DEF CASTERS Group {
+          }
+          DEF side_rear Transform {
+            translation -0.230 0.01 0.16
             children [
-                DEF front_right_caster_leg Transform {
-                    translation -0.19 -0.145 0.0325
-                    children [
-                        Shape {
-                            appearance USE STATION_APPEARANCE
-                            geometry DEF CASTER_LEG Cylinder {
-                                height 0.03
-                                radius 0.025
-                            }
-                        }
-                    ]
+              Shape {
+                appearance USE STATION_APPEARANCE
+                geometry Box {
+                  size 0.02 0.37 0.175
                 }
-                DEF front_right_caster_leg Transform {
-                    translation -0.19 0.145 0.0325
-                    children [
-                        Shape {
-                            appearance USE STATION_APPEARANCE
-                            geometry USE CASTER_LEG
-                        }
-                    ]
-                }
-                DEF rear_right_caster_leg Transform {
-                    translation 0.19 -0.145 0.0325
-                    children [
-                        Shape {
-                            appearance USE STATION_APPEARANCE
-                            geometry USE CASTER_LEG
-                        }
-                    ]
-                }
-                DEF rear_right_caster_leg Transform {
-                    translation 0.19 0.145 0.0325
-                    children [
-                        Shape {
-                            appearance USE STATION_APPEARANCE
-                            geometry USE CASTER_LEG
-                        }
-                    ]
-                }
-                DEF front_left_caster Solid {
-                    translation -0.19 -0.145 0.0175
-                    name "front_left_caster"
-                    children [
-                        DEF CASTER_BALL Shape {
-                            appearance DEF BALL_APPEARANCE PBRAppearance {
-                                baseColor 0 0.0051864 0
-                                roughness 0.0
-                                metalness 0
-                            }
-                            geometry Sphere {
-                                radius 0.02
-                                # subdivision 2
-                            }
-                        }
-                    ]
-                    boundingObject USE CASTER_BALL
-                    physics Physics {
-                        density 8000  # steel
-                    }
-                    contactMaterial "caster"
-                }
-                DEF front_right_caster Solid {
-                    name "front_right_caster"
-                    translation -0.19 0.145 0.0175
-                    children [
-                        USE CASTER_BALL
-                    ]
-                    boundingObject USE CASTER_BALL
-                    physics Physics {
-                        density 8000  # steel
-                    }
-                    contactMaterial "caster"
-                }
-                DEF rear_left_caster Solid {
-                    name "rear_left_caster"
-                    translation 0.19 0.145 0.0175
-                    children [
-                        USE CASTER_BALL
-                    ]
-                    boundingObject USE CASTER_BALL
-                    physics Physics {
-                        density 8000  # steel
-                    }
-                    contactMaterial "caster"
-                }
-                DEF rear_right_caster Solid {
-                    name "rear_right_caster"
-                    translation 0.19 -0.145 0.0175
-                    children [
-                        USE CASTER_BALL
-                    ]
-                    boundingObject USE CASTER_BALL
-                    physics Physics {
-                        density 8000  # steel
-                    }
-                    contactMaterial "caster"
-                }
+              }
             ]
-        }
+          }
+          DEF side_front Transform {
+            translation 0.230 -0.01 0.16
+            children [
+              Shape {
+                appearance USE STATION_APPEARANCE
+                geometry Box {
+                  size 0.02 0.37 0.175
+                }
+              }
+            ]
+          }
+          DEF side_left Transform {
+            translation 0.01 0.185 0.16
+            children [
+              Shape {
+                appearance USE STATION_APPEARANCE
+                geometry Box {
+                  size 0.46 0.02 0.175
+                }
+              }
+            ]
+          }
+          DEF side_right Transform {
+            translation -0.01 -0.185 0.16
+            children [
+              Shape {
+                appearance USE STATION_APPEARANCE
+                geometry Box {
+                  size 0.46 0.02 0.175
+                }
+              }
+            ]
+          }
+        ]
+      }
+      DEF CASTERS Group {
+        children [
+          DEF front_right_caster_leg Transform {
+            translation -0.19 -0.145 0.0325
+            children [
+              Shape {
+                appearance USE STATION_APPEARANCE
+                geometry DEF CASTER_LEG Cylinder {
+                  height 0.03
+                  radius 0.025
+                }
+              }
+            ]
+          }
+          DEF front_right_caster_leg Transform {
+            translation -0.19 0.145 0.0325
+            children [
+              Shape {
+                appearance USE STATION_APPEARANCE
+                geometry USE CASTER_LEG
+              }
+            ]
+          }
+          DEF rear_right_caster_leg Transform {
+            translation 0.19 -0.145 0.0325
+            children [
+              Shape {
+                appearance USE STATION_APPEARANCE
+                geometry USE CASTER_LEG
+              }
+            ]
+          }
+          DEF rear_right_caster_leg Transform {
+            translation 0.19 0.145 0.0325
+            children [
+              Shape {
+                appearance USE STATION_APPEARANCE
+                geometry USE CASTER_LEG
+              }
+            ]
+          }
+          DEF front_left_caster Solid {
+            translation -0.19 -0.145 0.0175
+            name "front_left_caster"
+            children [
+              DEF CASTER_BALL Shape {
+                appearance DEF BALL_APPEARANCE PBRAppearance {
+                  baseColor 0 0.0051864 0
+                  roughness 0.0
+                  metalness 0
+                }
+                geometry Sphere {
+                  radius 0.02
+                  # subdivision 2
+                }
+              }
+            ]
+            boundingObject USE CASTER_BALL
+            physics Physics {
+              density 8000  # steel
+            }
+            contactMaterial "caster"
+          }
+          DEF front_right_caster Solid {
+            name "front_right_caster"
+            translation -0.19 0.145 0.0175
+            children [
+              USE CASTER_BALL
+            ]
+            boundingObject USE CASTER_BALL
+            physics Physics {
+              density 8000  # steel
+            }
+            contactMaterial "caster"
+          }
+          DEF rear_left_caster Solid {
+            name "rear_left_caster"
+            translation 0.19 0.145 0.0175
+            children [
+              USE CASTER_BALL
+            ]
+            boundingObject USE CASTER_BALL
+            physics Physics {
+              density 8000  # steel
+            }
+            contactMaterial "caster"
+          }
+          DEF rear_right_caster Solid {
+            name "rear_right_caster"
+            translation 0.19 -0.145 0.0175
+            children [
+              USE CASTER_BALL
+            ]
+            boundingObject USE CASTER_BALL
+            physics Physics {
+              density 8000  # steel
+            }
+            contactMaterial "caster"
+          }
+        ]
+      }
     ]
     name IS model
     model IS model
