@@ -479,4 +479,18 @@ AsteroidField {}
 Station {
   translation 1.685 2.3749 0
   rotation 0 0 1 1.57079632679
+  model "S0"
+}
+Station {
+  translation 2.3749 -1.685 0
+  model "S1"
+}
+Station {
+  translation -1.685 -2.3749 0
+  rotation 0 0 1 1.57079632679
+  model "S2"
+}
+Station {
+  translation -2.3749 1.685 0
+  model "S3"
 }
