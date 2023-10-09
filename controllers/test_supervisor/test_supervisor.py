@@ -114,7 +114,7 @@ class TestCamera(unittest.TestCase):
             [
                 Marker(
                     id=2,
-                    size=200,
+                    size=150,
                     position=Position(
                         distance=1000,
                         horizontal_angle=ApproximateFloat(0),
