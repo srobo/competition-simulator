@@ -103,12 +103,12 @@ Robot {
     ## Marker and camera rotated reference frame
     SRCamera {
       name "camera-marker-frame-rotated-right"
-      translation -1 -0.1 0
+      translation -1.5 -0.1 0
       rotation 0 0 1 -1.570796327
     }
     SRCamera {
       name "camera-marker-frame-rotated-left"
-      translation -1 0.1 0
+      translation -1.5 0.1 0
       rotation 0 0 1 1.570796327
     }
     ## Multi axis rotations
@@ -283,7 +283,7 @@ Solid {
     }
     ## Marker and camera rotated reference frame
     WallMarker {
-      translation -1 -1.1 1
+      translation -1.5 -1.1 1
       rotation 0 0 1 -1.570796327
       name "frame-rotated-right"
       model "F16"
@@ -292,7 +292,7 @@ Solid {
       ]
     }
     WallMarker {
-      translation -1 1.1 1
+      translation -1.5 1.1 1
       rotation 0 0 1 1.570796327
       name "frame-rotated-left"
       model "F17"
