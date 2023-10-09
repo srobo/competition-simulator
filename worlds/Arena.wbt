@@ -107,7 +107,7 @@ Solid {  # Wall markers
     WallMarker {
       translation 2.154 -2.8749 0.175
       rotation 0 0 1 -1.5708
-      name "F0"
+      name "A0"
       model "F0"
       texture_url [
         "../textures/arena-markers/0.png"
