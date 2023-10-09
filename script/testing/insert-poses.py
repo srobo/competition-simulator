@@ -103,6 +103,10 @@ def values_with_at_most_one_zero() -> Iterator[tuple[Value, Value, Value]]:
         yield values  # type: ignore[misc]
 
 
+# Updating these file-content-insertion utils?
+# Consider also updating `worlds/insert-tokens.py`
+
+
 def indented(parts: list[str], *, prefix: str) -> str:
     text = '\n'.join(x.strip() for x in parts)
     return textwrap.indent(text, prefix)
