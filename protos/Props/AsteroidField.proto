@@ -1,0 +1,118 @@
+#VRML_SIM R2022b utf8
+# template language: javascript
+
+EXTERNPROTO "../Tokens/SRToken_Asteroid.proto"
+
+PROTO AsteroidField [
+]
+{
+  %<
+  import * as wbrandom from 'wbrandom.js';
+  wbrandom.seed(Date.now());
+
+  // Adapted from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+  function shuffle_in_place(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const rand_idx = wbrandom.integer(0, i);
+      [array[i], array[rand_idx]] = [array[rand_idx], array[i]]
+    }
+  }
+
+  // markers are 100-150 inclusive
+  const marker_ids = Array.from({length: 51}, (value, index) => index + 100)
+
+  // shuffle randomly, ensuring no duplicates
+  shuffle_in_place(marker_ids);
+  >%
+
+  Group {
+    children [
+      # START_GENERATED:TOKENS
+      # ---  Corner 0  ---
+      SRToken_Asteroid {
+        translation 1.325 1.325 0.065
+        model "B0"
+        marker "F%<= marker_ids[0] >%"
+      }
+      SRToken_Asteroid {
+        translation 0.765 0.765 0.065
+        model "B1"
+        marker "F%<= marker_ids[1] >%"
+      }
+      SRToken_Asteroid {
+        translation 0.000 1.325 0.065
+        model "B2"
+        marker "F%<= marker_ids[2] >%"
+      }
+      SRToken_Asteroid {
+        translation 0.000 0.485 0.065
+        model "B3"
+        marker "F%<= marker_ids[3] >%"
+      }
+      # ---  Corner 1  ---
+      SRToken_Asteroid {
+        translation -1.325 1.325 0.065
+        model "B4"
+        marker "F%<= marker_ids[4] >%"
+      }
+      SRToken_Asteroid {
+        translation -0.765 0.765 0.065
+        model "B5"
+        marker "F%<= marker_ids[5] >%"
+      }
+      SRToken_Asteroid {
+        translation -1.325 0.000 0.065
+        model "B6"
+        marker "F%<= marker_ids[6] >%"
+      }
+      SRToken_Asteroid {
+        translation -0.485 0.000 0.065
+        model "B7"
+        marker "F%<= marker_ids[7] >%"
+      }
+      # ---  Corner 2  ---
+      SRToken_Asteroid {
+        translation -1.325 -1.325 0.065
+        model "B8"
+        marker "F%<= marker_ids[8] >%"
+      }
+      SRToken_Asteroid {
+        translation -0.765 -0.765 0.065
+        model "B9"
+        marker "F%<= marker_ids[9] >%"
+      }
+      SRToken_Asteroid {
+        translation -0.000 -1.325 0.065
+        model "B10"
+        marker "F%<= marker_ids[10] >%"
+      }
+      SRToken_Asteroid {
+        translation -0.000 -0.485 0.065
+        model "B11"
+        marker "F%<= marker_ids[11] >%"
+      }
+      # ---  Corner 3  ---
+      SRToken_Asteroid {
+        translation 1.325 -1.325 0.065
+        model "B12"
+        marker "F%<= marker_ids[12] >%"
+      }
+      SRToken_Asteroid {
+        translation 0.765 -0.765 0.065
+        model "B13"
+        marker "F%<= marker_ids[13] >%"
+      }
+      SRToken_Asteroid {
+        translation 1.325 -0.000 0.065
+        model "B14"
+        marker "F%<= marker_ids[14] >%"
+      }
+      SRToken_Asteroid {
+        translation 0.485 -0.000 0.065
+        model "B15"
+        marker "F%<= marker_ids[15] >%"
+      }
+      # END_GENERATED:TOKENS
+    ]
+  }
+}

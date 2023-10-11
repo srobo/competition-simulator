@@ -8,40 +8,34 @@ import argparse
 import textwrap
 from typing import Literal
 
-TokenType = Literal['B', 'S', 'G']
+TokenType = Literal['A']
 
-WORLDS_DIR = pathlib.Path(__file__).parent
+REPO_ROOT = pathlib.Path(__file__).parent.parent
+
+HALF_ARENA_WIDTH = 5.75 / 2
 
 POSITIONS: list[tuple[TokenType, float, float]] = [
-    ("B", 2.525, 1.100),  # Closest to starting area
-    ("B", 1.000, 1.000),  # Closest to the arena centre
-    ("B", 1.550, 1.550),  # Furthest from any walls
-    ("B", 0.800, 2.225),  # Closest to the next starting area
-    ("B", 1.100, 2.525),  # Next to the closest to the starting area
-    ("S", 2.525, 2.525),  # In the corner
-    ("S", 2.325, 1.815),  # Closer silver one to the starting area
-    ("S", 1.815, 2.325),  # Further silver one to the starting area
-    ("G", 0.160, 0.435),  # Gold one in the corner
+    # Taken from the rules SVG, measured from the top left corner. We adjust for
+    # that when processing the templates.
+    ('A', 1.55, 1.55),  # Corner
+    ('A', 2.11, 2.11),  # Diagonally in from the corner
+    ('A', 2.875, 1.55),  # In front of the robot
+    ('A', 2.875, 2.39),  # By the plinth
 ]
 
 
 def get_name(color: TokenType) -> str:
-    if color == "B":
-        return "SRToken_Bronze"
-    if color == "S":
-        return "SRToken_Silver"
-    if color == "G":
-        return "SRToken_Gold"
+    if color == 'A':
+        return 'SRToken_Asteroid'
     raise ValueError("Invalid color")
 
 
 def get_height(color: TokenType) -> float:
-    if color == "B":
-        return 0.061
-    if color == "S":
-        return 0.061
-    if color == "G":
-        return 0.136
+    """
+    Fetch the height off the floor which the center of the token should be.
+    """
+    if color == 'A':
+        return 0.13 / 2
     raise ValueError("Invalid color")
 
 
@@ -86,6 +80,7 @@ TOKEN_TEMPLATE = '''
 {token_name} {{
   translation {x:.3f} {y:.3f} {height:.3f}
   model "{model_name}"
+  marker "F%<= marker_ids[{token_num}] >%"
 }}
 '''
 
@@ -99,6 +94,10 @@ def build_output() -> list[str]:
         lines.append(f"# ---  Corner {corner}  ---")
 
         for color, x, y in POSITIONS:
+            # Rebase positions to have the origin in the center of the arena
+            # rather than the top left.
+            x, y = HALF_ARENA_WIDTH - x, HALF_ARENA_WIDTH - y
+
             token_name = get_name(color)
             height = get_height(color)
             x, y = rotate(x, y, angle)
@@ -108,6 +107,7 @@ def build_output() -> list[str]:
                 y=y,
                 height=height,
                 model_name=f'B{global_id}',
+                token_num=global_id,
             ))
             global_id += 1
 
@@ -135,7 +135,7 @@ def main(args: argparse.Namespace) -> None:
     output(
         "Tokens",
         lines,
-        WORLDS_DIR / 'Arena.wbt',
+        REPO_ROOT / 'protos' / 'Props' / 'AsteroidField.proto',
         'TOKENS',
     )
 
