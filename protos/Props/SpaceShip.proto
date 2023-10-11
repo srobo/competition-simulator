@@ -1,6 +1,6 @@
 #VRML_SIM R2023b utf8
 
-PROTO Station [
+PROTO SpaceShip [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
   field SFString model ""
@@ -16,7 +16,7 @@ PROTO Station [
             translation 0 0 0.06
             children [
               Shape {
-                appearance DEF STATION_APPEARANCE PBRAppearance {
+                appearance DEF SPACESHIP_APPEARANCE PBRAppearance {
                   baseColor 0.55 0.55 0.55
                   metalness 0
                   roughness 1
@@ -31,7 +31,7 @@ PROTO Station [
             translation -0.230 0.01 0.16
             children [
               Shape {
-                appearance USE STATION_APPEARANCE
+                appearance USE SPACESHIP_APPEARANCE
                 geometry Box {
                   size 0.02 0.37 0.175
                 }
@@ -42,7 +42,7 @@ PROTO Station [
             translation 0.230 -0.01 0.16
             children [
               Shape {
-                appearance USE STATION_APPEARANCE
+                appearance USE SPACESHIP_APPEARANCE
                 geometry Box {
                   size 0.02 0.37 0.175
                 }
@@ -53,7 +53,7 @@ PROTO Station [
             translation 0.01 0.185 0.16
             children [
               Shape {
-                appearance USE STATION_APPEARANCE
+                appearance USE SPACESHIP_APPEARANCE
                 geometry Box {
                   size 0.46 0.02 0.175
                 }
@@ -64,7 +64,7 @@ PROTO Station [
             translation -0.01 -0.185 0.16
             children [
               Shape {
-                appearance USE STATION_APPEARANCE
+                appearance USE SPACESHIP_APPEARANCE
                 geometry Box {
                   size 0.46 0.02 0.175
                 }
@@ -79,7 +79,7 @@ PROTO Station [
             translation -0.19 -0.145 0.0325
             children [
               Shape {
-                appearance USE STATION_APPEARANCE
+                appearance USE SPACESHIP_APPEARANCE
                 geometry DEF CASTER_LEG Cylinder {
                   height 0.03
                   radius 0.025
@@ -91,7 +91,7 @@ PROTO Station [
             translation -0.19 0.145 0.0325
             children [
               Shape {
-                appearance USE STATION_APPEARANCE
+                appearance USE SPACESHIP_APPEARANCE
                 geometry USE CASTER_LEG
               }
             ]
@@ -100,7 +100,7 @@ PROTO Station [
             translation 0.19 -0.145 0.0325
             children [
               Shape {
-                appearance USE STATION_APPEARANCE
+                appearance USE SPACESHIP_APPEARANCE
                 geometry USE CASTER_LEG
               }
             ]
@@ -109,7 +109,7 @@ PROTO Station [
             translation 0.19 0.145 0.0325
             children [
               Shape {
-                appearance USE STATION_APPEARANCE
+                appearance USE SPACESHIP_APPEARANCE
                 geometry USE CASTER_LEG
               }
             ]
