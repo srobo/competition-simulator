@@ -176,12 +176,7 @@ def remove_unused_robots(supervisor: Supervisor) -> None:
 
 
 def set_simulation_mode(supervisor: Supervisor, mode: SimulationMode) -> None:
-    try:
-        supervisor.simulationSetMode(mode)
-    except AttributeError:
-        # Webots R2023a throws an AttributeError so we'll call underlying setter ourselves
-        from controller.wb import wb  # type: ignore[import-untyped]
-        wb.wb_supervisor_simulation_set_mode(mode)
+    supervisor.simulationSetMode(mode)
 
 
 def inform_start(node: Node) -> None:
