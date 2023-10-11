@@ -20,7 +20,7 @@ POSITIONS: list[tuple[TokenType, float, float]] = [
     ('A', 1.55, 1.55),  # Corner
     ('A', 2.11, 2.11),  # Diagonally in from the corner
     ('A', 2.875, 1.55),  # In front of the robot
-    ('A', 2.875, 2.66),  # By the plinth
+    ('A', 2.875, 2.39),  # By the plinth
 ]
 
 

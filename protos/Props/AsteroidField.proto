@@ -45,7 +45,7 @@ PROTO AsteroidField [
         marker "F%<= marker_ids[2] >%"
       }
       SRToken_Asteroid {
-        translation 0.000 0.215 0.065
+        translation 0.000 0.485 0.065
         model "B3"
         marker "F%<= marker_ids[3] >%"
       }
@@ -66,7 +66,7 @@ PROTO AsteroidField [
         marker "F%<= marker_ids[6] >%"
       }
       SRToken_Asteroid {
-        translation -0.215 0.000 0.065
+        translation -0.485 0.000 0.065
         model "B7"
         marker "F%<= marker_ids[7] >%"
       }
@@ -87,7 +87,7 @@ PROTO AsteroidField [
         marker "F%<= marker_ids[10] >%"
       }
       SRToken_Asteroid {
-        translation -0.000 -0.215 0.065
+        translation -0.000 -0.485 0.065
         model "B11"
         marker "F%<= marker_ids[11] >%"
       }
@@ -108,7 +108,7 @@ PROTO AsteroidField [
         marker "F%<= marker_ids[14] >%"
       }
       SRToken_Asteroid {
-        translation 0.215 -0.000 0.065
+        translation 0.485 -0.000 0.065
         model "B15"
         marker "F%<= marker_ids[15] >%"
       }
