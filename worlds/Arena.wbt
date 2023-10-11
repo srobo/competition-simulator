@@ -434,22 +434,22 @@ Solid {  # West Wall
   name "West Wall"
 }
 Scoring_Zone_Planet {
-  rotation 0 0 1 1.5708
+  rotation 0 0 1 -1.5708
   name "Zone 0 Scoring"
   cornerColor 0.8 1 0.8
 }
 Scoring_Zone_Planet {
-  rotation 0 0 0 0
+  rotation 0 0 0 3.14159
   name "Zone 1 Scoring"
   cornerColor 1 0.85 0.8
 }
 Scoring_Zone_Planet {
-  rotation 0 0 1 -1.5708
+  rotation 0 0 1 1.5708
   name "Zone 2 Scoring"
   cornerColor 1 0.8 1
 }
 Scoring_Zone_Planet {
-  rotation 0 0 1 3.14159
+  rotation 0 0 1 0
   name "Zone 3 Scoring"
   cornerColor 1 1 0.8
 }
