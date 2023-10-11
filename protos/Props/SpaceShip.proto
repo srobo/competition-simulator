@@ -75,6 +75,19 @@ PROTO SpaceShip [
               }
             ]
           }
+          DEF pole Transform {
+            translation -0.230 -0.185 0.3975
+            children [
+              Shape {
+                appearance USE SPACESHIP_APPEARANCE
+                geometry Cylinder {
+                  height 0.3
+                  radius 0.01
+                  subdivision 8
+                }
+              }
+            ]
+          }
         ]
       }
       DEF CASTERS Group {
