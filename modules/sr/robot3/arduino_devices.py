@@ -32,7 +32,7 @@ ANALOG_READ_MODES = {GPIOPinMode.INPUT}
 
 
 class Device(Protocol):
-    def analogue_read(self) -> float:
+    def analog_read(self) -> float:
         ...
 
     def digital_write(self, value: bool) -> None:
@@ -43,7 +43,7 @@ class Pin(abc.ABC):
     """
     A device connected to a pin on the Arduino.
     """
-    _ANALOGUE_RANGE = (0., 5.)  # Volts
+    _ANALOG_RANGE = (0., 5.)  # Volts
 
     def __init__(
         self,
@@ -110,7 +110,7 @@ class Pin(abc.ABC):
             raise IOError(f'Digital read is not supported in {self.mode}')
 
         # Emulate reading an analogue signal and interpreting as a digital one.
-        return self._device.analogue_read() > 1
+        return self._device.analog_read() > 1
 
     def digital_write(self, value: bool) -> None:
         """
@@ -142,7 +142,7 @@ class Pin(abc.ABC):
         if not self._supports_analogue:
             raise IOError('Pin does not support analogue read')
 
-        return add_jitter(self._device.analogue_read(), *self._ANALOGUE_RANGE)
+        return add_jitter(self._device.analog_read(), *self._ANALOG_RANGE)
 
     def __repr__(self) -> str:
         return (
@@ -158,8 +158,8 @@ class NullDevice(Device):
     Simulates the responses from a pin which is not actually connected to anything.
     """
 
-    def analogue_read(self) -> float:
-        return map_to_range(0, 1, *Pin._ANALOGUE_RANGE, random.random())
+    def analog_read(self) -> float:
+        return map_to_range(0, 1, *Pin._ANALOG_RANGE, random.random())
 
     def digital_write(self, value: bool) -> None:
         pass
@@ -179,11 +179,11 @@ class DistanceSensor(Device):
         self.webot_sensor = get_robot_device(webot, sensor_name, WebotsDistanceSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def analogue_read(self) -> float:
+    def analog_read(self) -> float:
         return map_to_range(
             self.webot_sensor.getMinValue(),
             self.webot_sensor.getMaxValue(),
-            *Pin._ANALOGUE_RANGE,
+            *Pin._ANALOG_RANGE,
             self.webot_sensor.getValue(),
         )
 
@@ -197,7 +197,7 @@ class PressureSensor(Device):
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def analogue_read(self) -> float:
+    def analog_read(self) -> float:
         # Currently we only the return Z-axis force.
         return self.webot_sensor.getValues()[2] / 100
 
@@ -211,8 +211,8 @@ class Microswitch(Device):
         self.webot_sensor = get_robot_device(webot, sensor_name, TouchSensor)
         self.webot_sensor.enable(int(webot.getBasicTimeStep()))
 
-    def analogue_read(self) -> float:
-        return Pin._ANALOGUE_RANGE[int(self._digital_read())]
+    def analog_read(self) -> float:
+        return Pin._ANALOG_RANGE[int(self._digital_read())]
 
     def _digital_read(self) -> bool:
         """
