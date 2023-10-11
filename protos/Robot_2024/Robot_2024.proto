@@ -2,7 +2,7 @@
 
 EXTERNPROTO "../Components/SRCamera.proto"
 
-PROTO Robot_2022 [
+PROTO Robot_2024 [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
   field SFString controller ""
@@ -158,12 +158,12 @@ PROTO Robot_2022 [
                 ]
               }
               DEF body_front_spar Transform {
-                translation 0 0 0.03
+                translation 0 0 0.046
                 children [
                   Shape {
                     appearance USE BODY_COLOUR
                     geometry Box {
-                      size 0.03 0.4 0.012
+                      size 0.03 0.35 0.044
                     }
                   }
                 ]
@@ -180,23 +180,23 @@ PROTO Robot_2022 [
                 ]
               }
               DEF body_left_arm Transform {
-                translation -0.0681 -0.1875 0.036
+                translation -0.0305 -0.1875 0.046
                 children [
                   Shape {
                     appearance USE BODY_COLOUR
                     geometry Box {
-                      size 0.106 0.025 0.024
+                      size 0.091 0.025 0.044
                     }
                   }
                 ]
               }
               DEF body_right_arm Transform {
-                translation -0.0681 0.1875 0.036
+                translation -0.0305 0.1875 0.046
                 children [
                   Shape {
                     appearance USE BODY_COLOUR
                     geometry Box {
-                      size 0.106 0.025 0.024
+                      size 0.091 0.025 0.044
                     }
                   }
                 ]
@@ -209,35 +209,29 @@ PROTO Robot_2022 [
         translation -0.1 0 0.0025
         children [
           DEF LEFT_CASTER Transform {
-            translation 0 0.187 0
+            translation 0.035 0.187 0
             children [
-              DEF CASTER_JOINT BallJoint {
-                jointParameters BallJointParameters {
-                }
-                endPoint Solid {
-                  name "left caster"
-                  translation 0 0 0
-                  children [
-                    DEF CASTER_BALL Shape {
-                      appearance PBRAppearance {
-                        baseColor 0 0.0051864 0
-                        roughness 0.0
-                        metalness 0
-                      }
-                      geometry Sphere {
-                        radius 0.005
-                        # subdivision 2
-                      }
+              DEF front_left_caster Solid {
+                translation 0 0 0
+                name "front_left_caster"
+                children [
+                  DEF CASTER_BALL Shape {
+                    appearance DEF BALL_APPEARANCE PBRAppearance {
+                      baseColor 0 0.0051864 0
+                      roughness 0.0
+                      metalness 0
                     }
-                  ]
-                  boundingObject DEF CASTER_BALL_BOUND Sphere {
-                    radius 0.008
-                    # subdivision 2
+                    geometry Sphere {
+                      radius 0.005
+                      # subdivision 2
+                    }
                   }
-                  physics Physics {
-                    density 8000  # steel
-                  }
+                ]
+                boundingObject USE CASTER_BALL
+                physics Physics {
+                  density 8000  # steel
                 }
+                contactMaterial "caster"
               }
               DEF CASTER_TOP Transform {
                 translation 0 0 0.01075
@@ -260,216 +254,346 @@ PROTO Robot_2022 [
             ]
           }
           DEF RIGHT_CASTER Transform {
-            translation 0 -0.187 0
+            translation 0.035 -0.187 0
             children [
-              DEF CASTER_JOINT BallJoint {
-                jointParameters BallJointParameters {
+              DEF FRONT_RIGHT_CASTER Solid {
+                translation 0 0 0
+                name "front_right_caster"
+                children [
+                  USE CASTER_BALL
+                ]
+                boundingObject USE CASTER_BALL
+                physics Physics {
+                  density 8000  # steel
                 }
-                endPoint Solid {
-                  name "right caster"
-                  translation 0 0 0
-                  children [
-                    USE CASTER_BALL
-                  ]
-                  boundingObject USE CASTER_BALL_BOUND
-                  physics Physics {
-                    density 8000  # steel
-                  }
-                }
+                contactMaterial "caster"
               }
               USE CASTER_TOP
             ]
           }
         ]
       }
-      DEF GRABBER Transform {
-        translation 0 0 0.036
+      DEF LIFTER Transform {
+        translation 0.025 0 0
         children [
-          Solid {
-            translation -0.03 0 0
-            rotation -1 0 0 1.5708
+          DEF TOWER Solid {
+            translation 0 0 0.21125
             children [
-              DEF SUPPORT_ROD Shape {
-                appearance PBRAppearance {
-                  baseColor 0.92 0.92 0.92
-                  roughness 0.3
-                }
-                geometry Cylinder {
-                  radius 0.004
-                  height 0.37
-                  subdivision 12
-                  top FALSE
-                  bottom FALSE
-                }
-              }
-            ]
-            name "Support rod 1"
-            boundingObject DEF SUPPORT_ROD_GEO Box {
-              size 0.007 0.007 0.37
-            }
-            physics Physics {
-              density 8000  # steel
-            }
-          }
-          Solid {
-            translation -0.08 0 0
-            rotation -1 0 0 1.5708
-            children [
-              USE SUPPORT_ROD
-            ]
-            name "Support rod 2"
-            boundingObject USE SUPPORT_ROD_GEO
-            physics Physics {
-              density 8000  # steel
-            }
-          }
-          DEF GRABBER_LEFT Transform {
-            translation -0.055 -0.165 0
-            children [
-              SliderJoint {
-                jointParameters JointParameters {
-                  axis 0 1 0
-                  maxStop 0.124
-                  minStop -0.01
-                  position 0
-                  staticFriction 20
-                }
-                device [
-                  LinearMotor {
-                    name "left gripper"
-                    minPosition -0.01
-                    maxPosition 0.124
-                    maxVelocity 0.5
-                    maxForce 25
-                    sound ""
+              DEF TOWER_GROUP Group {
+                children [
+                  DEF tower_body Shape {
+                    appearance DEF TOWER_COLOUR PBRAppearance {
+                      baseColor 0.0705882 0.0705882 0.0705882
+                      roughness 0.4
+                      metalness 0
+                    }
+                    geometry DEF tower_geo Box {
+                      size 0.01 0.055 0.35
+                    }
                   }
-                  PositionSensor {
-                    name "left gripper sensor"
+                  DEF tower_top Transform {
+                    translation -0.019 0 0.175
+                    children [
+                      Shape {
+                        appearance USE TOWER_COLOUR
+                        geometry DEF tower_top_geo Box {
+                          size 0.05 0.055 0.01
+                        }
+                      }
+                    ]
+                  }
+                  DEF LEFT_ROD Transform {
+                    translation -0.025 -0.01375 0
+                    children [
+                      DEF SUPPORT_ROD Shape {
+                        appearance PBRAppearance {
+                          baseColor 0.92 0.92 0.92
+                          roughness 0.3
+                        }
+                        geometry Cylinder {
+                          radius 0.004
+                          height 0.35
+                          subdivision 12
+                          top FALSE
+                          bottom FALSE
+                        }
+                      }
+                    ]
+                  }
+                  DEF RIGHT_ROD Transform {
+                    translation -0.025 0.01375 0
+                    children [
+                      USE SUPPORT_ROD
+                    ]
                   }
                 ]
-                endPoint Solid {
+              }
+            ]
+            boundingObject USE TOWER_GROUP
+            name "vertical tower"
+            physics Physics {
+            }
+          }
+          SliderJoint {
+            jointParameters JointParameters {
+              axis 0 0 1
+              maxStop 0.27
+              minStop -0.01
+              position 0
+              staticFriction 20
+            }
+            device [
+              LinearMotor {
+                name "lifter"
+                minPosition -0.01
+                maxPosition 0.27
+                maxVelocity 0.1
+                maxForce 40
+                sound ""
+              }
+              PositionSensor {
+                name "lifter sensor"
+              }
+            ]
+            endPoint DEF GRABBER_ASSEMBLY Solid {
+              translation -0.025 0 0.087
+              children [
+                DEF hgrabber Group {
                   children [
-                    DEF GRIPPER_ARM Transform {
+                    DEF hgrabber_main Transform {
                       translation 0 0 0
                       children [
-                        DEF GRIPPER_GEOMETRY Group {
-                          children [
-                            DEF long_bit Transform {
-                              translation -0.12 0 0.075
-                              children [
-                                Shape {
-                                  appearance DEF GRABBER_COLOUR PBRAppearance {
-                                    baseColor 0.25 0.35 0.235
-                                    roughness 1
-                                    metalness 0
-                                  }
-                                  geometry Box {
-                                    size 0.16 0.012 0.05
-                                  }
-                                }
-                              ]
-                            }
-                            DEF bit_with_rails Transform {
-                              translation 0 0 0.0425
-                              children [
-                                Shape {
-                                  appearance USE GRABBER_COLOUR
-                                  geometry Box {
-                                    size 0.08 0.012 0.115
-                                  }
-                                }
-                              ]
-                            }
-                          ]
+                        Shape {
+                          appearance DEF HGRABBER_COLOUR PBRAppearance {
+                            baseColor 0.5 0.5 0.5
+                            roughness 0.3
+                            metalness 0
+                          }
+                          geometry Box {
+                            size 0.03 0.4 0.02
+                          }
                         }
                       ]
                     }
-                    DEF SLIDE_BEARINGS Group {
+                    DEF hgrabber_left Transform {
+                      translation -0.05 -0.1875 0
                       children [
-                        Transform {
-                          translation 0.025 -0.001 0
-                          rotation -1 0 0 1.5708
-                          children [
-                            DEF SLIDE_BEARING Shape {
-                              appearance PBRAppearance {
-                                baseColor 0.6471 0.4863 0
-                                emissiveColor 0.6471 0.4863 0
-                                emissiveIntensity 0.4
-                              }
-                              geometry Cylinder {
-                                height 0.016
-                                radius 0.008
-                                subdivision 16
-                              }
-                            }
-                          ]
-                        }
-                        Transform {
-                          translation -0.025 -0.001 0
-                          rotation -1 0 0 1.5708
-                          children [
-                            USE SLIDE_BEARING
-                          ]
+                        Shape {
+                          appearance USE HGRABBER_COLOUR
+                          geometry DEF HGRABBER_ARM Box {
+                            size 0.07 0.025 0.02
+                          }
                         }
                       ]
                     }
-                  ]
-                  name "Gripper slider 1"
-                  boundingObject USE GRIPPER_GEOMETRY
-                  physics Physics {
-                    # wood = ~700, leave at default
-                  }
-                }
-              }
-            ]
-          }
-          DEF GRABBER_RIGHT Transform {
-            translation -0.055 0.165 0
-            children [
-              SliderJoint {
-                jointParameters JointParameters {
-                  axis 0 -1 0
-                  maxStop 0.124
-                  minStop -0.01
-                  position 0
-                  staticFriction 20
-                }
-                device [
-                  LinearMotor {
-                    name "right gripper"
-                    minPosition -0.01
-                    maxPosition 0.124
-                    maxVelocity 0.5
-                    maxForce 25
-                    sound ""
-                  }
-                  PositionSensor {
-                    name "right gripper sensor"
-                  }
-                ]
-                endPoint Solid {
-                  children [
-                    USE GRIPPER_ARM
+                    DEF hgrabber_right Transform {
+                      translation -0.05 0.1875 0
+                      children [
+                        Shape {
+                          appearance USE HGRABBER_COLOUR
+                          geometry USE HGRABBER_ARM
+                        }
+                      ]
+                    }
                     Transform {
-                      rotation -1 0 0 3.14
+                      translation 0 -0.01375 0
                       children [
-                        USE SLIDE_BEARINGS
+                        DEF H_SLIDE_BEARING Shape {
+                          appearance PBRAppearance {
+                            baseColor 0.6471 0.4863 0
+                            emissiveColor 0.6471 0.4863 0
+                            emissiveIntensity 0.4
+                          }
+                          geometry Cylinder {
+                            height 0.024
+                            radius 0.008
+                            subdivision 16
+                          }
+                        }
+                      ]
+                    }
+                    Transform {
+                      translation 0 0.01375 0
+                      children [
+                        USE H_SLIDE_BEARING
+                      ]
+                    }
+                    DEF ROD1 Transform {
+                      translation -0.03 0 0
+                      rotation -1 0 0 1.5708
+                      children [
+                        DEF SUPPORT_ROD Shape {
+                          appearance PBRAppearance {
+                            baseColor 0.92 0.92 0.92
+                            roughness 0.3
+                          }
+                          geometry Cylinder {
+                            radius 0.004
+                            height 0.37
+                            subdivision 12
+                            top FALSE
+                            bottom FALSE
+                          }
+                        }
+                      ]
+                    }
+                    DEF ROD2 Transform {
+                      translation -0.065 0 0
+                      rotation -1 0 0 1.5708
+                      children [
+                        USE SUPPORT_ROD
                       ]
                     }
                   ]
-                  name "Gripper slider 2"
-                  boundingObject USE GRIPPER_GEOMETRY
-                  physics Physics {
-                    # wood = ~700, leave at default
-                  }
                 }
+                DEF GRABBER_LEFT Transform {
+                  translation -0.055 -0.165 0
+                  children [
+                    SliderJoint {
+                      jointParameters JointParameters {
+                        axis 0 1 0
+                        maxStop 0.124
+                        minStop -0.01
+                        position 0
+                        springConstant 2
+                        dampingConstant 5
+                        staticFriction 20
+                      }
+                      device [
+                        LinearMotor {
+                          name "left gripper"
+                          minPosition -0.01
+                          maxPosition 0.124
+                          maxVelocity 0.3
+                          maxForce 25
+                          sound ""
+                        }
+                        PositionSensor {
+                          name "left gripper sensor"
+                        }
+                      ]
+                      endPoint Solid {
+                        children [
+                          DEF GRIPPER_ARM Transform {
+                            translation 0 0 0
+                            children [
+                              DEF GRIPPER_GEOMETRY Group {
+                                children [
+                                  DEF long_bit Transform {
+                                    translation -0.086 0 0
+                                    children [
+                                      Shape {
+                                        appearance DEF GRABBER_COLOUR PBRAppearance {
+                                          baseColor 0.25 0.35 0.235
+                                          roughness 1
+                                          metalness 0
+                                        }
+                                        geometry Box {
+                                          size 0.25 0.012 0.05
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                          DEF SLIDE_BEARINGS Group {
+                            children [
+                              Transform {
+                                translation 0.025 0 0
+                                rotation -1 0 0 1.5708
+                                children [
+                                  DEF SLIDE_BEARING Shape {
+                                    appearance PBRAppearance {
+                                      baseColor 0.6471 0.4863 0
+                                      emissiveColor 0.6471 0.4863 0
+                                      emissiveIntensity 0.4
+                                    }
+                                    geometry Cylinder {
+                                      height 0.016
+                                      radius 0.008
+                                      subdivision 16
+                                    }
+                                  }
+                                ]
+                              }
+                              Transform {
+                                translation -0.01 0 0
+                                rotation -1 0 0 1.5708
+                                children [
+                                  USE SLIDE_BEARING
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                        name "Gripper slider 1"
+                        boundingObject USE GRIPPER_GEOMETRY
+                        physics Physics {
+                          # wood = ~700, leave at default
+                        }
+                      }
+                    }
+                  ]
+                }
+                DEF GRABBER_RIGHT Transform {
+                  translation -0.055 0.165 0
+                  children [
+                    SliderJoint {
+                      jointParameters JointParameters {
+                        axis 0 -1 0
+                        maxStop 0.124
+                        minStop -0.01
+                        position 0
+                        springConstant 2
+                        dampingConstant 5
+                        staticFriction 20
+                      }
+                      device [
+                        LinearMotor {
+                          name "right gripper"
+                          minPosition -0.01
+                          maxPosition 0.124
+                          maxVelocity 0.3
+                          maxForce 25
+                          sound ""
+                        }
+                        PositionSensor {
+                          name "right gripper sensor"
+                        }
+                      ]
+                      endPoint Solid {
+                        children [
+                          USE GRIPPER_ARM
+                          Transform {
+                            rotation -1 0 0 3.14
+                            children [
+                              USE SLIDE_BEARINGS
+                            ]
+                          }
+                        ]
+                        name "Gripper slider 2"
+                        boundingObject USE GRIPPER_GEOMETRY
+                        physics Physics {
+                          # wood = ~700, leave at default
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+              boundingObject USE hgrabber
+              name "horizontal grabber"
+              physics Physics {
+                # wood = ~700, leave at default
               }
-            ]
+            }
           }
         ]
       }
       DEF flag_pole Solid {
-        translation 0 0 0.125
+        translation 0.04 0.06 0.125
         children [
           LED {
             translation 0.06 0 0.062
@@ -520,8 +644,8 @@ PROTO Robot_2022 [
         children [
           SRCamera {
             name "camera"
-            translation -0.02 0 0.16
-            rotation -0.1246747 0 0.9921977 3.1415927
+            translation -0.035 0 0.385
+            rotation -0.1746747 0 0.9921977 3.1415927
           }
           Compass {
             name "robot compass"
@@ -529,7 +653,7 @@ PROTO Robot_2022 [
           DEF DISTANCE_SENSORS Group {
             children [
               DEF front_left DistanceSensor {
-                translation -0.122 -0.187 0.07
+                translation -0.077 -0.187 0.045
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
@@ -582,7 +706,7 @@ PROTO Robot_2022 [
                 ]
               }
               DEF front_right DistanceSensor {
-                translation -0.122 0.187 0.07
+                translation -0.077 0.187 0.045
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
@@ -597,7 +721,7 @@ PROTO Robot_2022 [
                 ]
               }
               DEF left DistanceSensor {
-                translation 0 -0.152 0.058
+                translation 0 -0.2 0.045
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
@@ -612,7 +736,7 @@ PROTO Robot_2022 [
                 ]
               }
               DEF right DistanceSensor {
-                translation 0 0.152 0.058
+                translation 0 0.2 0.045
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
@@ -627,7 +751,7 @@ PROTO Robot_2022 [
                 ]
               }
               DEF front DistanceSensor {
-                translation -0.011 0 0.055
+                translation -0.016 0 0.045
                 type "sonar"
                 numberOfRays 10
                 aperture 0.3
@@ -688,15 +812,17 @@ PROTO Robot_2022 [
             }
           }
           LED {
-            translation 0 -0.05 0.04
+            translation 0.033 0 0.25
+            rotation 0 1 0 1.5708
             children [
               Shape {
                 appearance DEF APP_LED PBRAppearance {
+                  baseColor 0.6 0.4 0.4
                   metalness 0
                   emissiveIntensity 100
                 }
                 geometry Capsule {
-                  height 0.01
+                  height 0.005
                   radius 0.01
                 }
               }
@@ -707,15 +833,17 @@ PROTO Robot_2022 [
             ]
           }
           LED {
-            translation 0 0.05 0.04
+            translation 0.033 0 0.35
+            rotation 0 1 0 1.5708
             children [
               Shape {
                 appearance DEF APP_LED PBRAppearance {
+                  baseColor 0.4 0.6 0.4
                   metalness 0
                   emissiveIntensity 100
                 }
                 geometry Capsule {
-                  height 0.01
+                  height 0.005
                   radius 0.01
                 }
               }
@@ -724,121 +852,6 @@ PROTO Robot_2022 [
             color [
               0 1 0
             ]
-          }
-        ]
-      }
-      DEF FINGERS Transform {
-        translation -0.107 0 0.0362
-        children [
-          DEF RIGHT_FINGER_HINGE HingeJoint {
-            jointParameters HingeJointParameters {
-              position 0
-              axis 0 1 0
-              staticFriction 0
-            }
-            device [
-              RotationalMotor {
-                name "right finger"
-                maxVelocity 1
-                sound ""
-                maxTorque 100
-                minPosition 0
-                maxPosition 1.57
-              }
-              PositionSensor {
-                name "left finger sensor"
-              }
-            ]
-            endPoint Solid {
-              translation 0.0138 0.205 0
-              rotation 0 1 0 -1.57079
-              children [
-                DEF FINGER_GEO Group {
-                  children [
-                    Shape {
-                      appearance DEF GRABBER_COLOUR PBRAppearance {
-                        baseColor 0 0.0051864 0
-                        roughness 0.3
-                        metalness 0
-                      }
-                      geometry DEF FINGER_BOX Box {
-                        size 0.02 0.01 0.05
-                      }
-                    }
-                  ]
-                }
-                DEF FINGER_BUMP Transform {
-                  translation 0 0 -0.0302
-                  children [
-                    Shape {
-                      appearance DEF FINGER_BUMPER_COLOUR PBRAppearance {
-                        baseColor 0.5 0 0
-                        roughness 0.7
-                      }
-                      geometry DEF FINGER_BUMPER_BOX Box {
-                        size 0.02 0.01 0.01
-                      }
-                    }
-                  ]
-                }
-                TouchSensor {
-                  translation 0 0 0
-                  name "finger pressure right"
-                  type "force-3d"
-                  boundingObject USE FINGER_BUMP
-                  physics Physics {
-                    density 8000
-                  }
-                }
-              ]
-              name "finger right"
-              boundingObject USE FINGER_GEO
-              physics Physics {
-                density 8000
-              }
-            }
-          }
-          DEF RIGHT_FINGER_HINGE HingeJoint {
-            jointParameters HingeJointParameters {
-              position 0
-              axis 0 1 0
-              staticFriction 0
-            }
-            device [
-              RotationalMotor {
-                name "left finger"
-                maxVelocity 1
-                sound ""
-                maxTorque 100
-                minPosition 0
-                maxPosition 1.57
-              }
-              PositionSensor {
-                name "left finger sensor"
-              }
-            ]
-            endPoint Solid {
-              translation 0.0138 -0.205 0
-              rotation 0 1 0 -1.57079
-              children [
-                USE FINGER_GEO
-                USE FINGER_BUMP
-                TouchSensor {
-                  translation 0 0 0
-                  name "finger pressure left"
-                  type "force-3d"
-                  boundingObject USE FINGER_BUMP
-                  physics Physics {
-                    density 8000
-                  }
-                }
-              ]
-              name "finger left"
-              boundingObject USE FINGER_GEO
-              physics Physics {
-                density 8000
-              }
-            }
           }
         ]
       }

@@ -2,12 +2,20 @@
 
 EXTERNPROTO "../protos/Markers/WallMarker.proto"
 EXTERNPROTO "../protos/Props/AsteroidField.proto"
-EXTERNPROTO "../protos/Robot_2022/Robot_2022.proto"
+EXTERNPROTO "../protos/Props/SpaceShip.proto"
+EXTERNPROTO "../protos/Robot_2024/Robot_2024.proto"
 EXTERNPROTO "../protos/Tokens/SRToken_Egg.proto"
 EXTERNPROTO "../protos/Tokens/Scoring_Zone_Planet.proto"
 
 WorldInfo {
   basicTimeStep 8
+  contactProperties [
+    ContactProperties {
+      material1 "caster"
+      material2 "default"
+      coulombFriction 0.05
+    }
+  ]
 }
 Viewpoint {
   # rotation 0.0 0.0 1.0 0.0
@@ -33,7 +41,7 @@ DEF AMBIENT Background {
   ]
   luminosity 1.6
 }
-DEF ROBOT-0 Robot_2022 {
+DEF ROBOT-0 Robot_2024 {
   translation 0 -2.375 0.001
   rotation 0 0 -1 1.57079633
   controller "sr_controller"
@@ -41,7 +49,7 @@ DEF ROBOT-0 Robot_2022 {
   flagColour 0 1 0
   controllerArgs "0"
 }
-DEF ROBOT-1 Robot_2022 {
+DEF ROBOT-1 Robot_2024 {
   translation -2.375 0 0.001
   rotation 0 0 -1 3.1415927
   model "Robot1"
@@ -49,7 +57,7 @@ DEF ROBOT-1 Robot_2022 {
   flagColour 1 0.375 0
   controllerArgs "1"
 }
-DEF ROBOT-2 Robot_2022 {
+DEF ROBOT-2 Robot_2024 {
   translation 0 2.375 0.001
   rotation 0 0 1 1.57079633
   model "Robot2"
@@ -57,7 +65,7 @@ DEF ROBOT-2 Robot_2022 {
   flagColour 1 0 1
   controllerArgs "2"
 }
-DEF ROBOT-3 Robot_2022 {
+DEF ROBOT-3 Robot_2024 {
   translation 2.375 0 0.001
   rotation 0 0 1 0
   model "Robot3"
@@ -468,3 +476,30 @@ SRToken_Egg {
   model "Egg"
 }
 AsteroidField {}
+SpaceShip {
+  translation 1.685 -2.3749 0
+  rotation 0 0 1 1.57079632679
+  model "S0"
+  port_marker "F120"
+  starboard_marker "F125"
+}
+SpaceShip {
+  translation -2.3749 -1.685 0
+  model "S1"
+  port_marker "F121"
+  starboard_marker "F126"
+}
+SpaceShip {
+  translation -1.685 2.3749 0
+  rotation 0 0 1 -1.57079632679
+  model "S2"
+  port_marker "F122"
+  starboard_marker "F127"
+}
+SpaceShip {
+  translation 2.3749 1.685 0
+  rotation 0 0 1 3.1415926535
+  model "S3"
+  port_marker "F123"
+  starboard_marker "F128"
+}
