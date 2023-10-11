@@ -1,9 +1,13 @@
 #VRML_SIM R2023b utf8
 
+EXTERNPROTO "../Markers/TokenMarker.proto"
+
 PROTO SpaceShip [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 1 0 0
   field SFString model ""
+  field SFString port_marker ""
+  field SFString starboard_marker ""
 ]
 {
   Solid {
@@ -171,6 +175,22 @@ PROTO SpaceShip [
               density 8000  # steel
             }
             contactMaterial "caster"
+          }
+        ]
+      }
+      DEF MARKERS Group {
+        children [
+          TokenMarker {
+            translation 0 0.1955 0.16
+            rotation 0 0 1 -1.570796327
+            name "port"
+            model IS port_marker
+          }
+          TokenMarker {
+            translation 0 -0.1955 0.16
+            rotation 0 0 1 1.570796327
+            name "starboard"
+            model IS starboard_marker
           }
         ]
       }

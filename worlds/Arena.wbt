@@ -480,17 +480,25 @@ SpaceShip {
   translation 1.685 2.3749 0
   rotation 0 0 1 1.57079632679
   model "S0"
+  port_marker "F120"
+  starboard_marker "F125"
 }
 SpaceShip {
   translation 2.3749 -1.685 0
   model "S1"
+  port_marker "F121"
+  starboard_marker "F126"
 }
 SpaceShip {
   translation -1.685 -2.3749 0
   rotation 0 0 1 1.57079632679
   model "S2"
+  port_marker "F122"
+  starboard_marker "F127"
 }
 SpaceShip {
   translation -2.3749 1.685 0
   model "S3"
+  port_marker "F123"
+  starboard_marker "F128"
 }
