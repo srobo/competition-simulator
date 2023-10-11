@@ -3,9 +3,7 @@
 EXTERNPROTO "../protos/Markers/WallMarker.proto"
 EXTERNPROTO "../protos/Props/AsteroidField.proto"
 EXTERNPROTO "../protos/Robot_2022/Robot_2022.proto"
-EXTERNPROTO "../protos/Tokens/SRToken_Asteroid.proto"
 EXTERNPROTO "../protos/Tokens/SRToken_Egg.proto"
-EXTERNPROTO "../protos/Tokens/Starting_Zone.proto"
 EXTERNPROTO "../protos/Tokens/Scoring_Zone_Planet.proto"
 
 WorldInfo {
