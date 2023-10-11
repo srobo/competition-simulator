@@ -4,6 +4,8 @@
     "python.linting.mypyEnabled": true,
     "python.linting.pylintEnabled": false,
     "cSpell.words": [
+        "Arduino",
+        "Arduinos",
         "piezo",
         "Ruggeduino",
         "Ruggeduinos",

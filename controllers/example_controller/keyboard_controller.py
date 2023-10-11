@@ -53,17 +53,17 @@ def print_sensors(robot: Robot) -> None:
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
     for Apin, name in distance_sensor_names.items():
-        dist = R.ruggeduino.pins[Apin].analogue_read()
+        dist = R.arduino.pins[Apin].analog_read()
         print(f"{Apin} {name: <12}: {dist:.2f}")
 
     print("Touch sensor readings:")
     for pin, name in enumerate(touch_sensor_names, 2):
-        touching = R.ruggeduino.pins[pin].digital_read()
+        touching = R.arduino.pins[pin].digital_read()
         print(f"{pin} {name: <6}: {touching}")
 
     print("Pressure sensor readings:")
     for Apin, name in pressure_sensor_names.items():
-        pressure = R.ruggeduino.pins[Apin].analogue_read()
+        pressure = R.arduino.pins[Apin].analog_read()
         print(f"{Apin} {name: <12}: {pressure:.2f}")
 
     try:
