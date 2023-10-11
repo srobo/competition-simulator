@@ -453,7 +453,7 @@ Scoring_Zone_Planet {
   name "Zone 3 Scoring"
   cornerColor 1 1 0.8
 }
-Solid { # Plinth Centre
+Solid { # Nest
   translation 0 0 0.025
   children [
     DEF SHAPE Shape {
@@ -469,7 +469,7 @@ Solid { # Plinth Centre
   ]
   boundingObject USE SHAPE
   locked TRUE
-  name "Plinth Centre"
+  name "Nest"
 }
 SRToken_Egg {
   translation 0 0 0.115
