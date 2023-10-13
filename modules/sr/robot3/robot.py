@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import time
 import random
 from typing import TypeVar, Collection
 from pathlib import Path
@@ -48,6 +49,11 @@ class Robot:
         # code (in the form of our `sleep` method) or from our background
         # thread, but not both.
         self._step_lock = Lock()
+
+        # Record the start time so that we can provide a semi-useful
+        # `Robot.time` value, while accounting for the fact that Pis clocks
+        # reset when power is lost.
+        self._start = time.time() + random.randint(-10_000, 10_000)
 
         self._init_devs()
         self.display_info()
@@ -212,7 +218,7 @@ class Robot:
         """
         Roughly equivalent to `time.time` but for simulation time.
         """
-        return self._webot.getTime()
+        return self._start + self._webot.getTime()
 
     def sleep(self, secs: float) -> None:
         """
