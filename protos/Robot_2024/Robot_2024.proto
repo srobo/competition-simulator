@@ -455,8 +455,8 @@ PROTO Robot_2024 [
                         maxStop 0.124
                         minStop -0.01
                         position 0
-                        springConstant 2
-                        dampingConstant 5
+                        springConstant 200
+                        dampingConstant 100
                         staticFriction 20
                       }
                       device [
@@ -464,8 +464,8 @@ PROTO Robot_2024 [
                           name "left gripper"
                           minPosition -0.01
                           maxPosition 0.124
-                          maxVelocity 0.3
-                          maxForce 25
+                          maxVelocity 0.2
+                          maxForce 100
                           sound ""
                         }
                         PositionSensor {
@@ -546,8 +546,8 @@ PROTO Robot_2024 [
                         maxStop 0.124
                         minStop -0.01
                         position 0
-                        springConstant 2
-                        dampingConstant 5
+                        springConstant 200
+                        dampingConstant 100
                         staticFriction 20
                       }
                       device [
@@ -555,8 +555,8 @@ PROTO Robot_2024 [
                           name "right gripper"
                           minPosition -0.01
                           maxPosition 0.124
-                          maxVelocity 0.3
-                          maxForce 25
+                          maxVelocity 0.2
+                          maxForce 100
                           sound ""
                         }
                         PositionSensor {
