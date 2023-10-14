@@ -11,7 +11,6 @@ PROTO MarkerBase [
   field SFString name ""
   field SFString model ""
   field MFString texture_url []
-  field SFNode physics NULL
 ]
 {
   Solid {
@@ -35,10 +34,6 @@ PROTO MarkerBase [
     ]
     name IS name
     model IS model
-    boundingObject Box {
-      size IS size
-    }
-    physics IS physics
     locked TRUE
     recognitionColors [
       1 1 1

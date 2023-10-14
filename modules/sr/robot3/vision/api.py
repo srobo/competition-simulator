@@ -70,15 +70,9 @@ def markers_from_objects(
         key=lambda x: x[0].position.magnitude(),
     )
 
-    preceding_rectangles: list[Rectangle] = []
     markers = []
-    for marker, image_rectangle, recognised_object in markers_with_info:
-        if (
-            marker.is_visible_to_global_origin() and
-            not any(x.overlaps(image_rectangle) for x in preceding_rectangles)
-        ):
+    for marker, _, recognised_object in markers_with_info:
+        if marker.is_visible_to_global_origin():
             markers.append((marker, recognised_object))
-
-        preceding_rectangles.append(image_rectangle)
 
     return markers
