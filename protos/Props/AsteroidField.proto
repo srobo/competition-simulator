@@ -18,8 +18,8 @@ PROTO AsteroidField [
     }
   }
 
-  // markers are 100-150 inclusive
-  const marker_ids = Array.from({length: 51}, (value, index) => index + 100)
+  // markers are 150-199 inclusive
+  const marker_ids = Array.from({length: 50}, (value, index) => index + 150)
 
   // shuffle randomly, ensuring no duplicates
   shuffle_in_place(marker_ids);
