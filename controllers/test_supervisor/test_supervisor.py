@@ -602,12 +602,20 @@ class TestCamera(unittest.TestCase):
                 )
 
     def test_oblique_and_beyond_not_seen(self) -> None:
+        CONTROL = 'camera-marker-oblique-control'
         names = [
             'camera-marker-oblique',
             'camera-marker-turned-away',
         ]
 
-        cameras = self.get_cameras(names)
+        cameras = self.get_cameras(names + [CONTROL])
+
+        control_camera = cameras.pop(CONTROL)
+        self.assertEqual(
+            [3],
+            [x.id for x in control_camera.see()],
+            "Control camera failed to see marker for oblique rejection",
+        )
 
         for name, camera in cameras.items():
             with self.subTest(name):
