@@ -494,6 +494,17 @@ PROTO Robot_2024 [
                                       }
                                     ]
                                   }
+                                  DEF hook Transform {
+                                    translation -0.201 0 -0.0325
+                                    children [
+                                      Shape {
+                                        appearance USE GRABBER_COLOUR
+                                        geometry Box {
+                                          size 0.02 0.012 0.015
+                                        }
+                                      }
+                                    ]
+                                  }
                                 ]
                               }
                             ]
