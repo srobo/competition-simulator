@@ -607,7 +607,7 @@ PROTO Robot_2024 [
         translation 0.04 0.06 0.125
         children [
           LED {
-            translation 0.06 0 0.062
+            translation 0.085 0 0.04925
             children [
               Shape {
                 appearance PBRAppearance {
@@ -617,7 +617,7 @@ PROTO Robot_2024 [
                   baseColor IS flagColour
                 }
                 geometry Box {
-                  size 0.1 0.005 0.075
+                  size 0.15 0.005 0.1
                 }
               }
             ]

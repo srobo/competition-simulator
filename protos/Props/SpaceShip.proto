@@ -94,7 +94,7 @@ PROTO SpaceShip [
             ]
           }
           DEF flag Transform {
-            translation -0.180 -0.185 0.505
+            translation -0.165 -0.185 0.4925
             children [
               Shape {
                 appearance PBRAppearance {
@@ -104,7 +104,7 @@ PROTO SpaceShip [
                   baseColor IS flagColour
                 }
                 geometry Box {
-                  size 0.1 0.005 0.075
+                  size 0.15 0.005 0.1
                 }
               }
             ]
