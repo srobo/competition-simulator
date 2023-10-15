@@ -213,7 +213,7 @@ PROTO SpaceShip [
     boundingObject USE BODY
     physics Physics {
       density -1
-      mass 0.100
+      mass 1.500
     }
   }
 }
