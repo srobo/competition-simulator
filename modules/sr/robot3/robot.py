@@ -3,6 +3,7 @@ from __future__ import annotations
 import math
 import time
 import random
+import warnings
 from typing import TypeVar, Collection
 from pathlib import Path
 from threading import Lock
@@ -25,18 +26,29 @@ class Robot:
     def __init__(
         self,
         *,
-        auto_start: bool = False,
-        verbose: bool = False,
-        env: object = None,
+        debug: bool = False,
+        wait_for_start: bool = True,
+        trace_logging: bool = False,
         ignored_arduinos: list[str] | None = None,
+        manual_boards: dict[str, list[str]] | None = None,
+        raw_ports: list[tuple[str, int]] | None = None,
     ) -> None:
         """
         Initialise robot.
-
-        Note: `env` and `ignored_arduinos` are ignored in the simulator.
         """
-
-        self._quiet = not verbose
+        for key, value in [
+            ('debug', debug),
+            ('trace_logging', trace_logging),
+            ('ignored_arduinos', ignored_arduinos),
+            ('manual_boards', manual_boards),
+            ('raw_ports', raw_ports),
+        ]:
+            if value:
+                warnings.warn(
+                    f"Robot initialiser argument {key} is not supported in the "
+                    f"simulator (got {value})",
+                    stacklevel=2,
+                )
 
         self._webot = WebotsRobot()
         # returns a float, but should always actually be an integer value
@@ -58,7 +70,7 @@ class Robot:
         self._init_devs()
         self.display_info()
 
-        if not auto_start:
+        if wait_for_start:
             self.wait_start()
 
     def _get_user_code_info(self) -> str | None:
