@@ -8,6 +8,7 @@ PROTO SpaceShip [
   field SFString model ""
   field SFString port_marker ""
   field SFString starboard_marker ""
+  field SFColor flagColour 1 1 1
 ]
 {
   Solid {
@@ -77,16 +78,36 @@ PROTO SpaceShip [
           }
         ]
       }
-      DEF pole Transform {
-        translation -0.230 -0.185 0.3975
+      DEF FLAGPOLE Group {
         children [
-          Shape {
-            appearance USE SPACESHIP_APPEARANCE
-            geometry Cylinder {
-              height 0.3
-              radius 0.01
-              subdivision 8
-            }
+          DEF pole Transform {
+            translation -0.230 -0.185 0.3975
+            children [
+              Shape {
+                appearance USE SPACESHIP_APPEARANCE
+                geometry Cylinder {
+                  height 0.3
+                  radius 0.01
+                  subdivision 8
+                }
+              }
+            ]
+          }
+          DEF flag Transform {
+            translation -0.165 -0.185 0.4925
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  metalness 0
+                  occlusionMapStrength 130
+                  emissiveIntensity 10
+                  baseColor IS flagColour
+                }
+                geometry Box {
+                  size 0.15 0.005 0.1
+                }
+              }
+            ]
           }
         ]
       }
