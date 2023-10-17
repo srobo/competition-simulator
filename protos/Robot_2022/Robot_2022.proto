@@ -332,6 +332,8 @@ PROTO Robot_2022 [
                   maxStop 0.124
                   minStop -0.01
                   position 0
+                  springConstant 5
+                  dampingConstant 2
                   staticFriction 20
                 }
                 device [
@@ -432,6 +434,8 @@ PROTO Robot_2022 [
                   maxStop 0.124
                   minStop -0.01
                   position 0
+                  springConstant 5
+                  dampingConstant 2
                   staticFriction 20
                 }
                 device [
