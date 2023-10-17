@@ -1,0 +1,39 @@
+#VRML_SIM R2022b utf8
+PROTO Scoring_Zone_Planet [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 0 0 0
+  field SFString name ""
+  field SFColor cornerColor 1 1 1
+]
+{
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Shape {
+        appearance PBRAppearance {
+          baseColor IS cornerColor
+          metalness 0
+          roughness 1
+        }
+        geometry IndexedFaceSet {
+          coord Coordinate {
+            point [
+              2.875 2.875 0
+              2.875 -2.875 0
+              1.875 1.875 0
+              1.875 -1.875 0
+            ]
+          }
+          coordIndex [
+            1 0 2 3 -1
+          ]
+          creaseAngle 1
+        }
+      }
+    ]
+    name IS name
+    model IS name
+    locked TRUE
+  }
+}
