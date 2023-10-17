@@ -53,21 +53,21 @@ def print_sensors(robot: Robot) -> None:
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
     for Apin, name in distance_sensor_names.items():
-        dist = R.arduino.pins[Apin].analog_read()
+        dist = robot.arduino.pins[Apin].analog_read()
         print(f"{Apin} {name: <12}: {dist:.2f}")
 
     print("Touch sensor readings:")
     for pin, name in enumerate(touch_sensor_names, 2):
-        touching = R.arduino.pins[pin].digital_read()
+        touching = robot.arduino.pins[pin].digital_read()
         print(f"{pin} {name: <6}: {touching}")
 
     print("Pressure sensor readings:")
     for Apin, name in pressure_sensor_names.items():
-        pressure = R.arduino.pins[Apin].analog_read()
+        pressure = robot.arduino.pins[Apin].analog_read()
         print(f"{Apin} {name: <12}: {pressure:.2f}")
 
     try:
-        camera = R.camera
+        camera = robot.camera
     except ValueError:
         print("No camera on this robot")
     else:
@@ -93,22 +93,22 @@ def print_sensors(robot: Robot) -> None:
     print()
 
 
-R = Robot()
+robot = Robot()
 
 keyboard = Keyboard()
 keyboard.enable(KEYBOARD_SAMPLING_PERIOD)
 
-key_forward = CONTROLS["forward"][R.zone]
-key_reverse = CONTROLS["reverse"][R.zone]
-key_left = CONTROLS["left"][R.zone]
-key_right = CONTROLS["right"][R.zone]
-key_sense = CONTROLS["sense"][R.zone]
-key_boost = CONTROLS["boost"][R.zone]
-key_grab_open = CONTROLS["grabber_open"][R.zone]
-key_grab_close = CONTROLS["grabber_close"][R.zone]
-key_fingers_down = CONTROLS["fingers_down"][R.zone]
-key_fingers_up = CONTROLS["fingers_up"][R.zone]
-key_angle_unit = CONTROLS["angle_unit"][R.zone]
+key_forward = CONTROLS["forward"][robot.zone]
+key_reverse = CONTROLS["reverse"][robot.zone]
+key_left = CONTROLS["left"][robot.zone]
+key_right = CONTROLS["right"][robot.zone]
+key_sense = CONTROLS["sense"][robot.zone]
+key_boost = CONTROLS["boost"][robot.zone]
+key_grab_open = CONTROLS["grabber_open"][robot.zone]
+key_grab_close = CONTROLS["grabber_close"][robot.zone]
+key_fingers_down = CONTROLS["fingers_down"][robot.zone]
+key_fingers_up = CONTROLS["fingers_up"][robot.zone]
+key_angle_unit = CONTROLS["angle_unit"][robot.zone]
 
 print(
     "Note: you need to click on 3D viewport for keyboard events to be picked "
@@ -148,23 +148,23 @@ while True:
             right_power -= 0.25
 
         elif key_ascii == key_sense:
-            print_sensors(R)
+            print_sensors(robot)
 
         elif key_ascii == key_grab_open:
-            R.servo_board.servos[0].position = -1
-            R.servo_board.servos[1].position = -1
+            robot.servo_board.servos[0].position = -1
+            robot.servo_board.servos[1].position = -1
 
         elif key_ascii == key_grab_close:
-            R.servo_board.servos[0].position = 1
-            R.servo_board.servos[1].position = 1
+            robot.servo_board.servos[0].position = 1
+            robot.servo_board.servos[1].position = 1
 
         elif key_ascii == key_fingers_down:
-            R.servo_board.servos[2].position = 1
-            R.servo_board.servos[3].position = 1
+            robot.servo_board.servos[2].position = 1
+            robot.servo_board.servos[3].position = 1
 
         elif key_ascii == key_fingers_up:
-            R.servo_board.servos[2].position = -1
-            R.servo_board.servos[3].position = -1
+            robot.servo_board.servos[2].position = -1
+            robot.servo_board.servos[3].position = -1
 
         elif key_ascii == key_angle_unit:
             USE_DEGREES = not USE_DEGREES
@@ -178,7 +178,7 @@ while True:
         left_power = max(min(left_power * 2, 1), -1)
         right_power = max(min(right_power * 2, 1), -1)
 
-    R.motor_board.motors[0].power = left_power
-    R.motor_board.motors[1].power = right_power
+    robot.motor_board.motors[0].power = left_power
+    robot.motor_board.motors[1].power = right_power
 
-    R.sleep(KEYBOARD_SAMPLING_PERIOD / 1000)
+    robot.sleep(KEYBOARD_SAMPLING_PERIOD / 1000)
