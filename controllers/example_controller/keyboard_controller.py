@@ -193,9 +193,12 @@ while True:
         key = keyboard.getKey()
 
     if boost:
-        # double power values but constrain to [-1, 1]
-        left_power = max(min(left_power * 2, 1), -1)
-        right_power = max(min(right_power * 2, 1), -1)
+        left_power *= 2
+        right_power *= 2
+
+    # constrain to [-1, 1] to avoid errors
+    left_power = max(min(left_power, 1), -1)
+    right_power = max(min(right_power, 1), -1)
 
     robot.motor_board.motors[0].power = left_power
     robot.motor_board.motors[1].power = right_power
