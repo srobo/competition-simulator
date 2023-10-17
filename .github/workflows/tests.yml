@@ -134,4 +134,4 @@ jobs:
         uses: PeterJCLaw/validate-generated-files@v1
         with:
           command: worlds/insert-tokens.py
-          files: worlds/Arena.wbt
+          files: protos/Props/AsteroidField.proto

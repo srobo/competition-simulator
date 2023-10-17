@@ -1,0 +1,71 @@
+#VRML_SIM R2022b utf8
+
+EXTERNPROTO "../Markers/TokenMarker.proto"
+
+PROTO SRToken_Asteroid [
+  # Ideally we wouldn't have a default marker id, but Webots requires one
+  field SFString marker "F99"
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFString model ""
+]
+{
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Shape {
+        appearance DEF TOKEN_APPEARANCE PBRAppearance {
+          baseColor 0.7 0.55 0.35
+          metalness 0
+          roughness 1
+        }
+        geometry DEF TOKEN_GEOMETRY Box {
+          size 0.13 0.13 0.13
+        }
+      }
+      TokenMarker {
+        translation 0.0651 0 0
+        rotation 0 0 1 3.1416
+        name "front"
+        model IS marker
+      }
+      TokenMarker {
+        translation -0.0651 0 0
+        name "back"
+        model IS marker
+      }
+      TokenMarker {
+        translation 0 0.0651 0
+        rotation 0 0 1 -1.5708
+        name "side-1"
+        model IS marker
+      }
+      TokenMarker {
+        translation 0 -0.0651 0
+        rotation 0 0 1 1.5708
+        name "side-2"
+        model IS marker
+      }
+      TokenMarker {
+        translation 0 0 0.0651
+        rotation 0 1 0 1.5708
+        name "top"
+        model IS marker
+      }
+      TokenMarker {
+        translation 0 0 -0.0651
+        rotation 0 1 0 -1.5708
+        name "bottom"
+        model IS marker
+      }
+    ]
+    name IS model
+    model IS model
+    boundingObject USE TOKEN_GEOMETRY
+    physics Physics {
+      density -1
+      mass 0.080
+    }
+  }
+}
