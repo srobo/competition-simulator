@@ -22,6 +22,18 @@ CONTROLS = {
     "angle_unit": (ord("B"), ord("B")),
 }
 
+# Map robot zone to control set. Defaults to straight mapping, but provides a
+# place to remap other zones if desired. Modify the keys of the dictionary to
+# the zones you want to use.
+ZONE_MAP = {
+    0: 0,
+    1: 1,
+}
+
+
+assert len(ZONE_MAP) == len(CONTROLS['forward']), (
+    "Too many robot zones configured; inputs would control several robots at once."
+)
 
 USE_DEGREES = False
 
@@ -95,20 +107,27 @@ def print_sensors(robot: Robot) -> None:
 
 robot = Robot()
 
+if robot.zone not in ZONE_MAP:
+    exit(
+        f"The keyboard robot is not configured to run in zone {robot.zone}.\n"
+        "Modify the `ZONE_MAP` to use the keyboard robot in other zones.",
+    )
+
+
 keyboard = Keyboard()
 keyboard.enable(KEYBOARD_SAMPLING_PERIOD)
 
-key_forward = CONTROLS["forward"][robot.zone]
-key_reverse = CONTROLS["reverse"][robot.zone]
-key_left = CONTROLS["left"][robot.zone]
-key_right = CONTROLS["right"][robot.zone]
-key_sense = CONTROLS["sense"][robot.zone]
-key_boost = CONTROLS["boost"][robot.zone]
-key_grab_open = CONTROLS["grabber_open"][robot.zone]
-key_grab_close = CONTROLS["grabber_close"][robot.zone]
-key_fingers_down = CONTROLS["fingers_down"][robot.zone]
-key_fingers_up = CONTROLS["fingers_up"][robot.zone]
-key_angle_unit = CONTROLS["angle_unit"][robot.zone]
+key_forward = CONTROLS["forward"][ZONE_MAP[robot.zone]]
+key_reverse = CONTROLS["reverse"][ZONE_MAP[robot.zone]]
+key_left = CONTROLS["left"][ZONE_MAP[robot.zone]]
+key_right = CONTROLS["right"][ZONE_MAP[robot.zone]]
+key_sense = CONTROLS["sense"][ZONE_MAP[robot.zone]]
+key_boost = CONTROLS["boost"][ZONE_MAP[robot.zone]]
+key_grab_open = CONTROLS["grabber_open"][ZONE_MAP[robot.zone]]
+key_grab_close = CONTROLS["grabber_close"][ZONE_MAP[robot.zone]]
+key_fingers_down = CONTROLS["fingers_down"][ZONE_MAP[robot.zone]]
+key_fingers_up = CONTROLS["fingers_up"][ZONE_MAP[robot.zone]]
+key_angle_unit = CONTROLS["angle_unit"][ZONE_MAP[robot.zone]]
 
 print(
     "Note: you need to click on 3D viewport for keyboard events to be picked "
