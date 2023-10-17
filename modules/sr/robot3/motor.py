@@ -28,10 +28,8 @@ def translate(sr_speed_val: float, sr_motor: Gripper | Wheel | LinearMotor) -> f
         sr_speed_val = add_jitter(sr_speed_val, -SPEED_MAX, SPEED_MAX)
 
     return map_to_range(
-        -SPEED_MAX,
-        SPEED_MAX,
-        -sr_motor.max_speed,
-        sr_motor.max_speed,
+        (-SPEED_MAX, SPEED_MAX),
+        (-sr_motor.max_speed, sr_motor.max_speed),
         sr_speed_val,
     )
 
