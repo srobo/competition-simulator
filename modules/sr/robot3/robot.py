@@ -199,11 +199,11 @@ class Robot:
 
     @property
     def arena(self) -> str:
-        return self.metadata.arena
+        return self._metadata.arena
 
     @property
     def mode(self) -> metadata.RobotMode:
-        return self.metadata.mode
+        return self._metadata.mode
 
     @property
     def usbkey(self) -> Path | None:
@@ -211,7 +211,7 @@ class Robot:
 
     @property
     def zone(self) -> int:
-        return self.metadata.zone
+        return self._metadata.zone
 
     @property
     def is_simulated(self) -> bool:
@@ -221,10 +221,6 @@ class Robot:
         :returns: True if the robot is simulated. False otherwise.
         """
         return True
-
-    @property
-    def metadata(self) -> metadata.Metadata:
-        return self._metadata
 
     def time(self) -> float:
         """
