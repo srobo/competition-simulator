@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import dataclasses
+from collections.abc import Mapping
+
 from controller import Motor, Robot
 from sr.robot3.utils import map_to_range, get_robot_device
 
@@ -8,18 +11,31 @@ SERVO_LIMIT = 1
 
 def init_servo_board(webot: Robot) -> dict[str, ServoBoard]:
     return {
-        'srXYZ2': ServoBoard([
-            Servo(webot, 'left gripper'),
-            Servo(webot, 'right gripper'),
-            Servo(webot, 'left finger'),
-            Servo(webot, 'right finger'),
-        ]),
+        'srXYZ2': ServoBoard({
+            0: Servo(webot, 'left gripper'),
+            1: Servo(webot, 'right gripper'),
+            2: Servo(webot, 'left finger'),
+            3: Servo(webot, 'right finger'),
+        }),
     }
 
 
 class ServoBoard:
-    def __init__(self, servos: list[Servo]) -> None:
-        self.servos = servos
+    _VALID_PINS = range(12)
+
+    def __init__(self, servos: Mapping[int, Servo]) -> None:
+        invalid_servos = [x for x in servos.keys() if x not in self._VALID_PINS]
+        if invalid_servos:
+            raise ValueError(f"Invalid servos: {invalid_servos}")
+
+        self.servos: tuple[Servo | NullServo, ...] = tuple(
+            servos.get(x) or NullServo() for x in self._VALID_PINS
+        )
+
+
+@dataclasses.dataclass
+class NullServo:
+    position: float | None = 0.0
 
 
 class Servo:
