@@ -26,8 +26,8 @@ CONTROLS = {
 # place to remap other zones if desired. Modify the keys of the dictionary to
 # the zones you want to use.
 ZONE_MAP = {
-    1: 0,
-    0: 1,
+    0: 0,
+    1: 1,
 }
 
 
