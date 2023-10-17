@@ -18,7 +18,7 @@ PROTO SpaceShip [
       DEF BODY Group {
         children [
           DEF base Transform {
-            translation 0 0 0.06
+            translation 0 0 0.0325
             children [
               Shape {
                 appearance DEF SPACESHIP_APPEARANCE PBRAppearance {
@@ -33,45 +33,45 @@ PROTO SpaceShip [
             ]
           }
           DEF side_rear Transform {
-            translation -0.230 0.01 0.16
+            translation -0.230 0.01 0.1225
             children [
               Shape {
                 appearance USE SPACESHIP_APPEARANCE
                 geometry Box {
-                  size 0.02 0.37 0.175
+                  size 0.02 0.37 0.155
                 }
               }
             ]
           }
           DEF side_front Transform {
-            translation 0.230 -0.01 0.16
+            translation 0.230 -0.01 0.1225
             children [
               Shape {
                 appearance USE SPACESHIP_APPEARANCE
                 geometry Box {
-                  size 0.02 0.37 0.175
+                  size 0.02 0.37 0.155
                 }
               }
             ]
           }
           DEF side_left Transform {
-            translation 0.01 0.185 0.16
+            translation 0.01 0.185 0.1225
             children [
               Shape {
                 appearance USE SPACESHIP_APPEARANCE
                 geometry Box {
-                  size 0.46 0.02 0.175
+                  size 0.46 0.02 0.155
                 }
               }
             ]
           }
           DEF side_right Transform {
-            translation -0.01 -0.185 0.16
+            translation -0.01 -0.185 0.1225
             children [
               Shape {
                 appearance USE SPACESHIP_APPEARANCE
                 geometry Box {
-                  size 0.46 0.02 0.175
+                  size 0.46 0.02 0.155
                 }
               }
             ]
@@ -81,12 +81,12 @@ PROTO SpaceShip [
       DEF FLAGPOLE Group {
         children [
           DEF pole Transform {
-            translation -0.230 -0.185 0.3975
+            translation -0.230 -0.185 0.3
             children [
               Shape {
                 appearance USE SPACESHIP_APPEARANCE
                 geometry Cylinder {
-                  height 0.3
+                  height 0.2
                   radius 0.01
                   subdivision 8
                 }
@@ -94,7 +94,7 @@ PROTO SpaceShip [
             ]
           }
           DEF flag Transform {
-            translation -0.165 -0.185 0.4925
+            translation -0.15 -0.185 0.345
             children [
               Shape {
                 appearance PBRAppearance {
@@ -114,19 +114,19 @@ PROTO SpaceShip [
       DEF CASTERS Group {
         children [
           DEF front_right_caster_leg Transform {
-            translation -0.19 -0.145 0.0325
+            translation -0.19 -0.145 0.015
             children [
               Shape {
                 appearance USE SPACESHIP_APPEARANCE
                 geometry DEF CASTER_LEG Cylinder {
-                  height 0.03
-                  radius 0.025
+                  height 0.01
+                  radius 0.0125
                 }
               }
             ]
           }
           DEF front_right_caster_leg Transform {
-            translation -0.19 0.145 0.0325
+            translation -0.19 0.145 0.015
             children [
               Shape {
                 appearance USE SPACESHIP_APPEARANCE
@@ -135,7 +135,7 @@ PROTO SpaceShip [
             ]
           }
           DEF rear_right_caster_leg Transform {
-            translation 0.19 -0.145 0.0325
+            translation 0.19 -0.145 0.015
             children [
               Shape {
                 appearance USE SPACESHIP_APPEARANCE
@@ -144,7 +144,7 @@ PROTO SpaceShip [
             ]
           }
           DEF rear_right_caster_leg Transform {
-            translation 0.19 0.145 0.0325
+            translation 0.19 0.145 0.015
             children [
               Shape {
                 appearance USE SPACESHIP_APPEARANCE
@@ -153,7 +153,7 @@ PROTO SpaceShip [
             ]
           }
           DEF front_left_caster Solid {
-            translation -0.19 -0.145 0.0175
+            translation -0.19 -0.145 0.01
             name "front_left_caster"
             children [
               DEF CASTER_BALL Shape {
@@ -163,7 +163,7 @@ PROTO SpaceShip [
                   metalness 0
                 }
                 geometry Sphere {
-                  radius 0.02
+                  radius 0.01
                   # subdivision 2
                 }
               }
@@ -176,7 +176,7 @@ PROTO SpaceShip [
           }
           DEF front_right_caster Solid {
             name "front_right_caster"
-            translation -0.19 0.145 0.0175
+            translation -0.19 0.145 0.01
             children [
               USE CASTER_BALL
             ]
@@ -188,7 +188,7 @@ PROTO SpaceShip [
           }
           DEF rear_left_caster Solid {
             name "rear_left_caster"
-            translation 0.19 0.145 0.0175
+            translation 0.19 0.145 0.01
             children [
               USE CASTER_BALL
             ]
@@ -200,7 +200,7 @@ PROTO SpaceShip [
           }
           DEF rear_right_caster Solid {
             name "rear_right_caster"
-            translation 0.19 -0.145 0.0175
+            translation 0.19 -0.145 0.01
             children [
               USE CASTER_BALL
             ]
@@ -215,13 +215,13 @@ PROTO SpaceShip [
       DEF MARKERS Group {
         children [
           TokenMarker {
-            translation 0 0.1955 0.16
+            translation 0 0.1955 0.11
             rotation 0 0 1 -1.570796327
             name "port"
             model IS port_marker
           }
           TokenMarker {
-            translation 0 -0.1955 0.16
+            translation 0 -0.1955 0.11
             rotation 0 0 1 1.570796327
             name "starboard"
             model IS starboard_marker
