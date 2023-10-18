@@ -463,7 +463,7 @@ Solid { # Nest
         metalness 0
       }
       geometry Box {
-        size 0.3 0.3 0.050
+        size 0.25 0.25 0.050
       }
     }
   ]
