@@ -17,8 +17,8 @@ CONTROLS = {
     "boost": (Keyboard.SHIFT, Keyboard.CONTROL),
     "grabber_open": (ord("R"), ord("P")),
     "grabber_close": (ord("E"), ord("O")),
-    "fingers_down": (ord("C"), ord(",")),
-    "fingers_up": (ord("X"), ord(".")),
+    "lifter_up": (ord("C"), ord(",")),
+    "lifter_down": (ord("X"), ord(".")),
     "angle_unit": (ord("B"), ord("B")),
 }
 
@@ -58,10 +58,6 @@ def print_sensors(robot: Robot) -> None:
     touch_sensor_names = [
         "Rear",
     ]
-    pressure_sensor_names = {
-        A6: "Left Finger",
-        A7: "Right Finger",
-    }
 
     print(f"Distance sensor readings at {robot.time():.2f}s:")
     for Apin, name in distance_sensor_names.items():
@@ -72,11 +68,6 @@ def print_sensors(robot: Robot) -> None:
     for pin, name in enumerate(touch_sensor_names, 2):
         touching = robot.arduino.pins[pin].digital_read()
         print(f"{pin} {name: <6}: {touching}")
-
-    print("Pressure sensor readings:")
-    for Apin, name in pressure_sensor_names.items():
-        pressure = robot.arduino.pins[Apin].analog_read()
-        print(f"{Apin} {name: <12}: {pressure:.2f}")
 
     try:
         camera = robot.camera
@@ -125,8 +116,8 @@ key_sense = CONTROLS["sense"][ZONE_MAP[robot.zone]]
 key_boost = CONTROLS["boost"][ZONE_MAP[robot.zone]]
 key_grab_open = CONTROLS["grabber_open"][ZONE_MAP[robot.zone]]
 key_grab_close = CONTROLS["grabber_close"][ZONE_MAP[robot.zone]]
-key_fingers_down = CONTROLS["fingers_down"][ZONE_MAP[robot.zone]]
-key_fingers_up = CONTROLS["fingers_up"][ZONE_MAP[robot.zone]]
+key_lifter_down = CONTROLS["lifter_down"][ZONE_MAP[robot.zone]]
+key_lifter_up = CONTROLS["lifter_up"][ZONE_MAP[robot.zone]]
 key_angle_unit = CONTROLS["angle_unit"][ZONE_MAP[robot.zone]]
 
 print(
@@ -177,13 +168,11 @@ while True:
             robot.servo_board.servos[0].position = 1
             robot.servo_board.servos[1].position = 1
 
-        elif key_ascii == key_fingers_down:
-            robot.servo_board.servos[2].position = 1
-            robot.servo_board.servos[3].position = 1
-
-        elif key_ascii == key_fingers_up:
+        elif key_ascii == key_lifter_down:
             robot.servo_board.servos[2].position = -1
-            robot.servo_board.servos[3].position = -1
+
+        elif key_ascii == key_lifter_up:
+            robot.servo_board.servos[2].position = 1
 
         elif key_ascii == key_angle_unit:
             USE_DEGREES = not USE_DEGREES

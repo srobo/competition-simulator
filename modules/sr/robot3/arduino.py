@@ -13,7 +13,6 @@ from sr.robot3.arduino_devices import (
     DisabledPin,
     Microswitch,
     DistanceSensor,
-    PressureSensor,
 )
 from sr.robot3.output_frequency_limiter import OutputFrequencyLimiter
 
@@ -27,15 +26,10 @@ class AnaloguePin(enum.IntEnum):
     A4 = 18
     A5 = 19
 
-    # Note: these pins don't exist on a real arduino.
-    A6 = 20
-    A7 = 21
-
 
 def init_arduinos(webot: Robot) -> dict[str, Arduino]:
     # Apply common arguments upfront to simplify later declarations.
     _DistanceSensor = functools.partial(DistanceSensor, webot)
-    _PressureSensor = functools.partial(PressureSensor, webot)
     _Microswitch = functools.partial(Microswitch, webot)
     _Led = functools.partial(Led, webot, limiter=OutputFrequencyLimiter(webot))
 
@@ -55,10 +49,6 @@ def init_arduinos(webot: Robot) -> dict[str, Arduino]:
         AnaloguePin.A3: _DistanceSensor('Right DS'),
         AnaloguePin.A4: _DistanceSensor('Front DS'),
         AnaloguePin.A5: _DistanceSensor('Back DS'),
-
-        # Note: these pins don't exist on a real arduino.
-        AnaloguePin.A6: _PressureSensor('finger pressure left'),
-        AnaloguePin.A7: _PressureSensor('finger pressure right'),
     }
 
     return {
