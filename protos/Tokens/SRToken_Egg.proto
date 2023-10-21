@@ -14,7 +14,7 @@ PROTO SRToken_Egg [
     children [
       Shape {
         appearance DEF TOKEN_APPEARANCE PBRAppearance {
-          baseColor 0.609 0.0117 0.78125
+          baseColor 1 0 0
           metalness 0
           roughness 1
         }
