@@ -106,6 +106,7 @@ Solid {  # Floor
     }
   ]
   name "Floor"
+  locked TRUE
   boundingObject USE FLOOR
 }
 Solid {  # Wall markers
@@ -363,6 +364,7 @@ Solid {  # Wall markers
       ]
     }
   ]
+  locked TRUE
   name "Wall markers"
 }
 Solid {  # North Wall
@@ -380,6 +382,7 @@ Solid {  # North Wall
     }
   ]
   boundingObject USE SHAPE
+  locked TRUE
   name "North Wall"
 }
 Solid {  # South Wall
@@ -397,6 +400,7 @@ Solid {  # South Wall
     }
   ]
   boundingObject USE SHAPE
+  locked TRUE
   name "South Wall"
 }
 Solid {  # East Wall
@@ -414,6 +418,7 @@ Solid {  # East Wall
     }
   ]
   boundingObject USE SHAPE
+  locked TRUE
   name "East Wall"
 }
 Solid {  # West Wall
@@ -431,6 +436,7 @@ Solid {  # West Wall
     }
   ]
   boundingObject USE SHAPE
+  locked TRUE
   name "West Wall"
 }
 Scoring_Zone_Planet {
