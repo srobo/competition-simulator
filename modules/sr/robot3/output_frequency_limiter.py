@@ -11,7 +11,8 @@ MIN_TIME_BETWEEN_CHANGES = 1 / MAX_FREQUENCY
 class OutputFrequencyLimiter:
     def __init__(self, webot: Robot) -> None:
         self._webot = webot
-        self._last_change: float = 0
+        # Allow the first change to happen immediately
+        self._last_change: float = -MIN_TIME_BETWEEN_CHANGES
 
     def can_change(self) -> bool:
         now = self._webot.getTime()
