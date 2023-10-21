@@ -125,10 +125,28 @@ zip ABC.zip robot.py
 
 ## Doing a release
 
-1. Create a new tag & push
-2. Wait for CI to create the GitHub release, build a zip archive and upload it to the release
-3. Update the [docs](https://github.com/srobo/docs) to point to the new archive
-4. Announce the update to teams via the forums and [email](https://github.com/srobo/team-emails)
+0. Merge all the desired changes into `main` and push
+1. Let CI run, ensure it passes
+2. Create an annotated tag:
+
+   ``` console
+   git tag srYYYY.N --annotate
+   ```
+
+   N is a 1-based number for the revision of the rules. `0` is reserved for a
+   release before the start of the competition year, if there is one. `1` should
+   ideally be the initial release containing the game for the given year.
+   Greater numbers correspond to revisions during the year.
+
+   The tag annotation message should contain a summary of the changes in the
+   revision, typically this can be similar to the revision log within the
+   document itself. See the previous tags for the common format, for example
+   `git show sr2024.0` or `git show sr2023.5`.
+
+3. Push the tag: `git push --tags`
+4. Wait for CI to create the GitHub release, build a zip archive and upload it to the release
+5. Update the [docs](https://github.com/srobo/docs) to point to the new archive
+6. Announce the update to teams via Discord and [email](https://github.com/srobo/team-emails)
 
 ## Running competition matches
 
