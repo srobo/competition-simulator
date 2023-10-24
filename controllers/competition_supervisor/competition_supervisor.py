@@ -209,8 +209,6 @@ def run_match(supervisor: Supervisor) -> None:
 
 
 def main() -> None:
-    quit_if_development_mode()
-
     controller_utils.tee_streams(
         controller_utils.get_competition_supervisor_log_filepath(),
     )
@@ -219,6 +217,7 @@ def main() -> None:
 
     with propagate_exit_code(supervisor):
         remove_unused_robots(supervisor)
+        quit_if_development_mode()
         wait_until_robots_ready(supervisor)
 
         set_simulation_mode(supervisor, Supervisor.SIMULATION_MODE_PAUSE)
