@@ -103,7 +103,8 @@ def run_match() -> None:
         ])
     except FileNotFoundError:
         print_fatal(
-            "Could not find webots. Check that you have it installed and on your PATH",
+            "Could not find webots. Check that you have it installed and on your "
+            "PATH, or set WEBOTS_EXECUTABLE to the full path to the executable.",
         )
         exit(1)
     except subprocess.CalledProcessError as e:
