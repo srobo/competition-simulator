@@ -118,7 +118,8 @@ class FiducialMarker:
         some games it does.
         """
         corners = [
-            v for n, v in self.corners.items()
+            v
+            for n, v in self.corners.items()
             if 'top' in n
         ]
         assert len(corners) == 2, "Wrong number of corners for 'top' edge"

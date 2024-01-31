@@ -224,7 +224,7 @@ class LightingController:
                 self.luminosity_fade.current_luminosity,
             )
 
-        for fade in self.lighting_fades:
+        for fade in self.lighting_fades.copy():
             if fade.remaining_steps > 1:
                 fade.current_intensity += fade.intensity_step
                 fade.current_colour = self.increment_colour(
