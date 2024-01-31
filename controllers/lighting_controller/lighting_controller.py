@@ -224,8 +224,7 @@ class LightingController:
                 self.luminosity_fade.current_luminosity,
             )
 
-        to_remove: list[LightFade]
-        for fade in self.lighting_fades:
+        for fade in self.lighting_fades.copy():
             if fade.remaining_steps > 1:
                 fade.current_intensity += fade.intensity_step
                 fade.current_colour = self.increment_colour(
@@ -242,10 +241,7 @@ class LightingController:
 
                 print(f"Lighting effect for '{fade.effect.light_def}' complete")  # noqa: E501, T201
 
-                to_remove.append(fade)
-
-        for fade in to_remove:
-            self.lighting_fades.remove(fade)
+                self.lighting_fades.remove(fade)  # remove completed fade
 
     def schedule_lighting(self) -> None:
         if controller_utils.get_robot_mode() != 'comp':
