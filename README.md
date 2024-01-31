@@ -204,6 +204,10 @@ In order to run competition matches you'll need to:
     create any issues with the rendered videos, though you are encouraged to
     check that your setup is recording the videos correctly.
 
+If `webots` is not available on `PATH` (such as on Windows by default) you can
+pass the full path to the webots executable using the `WEBOTS_EXECUTABLE`
+environment variable.
+
 ## Collecting up logs for the Discord bot
 
 The `zip-comp-logs` command allows logs to be collated into a zip with certain combinations of match animations.
